@@ -1,0 +1,138 @@
+{
+  "schemaVersion": "enemy-catalog-v1",
+  "catalogId": "enemy_catalog_main_v1",
+  "enemies": [
+    {
+      "enemyId": "skitter_runner",
+      "displayName": "Skitter Runner",
+      "hp": 26,
+      "speed": 2.2,
+      "armorFlat": 0,
+      "rewardGold": 6,
+      "lineDamage": 1,
+      "threatCost": 1.0,
+      "tags": ["fast", "light"]
+    },
+    {
+      "enemyId": "ash_swarm",
+      "displayName": "Ash Swarm",
+      "hp": 16,
+      "speed": 1.5,
+      "armorFlat": 0,
+      "rewardGold": 4,
+      "lineDamage": 1,
+      "threatCost": 0.8,
+      "tags": ["swarm", "light"]
+    },
+    {
+      "enemyId": "carapace_brute",
+      "displayName": "Carapace Brute",
+      "hp": 120,
+      "speed": 0.8,
+      "armorFlat": 4,
+      "rewardGold": 14,
+      "lineDamage": 2,
+      "threatCost": 4.5,
+      "tags": ["heavy", "armored"]
+    },
+    {
+      "enemyId": "plated_spore",
+      "displayName": "Plated Spore",
+      "hp": 70,
+      "speed": 1.1,
+      "armorFlat": 8,
+      "rewardGold": 10,
+      "lineDamage": 2,
+      "threatCost": 3.2,
+      "tags": ["armored", "mid"]
+    },
+    {
+      "enemyId": "burrow_sapper",
+      "displayName": "Burrow Sapper",
+      "hp": 54,
+      "speed": 2.55,
+      "armorFlat": 1,
+      "rewardGold": 12,
+      "lineDamage": 2,
+      "threatCost": 2.3,
+      "tags": ["fast", "special", "flank"]
+    },
+    {
+      "enemyId": "ember_leech",
+      "displayName": "Ember Leech",
+      "hp": 90,
+      "speed": 1.2,
+      "armorFlat": 2,
+      "rewardGold": 16,
+      "lineDamage": 2,
+      "threatCost": 3.0,
+      "tags": ["attrition", "special", "mid"]
+    },
+    {
+      "enemyId": "spore_carrier",
+      "displayName": "Spore Carrier",
+      "hp": 82,
+      "speed": 1.05,
+      "armorFlat": 1,
+      "rewardGold": 15,
+      "lineDamage": 2,
+      "threatCost": 3.2,
+      "tags": ["swarm", "spawn", "mid"]
+    },
+    {
+      "enemyId": "rail_warden",
+      "displayName": "Rail Warden",
+      "hp": 118,
+      "speed": 0.95,
+      "armorFlat": 5,
+      "rewardGold": 18,
+      "lineDamage": 2,
+      "threatCost": 4.2,
+      "tags": ["support", "armored"]
+    },
+    {
+      "enemyId": "cinder_glider",
+      "displayName": "Cinder Glider",
+      "hp": 60,
+      "speed": 2.7,
+      "armorFlat": 0,
+      "rewardGold": 14,
+      "lineDamage": 2,
+      "threatCost": 2.6,
+      "tags": ["fast", "flank"]
+    },
+    {
+      "enemyId": "husk_titan",
+      "displayName": "Husk Titan",
+      "hp": 260,
+      "speed": 0.62,
+      "armorFlat": 9,
+      "rewardGold": 28,
+      "lineDamage": 4,
+      "threatCost": 9.5,
+      "tags": ["elite", "heavy", "armored"]
+    },
+    {
+      "enemyId": "echo_mimic",
+      "displayName": "Echo Mimic",
+      "hp": 170,
+      "speed": 1.35,
+      "armorFlat": 4,
+      "rewardGold": 24,
+      "lineDamage": 3,
+      "threatCost": 6.8,
+      "tags": ["special", "mixed"]
+    },
+    {
+      "enemyId": "furnace_matriarch",
+      "displayName": "Furnace Matriarch",
+      "hp": 620,
+      "speed": 0.58,
+      "armorFlat": 12,
+      "rewardGold": 60,
+      "lineDamage": 6,
+      "threatCost": 18.0,
+      "tags": ["boss", "final", "heavy", "armored"]
+    }
+  ]
+}

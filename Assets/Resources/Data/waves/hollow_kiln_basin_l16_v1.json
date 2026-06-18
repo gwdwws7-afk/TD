@@ -1,0 +1,1015 @@
+﻿{
+    "schemaVersion": "wave-schema-v1",
+    "waveSetId": "hollow_kiln_basin_l16_v1",
+    "mapId": "hollow_kiln_basin",
+    "displayName": "Hollow Kiln Basin L16 (chapter_d)",
+    "globalDefaults": {
+        "prepSeconds": 8.05,
+        "baseRewardGold": 25,
+        "spawnMinSpacing": 0.16,
+        "lineDamageDefault": 1,
+        "maxConcurrentEnemiesHint": 118
+    },
+    "enemyCatalog": [
+        {
+            "enemyId": "skitter_runner",
+            "displayName": "Skitter Runner",
+            "hp": 26,
+            "speed": 2.2,
+            "armorFlat": 0,
+            "rewardGold": 6,
+            "lineDamage": 1,
+            "threatCost": 1.0,
+            "tags": [
+                "fast",
+                "light"
+            ]
+        },
+        {
+            "enemyId": "carapace_brute",
+            "displayName": "Carapace Brute",
+            "hp": 120,
+            "speed": 0.8,
+            "armorFlat": 4,
+            "rewardGold": 14,
+            "lineDamage": 2,
+            "threatCost": 4.5,
+            "tags": [
+                "heavy",
+                "armored"
+            ]
+        },
+        {
+            "enemyId": "ash_swarm",
+            "displayName": "Ash Swarm",
+            "hp": 16,
+            "speed": 1.5,
+            "armorFlat": 0,
+            "rewardGold": 4,
+            "lineDamage": 1,
+            "threatCost": 0.8,
+            "tags": [
+                "swarm",
+                "light"
+            ]
+        },
+        {
+            "enemyId": "plated_spore",
+            "displayName": "Plated Spore",
+            "hp": 70,
+            "speed": 1.1,
+            "armorFlat": 8,
+            "rewardGold": 10,
+            "lineDamage": 2,
+            "threatCost": 3.2,
+            "tags": [
+                "armored",
+                "mid"
+            ]
+        }
+    ],
+    "waves": [
+        {
+            "waveIndex": 1,
+            "phase": "introduce",
+            "goalTag": "chapter_d_hollow_kiln_basin_l16_w01_introduce",
+            "threatTags": [
+                "introduce",
+                "hollow_kiln_basin"
+            ],
+            "prepSeconds": 8.05,
+            "rewardGold": 33,
+            "budgetTarget": 39.8,
+            "budgetTolerance": 1.1,
+            "hint": "[L16] W01: 识别新威胁并调整火力分工。",
+            "groups": [
+                {
+                    "enemyId": "burrow_sapper",
+                    "count": 10,
+                    "startDelay": 0,
+                    "spawnInterval": 0.25,
+                    "formation": "stream",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 21,
+                    "startDelay": 1.12,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "right"
+                }
+            ]
+        },
+        {
+            "waveIndex": 2,
+            "phase": "reinforce",
+            "goalTag": "chapter_d_hollow_kiln_basin_l16_w02_reinforce",
+            "threatTags": [
+                "reinforce",
+                "hollow_kiln_basin"
+            ],
+            "prepSeconds": 7.91,
+            "rewardGold": 35,
+            "budgetTarget": 44.2,
+            "budgetTolerance": 1.1,
+            "hint": "[L16] W02: 持续压制并补齐覆盖空洞。",
+            "groups": [
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 25,
+                    "startDelay": 0.16,
+                    "spawnInterval": 0.24,
+                    "formation": "stream",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 24,
+                    "startDelay": 0.96,
+                    "spawnInterval": 0.19,
+                    "formation": "pack",
+                    "lane": "left"
+                }
+            ]
+        },
+        {
+            "waveIndex": 3,
+            "phase": "exam",
+            "goalTag": "chapter_d_hollow_kiln_basin_l16_w03_exam",
+            "threatTags": [
+                "exam",
+                "hollow_kiln_basin"
+            ],
+            "prepSeconds": 8.17,
+            "rewardGold": 40,
+            "budgetTarget": 58.4,
+            "budgetTolerance": 1.1,
+            "hint": "[L16] W03: 综合考核：输出、控制、反制链稳定性。",
+            "groups": [
+                {
+                    "enemyId": "cinder_glider",
+                    "count": 9,
+                    "startDelay": 0,
+                    "spawnInterval": 0.22,
+                    "formation": "stream",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 20,
+                    "startDelay": 1.24,
+                    "spawnInterval": 0.17,
+                    "formation": "pack",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "husk_titan",
+                    "count": 2,
+                    "startDelay": 1.92,
+                    "spawnInterval": 0.69,
+                    "formation": "burst",
+                    "lane": "right"
+                }
+            ]
+        },
+        {
+            "waveIndex": 4,
+            "phase": "introduce",
+            "goalTag": "chapter_d_hollow_kiln_basin_l16_w04_introduce",
+            "threatTags": [
+                "introduce",
+                "hollow_kiln_basin"
+            ],
+            "prepSeconds": 7.63,
+            "rewardGold": 39,
+            "budgetTarget": 53.9,
+            "budgetTolerance": 1.1,
+            "hint": "[L16] W04: 识别新威胁并调整火力分工。",
+            "groups": [
+                {
+                    "enemyId": "burrow_sapper",
+                    "count": 13,
+                    "startDelay": 0,
+                    "spawnInterval": 0.25,
+                    "formation": "stream",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 30,
+                    "startDelay": 1.2,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "right"
+                }
+            ]
+        },
+        {
+            "waveIndex": 5,
+            "phase": "reinforce",
+            "goalTag": "chapter_d_hollow_kiln_basin_l16_w05_reinforce",
+            "threatTags": [
+                "reinforce",
+                "hollow_kiln_basin"
+            ],
+            "prepSeconds": 7.49,
+            "rewardGold": 41,
+            "budgetTarget": 58.4,
+            "budgetTolerance": 1.1,
+            "hint": "[L16] W05: 持续压制并补齐覆盖空洞。",
+            "groups": [
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 24,
+                    "startDelay": 0.24,
+                    "spawnInterval": 0.24,
+                    "formation": "stream",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 22,
+                    "startDelay": 1.04,
+                    "spawnInterval": 0.19,
+                    "formation": "pack",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "rail_warden",
+                    "count": 4,
+                    "startDelay": 2.4,
+                    "spawnInterval": 0.75,
+                    "formation": "burst",
+                    "lane": "center"
+                }
+            ]
+        },
+        {
+            "waveIndex": 6,
+            "phase": "exam",
+            "goalTag": "chapter_d_hollow_kiln_basin_l16_w06_exam",
+            "threatTags": [
+                "exam",
+                "hollow_kiln_basin",
+                "split"
+            ],
+            "prepSeconds": 7.75,
+            "rewardGold": 46,
+            "budgetTarget": 70.4,
+            "budgetTolerance": 1.1,
+            "hint": "[L16] W06: 综合考核：输出、控制、反制链稳定性。",
+            "groups": [
+                {
+                    "enemyId": "cinder_glider",
+                    "count": 8,
+                    "startDelay": 0.08,
+                    "spawnInterval": 0.22,
+                    "formation": "stream",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 21,
+                    "startDelay": 1.32,
+                    "spawnInterval": 0.17,
+                    "formation": "pack",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "plated_spore",
+                    "count": 5,
+                    "startDelay": 2,
+                    "spawnInterval": 0.69,
+                    "formation": "burst",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "rail_warden",
+                    "count": 4,
+                    "startDelay": 3.24,
+                    "spawnInterval": 0.69,
+                    "formation": "burst",
+                    "lane": "left"
+                }
+            ]
+        },
+        {
+            "waveIndex": 7,
+            "phase": "introduce",
+            "goalTag": "chapter_d_hollow_kiln_basin_l16_w07_introduce",
+            "threatTags": [
+                "introduce",
+                "hollow_kiln_basin",
+                "split",
+                "armored"
+            ],
+            "prepSeconds": 7.21,
+            "rewardGold": 45,
+            "budgetTarget": 67,
+            "budgetTolerance": 1.07,
+            "hint": "[L16] W07: 识别新威胁并调整火力分工。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 35,
+                    "startDelay": 0,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 20,
+                    "startDelay": 1.28,
+                    "spawnInterval": 0.25,
+                    "formation": "split_lane",
+                    "lane": "split_lane"
+                },
+                {
+                    "enemyId": "husk_titan",
+                    "count": 2,
+                    "startDelay": 2.64,
+                    "spawnInterval": 0.79,
+                    "formation": "burst",
+                    "lane": "left"
+                }
+            ]
+        },
+        {
+            "waveIndex": 8,
+            "phase": "reinforce",
+            "goalTag": "chapter_d_hollow_kiln_basin_l16_w08_reinforce",
+            "threatTags": [
+                "reinforce",
+                "hollow_kiln_basin",
+                "split",
+                "armored"
+            ],
+            "prepSeconds": 7.07,
+            "rewardGold": 47,
+            "budgetTarget": 70.9,
+            "budgetTolerance": 1.07,
+            "hint": "[L16] W08: 持续压制并补齐覆盖空洞。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 29,
+                    "startDelay": 0,
+                    "spawnInterval": 0.19,
+                    "formation": "pack",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "cinder_glider",
+                    "count": 7,
+                    "startDelay": 1.12,
+                    "spawnInterval": 0.24,
+                    "formation": "stream",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "carapace_brute",
+                    "count": 4,
+                    "startDelay": 2.48,
+                    "spawnInterval": 0.75,
+                    "formation": "burst",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "burrow_sapper",
+                    "count": 5,
+                    "startDelay": 3.84,
+                    "spawnInterval": 0.24,
+                    "formation": "split_lane",
+                    "lane": "split_lane"
+                }
+            ]
+        },
+        {
+            "waveIndex": 9,
+            "phase": "exam",
+            "goalTag": "chapter_d_hollow_kiln_basin_l16_w09_exam",
+            "threatTags": [
+                "exam",
+                "hollow_kiln_basin",
+                "split",
+                "armored",
+                "flank"
+            ],
+            "prepSeconds": 7.33,
+            "rewardGold": 52,
+            "budgetTarget": 85.7,
+            "budgetTolerance": 1.07,
+            "hint": "[L16] W09: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 34,
+                    "startDelay": 0.16,
+                    "spawnInterval": 0.17,
+                    "formation": "pack",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "burrow_sapper",
+                    "count": 9,
+                    "startDelay": 0.84,
+                    "spawnInterval": 0.21,
+                    "formation": "cross_lane",
+                    "lane": "cross_lane"
+                },
+                {
+                    "enemyId": "rail_warden",
+                    "count": 4,
+                    "startDelay": 2.08,
+                    "spawnInterval": 0.69,
+                    "formation": "burst",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "rail_warden",
+                    "count": 5,
+                    "startDelay": 3.32,
+                    "spawnInterval": 0.69,
+                    "formation": "burst",
+                    "lane": "left"
+                }
+            ]
+        },
+        {
+            "waveIndex": 10,
+            "phase": "introduce",
+            "goalTag": "chapter_d_hollow_kiln_basin_l16_w10_introduce",
+            "threatTags": [
+                "introduce",
+                "hollow_kiln_basin",
+                "split",
+                "armored",
+                "flank"
+            ],
+            "prepSeconds": 7.29,
+            "rewardGold": 55,
+            "budgetTarget": 87.6,
+            "budgetTolerance": 1.07,
+            "hint": "[L16] W10: 识别新威胁并调整火力分工。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "carapace_brute",
+                    "count": 8,
+                    "startDelay": 0,
+                    "spawnInterval": 0.79,
+                    "formation": "burst",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 26,
+                    "startDelay": 1.36,
+                    "spawnInterval": 0.25,
+                    "formation": "split_lane",
+                    "lane": "split_lane"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 32,
+                    "startDelay": 2.16,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "left"
+                }
+            ]
+        },
+        {
+            "waveIndex": 11,
+            "phase": "reinforce",
+            "goalTag": "chapter_d_hollow_kiln_basin_l16_w11_reinforce",
+            "threatTags": [
+                "reinforce",
+                "hollow_kiln_basin",
+                "split",
+                "armored",
+                "flank"
+            ],
+            "prepSeconds": 6.65,
+            "rewardGold": 53,
+            "budgetTarget": 85.5,
+            "budgetTolerance": 1.07,
+            "hint": "[L16] W11: 持续压制并补齐覆盖空洞。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "rail_warden",
+                    "count": 7,
+                    "startDelay": 0,
+                    "spawnInterval": 0.75,
+                    "formation": "burst",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "cinder_glider",
+                    "count": 8,
+                    "startDelay": 1.2,
+                    "spawnInterval": 0.24,
+                    "formation": "stream",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 24,
+                    "startDelay": 2.56,
+                    "spawnInterval": 0.19,
+                    "formation": "pack",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "burrow_sapper",
+                    "count": 7,
+                    "startDelay": 3.36,
+                    "spawnInterval": 0.24,
+                    "formation": "split_lane",
+                    "lane": "split_lane"
+                }
+            ]
+        },
+        {
+            "waveIndex": 12,
+            "phase": "exam",
+            "goalTag": "chapter_d_hollow_kiln_basin_l16_w12_exam",
+            "threatTags": [
+                "exam",
+                "hollow_kiln_basin",
+                "split",
+                "armored",
+                "flank"
+            ],
+            "prepSeconds": 6.91,
+            "rewardGold": 58,
+            "budgetTarget": 97.6,
+            "budgetTolerance": 1.07,
+            "hint": "[L16] W12: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "plated_spore",
+                    "count": 10,
+                    "startDelay": 0.24,
+                    "spawnInterval": 0.69,
+                    "formation": "stagger",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "burrow_sapper",
+                    "count": 10,
+                    "startDelay": 0.92,
+                    "spawnInterval": 0.22,
+                    "formation": "flank_strike",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 27,
+                    "startDelay": 2.16,
+                    "spawnInterval": 0.17,
+                    "formation": "pack",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "rail_warden",
+                    "count": 5,
+                    "startDelay": 3.4,
+                    "spawnInterval": 0.69,
+                    "formation": "stagger",
+                    "lane": "left"
+                }
+            ]
+        },
+        {
+            "waveIndex": 13,
+            "phase": "introduce",
+            "goalTag": "chapter_d_hollow_kiln_basin_l16_w13_introduce",
+            "threatTags": [
+                "introduce",
+                "hollow_kiln_basin",
+                "split",
+                "armored",
+                "flank",
+                "high_pressure"
+            ],
+            "prepSeconds": 6.37,
+            "rewardGold": 57,
+            "budgetTarget": 95.4,
+            "budgetTolerance": 1.05,
+            "hint": "[L16] W13: 识别新威胁并调整火力分工。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "husk_titan",
+                    "count": 4,
+                    "startDelay": 0.08,
+                    "spawnInterval": 0.79,
+                    "formation": "stagger",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 36,
+                    "startDelay": 1.44,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "cinder_glider",
+                    "count": 11,
+                    "startDelay": 2.24,
+                    "spawnInterval": 0.24,
+                    "formation": "adaptive",
+                    "lane": "all"
+                }
+            ]
+        },
+        {
+            "waveIndex": 14,
+            "phase": "reinforce",
+            "goalTag": "chapter_d_hollow_kiln_basin_l16_w14_reinforce",
+            "threatTags": [
+                "reinforce",
+                "hollow_kiln_basin",
+                "split",
+                "armored",
+                "flank",
+                "high_pressure"
+            ],
+            "prepSeconds": 6.23,
+            "rewardGold": 59,
+            "budgetTarget": 99.2,
+            "budgetTolerance": 1.05,
+            "hint": "[L16] W14: 持续压制并补齐覆盖空洞。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "carapace_brute",
+                    "count": 7,
+                    "startDelay": 0,
+                    "spawnInterval": 0.75,
+                    "formation": "stagger",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 30,
+                    "startDelay": 1.28,
+                    "spawnInterval": 0.19,
+                    "formation": "pack",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "burrow_sapper",
+                    "count": 10,
+                    "startDelay": 2.64,
+                    "spawnInterval": 0.24,
+                    "formation": "flank_strike",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "burrow_sapper",
+                    "count": 9,
+                    "startDelay": 3.44,
+                    "spawnInterval": 0.24,
+                    "formation": "flank_stream",
+                    "lane": "right"
+                }
+            ]
+        },
+        {
+            "waveIndex": 15,
+            "phase": "exam",
+            "goalTag": "chapter_d_hollow_kiln_basin_l16_w15_exam",
+            "threatTags": [
+                "exam",
+                "hollow_kiln_basin",
+                "split",
+                "armored",
+                "flank",
+                "high_pressure",
+                "exam_peak"
+            ],
+            "prepSeconds": 6.49,
+            "rewardGold": 64,
+            "budgetTarget": 123.8,
+            "budgetTolerance": 1.05,
+            "hint": "[L16] W15: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "rail_warden",
+                    "count": 9,
+                    "startDelay": 0,
+                    "spawnInterval": 0.69,
+                    "formation": "stagger",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 37,
+                    "startDelay": 1,
+                    "spawnInterval": 0.17,
+                    "formation": "pack",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 27,
+                    "startDelay": 2.24,
+                    "spawnInterval": 0.22,
+                    "formation": "flank_stream",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "rail_warden",
+                    "count": 7,
+                    "startDelay": 3.48,
+                    "spawnInterval": 0.69,
+                    "formation": "stagger",
+                    "lane": "left"
+                }
+            ]
+        },
+        {
+            "waveIndex": 16,
+            "phase": "introduce",
+            "goalTag": "chapter_d_hollow_kiln_basin_l16_w16_introduce",
+            "threatTags": [
+                "introduce",
+                "hollow_kiln_basin",
+                "split",
+                "armored",
+                "flank",
+                "high_pressure"
+            ],
+            "prepSeconds": 5.95,
+            "rewardGold": 63,
+            "budgetTarget": 108,
+            "budgetTolerance": 1.05,
+            "hint": "[L16] W16: 识别新威胁并调整火力分工。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "plated_spore",
+                    "count": 14,
+                    "startDelay": 0.16,
+                    "spawnInterval": 0.71,
+                    "formation": "stagger",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 40,
+                    "startDelay": 0.96,
+                    "spawnInterval": 0.18,
+                    "formation": "pack",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "cinder_glider",
+                    "count": 12,
+                    "startDelay": 2.32,
+                    "spawnInterval": 0.22,
+                    "formation": "adaptive",
+                    "lane": "all"
+                }
+            ]
+        },
+        {
+            "waveIndex": 17,
+            "phase": "reinforce",
+            "goalTag": "chapter_d_hollow_kiln_basin_l16_w17_reinforce",
+            "threatTags": [
+                "reinforce",
+                "hollow_kiln_basin",
+                "split",
+                "armored",
+                "flank",
+                "high_pressure",
+                "endgame"
+            ],
+            "prepSeconds": 5.81,
+            "rewardGold": 65,
+            "budgetTarget": 111.3,
+            "budgetTolerance": 1.04,
+            "hint": "[L16] W17: 持续压制并补齐覆盖空洞。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "husk_titan",
+                    "count": 3,
+                    "startDelay": 0,
+                    "spawnInterval": 0.68,
+                    "formation": "elite_drop",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 28,
+                    "startDelay": 1.28,
+                    "spawnInterval": 0.17,
+                    "formation": "pack",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "burrow_sapper",
+                    "count": 9,
+                    "startDelay": 2,
+                    "spawnInterval": 0.22,
+                    "formation": "flank_strike",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "burrow_sapper",
+                    "count": 9,
+                    "startDelay": 3.28,
+                    "spawnInterval": 0.22,
+                    "formation": "flank_stream",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "husk_titan",
+                    "count": 2,
+                    "startDelay": 4.56,
+                    "spawnInterval": 0.68,
+                    "formation": "elite_drop",
+                    "lane": "left"
+                }
+            ]
+        },
+        {
+            "waveIndex": 18,
+            "phase": "exam",
+            "goalTag": "chapter_d_hollow_kiln_basin_l16_w18_exam",
+            "threatTags": [
+                "exam",
+                "hollow_kiln_basin",
+                "split",
+                "armored",
+                "flank",
+                "high_pressure",
+                "endgame"
+            ],
+            "prepSeconds": 6.07,
+            "rewardGold": 70,
+            "budgetTarget": 127.8,
+            "budgetTolerance": 1.04,
+            "hint": "[L16] W18: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "carapace_brute",
+                    "count": 8,
+                    "startDelay": 0,
+                    "spawnInterval": 0.62,
+                    "formation": "stagger",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 32,
+                    "startDelay": 1,
+                    "spawnInterval": 0.17,
+                    "formation": "pack",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 23,
+                    "startDelay": 2.16,
+                    "spawnInterval": 0.2,
+                    "formation": "flank_stream",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "rail_warden",
+                    "count": 6,
+                    "startDelay": 2.76,
+                    "spawnInterval": 0.62,
+                    "formation": "stagger",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "carapace_brute",
+                    "count": 4,
+                    "startDelay": 3.92,
+                    "spawnInterval": 0.62,
+                    "formation": "stagger",
+                    "lane": "center"
+                }
+            ]
+        },
+        {
+            "waveIndex": 19,
+            "phase": "introduce",
+            "goalTag": "chapter_d_hollow_kiln_basin_l16_w19_introduce",
+            "threatTags": [
+                "introduce",
+                "hollow_kiln_basin",
+                "split",
+                "armored",
+                "flank",
+                "high_pressure",
+                "endgame"
+            ],
+            "prepSeconds": 5.53,
+            "rewardGold": 69,
+            "budgetTarget": 123.4,
+            "budgetTolerance": 1.04,
+            "hint": "[L16] W19: 识别新威胁并调整火力分工。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "rail_warden",
+                    "count": 9,
+                    "startDelay": 0.24,
+                    "spawnInterval": 0.71,
+                    "formation": "stagger",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 37,
+                    "startDelay": 0.96,
+                    "spawnInterval": 0.18,
+                    "formation": "pack",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "cinder_glider",
+                    "count": 10,
+                    "startDelay": 2.24,
+                    "spawnInterval": 0.22,
+                    "formation": "adaptive",
+                    "lane": "all"
+                },
+                {
+                    "enemyId": "ember_leech",
+                    "count": 10,
+                    "startDelay": 3.52,
+                    "spawnInterval": 0.41,
+                    "formation": "pressure_mix",
+                    "lane": "all"
+                }
+            ]
+        },
+        {
+            "waveIndex": 20,
+            "phase": "reinforce",
+            "goalTag": "chapter_d_hollow_kiln_basin_l16_w20_reinforce",
+            "threatTags": [
+                "reinforce",
+                "hollow_kiln_basin",
+                "split",
+                "armored",
+                "flank",
+                "high_pressure",
+                "endgame"
+            ],
+            "prepSeconds": 5.89,
+            "rewardGold": 75,
+            "budgetTarget": 138.6,
+            "budgetTolerance": 1.04,
+            "hint": "[L16] W20: 持续压制并补齐覆盖空洞。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "plated_spore",
+                    "count": 11,
+                    "startDelay": 0.08,
+                    "spawnInterval": 0.68,
+                    "formation": "stagger",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 34,
+                    "startDelay": 1.36,
+                    "spawnInterval": 0.17,
+                    "formation": "pack",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "burrow_sapper",
+                    "count": 11,
+                    "startDelay": 2.08,
+                    "spawnInterval": 0.22,
+                    "formation": "flank_strike",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "burrow_sapper",
+                    "count": 11,
+                    "startDelay": 3.36,
+                    "spawnInterval": 0.22,
+                    "formation": "flank_stream",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "plated_spore",
+                    "count": 8,
+                    "startDelay": 4.64,
+                    "spawnInterval": 0.68,
+                    "formation": "stagger",
+                    "lane": "left"
+                }
+            ]
+        }
+    ]
+}

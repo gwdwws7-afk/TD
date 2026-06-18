@@ -1,0 +1,742 @@
+fileFormatVersion: 2
+guid: 5f70c9d2d1ffe6240a17f9ddfd736aff
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 140326762310917117
+    second: decal_path_rail_a_0
+  - first:
+      213: -6749658655976192068
+    second: decal_path_rail_a_1
+  - first:
+      213: -2826456231276627635
+    second: decal_path_rail_a_2
+  - first:
+      213: 6443377619418820362
+    second: decal_path_rail_a_3
+  - first:
+      213: 4041430152319622223
+    second: decal_path_rail_a_4
+  - first:
+      213: 5155460742000481596
+    second: decal_path_rail_a_5
+  - first:
+      213: -7694154464328857878
+    second: decal_path_rail_a_6
+  - first:
+      213: 3201561751913718525
+    second: decal_path_rail_a_7
+  - first:
+      213: -4270265470631983772
+    second: decal_path_rail_a_8
+  - first:
+      213: 7279020371026083898
+    second: decal_path_rail_a_9
+  - first:
+      213: 947407279452287804
+    second: decal_path_rail_a_10
+  - first:
+      213: 3585947265114359977
+    second: decal_path_rail_a_11
+  - first:
+      213: -829591477346887560
+    second: decal_path_rail_a_12
+  - first:
+      213: 6479271011294582565
+    second: decal_path_rail_a_13
+  - first:
+      213: 6856475227460834614
+    second: decal_path_rail_a_14
+  - first:
+      213: -5626626731391833735
+    second: decal_path_rail_a_15
+  - first:
+      213: -7434649715210425262
+    second: decal_path_rail_a_16
+  - first:
+      213: -1150449860028265694
+    second: decal_path_rail_a_17
+  - first:
+      213: -6334145581176566766
+    second: decal_path_rail_a_18
+  - first:
+      213: -7334538282752984427
+    second: decal_path_rail_a_19
+  - first:
+      213: -5970116558128795599
+    second: decal_path_rail_a_20
+  - first:
+      213: 1660502439310463445
+    second: decal_path_rail_a_21
+  - first:
+      213: -7616739831060267292
+    second: decal_path_rail_a_22
+  - first:
+      213: 436331027121247878
+    second: decal_path_rail_a_23
+  - first:
+      213: -4804662158023491792
+    second: decal_path_rail_a_24
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 1024
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: decal_path_rail_a_0
+      rect:
+        serializedVersion: 2
+        x: 435
+        y: 648
+        width: 16
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dfbd504627a82f100800000000000000
+      internalID: 140326762310917117
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_path_rail_a_1
+      rect:
+        serializedVersion: 2
+        x: 456
+        y: 644
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb7066fa6356452a0800000000000000
+      internalID: -6749658655976192068
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_path_rail_a_2
+      rect:
+        serializedVersion: 2
+        x: 554
+        y: 628
+        width: 12
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d493199680966c8d0800000000000000
+      internalID: -2826456231276627635
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_path_rail_a_3
+      rect:
+        serializedVersion: 2
+        x: 116
+        y: 543
+        width: 793
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0f292f6ec97b6950800000000000000
+      internalID: 6443377619418820362
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_path_rail_a_4
+      rect:
+        serializedVersion: 2
+        x: 856
+        y: 532
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4c5095af4b061830800000000000000
+      internalID: 4041430152319622223
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_path_rail_a_5
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 519
+        width: 16
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c351964ea30eb8740800000000000000
+      internalID: 5155460742000481596
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_path_rail_a_6
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 510
+        width: 89
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae641b2b74fd83590800000000000000
+      internalID: -7694154464328857878
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_path_rail_a_7
+      rect:
+        serializedVersion: 2
+        x: 692
+        y: 526
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df26b45637b3e6c20800000000000000
+      internalID: 3201561751913718525
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_path_rail_a_8
+      rect:
+        serializedVersion: 2
+        x: 314
+        y: 493
+        width: 13
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4654d56ed28fcb4c0800000000000000
+      internalID: -4270265470631983772
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_path_rail_a_9
+      rect:
+        serializedVersion: 2
+        x: 530
+        y: 502
+        width: 12
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a3087d72676440560800000000000000
+      internalID: 7279020371026083898
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_path_rail_a_10
+      rect:
+        serializedVersion: 2
+        x: 655
+        y: 488
+        width: 87
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c337f5da6edd52d00800000000000000
+      internalID: 947407279452287804
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_path_rail_a_11
+      rect:
+        serializedVersion: 2
+        x: 116
+        y: 416
+        width: 793
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a8cc68d908d3c130800000000000000
+      internalID: 3585947265114359977
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_path_rail_a_12
+      rect:
+        serializedVersion: 2
+        x: 194
+        y: 467
+        width: 87
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8781c0c52f2bc74f0800000000000000
+      internalID: -829591477346887560
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_path_rail_a_13
+      rect:
+        serializedVersion: 2
+        x: 848
+        y: 481
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 52713b7f7aefae950800000000000000
+      internalID: 6479271011294582565
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_path_rail_a_14
+      rect:
+        serializedVersion: 2
+        x: 196
+        y: 407
+        width: 14
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 635911864e7172f50800000000000000
+      internalID: 6856475227460834614
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_path_rail_a_15
+      rect:
+        serializedVersion: 2
+        x: 428
+        y: 395
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9792ca78cc43ae1b0800000000000000
+      internalID: -5626626731391833735
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_path_rail_a_16
+      rect:
+        serializedVersion: 2
+        x: 497
+        y: 407
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 25c6c677971d2d890800000000000000
+      internalID: -7434649715210425262
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_path_rail_a_17
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 375
+        width: 16
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 22b0e1992f7c800f0800000000000000
+      internalID: -1150449860028265694
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_path_rail_a_18
+      rect:
+        serializedVersion: 2
+        x: 477
+        y: 389
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21c4c5657289818a0800000000000000
+      internalID: -6334145581176566766
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_path_rail_a_19
+      rect:
+        serializedVersion: 2
+        x: 819
+        y: 390
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59a3109ba4c763a90800000000000000
+      internalID: -7334538282752984427
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_path_rail_a_20
+      rect:
+        serializedVersion: 2
+        x: 322
+        y: 359
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1303e051f92e52da0800000000000000
+      internalID: -5970116558128795599
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_path_rail_a_21
+      rect:
+        serializedVersion: 2
+        x: 419
+        y: 372
+        width: 11
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d115cbbb2a4b0710800000000000000
+      internalID: 1660502439310463445
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_path_rail_a_22
+      rect:
+        serializedVersion: 2
+        x: 565
+        y: 367
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ee75179a77eb4690800000000000000
+      internalID: -7616739831060267292
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_path_rail_a_23
+      rect:
+        serializedVersion: 2
+        x: 540
+        y: 356
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6861b04e1c82e0600800000000000000
+      internalID: 436331027121247878
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_path_rail_a_24
+      rect:
+        serializedVersion: 2
+        x: 766
+        y: 354
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 03f7f353939625db0800000000000000
+      internalID: -4804662158023491792
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable: {}
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

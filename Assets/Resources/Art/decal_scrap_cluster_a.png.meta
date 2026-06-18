@@ -1,0 +1,1892 @@
+fileFormatVersion: 2
+guid: 24a72a4d10260b14ba02517efe014108
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3326481942253823967
+    second: decal_scrap_cluster_a_0
+  - first:
+      213: 4648352706692981099
+    second: decal_scrap_cluster_a_1
+  - first:
+      213: -2564801298248213268
+    second: decal_scrap_cluster_a_2
+  - first:
+      213: 8326922021815059974
+    second: decal_scrap_cluster_a_3
+  - first:
+      213: 3637408647926475040
+    second: decal_scrap_cluster_a_4
+  - first:
+      213: 2255365641089699504
+    second: decal_scrap_cluster_a_5
+  - first:
+      213: 3243576014842673104
+    second: decal_scrap_cluster_a_6
+  - first:
+      213: -516761653419836333
+    second: decal_scrap_cluster_a_7
+  - first:
+      213: -6591528020976937889
+    second: decal_scrap_cluster_a_8
+  - first:
+      213: -3704790179098191398
+    second: decal_scrap_cluster_a_9
+  - first:
+      213: -437234811687472176
+    second: decal_scrap_cluster_a_10
+  - first:
+      213: -338327428911320264
+    second: decal_scrap_cluster_a_11
+  - first:
+      213: -2124580476055296305
+    second: decal_scrap_cluster_a_12
+  - first:
+      213: 3287165810934536983
+    second: decal_scrap_cluster_a_13
+  - first:
+      213: 6623412487016432806
+    second: decal_scrap_cluster_a_14
+  - first:
+      213: -5236440954981577020
+    second: decal_scrap_cluster_a_15
+  - first:
+      213: 2030419192312341707
+    second: decal_scrap_cluster_a_16
+  - first:
+      213: -7738674873031190232
+    second: decal_scrap_cluster_a_17
+  - first:
+      213: -8005026479418198152
+    second: decal_scrap_cluster_a_18
+  - first:
+      213: 3352926664195489333
+    second: decal_scrap_cluster_a_19
+  - first:
+      213: -6341982976767112033
+    second: decal_scrap_cluster_a_20
+  - first:
+      213: 4031331673027894624
+    second: decal_scrap_cluster_a_21
+  - first:
+      213: -4821404000067337277
+    second: decal_scrap_cluster_a_22
+  - first:
+      213: -3861280359124894074
+    second: decal_scrap_cluster_a_23
+  - first:
+      213: -2778274141170696877
+    second: decal_scrap_cluster_a_24
+  - first:
+      213: 2081768397129939426
+    second: decal_scrap_cluster_a_25
+  - first:
+      213: 8075864248569867371
+    second: decal_scrap_cluster_a_26
+  - first:
+      213: 4872953941996448121
+    second: decal_scrap_cluster_a_27
+  - first:
+      213: 441825190983323740
+    second: decal_scrap_cluster_a_28
+  - first:
+      213: 7475106960806365785
+    second: decal_scrap_cluster_a_29
+  - first:
+      213: -3141737812557786618
+    second: decal_scrap_cluster_a_30
+  - first:
+      213: -350402333441657622
+    second: decal_scrap_cluster_a_31
+  - first:
+      213: 1161517372096799818
+    second: decal_scrap_cluster_a_32
+  - first:
+      213: -3445049255676901118
+    second: decal_scrap_cluster_a_33
+  - first:
+      213: -2003535746877944246
+    second: decal_scrap_cluster_a_34
+  - first:
+      213: -3497788041513063631
+    second: decal_scrap_cluster_a_35
+  - first:
+      213: -2738517863490219387
+    second: decal_scrap_cluster_a_36
+  - first:
+      213: -7727943159655777679
+    second: decal_scrap_cluster_a_37
+  - first:
+      213: -3531464031399603027
+    second: decal_scrap_cluster_a_38
+  - first:
+      213: -69193892480261129
+    second: decal_scrap_cluster_a_39
+  - first:
+      213: -8029858244571854527
+    second: decal_scrap_cluster_a_40
+  - first:
+      213: -6483200885356450544
+    second: decal_scrap_cluster_a_41
+  - first:
+      213: 2222535971305938337
+    second: decal_scrap_cluster_a_42
+  - first:
+      213: -2574417450047637307
+    second: decal_scrap_cluster_a_43
+  - first:
+      213: -1025999126409829984
+    second: decal_scrap_cluster_a_44
+  - first:
+      213: -1989191380196031218
+    second: decal_scrap_cluster_a_45
+  - first:
+      213: 2540223846161131813
+    second: decal_scrap_cluster_a_46
+  - first:
+      213: 7054817937077874364
+    second: decal_scrap_cluster_a_47
+  - first:
+      213: 3621051659490083279
+    second: decal_scrap_cluster_a_48
+  - first:
+      213: -3099544371545382577
+    second: decal_scrap_cluster_a_49
+  - first:
+      213: -4798590940971385807
+    second: decal_scrap_cluster_a_50
+  - first:
+      213: -3863272380322168749
+    second: decal_scrap_cluster_a_51
+  - first:
+      213: -5022241257482712290
+    second: decal_scrap_cluster_a_52
+  - first:
+      213: 6897411858796401729
+    second: decal_scrap_cluster_a_53
+  - first:
+      213: 863747833533261537
+    second: decal_scrap_cluster_a_54
+  - first:
+      213: -7103947123641996979
+    second: decal_scrap_cluster_a_55
+  - first:
+      213: 3350693934041542160
+    second: decal_scrap_cluster_a_56
+  - first:
+      213: -1347593820035223836
+    second: decal_scrap_cluster_a_57
+  - first:
+      213: -4771852068885472248
+    second: decal_scrap_cluster_a_58
+  - first:
+      213: -2584739290689184033
+    second: decal_scrap_cluster_a_59
+  - first:
+      213: -6386155219801469627
+    second: decal_scrap_cluster_a_60
+  - first:
+      213: -3596000217278485829
+    second: decal_scrap_cluster_a_61
+  - first:
+      213: -3750370455920438065
+    second: decal_scrap_cluster_a_62
+  - first:
+      213: -4142966480951115397
+    second: decal_scrap_cluster_a_63
+  - first:
+      213: -1308761989939407731
+    second: decal_scrap_cluster_a_64
+  - first:
+      213: 2025791792446669655
+    second: decal_scrap_cluster_a_65
+  - first:
+      213: -6290223314135946475
+    second: decal_scrap_cluster_a_66
+  - first:
+      213: 6388662854229364437
+    second: decal_scrap_cluster_a_67
+  - first:
+      213: -2752074816811811977
+    second: decal_scrap_cluster_a_68
+  - first:
+      213: 3714348791922677786
+    second: decal_scrap_cluster_a_69
+  - first:
+      213: -5973273823598762455
+    second: decal_scrap_cluster_a_70
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 1024
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_0
+      rect:
+        serializedVersion: 2
+        x: 488
+        y: 814
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 12895384c46f5d1d0800000000000000
+      internalID: -3326481942253823967
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_1
+      rect:
+        serializedVersion: 2
+        x: 526
+        y: 806
+        width: 21
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b612921a824428040800000000000000
+      internalID: 4648352706692981099
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_2
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 769
+        width: 18
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cec5472eecef76cd0800000000000000
+      internalID: -2564801298248213268
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_3
+      rect:
+        serializedVersion: 2
+        x: 550
+        y: 773
+        width: 17
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6060aaef57b2f8370800000000000000
+      internalID: 8326922021815059974
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_4
+      rect:
+        serializedVersion: 2
+        x: 581
+        y: 779
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 029679ab4ebaa7230800000000000000
+      internalID: 3637408647926475040
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_5
+      rect:
+        serializedVersion: 2
+        x: 739
+        y: 774
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0bec5c3e91bac4f10800000000000000
+      internalID: 2255365641089699504
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_6
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 735
+        width: 17
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d7bca6433f730d20800000000000000
+      internalID: 3243576014842673104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_7
+      rect:
+        serializedVersion: 2
+        x: 687
+        y: 735
+        width: 21
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 35cfd5e930814d8f0800000000000000
+      internalID: -516761653419836333
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_8
+      rect:
+        serializedVersion: 2
+        x: 703
+        y: 683
+        width: 48
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f54d2a630303684a0800000000000000
+      internalID: -6591528020976937889
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_9
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 709
+        width: 16
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad91f7ff5f0f59cc0800000000000000
+      internalID: -3704790179098191398
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_10
+      rect:
+        serializedVersion: 2
+        x: 680
+        y: 715
+        width: 16
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d3feed5141aee9f0800000000000000
+      internalID: -437234811687472176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_11
+      rect:
+        serializedVersion: 2
+        x: 358
+        y: 684
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 83338f5fef40e4bf0800000000000000
+      internalID: -338327428911320264
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_12
+      rect:
+        serializedVersion: 2
+        x: 475
+        y: 681
+        width: 19
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc66ef34059f382e0800000000000000
+      internalID: -2124580476055296305
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_13
+      rect:
+        serializedVersion: 2
+        x: 766
+        y: 674
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71bdf8e83eb5e9d20800000000000000
+      internalID: 3287165810934536983
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_14
+      rect:
+        serializedVersion: 2
+        x: 383
+        y: 656
+        width: 21
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a4408980961beb50800000000000000
+      internalID: 6623412487016432806
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_15
+      rect:
+        serializedVersion: 2
+        x: 421
+        y: 650
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ce040ff1bc6457b0800000000000000
+      internalID: -5236440954981577020
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_16
+      rect:
+        serializedVersion: 2
+        x: 485
+        y: 632
+        width: 47
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc4a9ee6f7f7d2c10800000000000000
+      internalID: 2030419192312341707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_17
+      rect:
+        serializedVersion: 2
+        x: 588
+        y: 642
+        width: 16
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8291cb84434ba9490800000000000000
+      internalID: -7738674873031190232
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_18
+      rect:
+        serializedVersion: 2
+        x: 310
+        y: 635
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 877bea454de68e090800000000000000
+      internalID: -8005026479418198152
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_19
+      rect:
+        serializedVersion: 2
+        x: 369
+        y: 572
+        width: 29
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 53ebe49590df78e20800000000000000
+      internalID: 3352926664195489333
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_20
+      rect:
+        serializedVersion: 2
+        x: 794
+        y: 636
+        width: 18
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9cc83a7510ccf7a0800000000000000
+      internalID: -6341982976767112033
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_21
+      rect:
+        serializedVersion: 2
+        x: 580
+        y: 603
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06ddb963cca22f730800000000000000
+      internalID: 4031331673027894624
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_22
+      rect:
+        serializedVersion: 2
+        x: 757
+        y: 582
+        width: 20
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c3c6595b9ee61db0800000000000000
+      internalID: -4821404000067337277
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_23
+      rect:
+        serializedVersion: 2
+        x: 188
+        y: 563
+        width: 19
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68efa28a8f9f96ac0800000000000000
+      internalID: -3861280359124894074
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_24
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 547
+        width: 52
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 35dfdd673669179d0800000000000000
+      internalID: -2778274141170696877
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_25
+      rect:
+        serializedVersion: 2
+        x: 419
+        y: 571
+        width: 35
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e97097d35de3ec10800000000000000
+      internalID: 2081768397129939426
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_26
+      rect:
+        serializedVersion: 2
+        x: 611
+        y: 575
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b6ca84e0fbb331070800000000000000
+      internalID: 8075864248569867371
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_27
+      rect:
+        serializedVersion: 2
+        x: 660
+        y: 563
+        width: 63
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 979a98fcac530a340800000000000000
+      internalID: 4872953941996448121
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_28
+      rect:
+        serializedVersion: 2
+        x: 741
+        y: 574
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5051699bada12600800000000000000
+      internalID: 441825190983323740
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_29
+      rect:
+        serializedVersion: 2
+        x: 546
+        y: 555
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95ac9e01d2aecb760800000000000000
+      internalID: 7475106960806365785
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_30
+      rect:
+        serializedVersion: 2
+        x: 589
+        y: 549
+        width: 62
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6029419ea1e4664d0800000000000000
+      internalID: -3141737812557786618
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_31
+      rect:
+        serializedVersion: 2
+        x: 741
+        y: 499
+        width: 56
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae4fdba2fee132bf0800000000000000
+      internalID: -350402333441657622
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_32
+      rect:
+        serializedVersion: 2
+        x: 354
+        y: 530
+        width: 17
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a44664c55e98e1010800000000000000
+      internalID: 1161517372096799818
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_33
+      rect:
+        serializedVersion: 2
+        x: 462
+        y: 532
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20987a164f9b030d0800000000000000
+      internalID: -3445049255676901118
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_34
+      rect:
+        serializedVersion: 2
+        x: 560
+        y: 524
+        width: 16
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4e0b887ad20234e0800000000000000
+      internalID: -2003535746877944246
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_35
+      rect:
+        serializedVersion: 2
+        x: 263
+        y: 492
+        width: 21
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 13b210eee4c557fc0800000000000000
+      internalID: -3497788041513063631
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_36
+      rect:
+        serializedVersion: 2
+        x: 494
+        y: 504
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5829a9f2384def9d0800000000000000
+      internalID: -2738517863490219387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_37
+      rect:
+        serializedVersion: 2
+        x: 526
+        y: 465
+        width: 68
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17abe4404a4d0c490800000000000000
+      internalID: -7727943159655777679
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_38
+      rect:
+        serializedVersion: 2
+        x: 734
+        y: 508
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da49b578c28bdfec0800000000000000
+      internalID: -3531464031399603027
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_39
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 478
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f3661a758c2a0ff0800000000000000
+      internalID: -69193892480261129
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_40
+      rect:
+        serializedVersion: 2
+        x: 468
+        y: 485
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1498d877876309090800000000000000
+      internalID: -8029858244571854527
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_41
+      rect:
+        serializedVersion: 2
+        x: 598
+        y: 493
+        width: 16
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01da4dce42b0706a0800000000000000
+      internalID: -6483200885356450544
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_42
+      rect:
+        serializedVersion: 2
+        x: 715
+        y: 478
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1add73eb0b808de10800000000000000
+      internalID: 2222535971305938337
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_43
+      rect:
+        serializedVersion: 2
+        x: 185
+        y: 460
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c8f75218f4d54cd0800000000000000
+      internalID: -2574417450047637307
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_44
+      rect:
+        serializedVersion: 2
+        x: 456
+        y: 454
+        width: 20
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a12b720b3be2c1f0800000000000000
+      internalID: -1025999126409829984
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_45
+      rect:
+        serializedVersion: 2
+        x: 628
+        y: 470
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e0585299af8f464e0800000000000000
+      internalID: -1989191380196031218
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_46
+      rect:
+        serializedVersion: 2
+        x: 664
+        y: 464
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 52929602120b04320800000000000000
+      internalID: 2540223846161131813
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_47
+      rect:
+        serializedVersion: 2
+        x: 734
+        y: 465
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cbea496298fb7e160800000000000000
+      internalID: 7054817937077874364
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_48
+      rect:
+        serializedVersion: 2
+        x: 246
+        y: 444
+        width: 20
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc1ce359c4f804230800000000000000
+      internalID: 3621051659490083279
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_49
+      rect:
+        serializedVersion: 2
+        x: 301
+        y: 416
+        width: 16
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f41e970f0d43cf4d0800000000000000
+      internalID: -3099544371545382577
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_50
+      rect:
+        serializedVersion: 2
+        x: 526
+        y: 382
+        width: 78
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 13c3ef496faf76db0800000000000000
+      internalID: -4798590940971385807
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_51
+      rect:
+        serializedVersion: 2
+        x: 685
+        y: 401
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 350c1541d36e26ac0800000000000000
+      internalID: -3863272380322168749
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_52
+      rect:
+        serializedVersion: 2
+        x: 695
+        y: 340
+        width: 71
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1b8e6f6f2a6d4ab0800000000000000
+      internalID: -5022241257482712290
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_53
+      rect:
+        serializedVersion: 2
+        x: 343
+        y: 325
+        width: 79
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1445021aa8788bf50800000000000000
+      internalID: 6897411858796401729
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_54
+      rect:
+        serializedVersion: 2
+        x: 434
+        y: 364
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e663490416acfb00800000000000000
+      internalID: 863747833533261537
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_55
+      rect:
+        serializedVersion: 2
+        x: 451
+        y: 363
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d492928bab5b96d90800000000000000
+      internalID: -7103947123641996979
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_56
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 288
+        width: 71
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01e2a99516e008e20800000000000000
+      internalID: 3350693934041542160
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_57
+      rect:
+        serializedVersion: 2
+        x: 488
+        y: 369
+        width: 25
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4eee94f7f826c4de0800000000000000
+      internalID: -1347593820035223836
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_58
+      rect:
+        serializedVersion: 2
+        x: 299
+        y: 307
+        width: 48
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80c5e5163d9f6cdb0800000000000000
+      internalID: -4771852068885472248
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_59
+      rect:
+        serializedVersion: 2
+        x: 421
+        y: 338
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fded9754f49212cd0800000000000000
+      internalID: -2584739290689184033
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_60
+      rect:
+        serializedVersion: 2
+        x: 548
+        y: 275
+        width: 33
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 54d0a33b9a1df57a0800000000000000
+      internalID: -6386155219801469627
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_61
+      rect:
+        serializedVersion: 2
+        x: 361
+        y: 316
+        width: 21
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bba63e4dad0781ec0800000000000000
+      internalID: -3596000217278485829
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_62
+      rect:
+        serializedVersion: 2
+        x: 726
+        y: 305
+        width: 17
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc41ebec0f104fbc0800000000000000
+      internalID: -3750370455920438065
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_63
+      rect:
+        serializedVersion: 2
+        x: 262
+        y: 301
+        width: 14
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b710f8a9fe93186c0800000000000000
+      internalID: -4142966480951115397
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_64
+      rect:
+        serializedVersion: 2
+        x: 473
+        y: 293
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d84d02e77e756dde0800000000000000
+      internalID: -1308761989939407731
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_65
+      rect:
+        serializedVersion: 2
+        x: 322
+        y: 256
+        width: 21
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7538fa1f6ee0d1c10800000000000000
+      internalID: 2025791792446669655
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_66
+      rect:
+        serializedVersion: 2
+        x: 620
+        y: 270
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 51beb0b0933a4b8a0800000000000000
+      internalID: -6290223314135946475
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_67
+      rect:
+        serializedVersion: 2
+        x: 728
+        y: 244
+        width: 17
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5de0310740719a850800000000000000
+      internalID: 6388662854229364437
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_68
+      rect:
+        serializedVersion: 2
+        x: 484
+        y: 204
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 77b32a4098aaec9d0800000000000000
+      internalID: -2752074816811811977
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_69
+      rect:
+        serializedVersion: 2
+        x: 609
+        y: 212
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a18d37afb840c8330800000000000000
+      internalID: 3714348791922677786
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_scrap_cluster_a_70
+      rect:
+        serializedVersion: 2
+        x: 570
+        y: 187
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 926a14eea1baa1da0800000000000000
+      internalID: -5973273823598762455
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable: {}
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,879 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace TD
+{
+    public enum TDTowerKind
+    {
+        RailLancer = 0,
+        CinderMortar = 1,
+        FrostCoil = 2,
+        ArcWelder = 3,
+        SiegeDrill = 4,
+        EmberFlak = 5,
+        ResonanceBeacon = 6,
+        GravSnare = 7
+    }
+
+    public enum TDTowerUpgradeBranch
+    {
+        Damage = 0,
+        Utility = 1
+    }
+
+    public sealed class TDTower : MonoBehaviour
+    {
+        private sealed class TowerState
+        {
+            public string displayName;
+            public int buildCost;
+            public float range;
+            public float shotsPerSecond;
+            public int damage;
+            public float projectileSpeed;
+            public float aoeRadius;
+            public int aoeMaxTargets;
+            public float aoeMinFalloff;
+            public float slowPct;
+            public float slowDuration;
+            public float heavyMultiplier;
+            public string spritePath;
+            public Color fallbackColor;
+            public string animationPrefix;
+            public int animationFrames;
+            public float animationFps;
+            public float visualScale;
+            public float visualYOffset;
+            public int sortingOrder;
+            public string baseSpritePath;
+            public Color baseTint;
+            public float baseScale;
+            public float baseYOffset;
+            public int baseSortingOrder;
+        }
+
+        private static readonly float[] UpgradeTierMultiplier = { 1f, 1.6f, 2.4f };
+        private static readonly float[] UpgradeDiminishing = { 1f, 0.9f, 0.8f };
+        private static readonly TDTowerKind[] BuildOrder =
+        {
+            TDTowerKind.RailLancer,
+            TDTowerKind.CinderMortar,
+            TDTowerKind.FrostCoil,
+            TDTowerKind.ArcWelder,
+            TDTowerKind.SiegeDrill,
+            TDTowerKind.EmberFlak,
+            TDTowerKind.ResonanceBeacon,
+            TDTowerKind.GravSnare
+        };
+
+        private readonly List<TDTowerUpgradeBranch> _upgradeHistory = new();
+        private TDGameManager _gameManager;
+        private TowerState _baseState;
+        private TowerState _activeState;
+        private Transform _visualRoot;
+        private Transform _baseRoot;
+        private Transform _shadowRoot;
+        private float _cooldown;
+
+        public TDTowerKind Kind { get; private set; }
+        public int Tier => _upgradeHistory.Count;
+        public bool CanUpgrade => Tier < 3;
+        public string DisplayName => _activeState?.displayName ?? Kind.ToString();
+
+        public static IReadOnlyList<TDTowerKind> GetBuildOrder()
+        {
+            return BuildOrder;
+        }
+
+        public static bool TryParseTowerId(string towerId, out TDTowerKind kind)
+        {
+            switch (towerId)
+            {
+                case "rail_lancer_tower":
+                    kind = TDTowerKind.RailLancer;
+                    return true;
+                case "cinder_mortar_tower":
+                    kind = TDTowerKind.CinderMortar;
+                    return true;
+                case "frost_coil_tower":
+                    kind = TDTowerKind.FrostCoil;
+                    return true;
+                case "arc_welder_tower":
+                    kind = TDTowerKind.ArcWelder;
+                    return true;
+                case "siege_drill_tower":
+                    kind = TDTowerKind.SiegeDrill;
+                    return true;
+                case "ember_flak_tower":
+                    kind = TDTowerKind.EmberFlak;
+                    return true;
+                case "resonance_beacon_tower":
+                    kind = TDTowerKind.ResonanceBeacon;
+                    return true;
+                case "grav_snare_tower":
+                    kind = TDTowerKind.GravSnare;
+                    return true;
+                default:
+                    kind = TDTowerKind.RailLancer;
+                    return false;
+            }
+        }
+
+        public static string GetTowerId(TDTowerKind kind)
+        {
+            return kind switch
+            {
+                TDTowerKind.RailLancer => "rail_lancer_tower",
+                TDTowerKind.CinderMortar => "cinder_mortar_tower",
+                TDTowerKind.FrostCoil => "frost_coil_tower",
+                TDTowerKind.ArcWelder => "arc_welder_tower",
+                TDTowerKind.SiegeDrill => "siege_drill_tower",
+                TDTowerKind.EmberFlak => "ember_flak_tower",
+                TDTowerKind.ResonanceBeacon => "resonance_beacon_tower",
+                TDTowerKind.GravSnare => "grav_snare_tower",
+                _ => "rail_lancer_tower"
+            };
+        }
+
+        public static string GetDisplayName(TDTowerKind kind)
+        {
+            return kind switch
+            {
+                TDTowerKind.RailLancer => "Rail Lancer",
+                TDTowerKind.CinderMortar => "Cinder Mortar",
+                TDTowerKind.FrostCoil => "Frost Coil",
+                TDTowerKind.ArcWelder => "Arc Welder",
+                TDTowerKind.SiegeDrill => "Siege Drill",
+                TDTowerKind.EmberFlak => "Ember Flak",
+                TDTowerKind.ResonanceBeacon => "Resonance Beacon",
+                TDTowerKind.GravSnare => "Grav Snare",
+                _ => kind.ToString()
+            };
+        }
+
+        public static int GetBuildCost(TDTowerKind kind)
+        {
+            return kind switch
+            {
+                TDTowerKind.RailLancer => 40,
+                TDTowerKind.CinderMortar => 55,
+                TDTowerKind.FrostCoil => 45,
+                TDTowerKind.ArcWelder => 62,
+                TDTowerKind.SiegeDrill => 68,
+                TDTowerKind.EmberFlak => 58,
+                TDTowerKind.ResonanceBeacon => 70,
+                TDTowerKind.GravSnare => 76,
+                _ => 40
+            };
+        }
+
+        public void Initialize(TDGameManager gameManager, TDTowerKind kind)
+        {
+            _gameManager = gameManager;
+            Kind = kind;
+            _baseState = CreateBaseState(kind);
+            RebuildActiveState();
+            RefreshVisual();
+        }
+
+        public int GetUpgradeCost(TDTowerUpgradeBranch branch)
+        {
+            if (!CanUpgrade)
+            {
+                return int.MaxValue;
+            }
+
+            var tierMultiplier = UpgradeTierMultiplier[Tier];
+            var branchFactor = branch == TDTowerUpgradeBranch.Utility ? 1.05f : 1f;
+            return Mathf.CeilToInt(_baseState.buildCost * tierMultiplier * branchFactor);
+        }
+
+        public bool ApplyUpgrade(TDTowerUpgradeBranch branch)
+        {
+            if (!CanUpgrade)
+            {
+                return false;
+            }
+
+            _upgradeHistory.Add(branch);
+            RebuildActiveState();
+            RefreshVisual();
+            return true;
+        }
+
+        private void Update()
+        {
+            if (_gameManager == null || _gameManager.IsGameOver)
+            {
+                return;
+            }
+
+            if (_cooldown > 0f)
+            {
+                _cooldown -= Time.deltaTime;
+                return;
+            }
+
+            var target = _gameManager.GetClosestEnemy(transform.position, _activeState.range);
+            if (target == null)
+            {
+                return;
+            }
+
+            FireAt(target);
+            var fireRateMultiplier = _gameManager.GetTowerFireRateMultiplier(Kind);
+            _cooldown = 1f / Mathf.Max(0.01f, _activeState.shotsPerSecond * fireRateMultiplier);
+        }
+
+        private void FireAt(TDEnemy target)
+        {
+            var resonanceDamageMultiplier = _gameManager != null ? _gameManager.GetTowerDamageMultiplier(Kind) : 1f;
+            var resonanceProjectileSpeed = _gameManager != null ? _gameManager.GetProjectileSpeedMultiplier(Kind) : 1f;
+            var resonanceAoeRadius = _gameManager != null ? _gameManager.GetAoeRadiusMultiplier(Kind) : 1f;
+            var resonanceSlowStrength = _gameManager != null ? _gameManager.GetSlowStrengthMultiplier(Kind) : 1f;
+            var resonanceSlowDurationBonus = _gameManager != null ? _gameManager.GetSlowDurationBonus(Kind) : 0f;
+            var damage = Mathf.RoundToInt(_activeState.damage * GetDamageMultiplier(target) * resonanceDamageMultiplier);
+
+            var shot = new GameObject("Projectile");
+            shot.transform.position = transform.position;
+            shot.transform.SetParent(_gameManager.transform, true);
+            shot.transform.localScale = Vector3.one * 1.05f;
+
+            var renderer = shot.AddComponent<SpriteRenderer>();
+            renderer.sortingOrder = 20;
+            renderer.sprite = TDArtLibrary.LoadSpriteOrFallback("Art/projectile_bolt", new Color(0.95f, 0.92f, 0.28f));
+
+            var projectile = shot.AddComponent<TDProjectile>();
+            projectile.Initialize(
+                _gameManager,
+                target,
+                Kind,
+                damage,
+                _activeState.projectileSpeed * resonanceProjectileSpeed,
+                _activeState.aoeRadius * resonanceAoeRadius,
+                _activeState.aoeMaxTargets,
+                _activeState.aoeMinFalloff,
+                _activeState.slowPct * resonanceSlowStrength,
+                _activeState.slowDuration + resonanceSlowDurationBonus);
+        }
+
+        private float GetDamageMultiplier(TDEnemy target)
+        {
+            var multiplier = 1f;
+
+            switch (Kind)
+            {
+                case TDTowerKind.RailLancer:
+                    if (target.HasTag("heavy"))
+                    {
+                        multiplier *= _activeState.heavyMultiplier;
+                    }
+                    break;
+                case TDTowerKind.SiegeDrill:
+                    if (target.HasTag("armored"))
+                    {
+                        multiplier *= _activeState.heavyMultiplier * 1.08f;
+                    }
+                    else if (target.HasTag("heavy"))
+                    {
+                        multiplier *= _activeState.heavyMultiplier;
+                    }
+                    break;
+                case TDTowerKind.EmberFlak:
+                    if (target.HasTag("fast") || target.HasTag("flank"))
+                    {
+                        multiplier *= 1.15f;
+                    }
+                    break;
+                case TDTowerKind.ArcWelder:
+                    if (target.HasTag("swarm"))
+                    {
+                        multiplier *= 1.12f;
+                    }
+                    break;
+            }
+
+            return multiplier;
+        }
+
+        private void RebuildActiveState()
+        {
+            _activeState = CloneState(_baseState);
+            for (var i = 0; i < _upgradeHistory.Count; i++)
+            {
+                var branch = _upgradeHistory[i];
+                var factor = UpgradeDiminishing[Mathf.Min(i, UpgradeDiminishing.Length - 1)];
+                if (branch == TDTowerUpgradeBranch.Damage)
+                {
+                    ApplyDamageBranch(_activeState, factor);
+                }
+                else
+                {
+                    ApplyUtilityBranch(_activeState, factor);
+                }
+            }
+        }
+
+        private void ApplyDamageBranch(TowerState state, float factor)
+        {
+            switch (Kind)
+            {
+                case TDTowerKind.RailLancer:
+                    state.damage = Mathf.RoundToInt(state.damage * (1f + (0.25f * factor)));
+                    state.heavyMultiplier += 0.10f * factor;
+                    break;
+                case TDTowerKind.CinderMortar:
+                    state.damage = Mathf.RoundToInt(state.damage * (1f + (0.20f * factor)));
+                    state.aoeMinFalloff = Mathf.Clamp01(state.aoeMinFalloff + (0.08f * factor));
+                    break;
+                case TDTowerKind.FrostCoil:
+                    state.damage = Mathf.RoundToInt(state.damage * (1f + (0.16f * factor)));
+                    state.shotsPerSecond *= 1f + (0.12f * factor);
+                    break;
+                case TDTowerKind.ArcWelder:
+                    state.damage = Mathf.RoundToInt(state.damage * (1f + (0.22f * factor)));
+                    state.aoeMaxTargets += Mathf.Max(1, Mathf.RoundToInt(1f * factor));
+                    break;
+                case TDTowerKind.SiegeDrill:
+                    state.damage = Mathf.RoundToInt(state.damage * (1f + (0.24f * factor)));
+                    state.heavyMultiplier += 0.12f * factor;
+                    break;
+                case TDTowerKind.EmberFlak:
+                    state.damage = Mathf.RoundToInt(state.damage * (1f + (0.18f * factor)));
+                    state.shotsPerSecond *= 1f + (0.16f * factor);
+                    break;
+                case TDTowerKind.ResonanceBeacon:
+                    state.damage = Mathf.RoundToInt(state.damage * (1f + (0.14f * factor)));
+                    state.shotsPerSecond *= 1f + (0.10f * factor);
+                    break;
+                case TDTowerKind.GravSnare:
+                    state.damage = Mathf.RoundToInt(state.damage * (1f + (0.15f * factor)));
+                    state.aoeMinFalloff = Mathf.Clamp01(state.aoeMinFalloff + (0.10f * factor));
+                    break;
+            }
+        }
+
+        private void ApplyUtilityBranch(TowerState state, float factor)
+        {
+            switch (Kind)
+            {
+                case TDTowerKind.RailLancer:
+                    state.range *= 1f + (0.12f * factor);
+                    state.projectileSpeed *= 1f + (0.08f * factor);
+                    break;
+                case TDTowerKind.CinderMortar:
+                    state.aoeRadius *= 1f + (0.15f * factor);
+                    state.aoeMaxTargets += Mathf.Max(1, Mathf.RoundToInt(1f * factor));
+                    break;
+                case TDTowerKind.FrostCoil:
+                    state.slowPct = Mathf.Clamp(state.slowPct + (0.08f * factor), 0f, 0.70f);
+                    state.slowDuration += 0.30f * factor;
+                    break;
+                case TDTowerKind.ArcWelder:
+                    state.range *= 1f + (0.10f * factor);
+                    state.aoeRadius *= 1f + (0.10f * factor);
+                    break;
+                case TDTowerKind.SiegeDrill:
+                    state.range *= 1f + (0.08f * factor);
+                    state.shotsPerSecond *= 1f + (0.10f * factor);
+                    break;
+                case TDTowerKind.EmberFlak:
+                    state.aoeRadius *= 1f + (0.12f * factor);
+                    state.projectileSpeed *= 1f + (0.12f * factor);
+                    break;
+                case TDTowerKind.ResonanceBeacon:
+                    state.range *= 1f + (0.14f * factor);
+                    state.slowPct = Mathf.Clamp(state.slowPct + (0.05f * factor), 0f, 0.45f);
+                    state.slowDuration += 0.22f * factor;
+                    break;
+                case TDTowerKind.GravSnare:
+                    state.aoeRadius *= 1f + (0.10f * factor);
+                    state.slowPct = Mathf.Clamp(state.slowPct + (0.10f * factor), 0f, 0.80f);
+                    state.slowDuration += 0.35f * factor;
+                    break;
+            }
+        }
+
+        private static TowerState CreateBaseState(TDTowerKind kind)
+        {
+            return kind switch
+            {
+                TDTowerKind.RailLancer => new TowerState
+                {
+                    displayName = "Rail Lancer",
+                    buildCost = 40,
+                    range = 3.0f,
+                    shotsPerSecond = 1.0f,
+                    damage = 18,
+                    projectileSpeed = 9f,
+                    aoeRadius = 0f,
+                    aoeMaxTargets = 1,
+                    aoeMinFalloff = 1f,
+                    slowPct = 0f,
+                    slowDuration = 0f,
+                    heavyMultiplier = 1.25f,
+                    spritePath = "Art/anim/tower_rail_lancer_00",
+                    fallbackColor = new Color(0.20f, 0.38f, 0.80f),
+                    animationPrefix = "Art/anim/tower_rail_lancer",
+                    animationFrames = 6,
+                    animationFps = 7f,
+                    visualScale = 0.94f,
+                    visualYOffset = -0.10f,
+                    sortingOrder = 12,
+                    baseSpritePath = string.Empty,
+                    baseTint = new Color(0.60f, 0.74f, 0.84f, 0.92f),
+                    baseScale = 0.96f,
+                    baseYOffset = -0.10f,
+                    baseSortingOrder = 9
+                },
+                TDTowerKind.CinderMortar => new TowerState
+                {
+                    displayName = "Cinder Mortar",
+                    buildCost = 55,
+                    range = 2.8f,
+                    shotsPerSecond = 0.55f,
+                    damage = 22,
+                    projectileSpeed = 7.2f,
+                    aoeRadius = 1.2f,
+                    aoeMaxTargets = 6,
+                    aoeMinFalloff = 0.45f,
+                    slowPct = 0f,
+                    slowDuration = 0f,
+                    heavyMultiplier = 1f,
+                    spritePath = "Art/anim/tower_cinder_mortar_00",
+                    fallbackColor = new Color(0.78f, 0.43f, 0.18f),
+                    animationPrefix = "Art/anim/tower_cinder_mortar",
+                    animationFrames = 6,
+                    animationFps = 6f,
+                    visualScale = 1.00f,
+                    visualYOffset = -0.09f,
+                    sortingOrder = 12,
+                    baseSpritePath = string.Empty,
+                    baseTint = new Color(0.82f, 0.64f, 0.50f, 0.92f),
+                    baseScale = 0.98f,
+                    baseYOffset = -0.09f,
+                    baseSortingOrder = 9
+                },
+                TDTowerKind.FrostCoil => new TowerState
+                {
+                    displayName = "Frost Coil",
+                    buildCost = 45,
+                    range = 2.6f,
+                    shotsPerSecond = 0.8f,
+                    damage = 8,
+                    projectileSpeed = 8.4f,
+                    aoeRadius = 0f,
+                    aoeMaxTargets = 1,
+                    aoeMinFalloff = 1f,
+                    slowPct = 0.30f,
+                    slowDuration = 1.5f,
+                    heavyMultiplier = 1f,
+                    spritePath = "Art/anim/tower_frost_coil_00",
+                    fallbackColor = new Color(0.38f, 0.78f, 0.94f),
+                    animationPrefix = "Art/anim/tower_frost_coil",
+                    animationFrames = 6,
+                    animationFps = 7.5f,
+                    visualScale = 0.90f,
+                    visualYOffset = -0.07f,
+                    sortingOrder = 12,
+                    baseSpritePath = string.Empty,
+                    baseTint = new Color(0.54f, 0.82f, 0.92f, 0.92f),
+                    baseScale = 0.92f,
+                    baseYOffset = -0.08f,
+                    baseSortingOrder = 9
+                },
+                TDTowerKind.ArcWelder => new TowerState
+                {
+                    displayName = "Arc Welder",
+                    buildCost = 62,
+                    range = 2.7f,
+                    shotsPerSecond = 0.85f,
+                    damage = 12,
+                    projectileSpeed = 8.7f,
+                    aoeRadius = 1.0f,
+                    aoeMaxTargets = 3,
+                    aoeMinFalloff = 0.55f,
+                    slowPct = 0f,
+                    slowDuration = 0f,
+                    heavyMultiplier = 1f,
+                    spritePath = "Art/anim/tower_arc_welder_00",
+                    fallbackColor = new Color(0.26f, 0.86f, 0.86f),
+                    animationPrefix = "Art/anim/tower_arc_welder",
+                    animationFrames = 6,
+                    animationFps = 8.5f,
+                    visualScale = 0.94f,
+                    visualYOffset = -0.09f,
+                    sortingOrder = 12,
+                    baseSpritePath = string.Empty,
+                    baseTint = new Color(0.49f, 0.84f, 0.88f, 0.92f),
+                    baseScale = 0.94f,
+                    baseYOffset = -0.08f,
+                    baseSortingOrder = 9
+                },
+                TDTowerKind.SiegeDrill => new TowerState
+                {
+                    displayName = "Siege Drill",
+                    buildCost = 68,
+                    range = 2.9f,
+                    shotsPerSecond = 0.72f,
+                    damage = 20,
+                    projectileSpeed = 7.8f,
+                    aoeRadius = 0f,
+                    aoeMaxTargets = 1,
+                    aoeMinFalloff = 1f,
+                    slowPct = 0f,
+                    slowDuration = 0f,
+                    heavyMultiplier = 1.30f,
+                    spritePath = "Art/anim/tower_siege_drill_00",
+                    fallbackColor = new Color(0.80f, 0.58f, 0.22f),
+                    animationPrefix = "Art/anim/tower_siege_drill",
+                    animationFrames = 6,
+                    animationFps = 6.6f,
+                    visualScale = 0.98f,
+                    visualYOffset = -0.08f,
+                    sortingOrder = 12,
+                    baseSpritePath = string.Empty,
+                    baseTint = new Color(0.84f, 0.72f, 0.48f, 0.92f),
+                    baseScale = 0.98f,
+                    baseYOffset = -0.08f,
+                    baseSortingOrder = 9
+                },
+                TDTowerKind.EmberFlak => new TowerState
+                {
+                    displayName = "Ember Flak",
+                    buildCost = 58,
+                    range = 2.55f,
+                    shotsPerSecond = 1.35f,
+                    damage = 10,
+                    projectileSpeed = 9.2f,
+                    aoeRadius = 0.7f,
+                    aoeMaxTargets = 3,
+                    aoeMinFalloff = 0.62f,
+                    slowPct = 0f,
+                    slowDuration = 0f,
+                    heavyMultiplier = 1f,
+                    spritePath = "Art/anim/tower_ember_flak_00",
+                    fallbackColor = new Color(0.95f, 0.51f, 0.26f),
+                    animationPrefix = "Art/anim/tower_ember_flak",
+                    animationFrames = 6,
+                    animationFps = 9f,
+                    visualScale = 0.92f,
+                    visualYOffset = -0.09f,
+                    sortingOrder = 12,
+                    baseSpritePath = string.Empty,
+                    baseTint = new Color(0.96f, 0.70f, 0.44f, 0.92f),
+                    baseScale = 0.94f,
+                    baseYOffset = -0.08f,
+                    baseSortingOrder = 9
+                },
+                TDTowerKind.ResonanceBeacon => new TowerState
+                {
+                    displayName = "Resonance Beacon",
+                    buildCost = 70,
+                    range = 3.1f,
+                    shotsPerSecond = 0.95f,
+                    damage = 9,
+                    projectileSpeed = 8.2f,
+                    aoeRadius = 0.65f,
+                    aoeMaxTargets = 2,
+                    aoeMinFalloff = 0.70f,
+                    slowPct = 0.16f,
+                    slowDuration = 1.1f,
+                    heavyMultiplier = 1f,
+                    spritePath = "Art/anim/tower_resonance_beacon_00",
+                    fallbackColor = new Color(0.52f, 0.86f, 0.56f),
+                    animationPrefix = "Art/anim/tower_resonance_beacon",
+                    animationFrames = 6,
+                    animationFps = 7.6f,
+                    visualScale = 0.96f,
+                    visualYOffset = -0.08f,
+                    sortingOrder = 12,
+                    baseSpritePath = string.Empty,
+                    baseTint = new Color(0.66f, 0.88f, 0.68f, 0.92f),
+                    baseScale = 0.96f,
+                    baseYOffset = -0.08f,
+                    baseSortingOrder = 9
+                },
+                TDTowerKind.GravSnare => new TowerState
+                {
+                    displayName = "Grav Snare",
+                    buildCost = 76,
+                    range = 2.85f,
+                    shotsPerSecond = 0.70f,
+                    damage = 9,
+                    projectileSpeed = 7.0f,
+                    aoeRadius = 1.1f,
+                    aoeMaxTargets = 5,
+                    aoeMinFalloff = 0.58f,
+                    slowPct = 0.24f,
+                    slowDuration = 2.2f,
+                    heavyMultiplier = 1f,
+                    spritePath = "Art/anim/tower_grav_snare_00",
+                    fallbackColor = new Color(0.46f, 0.58f, 0.96f),
+                    animationPrefix = "Art/anim/tower_grav_snare",
+                    animationFrames = 6,
+                    animationFps = 6.8f,
+                    visualScale = 0.98f,
+                    visualYOffset = -0.08f,
+                    sortingOrder = 12,
+                    baseSpritePath = string.Empty,
+                    baseTint = new Color(0.62f, 0.70f, 0.94f, 0.92f),
+                    baseScale = 0.98f,
+                    baseYOffset = -0.08f,
+                    baseSortingOrder = 9
+                },
+                _ => new TowerState()
+            };
+        }
+
+        private static TowerState CloneState(TowerState source)
+        {
+            return new TowerState
+            {
+                displayName = source.displayName,
+                buildCost = source.buildCost,
+                range = source.range,
+                shotsPerSecond = source.shotsPerSecond,
+                damage = source.damage,
+                projectileSpeed = source.projectileSpeed,
+                aoeRadius = source.aoeRadius,
+                aoeMaxTargets = source.aoeMaxTargets,
+                aoeMinFalloff = source.aoeMinFalloff,
+                slowPct = source.slowPct,
+                slowDuration = source.slowDuration,
+                heavyMultiplier = source.heavyMultiplier,
+                spritePath = source.spritePath,
+                fallbackColor = source.fallbackColor,
+                animationPrefix = source.animationPrefix,
+                animationFrames = source.animationFrames,
+                animationFps = source.animationFps,
+                visualScale = source.visualScale,
+                visualYOffset = source.visualYOffset,
+                sortingOrder = source.sortingOrder,
+                baseSpritePath = source.baseSpritePath,
+                baseTint = source.baseTint,
+                baseScale = source.baseScale,
+                baseYOffset = source.baseYOffset,
+                baseSortingOrder = source.baseSortingOrder
+            };
+        }
+
+        private void RefreshVisual()
+        {
+            ApplyBaseVisual();
+            ApplyGroundShadow();
+
+            var visualRoot = GetOrCreateVisualRoot();
+            visualRoot.localPosition = new Vector3(0f, _activeState.visualYOffset, 0f);
+
+            var renderer = visualRoot.GetComponent<SpriteRenderer>();
+            if (renderer == null)
+            {
+                renderer = visualRoot.gameObject.AddComponent<SpriteRenderer>();
+            }
+
+            ResolveVisualResourcePaths(out var spritePath, out var animationPrefix, out var animationFrames);
+            renderer.sortingOrder = _activeState.sortingOrder;
+            renderer.sprite = TDArtLibrary.LoadSpriteOrFallback(spritePath, _activeState.fallbackColor);
+            visualRoot.localScale = ResolveScaleToCellWidth(renderer.sprite, _activeState.visualScale, 1f);
+
+            var animator = visualRoot.GetComponent<TDSpriteAnimator>();
+            if (!string.IsNullOrWhiteSpace(animationPrefix) && animationFrames > 1)
+            {
+                if (animator == null)
+                {
+                    animator = visualRoot.gameObject.AddComponent<TDSpriteAnimator>();
+                }
+
+                animator.Configure(animationPrefix, animationFrames, _activeState.animationFps);
+            }
+            else if (animator != null)
+            {
+                animator.enabled = false;
+            }
+        }
+
+        private void ResolveVisualResourcePaths(out string spritePath, out string animationPrefix, out int animationFrames)
+        {
+            spritePath = _activeState.spritePath;
+            animationPrefix = _activeState.animationPrefix;
+            animationFrames = _activeState.animationFrames;
+
+            if (Tier < 3)
+            {
+                return;
+            }
+
+            var tier3Sprite = BuildTier3SpritePath(_activeState.spritePath);
+            if (!string.IsNullOrWhiteSpace(tier3Sprite) && Resources.Load<Sprite>(tier3Sprite) != null)
+            {
+                spritePath = tier3Sprite;
+            }
+
+            if (!string.IsNullOrWhiteSpace(_activeState.animationPrefix))
+            {
+                var tier3Prefix = _activeState.animationPrefix + "_t3";
+                if (Resources.Load<Sprite>($"{tier3Prefix}_00") != null)
+                {
+                    animationPrefix = tier3Prefix;
+                }
+            }
+        }
+
+        private static string BuildTier3SpritePath(string baseSpritePath)
+        {
+            if (string.IsNullOrWhiteSpace(baseSpritePath))
+            {
+                return baseSpritePath;
+            }
+
+            var split = baseSpritePath.LastIndexOf('_');
+            if (split <= 0 || split + 1 >= baseSpritePath.Length)
+            {
+                return baseSpritePath;
+            }
+
+            var frameSuffix = baseSpritePath.Substring(split + 1);
+            if (!int.TryParse(frameSuffix, out _))
+            {
+                return baseSpritePath;
+            }
+
+            return baseSpritePath.Insert(split, "_t3");
+        }
+
+        private void ApplyGroundShadow()
+        {
+            var shadowRenderer = GetOrCreateShadowRenderer();
+            if (shadowRenderer == null)
+            {
+                return;
+            }
+
+            var shadowSprite = TDArtLibrary.GetSoftShadowSprite();
+            shadowRenderer.enabled = shadowSprite != null;
+            if (!shadowRenderer.enabled)
+            {
+                return;
+            }
+
+            shadowRenderer.sprite = shadowSprite;
+            shadowRenderer.sortingOrder = Mathf.Max(0, _activeState.sortingOrder - 3);
+            shadowRenderer.color = new Color(0f, 0f, 0f, 0.32f);
+
+            var shadowCoverage = Mathf.Clamp(_activeState.visualScale * 0.86f, 0.50f, 1.05f);
+            _shadowRoot.localPosition = new Vector3(0f, -0.23f, 0f);
+            _shadowRoot.localScale = ResolveScaleToCellWidth(shadowSprite, shadowCoverage, shadowCoverage);
+        }
+
+        private void ApplyBaseVisual()
+        {
+            var baseRenderer = GetOrCreateBaseRenderer();
+            if (baseRenderer == null)
+            {
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(_activeState.baseSpritePath))
+            {
+                baseRenderer.enabled = false;
+                return;
+            }
+
+            var sprite = Resources.Load<Sprite>(_activeState.baseSpritePath);
+            if (sprite == null)
+            {
+                baseRenderer.enabled = false;
+                return;
+            }
+
+            baseRenderer.enabled = true;
+            baseRenderer.sprite = sprite;
+            baseRenderer.color = _activeState.baseTint;
+            baseRenderer.sortingOrder = _activeState.baseSortingOrder;
+
+            _baseRoot.localPosition = new Vector3(0f, _activeState.baseYOffset, 0f);
+            _baseRoot.localScale = ResolveScaleToCellWidth(sprite, _activeState.baseScale, 0.9f);
+        }
+
+        private Transform GetOrCreateVisualRoot()
+        {
+            if (_visualRoot != null)
+            {
+                return _visualRoot;
+            }
+
+            var child = transform.Find("Visual");
+            if (child == null)
+            {
+                var visualObject = new GameObject("Visual");
+                child = visualObject.transform;
+                child.SetParent(transform, false);
+            }
+
+            _visualRoot = child;
+            return _visualRoot;
+        }
+
+        private SpriteRenderer GetOrCreateBaseRenderer()
+        {
+            if (_baseRoot == null)
+            {
+                var baseChild = transform.Find("Base");
+                if (baseChild == null)
+                {
+                    var baseObject = new GameObject("Base");
+                    baseChild = baseObject.transform;
+                    baseChild.SetParent(transform, false);
+                }
+
+                _baseRoot = baseChild;
+            }
+
+            var renderer = _baseRoot.GetComponent<SpriteRenderer>();
+            if (renderer == null)
+            {
+                renderer = _baseRoot.gameObject.AddComponent<SpriteRenderer>();
+            }
+
+            return renderer;
+        }
+
+        private SpriteRenderer GetOrCreateShadowRenderer()
+        {
+            if (_shadowRoot == null)
+            {
+                var shadowChild = transform.Find("Shadow");
+                if (shadowChild == null)
+                {
+                    var shadowObject = new GameObject("Shadow");
+                    shadowChild = shadowObject.transform;
+                    shadowChild.SetParent(transform, false);
+                }
+
+                _shadowRoot = shadowChild;
+            }
+
+            var renderer = _shadowRoot.GetComponent<SpriteRenderer>();
+            if (renderer == null)
+            {
+                renderer = _shadowRoot.gameObject.AddComponent<SpriteRenderer>();
+            }
+
+            return renderer;
+        }
+
+        private Vector3 ResolveScaleToCellWidth(Sprite sprite, float targetCellCoverage, float fallbackScale)
+        {
+            if (sprite == null || _gameManager == null)
+            {
+                return Vector3.one * Mathf.Max(0.1f, fallbackScale);
+            }
+
+            var spriteWidth = Mathf.Max(0.0001f, sprite.bounds.size.x);
+            var cellSize = Mathf.Max(0.01f, _gameManager.CellWorldSize);
+            var targetWidth = Mathf.Max(0.1f, cellSize * Mathf.Clamp(targetCellCoverage, 0.1f, 2f));
+            return Vector3.one * (targetWidth / spriteWidth);
+        }
+    }
+}

@@ -1,0 +1,477 @@
+﻿{
+    "schemaVersion":  "campaign-schema-v1",
+    "campaignId":  "emberline_campaign_main_v1",
+    "displayName":  "Emberline Defense Campaign",
+    "totalLevels":  20,
+    "chapters":  [
+                     {
+                         "chapterId":  "chapter_a",
+                         "displayName":  "Chapter A",
+                         "startLevel":  1,
+                         "endLevel":  5,
+                         "themeTags":  [
+                                           "baseline",
+                                           "coverage"
+                                       ]
+                     },
+                     {
+                         "chapterId":  "chapter_b",
+                         "displayName":  "Chapter B",
+                         "startLevel":  6,
+                         "endLevel":  10,
+                         "themeTags":  [
+                                           "armor",
+                                           "economy"
+                                       ]
+                     },
+                     {
+                         "chapterId":  "chapter_c",
+                         "displayName":  "Chapter C",
+                         "startLevel":  11,
+                         "endLevel":  15,
+                         "themeTags":  [
+                                           "branching",
+                                           "counter"
+                                       ]
+                     },
+                     {
+                         "chapterId":  "chapter_d",
+                         "displayName":  "Chapter D",
+                         "startLevel":  16,
+                         "endLevel":  20,
+                         "themeTags":  [
+                                           "resonance",
+                                           "finale"
+                                       ]
+                     }
+                 ],
+    "maps":  [
+                 {
+                     "mapId":  "grayline_junction",
+                     "displayName":  "Grayline Junction",
+                     "sceneKey":  "sample_scene",
+                     "tacticalHook":  "Single-route onboarding with one anchor bend."
+                 },
+                 {
+                     "mapId":  "ashfall_depot",
+                     "displayName":  "Ashfall Depot",
+                     "sceneKey":  "sample_scene",
+                     "tacticalHook":  "Dual-route rail depot with merge timing checks."
+                 },
+                 {
+                     "mapId":  "split_switch_canyon",
+                     "displayName":  "Split Switch Canyon",
+                     "sceneKey":  "sample_scene",
+                     "tacticalHook":  "Tri-lane switchback with alternating split/cross pressure."
+                 },
+                 {
+                     "mapId":  "hollow_kiln_basin",
+                     "displayName":  "Hollow Kiln Basin",
+                     "sceneKey":  "sample_scene",
+                     "tacticalHook":  "Braided basin routes with short reaction windows."
+                 },
+                 {
+                     "mapId":  "last_ember_terminus",
+                     "displayName":  "Last Ember Terminus",
+                     "sceneKey":  "sample_scene",
+                     "tacticalHook":  "Final tri-route convergence and boss tempo test."
+                 }
+             ],
+    "levels":  [
+                   {
+                       "levelIndex":  1,
+                       "levelId":  "level_01",
+                       "chapterId":  "chapter_a",
+                       "mapId":  "grayline_junction",
+                       "waveSetId":  "grayline_junction_l01_v1",
+                       "goalTags":  [
+                                        "baseline_path_read",
+                                        "intro_reinforce_exam"
+                                    ],
+                       "newTowerUnlocks":  [
+                                               "rail_lancer_tower"
+                                           ],
+                       "newEnemyUnlocks":  [
+                                               "skitter_runner"
+                                           ],
+                       "recommendedPower":  1.0,
+                       "bossLevel":  false
+                   },
+                   {
+                       "levelIndex":  2,
+                       "levelId":  "level_02",
+                       "chapterId":  "chapter_a",
+                       "mapId":  "grayline_junction",
+                       "waveSetId":  "grayline_junction_l02_v1",
+                       "goalTags":  [
+                                        "baseline_path_read",
+                                        "intro_reinforce_exam"
+                                    ],
+                       "newTowerUnlocks":  [
+                                               "cinder_mortar_tower"
+                                           ],
+                       "newEnemyUnlocks":  [
+                                               "ash_swarm"
+                                           ],
+                       "recommendedPower":  1.18,
+                       "bossLevel":  false
+                   },
+                   {
+                       "levelIndex":  3,
+                       "levelId":  "level_03",
+                       "chapterId":  "chapter_a",
+                       "mapId":  "grayline_junction",
+                       "waveSetId":  "grayline_junction_l03_v1",
+                       "goalTags":  [
+                                        "baseline_path_read",
+                                        "intro_reinforce_exam"
+                                    ],
+                       "newTowerUnlocks":  [
+                                               "frost_coil_tower"
+                                           ],
+                       "newEnemyUnlocks":  [
+
+                                           ],
+                       "recommendedPower":  1.36,
+                       "bossLevel":  false
+                   },
+                   {
+                       "levelIndex":  4,
+                       "levelId":  "level_04",
+                       "chapterId":  "chapter_a",
+                       "mapId":  "grayline_junction",
+                       "waveSetId":  "grayline_junction_l04_v1",
+                       "goalTags":  [
+                                        "baseline_path_read",
+                                        "intro_reinforce_exam"
+                                    ],
+                       "newTowerUnlocks":  [
+
+                                           ],
+                       "newEnemyUnlocks":  [
+
+                                           ],
+                       "recommendedPower":  1.54,
+                       "bossLevel":  false
+                   },
+                   {
+                       "levelIndex":  5,
+                       "levelId":  "level_05",
+                       "chapterId":  "chapter_a",
+                       "mapId":  "ashfall_depot",
+                       "waveSetId":  "ashfall_depot_l05_v1",
+                       "goalTags":  [
+                                        "baseline_path_read",
+                                        "intro_reinforce_exam"
+                                    ],
+                       "newTowerUnlocks":  [
+
+                                           ],
+                       "newEnemyUnlocks":  [
+
+                                           ],
+                       "recommendedPower":  1.72,
+                       "bossLevel":  false
+                   },
+                   {
+                       "levelIndex":  6,
+                       "levelId":  "level_06",
+                       "chapterId":  "chapter_b",
+                       "mapId":  "ashfall_depot",
+                       "waveSetId":  "ashfall_depot_l06_v1",
+                       "goalTags":  [
+                                        "pressure_read",
+                                        "counter_check",
+                                        "tower_arc_welder_intro",
+                                        "arc_chain_exam"
+                                    ],
+                       "newTowerUnlocks":  [
+                                               "arc_welder_tower"
+                                           ],
+                       "newEnemyUnlocks":  [
+                                               "carapace_brute"
+                                           ],
+                       "recommendedPower":  1.9,
+                       "bossLevel":  false
+                   },
+                   {
+                       "levelIndex":  7,
+                       "levelId":  "level_07",
+                       "chapterId":  "chapter_b",
+                       "mapId":  "ashfall_depot",
+                       "waveSetId":  "ashfall_depot_l07_v1",
+                       "goalTags":  [
+                                        "pressure_read",
+                                        "counter_check",
+                                        "tower_siege_drill_intro",
+                                        "armor_break_uptime"
+                                    ],
+                       "newTowerUnlocks":  [
+                                               "siege_drill_tower"
+                                           ],
+                       "newEnemyUnlocks":  [
+                                               "plated_spore"
+                                           ],
+                       "recommendedPower":  2.08,
+                       "bossLevel":  false
+                   },
+                   {
+                       "levelIndex":  8,
+                       "levelId":  "level_08",
+                       "chapterId":  "chapter_b",
+                       "mapId":  "ashfall_depot",
+                       "waveSetId":  "ashfall_depot_l08_v1",
+                       "goalTags":  [
+                                        "pressure_read",
+                                        "counter_check"
+                                    ],
+                       "newTowerUnlocks":  [
+
+                                           ],
+                       "newEnemyUnlocks":  [
+                                               "burrow_sapper"
+                                           ],
+                       "recommendedPower":  2.26,
+                       "bossLevel":  false
+                   },
+                   {
+                       "levelIndex":  9,
+                       "levelId":  "level_09",
+                       "chapterId":  "chapter_b",
+                       "mapId":  "split_switch_canyon",
+                       "waveSetId":  "split_switch_canyon_l09_v1",
+                       "goalTags":  [
+                                        "pressure_read",
+                                        "counter_check"
+                                    ],
+                       "newTowerUnlocks":  [
+
+                                           ],
+                       "newEnemyUnlocks":  [
+                                               "ember_leech"
+                                           ],
+                       "recommendedPower":  2.44,
+                       "bossLevel":  false
+                   },
+                   {
+                       "levelIndex":  10,
+                       "levelId":  "level_10",
+                       "chapterId":  "chapter_b",
+                       "mapId":  "split_switch_canyon",
+                       "waveSetId":  "split_switch_canyon_l10_v1",
+                       "goalTags":  [
+                                        "pressure_read",
+                                        "counter_check"
+                                    ],
+                       "newTowerUnlocks":  [
+
+                                           ],
+                       "newEnemyUnlocks":  [
+                                               "spore_carrier"
+                                           ],
+                       "recommendedPower":  2.62,
+                       "bossLevel":  false
+                   },
+                   {
+                       "levelIndex":  11,
+                       "levelId":  "level_11",
+                       "chapterId":  "chapter_c",
+                       "mapId":  "split_switch_canyon",
+                       "waveSetId":  "split_switch_canyon_l11_v1",
+                       "goalTags":  [
+                                        "pressure_read",
+                                        "counter_check",
+                                        "tower_ember_flak_intro",
+                                        "anti_fast_intercept"
+                                    ],
+                       "newTowerUnlocks":  [
+                                               "ember_flak_tower"
+                                           ],
+                       "newEnemyUnlocks":  [
+                                               "rail_warden"
+                                           ],
+                       "recommendedPower":  2.8,
+                       "bossLevel":  false
+                   },
+                   {
+                       "levelIndex":  12,
+                       "levelId":  "level_12",
+                       "chapterId":  "chapter_c",
+                       "mapId":  "split_switch_canyon",
+                       "waveSetId":  "split_switch_canyon_l12_v1",
+                       "goalTags":  [
+                                        "pressure_read",
+                                        "counter_check",
+                                        "tower_resonance_beacon_intro",
+                                        "mark_focus_fire"
+                                    ],
+                       "newTowerUnlocks":  [
+                                               "resonance_beacon_tower"
+                                           ],
+                       "newEnemyUnlocks":  [
+
+                                           ],
+                       "recommendedPower":  2.98,
+                       "bossLevel":  false
+                   },
+                   {
+                       "levelIndex":  13,
+                       "levelId":  "level_13",
+                       "chapterId":  "chapter_c",
+                       "mapId":  "hollow_kiln_basin",
+                       "waveSetId":  "hollow_kiln_basin_l13_v1",
+                       "goalTags":  [
+                                        "pressure_read",
+                                        "counter_check"
+                                    ],
+                       "newTowerUnlocks":  [
+
+                                           ],
+                       "newEnemyUnlocks":  [
+                                               "cinder_glider"
+                                           ],
+                       "recommendedPower":  3.16,
+                       "bossLevel":  false
+                   },
+                   {
+                       "levelIndex":  14,
+                       "levelId":  "level_14",
+                       "chapterId":  "chapter_c",
+                       "mapId":  "hollow_kiln_basin",
+                       "waveSetId":  "hollow_kiln_basin_l14_v1",
+                       "goalTags":  [
+                                        "pressure_read",
+                                        "counter_check"
+                                    ],
+                       "newTowerUnlocks":  [
+
+                                           ],
+                       "newEnemyUnlocks":  [
+
+                                           ],
+                       "recommendedPower":  3.34,
+                       "bossLevel":  false
+                   },
+                   {
+                       "levelIndex":  15,
+                       "levelId":  "level_15",
+                       "chapterId":  "chapter_c",
+                       "mapId":  "hollow_kiln_basin",
+                       "waveSetId":  "hollow_kiln_basin_l15_v1",
+                       "goalTags":  [
+                                        "pressure_read",
+                                        "counter_check"
+                                    ],
+                       "newTowerUnlocks":  [
+
+                                           ],
+                       "newEnemyUnlocks":  [
+                                               "husk_titan"
+                                           ],
+                       "recommendedPower":  3.52,
+                       "bossLevel":  false
+                   },
+                   {
+                       "levelIndex":  16,
+                       "levelId":  "level_16",
+                       "chapterId":  "chapter_d",
+                       "mapId":  "hollow_kiln_basin",
+                       "waveSetId":  "hollow_kiln_basin_l16_v1",
+                       "goalTags":  [
+                                        "pressure_read",
+                                        "counter_check",
+                                        "tower_grav_snare_intro",
+                                        "zone_control_chain"
+                                    ],
+                       "newTowerUnlocks":  [
+                                               "grav_snare_tower"
+                                           ],
+                       "newEnemyUnlocks":  [
+
+                                           ],
+                       "recommendedPower":  3.7,
+                       "bossLevel":  false
+                   },
+                   {
+                       "levelIndex":  17,
+                       "levelId":  "level_17",
+                       "chapterId":  "chapter_d",
+                       "mapId":  "last_ember_terminus",
+                       "waveSetId":  "last_ember_terminus_l17_v1",
+                       "goalTags":  [
+                                        "pressure_read",
+                                        "counter_check"
+                                    ],
+                       "newTowerUnlocks":  [
+
+                                           ],
+                       "newEnemyUnlocks":  [
+                                               "echo_mimic"
+                                           ],
+                       "recommendedPower":  3.88,
+                       "bossLevel":  false
+                   },
+                   {
+                       "levelIndex":  18,
+                       "levelId":  "level_18",
+                       "chapterId":  "chapter_d",
+                       "mapId":  "last_ember_terminus",
+                       "waveSetId":  "last_ember_terminus_l18_v1",
+                       "goalTags":  [
+                                        "pressure_read",
+                                        "counter_check"
+                                    ],
+                       "newTowerUnlocks":  [
+
+                                           ],
+                       "newEnemyUnlocks":  [
+
+                                           ],
+                       "recommendedPower":  4.06,
+                       "bossLevel":  false
+                   },
+                   {
+                       "levelIndex":  19,
+                       "levelId":  "level_19",
+                       "chapterId":  "chapter_d",
+                       "mapId":  "last_ember_terminus",
+                       "waveSetId":  "last_ember_terminus_l19_v1",
+                       "goalTags":  [
+                                        "pressure_read",
+                                        "counter_check"
+                                    ],
+                       "newTowerUnlocks":  [
+
+                                           ],
+                       "newEnemyUnlocks":  [
+
+                                           ],
+                       "recommendedPower":  4.24,
+                       "bossLevel":  false
+                   },
+                   {
+                       "levelIndex":  20,
+                       "levelId":  "level_20",
+                       "chapterId":  "chapter_d",
+                       "mapId":  "last_ember_terminus",
+                       "waveSetId":  "last_ember_terminus_l20_v1",
+                       "goalTags":  [
+                                        "pressure_read",
+                                        "counter_check"
+                                    ],
+                       "newTowerUnlocks":  [
+
+                                           ],
+                       "newEnemyUnlocks":  [
+                                               "furnace_matriarch"
+                                           ],
+                       "recommendedPower":  4.42,
+                       "bossLevel":  true
+                   }
+               ],
+    "globalRules":  {
+                        "maxFailureReasonsShown":  3,
+                        "resonanceEnabledFromLevel":  16,
+                        "allowEarlyWaveDispatch":  false
+                    }
+}

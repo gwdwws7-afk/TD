@@ -1,0 +1,1015 @@
+﻿{
+    "schemaVersion": "wave-schema-v1",
+    "waveSetId": "ashfall_depot_l07_v1",
+    "mapId": "ashfall_depot",
+    "displayName": "Ashfall Depot L07 (chapter_b)",
+    "globalDefaults": {
+        "prepSeconds": 9.3,
+        "baseRewardGold": 21,
+        "spawnMinSpacing": 0.19,
+        "lineDamageDefault": 1,
+        "maxConcurrentEnemiesHint": 94
+    },
+    "enemyCatalog": [
+        {
+            "enemyId": "skitter_runner",
+            "displayName": "Skitter Runner",
+            "hp": 26,
+            "speed": 2.2,
+            "armorFlat": 0,
+            "rewardGold": 6,
+            "lineDamage": 1,
+            "threatCost": 1.0,
+            "tags": [
+                "fast",
+                "light"
+            ]
+        },
+        {
+            "enemyId": "carapace_brute",
+            "displayName": "Carapace Brute",
+            "hp": 120,
+            "speed": 0.8,
+            "armorFlat": 4,
+            "rewardGold": 14,
+            "lineDamage": 2,
+            "threatCost": 4.5,
+            "tags": [
+                "heavy",
+                "armored"
+            ]
+        },
+        {
+            "enemyId": "ash_swarm",
+            "displayName": "Ash Swarm",
+            "hp": 16,
+            "speed": 1.5,
+            "armorFlat": 0,
+            "rewardGold": 4,
+            "lineDamage": 1,
+            "threatCost": 0.8,
+            "tags": [
+                "swarm",
+                "light"
+            ]
+        },
+        {
+            "enemyId": "plated_spore",
+            "displayName": "Plated Spore",
+            "hp": 70,
+            "speed": 1.1,
+            "armorFlat": 8,
+            "rewardGold": 10,
+            "lineDamage": 2,
+            "threatCost": 3.2,
+            "tags": [
+                "armored",
+                "mid"
+            ]
+        }
+    ],
+    "waves": [
+        {
+            "waveIndex": 1,
+            "phase": "introduce",
+            "goalTag": "chapter_b_ashfall_depot_l07_w01_introduce",
+            "threatTags": [
+                "introduce",
+                "ashfall_depot"
+            ],
+            "prepSeconds": 9.3,
+            "rewardGold": 25,
+            "budgetTarget": 20.6,
+            "budgetTolerance": 1.1,
+            "hint": "[L07] W01: 识别新威胁并调整火力分工。",
+            "groups": [
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 11,
+                    "startDelay": 0.16,
+                    "spawnInterval": 0.25,
+                    "formation": "stream",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 12,
+                    "startDelay": 0.96,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "right"
+                }
+            ]
+        },
+        {
+            "waveIndex": 2,
+            "phase": "reinforce",
+            "goalTag": "chapter_b_ashfall_depot_l07_w02_reinforce",
+            "threatTags": [
+                "reinforce",
+                "ashfall_depot"
+            ],
+            "prepSeconds": 9.16,
+            "rewardGold": 27,
+            "budgetTarget": 23.2,
+            "budgetTolerance": 1.1,
+            "hint": "[L07] W02: 持续压制并补齐覆盖空洞。",
+            "groups": [
+                {
+                    "enemyId": "plated_spore",
+                    "count": 4,
+                    "startDelay": 0,
+                    "spawnInterval": 0.75,
+                    "formation": "burst",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 13,
+                    "startDelay": 1.36,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "left"
+                }
+            ]
+        },
+        {
+            "waveIndex": 3,
+            "phase": "exam",
+            "goalTag": "chapter_b_ashfall_depot_l07_w03_exam",
+            "threatTags": [
+                "exam",
+                "ashfall_depot"
+            ],
+            "prepSeconds": 9.42,
+            "rewardGold": 32,
+            "budgetTarget": 28,
+            "budgetTolerance": 1.1,
+            "hint": "[L07] W03: 综合考核：输出、控制、反制链稳定性。",
+            "groups": [
+                {
+                    "enemyId": "plated_spore",
+                    "count": 4,
+                    "startDelay": 0,
+                    "spawnInterval": 0.69,
+                    "formation": "burst",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 11,
+                    "startDelay": 1.08,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "plated_spore",
+                    "count": 2,
+                    "startDelay": 2.32,
+                    "spawnInterval": 0.69,
+                    "formation": "burst",
+                    "lane": "right"
+                }
+            ]
+        },
+        {
+            "waveIndex": 4,
+            "phase": "introduce",
+            "goalTag": "chapter_b_ashfall_depot_l07_w04_introduce",
+            "threatTags": [
+                "introduce",
+                "ashfall_depot"
+            ],
+            "prepSeconds": 8.88,
+            "rewardGold": 31,
+            "budgetTarget": 29.6,
+            "budgetTolerance": 1.1,
+            "hint": "[L07] W04: 识别新威胁并调整火力分工。",
+            "groups": [
+                {
+                    "enemyId": "plated_spore",
+                    "count": 5,
+                    "startDelay": 0.24,
+                    "spawnInterval": 0.79,
+                    "formation": "burst",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 17,
+                    "startDelay": 1.04,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "right"
+                }
+            ]
+        },
+        {
+            "waveIndex": 5,
+            "phase": "reinforce",
+            "goalTag": "chapter_b_ashfall_depot_l07_w05_reinforce",
+            "threatTags": [
+                "reinforce",
+                "ashfall_depot"
+            ],
+            "prepSeconds": 8.74,
+            "rewardGold": 33,
+            "budgetTarget": 32,
+            "budgetTolerance": 1.1,
+            "hint": "[L07] W05: 持续压制并补齐覆盖空洞。",
+            "groups": [
+                {
+                    "enemyId": "plated_spore",
+                    "count": 4,
+                    "startDelay": 0.08,
+                    "spawnInterval": 0.75,
+                    "formation": "burst",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 12,
+                    "startDelay": 1.44,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "plated_spore",
+                    "count": 3,
+                    "startDelay": 2.24,
+                    "spawnInterval": 0.75,
+                    "formation": "burst",
+                    "lane": "center"
+                }
+            ]
+        },
+        {
+            "waveIndex": 6,
+            "phase": "exam",
+            "goalTag": "chapter_b_ashfall_depot_l07_w06_exam",
+            "threatTags": [
+                "exam",
+                "ashfall_depot",
+                "split"
+            ],
+            "prepSeconds": 9,
+            "rewardGold": 38,
+            "budgetTarget": 38,
+            "budgetTolerance": 1.1,
+            "hint": "[L07] W06: 综合考核：输出、控制、反制链稳定性。",
+            "groups": [
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 13,
+                    "startDelay": 0,
+                    "spawnInterval": 0.22,
+                    "formation": "stream",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 12,
+                    "startDelay": 1.16,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "carapace_brute",
+                    "count": 2,
+                    "startDelay": 2.4,
+                    "spawnInterval": 0.69,
+                    "formation": "burst",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "plated_spore",
+                    "count": 2,
+                    "startDelay": 3.08,
+                    "spawnInterval": 0.69,
+                    "formation": "burst",
+                    "lane": "left"
+                }
+            ]
+        },
+        {
+            "waveIndex": 7,
+            "phase": "introduce",
+            "goalTag": "chapter_b_ashfall_depot_l07_w07_introduce",
+            "threatTags": [
+                "introduce",
+                "ashfall_depot",
+                "split",
+                "armored"
+            ],
+            "prepSeconds": 8.46,
+            "rewardGold": 37,
+            "budgetTarget": 38.4,
+            "budgetTolerance": 1.07,
+            "hint": "[L07] W07: 识别新威胁并调整火力分工。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 21,
+                    "startDelay": 0,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 12,
+                    "startDelay": 1.12,
+                    "spawnInterval": 0.25,
+                    "formation": "split_lane",
+                    "lane": "split_lane"
+                },
+                {
+                    "enemyId": "plated_spore",
+                    "count": 3,
+                    "startDelay": 2.48,
+                    "spawnInterval": 0.79,
+                    "formation": "burst",
+                    "lane": "left"
+                }
+            ]
+        },
+        {
+            "waveIndex": 8,
+            "phase": "reinforce",
+            "goalTag": "chapter_b_ashfall_depot_l07_w08_reinforce",
+            "threatTags": [
+                "reinforce",
+                "ashfall_depot",
+                "split",
+                "armored"
+            ],
+            "prepSeconds": 8.32,
+            "rewardGold": 39,
+            "budgetTarget": 42.2,
+            "budgetTolerance": 1.07,
+            "hint": "[L07] W08: 持续压制并补齐覆盖空洞。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 17,
+                    "startDelay": 0.16,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 10,
+                    "startDelay": 0.96,
+                    "spawnInterval": 0.24,
+                    "formation": "stream",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "carapace_brute",
+                    "count": 2,
+                    "startDelay": 2.32,
+                    "spawnInterval": 0.75,
+                    "formation": "burst",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 12,
+                    "startDelay": 3.68,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "right"
+                }
+            ]
+        },
+        {
+            "waveIndex": 9,
+            "phase": "exam",
+            "goalTag": "chapter_b_ashfall_depot_l07_w09_exam",
+            "threatTags": [
+                "exam",
+                "ashfall_depot",
+                "split",
+                "armored",
+                "flank"
+            ],
+            "prepSeconds": 8.58,
+            "rewardGold": 44,
+            "budgetTarget": 51.1,
+            "budgetTolerance": 1.07,
+            "hint": "[L07] W09: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 20,
+                    "startDelay": 0,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 12,
+                    "startDelay": 1.24,
+                    "spawnInterval": 0.21,
+                    "formation": "cross_lane",
+                    "lane": "cross_lane"
+                },
+                {
+                    "enemyId": "plated_spore",
+                    "count": 3,
+                    "startDelay": 1.92,
+                    "spawnInterval": 0.69,
+                    "formation": "burst",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "carapace_brute",
+                    "count": 3,
+                    "startDelay": 3.16,
+                    "spawnInterval": 0.69,
+                    "formation": "burst",
+                    "lane": "left"
+                }
+            ]
+        },
+        {
+            "waveIndex": 10,
+            "phase": "introduce",
+            "goalTag": "chapter_b_ashfall_depot_l07_w10_introduce",
+            "threatTags": [
+                "introduce",
+                "ashfall_depot",
+                "split",
+                "armored",
+                "flank"
+            ],
+            "prepSeconds": 8.54,
+            "rewardGold": 47,
+            "budgetTarget": 52,
+            "budgetTolerance": 1.07,
+            "hint": "[L07] W10: 识别新威胁并调整火力分工。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "plated_spore",
+                    "count": 7,
+                    "startDelay": 0,
+                    "spawnInterval": 0.79,
+                    "formation": "burst",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 16,
+                    "startDelay": 1.2,
+                    "spawnInterval": 0.25,
+                    "formation": "split_lane",
+                    "lane": "split_lane"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 17,
+                    "startDelay": 2.56,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "left"
+                }
+            ]
+        },
+        {
+            "waveIndex": 11,
+            "phase": "reinforce",
+            "goalTag": "chapter_b_ashfall_depot_l07_w11_reinforce",
+            "threatTags": [
+                "reinforce",
+                "ashfall_depot",
+                "split",
+                "armored",
+                "flank"
+            ],
+            "prepSeconds": 7.9,
+            "rewardGold": 45,
+            "budgetTarget": 51.2,
+            "budgetTolerance": 1.07,
+            "hint": "[L07] W11: 持续压制并补齐覆盖空洞。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "plated_spore",
+                    "count": 5,
+                    "startDelay": 0.24,
+                    "spawnInterval": 0.75,
+                    "formation": "burst",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 12,
+                    "startDelay": 1.04,
+                    "spawnInterval": 0.24,
+                    "formation": "stream",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 14,
+                    "startDelay": 2.4,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 12,
+                    "startDelay": 3.76,
+                    "spawnInterval": 0.24,
+                    "formation": "split_lane",
+                    "lane": "split_lane"
+                }
+            ]
+        },
+        {
+            "waveIndex": 12,
+            "phase": "exam",
+            "goalTag": "chapter_b_ashfall_depot_l07_w12_exam",
+            "threatTags": [
+                "exam",
+                "ashfall_depot",
+                "split",
+                "armored",
+                "flank"
+            ],
+            "prepSeconds": 8.16,
+            "rewardGold": 50,
+            "budgetTarget": 60,
+            "budgetTolerance": 1.07,
+            "hint": "[L07] W12: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "carapace_brute",
+                    "count": 4,
+                    "startDelay": 0.08,
+                    "spawnInterval": 0.69,
+                    "formation": "stagger",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 14,
+                    "startDelay": 1.32,
+                    "spawnInterval": 0.21,
+                    "formation": "cross_lane",
+                    "lane": "cross_lane"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 17,
+                    "startDelay": 2,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 18,
+                    "startDelay": 3.24,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "left"
+                }
+            ]
+        },
+        {
+            "waveIndex": 13,
+            "phase": "introduce",
+            "goalTag": "chapter_b_ashfall_depot_l07_w13_introduce",
+            "threatTags": [
+                "introduce",
+                "ashfall_depot",
+                "split",
+                "armored",
+                "flank",
+                "high_pressure"
+            ],
+            "prepSeconds": 7.62,
+            "rewardGold": 49,
+            "budgetTarget": 58.2,
+            "budgetTolerance": 1.05,
+            "hint": "[L07] W13: 识别新威胁并调整火力分工。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "plated_spore",
+                    "count": 8,
+                    "startDelay": 0,
+                    "spawnInterval": 0.79,
+                    "formation": "stagger",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 22,
+                    "startDelay": 1.28,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 15,
+                    "startDelay": 2.64,
+                    "spawnInterval": 0.25,
+                    "formation": "stream",
+                    "lane": "left"
+                }
+            ]
+        },
+        {
+            "waveIndex": 14,
+            "phase": "reinforce",
+            "goalTag": "chapter_b_ashfall_depot_l07_w14_reinforce",
+            "threatTags": [
+                "reinforce",
+                "ashfall_depot",
+                "split",
+                "armored",
+                "flank",
+                "high_pressure"
+            ],
+            "prepSeconds": 7.48,
+            "rewardGold": 51,
+            "budgetTarget": 61.4,
+            "budgetTolerance": 1.05,
+            "hint": "[L07] W14: 持续压制并补齐覆盖空洞。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "carapace_brute",
+                    "count": 4,
+                    "startDelay": 0,
+                    "spawnInterval": 0.75,
+                    "formation": "stagger",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 18,
+                    "startDelay": 1.12,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 13,
+                    "startDelay": 2.48,
+                    "spawnInterval": 0.23,
+                    "formation": "cross_lane",
+                    "lane": "cross_lane"
+                },
+                {
+                    "enemyId": "plated_spore",
+                    "count": 5,
+                    "startDelay": 3.84,
+                    "spawnInterval": 0.75,
+                    "formation": "stagger",
+                    "lane": "right"
+                }
+            ]
+        },
+        {
+            "waveIndex": 15,
+            "phase": "exam",
+            "goalTag": "chapter_b_ashfall_depot_l07_w15_exam",
+            "threatTags": [
+                "exam",
+                "ashfall_depot",
+                "split",
+                "armored",
+                "flank",
+                "high_pressure",
+                "exam_peak"
+            ],
+            "prepSeconds": 7.74,
+            "rewardGold": 56,
+            "budgetTarget": 76,
+            "budgetTolerance": 1.05,
+            "hint": "[L07] W15: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "plated_spore",
+                    "count": 8,
+                    "startDelay": 0.16,
+                    "spawnInterval": 0.69,
+                    "formation": "stagger",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 23,
+                    "startDelay": 0.84,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 17,
+                    "startDelay": 2.08,
+                    "spawnInterval": 0.22,
+                    "formation": "split_lane",
+                    "lane": "split_lane"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 15,
+                    "startDelay": 3.32,
+                    "spawnInterval": 0.22,
+                    "formation": "stream",
+                    "lane": "left"
+                }
+            ]
+        },
+        {
+            "waveIndex": 16,
+            "phase": "introduce",
+            "goalTag": "chapter_b_ashfall_depot_l07_w16_introduce",
+            "threatTags": [
+                "introduce",
+                "ashfall_depot",
+                "split",
+                "armored",
+                "flank",
+                "high_pressure"
+            ],
+            "prepSeconds": 7.2,
+            "rewardGold": 55,
+            "budgetTarget": 67,
+            "budgetTolerance": 1.05,
+            "hint": "[L07] W16: 识别新威胁并调整火力分工。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "carapace_brute",
+                    "count": 6,
+                    "startDelay": 0,
+                    "spawnInterval": 0.71,
+                    "formation": "stagger",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 25,
+                    "startDelay": 1.36,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 20,
+                    "startDelay": 2.16,
+                    "spawnInterval": 0.23,
+                    "formation": "stream",
+                    "lane": "left"
+                }
+            ]
+        },
+        {
+            "waveIndex": 17,
+            "phase": "reinforce",
+            "goalTag": "chapter_b_ashfall_depot_l07_w17_reinforce",
+            "threatTags": [
+                "reinforce",
+                "ashfall_depot",
+                "split",
+                "armored",
+                "flank",
+                "high_pressure",
+                "endgame"
+            ],
+            "prepSeconds": 7.06,
+            "rewardGold": 57,
+            "budgetTarget": 69.7,
+            "budgetTolerance": 1.04,
+            "hint": "[L07] W17: 持续压制并补齐覆盖空洞。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "plated_spore",
+                    "count": 6,
+                    "startDelay": 0,
+                    "spawnInterval": 0.68,
+                    "formation": "stagger",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 18,
+                    "startDelay": 1.12,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 13,
+                    "startDelay": 2.4,
+                    "spawnInterval": 0.21,
+                    "formation": "cross_lane",
+                    "lane": "cross_lane"
+                },
+                {
+                    "enemyId": "carapace_brute",
+                    "count": 3,
+                    "startDelay": 3.12,
+                    "spawnInterval": 0.68,
+                    "formation": "stagger",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "plated_spore",
+                    "count": 3,
+                    "startDelay": 4.4,
+                    "spawnInterval": 0.68,
+                    "formation": "stagger",
+                    "lane": "left"
+                }
+            ]
+        },
+        {
+            "waveIndex": 18,
+            "phase": "exam",
+            "goalTag": "chapter_b_ashfall_depot_l07_w18_exam",
+            "threatTags": [
+                "exam",
+                "ashfall_depot",
+                "split",
+                "armored",
+                "flank",
+                "high_pressure",
+                "endgame"
+            ],
+            "prepSeconds": 7.32,
+            "rewardGold": 62,
+            "budgetTarget": 83,
+            "budgetTolerance": 1.04,
+            "hint": "[L07] W18: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "carapace_brute",
+                    "count": 5,
+                    "startDelay": 0.24,
+                    "spawnInterval": 0.62,
+                    "formation": "stagger",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 20,
+                    "startDelay": 0.84,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 15,
+                    "startDelay": 2,
+                    "spawnInterval": 0.2,
+                    "formation": "split_lane",
+                    "lane": "split_lane"
+                },
+                {
+                    "enemyId": "plated_spore",
+                    "count": 5,
+                    "startDelay": 3.16,
+                    "spawnInterval": 0.62,
+                    "formation": "stagger",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "carapace_brute",
+                    "count": 3,
+                    "startDelay": 3.76,
+                    "spawnInterval": 0.62,
+                    "formation": "stagger",
+                    "lane": "center"
+                }
+            ]
+        },
+        {
+            "waveIndex": 19,
+            "phase": "introduce",
+            "goalTag": "chapter_b_ashfall_depot_l07_w19_introduce",
+            "threatTags": [
+                "introduce",
+                "ashfall_depot",
+                "split",
+                "armored",
+                "flank",
+                "high_pressure",
+                "endgame"
+            ],
+            "prepSeconds": 6.78,
+            "rewardGold": 61,
+            "budgetTarget": 77,
+            "budgetTolerance": 1.04,
+            "hint": "[L07] W19: 识别新威胁并调整火力分工。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "plated_spore",
+                    "count": 8,
+                    "startDelay": 0.08,
+                    "spawnInterval": 0.71,
+                    "formation": "stagger",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 23,
+                    "startDelay": 1.36,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 17,
+                    "startDelay": 2.08,
+                    "spawnInterval": 0.23,
+                    "formation": "stream",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 16,
+                    "startDelay": 3.36,
+                    "spawnInterval": 0.22,
+                    "formation": "cross_lane",
+                    "lane": "cross_lane"
+                }
+            ]
+        },
+        {
+            "waveIndex": 20,
+            "phase": "reinforce",
+            "goalTag": "chapter_b_ashfall_depot_l07_w20_reinforce",
+            "threatTags": [
+                "reinforce",
+                "ashfall_depot",
+                "split",
+                "armored",
+                "flank",
+                "high_pressure",
+                "endgame"
+            ],
+            "prepSeconds": 7.14,
+            "rewardGold": 67,
+            "budgetTarget": 88.3,
+            "budgetTolerance": 1.04,
+            "hint": "[L07] W20: 持续压制并补齐覆盖空洞。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "carapace_brute",
+                    "count": 5,
+                    "startDelay": 0,
+                    "spawnInterval": 0.68,
+                    "formation": "stagger",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 22,
+                    "startDelay": 1.2,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 15,
+                    "startDelay": 2.48,
+                    "spawnInterval": 0.21,
+                    "formation": "cross_lane",
+                    "lane": "cross_lane"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 19,
+                    "startDelay": 3.2,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "carapace_brute",
+                    "count": 4,
+                    "startDelay": 4.48,
+                    "spawnInterval": 0.68,
+                    "formation": "stagger",
+                    "lane": "left"
+                }
+            ]
+        }
+    ]
+}

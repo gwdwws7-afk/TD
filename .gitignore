@@ -1,0 +1,47 @@
+# Unity generated folders
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+
+# Local generated outputs
+output/
+tmp/
+__pycache__/
+*.py[cod]
+
+# Unity editor recovery snapshots
+Assets/_Recovery/
+Assets/_Recovery.meta
+
+# Unity/IDE transient files
+*.csproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vs/
+.vscode/
+
+# Crash and profiler captures
+sysinfo.txt
+*.stackdump
+*.mem

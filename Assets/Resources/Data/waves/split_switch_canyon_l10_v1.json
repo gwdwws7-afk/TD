@@ -1,0 +1,1015 @@
+﻿{
+    "schemaVersion": "wave-schema-v1",
+    "waveSetId": "split_switch_canyon_l10_v1",
+    "mapId": "split_switch_canyon",
+    "displayName": "Split Switch Canyon L10 (chapter_b)",
+    "globalDefaults": {
+        "prepSeconds": 8.75,
+        "baseRewardGold": 22,
+        "spawnMinSpacing": 0.17,
+        "lineDamageDefault": 1,
+        "maxConcurrentEnemiesHint": 100
+    },
+    "enemyCatalog": [
+        {
+            "enemyId": "skitter_runner",
+            "displayName": "Skitter Runner",
+            "hp": 26,
+            "speed": 2.2,
+            "armorFlat": 0,
+            "rewardGold": 6,
+            "lineDamage": 1,
+            "threatCost": 1.0,
+            "tags": [
+                "fast",
+                "light"
+            ]
+        },
+        {
+            "enemyId": "carapace_brute",
+            "displayName": "Carapace Brute",
+            "hp": 120,
+            "speed": 0.8,
+            "armorFlat": 4,
+            "rewardGold": 14,
+            "lineDamage": 2,
+            "threatCost": 4.5,
+            "tags": [
+                "heavy",
+                "armored"
+            ]
+        },
+        {
+            "enemyId": "ash_swarm",
+            "displayName": "Ash Swarm",
+            "hp": 16,
+            "speed": 1.5,
+            "armorFlat": 0,
+            "rewardGold": 4,
+            "lineDamage": 1,
+            "threatCost": 0.8,
+            "tags": [
+                "swarm",
+                "light"
+            ]
+        },
+        {
+            "enemyId": "plated_spore",
+            "displayName": "Plated Spore",
+            "hp": 70,
+            "speed": 1.1,
+            "armorFlat": 8,
+            "rewardGold": 10,
+            "lineDamage": 2,
+            "threatCost": 3.2,
+            "tags": [
+                "armored",
+                "mid"
+            ]
+        }
+    ],
+    "waves": [
+        {
+            "waveIndex": 1,
+            "phase": "introduce",
+            "goalTag": "chapter_b_split_switch_canyon_l10_w01_introduce",
+            "threatTags": [
+                "introduce",
+                "split_switch_canyon"
+            ],
+            "prepSeconds": 8.75,
+            "rewardGold": 28,
+            "budgetTarget": 25.2,
+            "budgetTolerance": 1.1,
+            "hint": "[L10] W01: 识别新威胁并调整火力分工。",
+            "groups": [
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 14,
+                    "startDelay": 0,
+                    "spawnInterval": 0.25,
+                    "formation": "stream",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 14,
+                    "startDelay": 1.2,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "right"
+                }
+            ]
+        },
+        {
+            "waveIndex": 2,
+            "phase": "reinforce",
+            "goalTag": "chapter_b_split_switch_canyon_l10_w02_reinforce",
+            "threatTags": [
+                "reinforce",
+                "split_switch_canyon"
+            ],
+            "prepSeconds": 8.61,
+            "rewardGold": 30,
+            "budgetTarget": 28.8,
+            "budgetTolerance": 1.1,
+            "hint": "[L10] W02: 持续压制并补齐覆盖空洞。",
+            "groups": [
+                {
+                    "enemyId": "spore_carrier",
+                    "count": 5,
+                    "startDelay": 0.24,
+                    "spawnInterval": 0.19,
+                    "formation": "pack",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "spore_carrier",
+                    "count": 4,
+                    "startDelay": 1.04,
+                    "spawnInterval": 0.19,
+                    "formation": "pack",
+                    "lane": "left"
+                }
+            ]
+        },
+        {
+            "waveIndex": 3,
+            "phase": "exam",
+            "goalTag": "chapter_b_split_switch_canyon_l10_w03_exam",
+            "threatTags": [
+                "exam",
+                "split_switch_canyon"
+            ],
+            "prepSeconds": 8.87,
+            "rewardGold": 35,
+            "budgetTarget": 35.4,
+            "budgetTolerance": 1.1,
+            "hint": "[L10] W03: 综合考核：输出、控制、反制链稳定性。",
+            "groups": [
+                {
+                    "enemyId": "spore_carrier",
+                    "count": 5,
+                    "startDelay": 0.08,
+                    "spawnInterval": 0.18,
+                    "formation": "pack",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 13,
+                    "startDelay": 1.32,
+                    "spawnInterval": 0.18,
+                    "formation": "pack",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "carapace_brute",
+                    "count": 2,
+                    "startDelay": 2,
+                    "spawnInterval": 0.69,
+                    "formation": "burst",
+                    "lane": "right"
+                }
+            ]
+        },
+        {
+            "waveIndex": 4,
+            "phase": "introduce",
+            "goalTag": "chapter_b_split_switch_canyon_l10_w04_introduce",
+            "threatTags": [
+                "introduce",
+                "split_switch_canyon"
+            ],
+            "prepSeconds": 8.33,
+            "rewardGold": 34,
+            "budgetTarget": 35.2,
+            "budgetTolerance": 1.1,
+            "hint": "[L10] W04: 识别新威胁并调整火力分工。",
+            "groups": [
+                {
+                    "enemyId": "spore_carrier",
+                    "count": 6,
+                    "startDelay": 0,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "spore_carrier",
+                    "count": 5,
+                    "startDelay": 1.28,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "right"
+                }
+            ]
+        },
+        {
+            "waveIndex": 5,
+            "phase": "reinforce",
+            "goalTag": "chapter_b_split_switch_canyon_l10_w05_reinforce",
+            "threatTags": [
+                "reinforce",
+                "split_switch_canyon"
+            ],
+            "prepSeconds": 8.19,
+            "rewardGold": 36,
+            "budgetTarget": 41.5,
+            "budgetTolerance": 1.1,
+            "hint": "[L10] W05: 持续压制并补齐覆盖空洞。",
+            "groups": [
+                {
+                    "enemyId": "spore_carrier",
+                    "count": 5,
+                    "startDelay": 0,
+                    "spawnInterval": 0.19,
+                    "formation": "pack",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 15,
+                    "startDelay": 1.12,
+                    "spawnInterval": 0.19,
+                    "formation": "pack",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "carapace_brute",
+                    "count": 3,
+                    "startDelay": 2.48,
+                    "spawnInterval": 0.75,
+                    "formation": "burst",
+                    "lane": "center"
+                }
+            ]
+        },
+        {
+            "waveIndex": 6,
+            "phase": "exam",
+            "goalTag": "chapter_b_split_switch_canyon_l10_w06_exam",
+            "threatTags": [
+                "exam",
+                "split_switch_canyon",
+                "split"
+            ],
+            "prepSeconds": 8.45,
+            "rewardGold": 41,
+            "budgetTarget": 46.4,
+            "budgetTolerance": 1.1,
+            "hint": "[L10] W06: 综合考核：输出、控制、反制链稳定性。",
+            "groups": [
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 15,
+                    "startDelay": 0.16,
+                    "spawnInterval": 0.22,
+                    "formation": "stream",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "spore_carrier",
+                    "count": 4,
+                    "startDelay": 0.84,
+                    "spawnInterval": 0.18,
+                    "formation": "pack",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "plated_spore",
+                    "count": 3,
+                    "startDelay": 2.08,
+                    "spawnInterval": 0.69,
+                    "formation": "burst",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "carapace_brute",
+                    "count": 2,
+                    "startDelay": 3.32,
+                    "spawnInterval": 0.69,
+                    "formation": "burst",
+                    "lane": "left"
+                }
+            ]
+        },
+        {
+            "waveIndex": 7,
+            "phase": "introduce",
+            "goalTag": "chapter_b_split_switch_canyon_l10_w07_introduce",
+            "threatTags": [
+                "introduce",
+                "split_switch_canyon",
+                "split",
+                "armored"
+            ],
+            "prepSeconds": 7.91,
+            "rewardGold": 40,
+            "budgetTarget": 46.7,
+            "budgetTolerance": 1.07,
+            "hint": "[L10] W07: 识别新威胁并调整火力分工。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "spore_carrier",
+                    "count": 6,
+                    "startDelay": 0,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 14,
+                    "startDelay": 1.36,
+                    "spawnInterval": 0.25,
+                    "formation": "split_lane",
+                    "lane": "split_lane"
+                },
+                {
+                    "enemyId": "carapace_brute",
+                    "count": 3,
+                    "startDelay": 2.16,
+                    "spawnInterval": 0.79,
+                    "formation": "burst",
+                    "lane": "left"
+                }
+            ]
+        },
+        {
+            "waveIndex": 8,
+            "phase": "reinforce",
+            "goalTag": "chapter_b_split_switch_canyon_l10_w08_reinforce",
+            "threatTags": [
+                "reinforce",
+                "split_switch_canyon",
+                "split",
+                "armored"
+            ],
+            "prepSeconds": 7.77,
+            "rewardGold": 42,
+            "budgetTarget": 49.6,
+            "budgetTolerance": 1.07,
+            "hint": "[L10] W08: 持续压制并补齐覆盖空洞。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 20,
+                    "startDelay": 0,
+                    "spawnInterval": 0.19,
+                    "formation": "pack",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 12,
+                    "startDelay": 1.2,
+                    "spawnInterval": 0.24,
+                    "formation": "stream",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "plated_spore",
+                    "count": 3,
+                    "startDelay": 2.56,
+                    "spawnInterval": 0.75,
+                    "formation": "burst",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "ember_leech",
+                    "count": 4,
+                    "startDelay": 3.36,
+                    "spawnInterval": 0.46,
+                    "formation": "escort",
+                    "lane": "right"
+                }
+            ]
+        },
+        {
+            "waveIndex": 9,
+            "phase": "exam",
+            "goalTag": "chapter_b_split_switch_canyon_l10_w09_exam",
+            "threatTags": [
+                "exam",
+                "split_switch_canyon",
+                "split",
+                "armored",
+                "flank"
+            ],
+            "prepSeconds": 8.03,
+            "rewardGold": 47,
+            "budgetTarget": 58.7,
+            "budgetTolerance": 1.07,
+            "hint": "[L10] W09: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "spore_carrier",
+                    "count": 6,
+                    "startDelay": 0.24,
+                    "spawnInterval": 0.18,
+                    "formation": "pack",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 14,
+                    "startDelay": 0.92,
+                    "spawnInterval": 0.21,
+                    "formation": "cross_lane",
+                    "lane": "cross_lane"
+                },
+                {
+                    "enemyId": "carapace_brute",
+                    "count": 3,
+                    "startDelay": 2.16,
+                    "spawnInterval": 0.69,
+                    "formation": "burst",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "ember_leech",
+                    "count": 4,
+                    "startDelay": 3.4,
+                    "spawnInterval": 0.42,
+                    "formation": "escort",
+                    "lane": "left"
+                }
+            ]
+        },
+        {
+            "waveIndex": 10,
+            "phase": "introduce",
+            "goalTag": "chapter_b_split_switch_canyon_l10_w10_introduce",
+            "threatTags": [
+                "introduce",
+                "split_switch_canyon",
+                "split",
+                "armored",
+                "flank"
+            ],
+            "prepSeconds": 7.99,
+            "rewardGold": 50,
+            "budgetTarget": 61.2,
+            "budgetTolerance": 1.07,
+            "hint": "[L10] W10: 识别新威胁并调整火力分工。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "spore_carrier",
+                    "count": 8,
+                    "startDelay": 0.08,
+                    "spawnInterval": 0.2,
+                    "formation": "spawn_chain",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 18,
+                    "startDelay": 1.44,
+                    "spawnInterval": 0.25,
+                    "formation": "split_lane",
+                    "lane": "split_lane"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 22,
+                    "startDelay": 2.24,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "left"
+                }
+            ]
+        },
+        {
+            "waveIndex": 11,
+            "phase": "reinforce",
+            "goalTag": "chapter_b_split_switch_canyon_l10_w11_reinforce",
+            "threatTags": [
+                "reinforce",
+                "split_switch_canyon",
+                "split",
+                "armored",
+                "flank"
+            ],
+            "prepSeconds": 7.35,
+            "rewardGold": 48,
+            "budgetTarget": 59.8,
+            "budgetTolerance": 1.07,
+            "hint": "[L10] W11: 持续压制并补齐覆盖空洞。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "carapace_brute",
+                    "count": 4,
+                    "startDelay": 0,
+                    "spawnInterval": 0.75,
+                    "formation": "burst",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 14,
+                    "startDelay": 1.28,
+                    "spawnInterval": 0.24,
+                    "formation": "stream",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "spore_carrier",
+                    "count": 4,
+                    "startDelay": 2.64,
+                    "spawnInterval": 0.19,
+                    "formation": "spawn_chain",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "ember_leech",
+                    "count": 5,
+                    "startDelay": 3.44,
+                    "spawnInterval": 0.46,
+                    "formation": "escort",
+                    "lane": "right"
+                }
+            ]
+        },
+        {
+            "waveIndex": 12,
+            "phase": "exam",
+            "goalTag": "chapter_b_split_switch_canyon_l10_w12_exam",
+            "threatTags": [
+                "exam",
+                "split_switch_canyon",
+                "split",
+                "armored",
+                "flank"
+            ],
+            "prepSeconds": 7.61,
+            "rewardGold": 53,
+            "budgetTarget": 69.6,
+            "budgetTolerance": 1.07,
+            "hint": "[L10] W12: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "plated_spore",
+                    "count": 7,
+                    "startDelay": 0,
+                    "spawnInterval": 0.69,
+                    "formation": "stagger",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 17,
+                    "startDelay": 1,
+                    "spawnInterval": 0.21,
+                    "formation": "cross_lane",
+                    "lane": "cross_lane"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 19,
+                    "startDelay": 2.24,
+                    "spawnInterval": 0.18,
+                    "formation": "pack",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "ember_leech",
+                    "count": 5,
+                    "startDelay": 3.48,
+                    "spawnInterval": 0.42,
+                    "formation": "escort",
+                    "lane": "left"
+                }
+            ]
+        },
+        {
+            "waveIndex": 13,
+            "phase": "introduce",
+            "goalTag": "chapter_b_split_switch_canyon_l10_w13_introduce",
+            "threatTags": [
+                "introduce",
+                "split_switch_canyon",
+                "split",
+                "armored",
+                "flank",
+                "high_pressure"
+            ],
+            "prepSeconds": 7.07,
+            "rewardGold": 52,
+            "budgetTarget": 67,
+            "budgetTolerance": 1.05,
+            "hint": "[L10] W13: 识别新威胁并调整火力分工。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "carapace_brute",
+                    "count": 6,
+                    "startDelay": 0.16,
+                    "spawnInterval": 0.79,
+                    "formation": "stagger",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 25,
+                    "startDelay": 0.96,
+                    "spawnInterval": 0.2,
+                    "formation": "pack",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 20,
+                    "startDelay": 2.32,
+                    "spawnInterval": 0.25,
+                    "formation": "stream",
+                    "lane": "left"
+                }
+            ]
+        },
+        {
+            "waveIndex": 14,
+            "phase": "reinforce",
+            "goalTag": "chapter_b_split_switch_canyon_l10_w14_reinforce",
+            "threatTags": [
+                "reinforce",
+                "split_switch_canyon",
+                "split",
+                "armored",
+                "flank",
+                "high_pressure"
+            ],
+            "prepSeconds": 6.93,
+            "rewardGold": 54,
+            "budgetTarget": 71.4,
+            "budgetTolerance": 1.05,
+            "hint": "[L10] W14: 持续压制并补齐覆盖空洞。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "plated_spore",
+                    "count": 7,
+                    "startDelay": 0,
+                    "spawnInterval": 0.75,
+                    "formation": "stagger",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "spore_carrier",
+                    "count": 5,
+                    "startDelay": 1.36,
+                    "spawnInterval": 0.18,
+                    "formation": "spawn_chain",
+                    "lane": "all"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 15,
+                    "startDelay": 2.16,
+                    "spawnInterval": 0.23,
+                    "formation": "cross_lane",
+                    "lane": "cross_lane"
+                },
+                {
+                    "enemyId": "ember_leech",
+                    "count": 6,
+                    "startDelay": 3.52,
+                    "spawnInterval": 0.44,
+                    "formation": "pressure_mix",
+                    "lane": "all"
+                }
+            ]
+        },
+        {
+            "waveIndex": 15,
+            "phase": "exam",
+            "goalTag": "chapter_b_split_switch_canyon_l10_w15_exam",
+            "threatTags": [
+                "exam",
+                "split_switch_canyon",
+                "split",
+                "armored",
+                "flank",
+                "high_pressure",
+                "exam_peak"
+            ],
+            "prepSeconds": 7.19,
+            "rewardGold": 59,
+            "budgetTarget": 87.8,
+            "budgetTolerance": 1.05,
+            "hint": "[L10] W15: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "carapace_brute",
+                    "count": 6,
+                    "startDelay": 0,
+                    "spawnInterval": 0.69,
+                    "formation": "stagger",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 26,
+                    "startDelay": 1.08,
+                    "spawnInterval": 0.18,
+                    "formation": "pack",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 19,
+                    "startDelay": 2.32,
+                    "spawnInterval": 0.22,
+                    "formation": "split_lane",
+                    "lane": "split_lane"
+                },
+                {
+                    "enemyId": "ember_leech",
+                    "count": 7,
+                    "startDelay": 3,
+                    "spawnInterval": 0.4,
+                    "formation": "pressure_mix",
+                    "lane": "all"
+                }
+            ]
+        },
+        {
+            "waveIndex": 16,
+            "phase": "introduce",
+            "goalTag": "chapter_b_split_switch_canyon_l10_w16_introduce",
+            "threatTags": [
+                "introduce",
+                "split_switch_canyon",
+                "split",
+                "armored",
+                "flank",
+                "high_pressure"
+            ],
+            "prepSeconds": 6.65,
+            "rewardGold": 58,
+            "budgetTarget": 77.4,
+            "budgetTolerance": 1.05,
+            "hint": "[L10] W16: 识别新威胁并调整火力分工。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "plated_spore",
+                    "count": 10,
+                    "startDelay": 0.24,
+                    "spawnInterval": 0.71,
+                    "formation": "stagger",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "spore_carrier",
+                    "count": 7,
+                    "startDelay": 1.04,
+                    "spawnInterval": 0.18,
+                    "formation": "spawn_chain",
+                    "lane": "all"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 23,
+                    "startDelay": 2.4,
+                    "spawnInterval": 0.23,
+                    "formation": "stream",
+                    "lane": "left"
+                }
+            ]
+        },
+        {
+            "waveIndex": 17,
+            "phase": "reinforce",
+            "goalTag": "chapter_b_split_switch_canyon_l10_w17_reinforce",
+            "threatTags": [
+                "reinforce",
+                "split_switch_canyon",
+                "split",
+                "armored",
+                "flank",
+                "high_pressure",
+                "endgame"
+            ],
+            "prepSeconds": 6.51,
+            "rewardGold": 60,
+            "budgetTarget": 82,
+            "budgetTolerance": 1.04,
+            "hint": "[L10] W17: 持续压制并补齐覆盖空洞。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "carapace_brute",
+                    "count": 5,
+                    "startDelay": 0.08,
+                    "spawnInterval": 0.68,
+                    "formation": "stagger",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 20,
+                    "startDelay": 1.36,
+                    "spawnInterval": 0.18,
+                    "formation": "pack",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 15,
+                    "startDelay": 2.08,
+                    "spawnInterval": 0.21,
+                    "formation": "cross_lane",
+                    "lane": "cross_lane"
+                },
+                {
+                    "enemyId": "ember_leech",
+                    "count": 5,
+                    "startDelay": 3.36,
+                    "spawnInterval": 0.39,
+                    "formation": "pressure_mix",
+                    "lane": "all"
+                },
+                {
+                    "enemyId": "carapace_brute",
+                    "count": 3,
+                    "startDelay": 4.64,
+                    "spawnInterval": 0.68,
+                    "formation": "stagger",
+                    "lane": "left"
+                }
+            ]
+        },
+        {
+            "waveIndex": 18,
+            "phase": "exam",
+            "goalTag": "chapter_b_split_switch_canyon_l10_w18_exam",
+            "threatTags": [
+                "exam",
+                "split_switch_canyon",
+                "split",
+                "armored",
+                "flank",
+                "high_pressure",
+                "endgame"
+            ],
+            "prepSeconds": 6.77,
+            "rewardGold": 65,
+            "budgetTarget": 92.6,
+            "budgetTolerance": 1.04,
+            "hint": "[L10] W18: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "plated_spore",
+                    "count": 8,
+                    "startDelay": 0,
+                    "spawnInterval": 0.62,
+                    "formation": "stagger",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "spore_carrier",
+                    "count": 6,
+                    "startDelay": 1.08,
+                    "spawnInterval": 0.18,
+                    "formation": "spawn_chain",
+                    "lane": "all"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 17,
+                    "startDelay": 2.24,
+                    "spawnInterval": 0.2,
+                    "formation": "split_lane",
+                    "lane": "split_lane"
+                },
+                {
+                    "enemyId": "ember_leech",
+                    "count": 6,
+                    "startDelay": 2.84,
+                    "spawnInterval": 0.36,
+                    "formation": "pressure_mix",
+                    "lane": "all"
+                },
+                {
+                    "enemyId": "plated_spore",
+                    "count": 4,
+                    "startDelay": 4,
+                    "spawnInterval": 0.62,
+                    "formation": "stagger",
+                    "lane": "center"
+                }
+            ]
+        },
+        {
+            "waveIndex": 19,
+            "phase": "introduce",
+            "goalTag": "chapter_b_split_switch_canyon_l10_w19_introduce",
+            "threatTags": [
+                "introduce",
+                "split_switch_canyon",
+                "split",
+                "armored",
+                "flank",
+                "high_pressure",
+                "endgame"
+            ],
+            "prepSeconds": 6.23,
+            "rewardGold": 64,
+            "budgetTarget": 87.8,
+            "budgetTolerance": 1.04,
+            "hint": "[L10] W19: 识别新威胁并调整火力分工。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "carapace_brute",
+                    "count": 6,
+                    "startDelay": 0,
+                    "spawnInterval": 0.71,
+                    "formation": "stagger",
+                    "lane": "center"
+                },
+                {
+                    "enemyId": "ash_swarm",
+                    "count": 26,
+                    "startDelay": 1.04,
+                    "spawnInterval": 0.18,
+                    "formation": "pack",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 19,
+                    "startDelay": 2.32,
+                    "spawnInterval": 0.23,
+                    "formation": "stream",
+                    "lane": "left"
+                },
+                {
+                    "enemyId": "ember_leech",
+                    "count": 7,
+                    "startDelay": 3.6,
+                    "spawnInterval": 0.41,
+                    "formation": "pressure_mix",
+                    "lane": "all"
+                }
+            ]
+        },
+        {
+            "waveIndex": 20,
+            "phase": "reinforce",
+            "goalTag": "chapter_b_split_switch_canyon_l10_w20_reinforce",
+            "threatTags": [
+                "reinforce",
+                "split_switch_canyon",
+                "split",
+                "armored",
+                "flank",
+                "high_pressure",
+                "endgame"
+            ],
+            "prepSeconds": 6.59,
+            "rewardGold": 70,
+            "budgetTarget": 96.8,
+            "budgetTolerance": 1.04,
+            "hint": "[L10] W20: 持续压制并补齐覆盖空洞。 多线同时压测。",
+            "groups": [
+                {
+                    "enemyId": "plated_spore",
+                    "count": 8,
+                    "startDelay": 0.16,
+                    "spawnInterval": 0.68,
+                    "formation": "stagger",
+                    "lane": "right"
+                },
+                {
+                    "enemyId": "spore_carrier",
+                    "count": 6,
+                    "startDelay": 0.88,
+                    "spawnInterval": 0.18,
+                    "formation": "spawn_chain",
+                    "lane": "all"
+                },
+                {
+                    "enemyId": "skitter_runner",
+                    "count": 18,
+                    "startDelay": 2.16,
+                    "spawnInterval": 0.21,
+                    "formation": "cross_lane",
+                    "lane": "cross_lane"
+                },
+                {
+                    "enemyId": "ember_leech",
+                    "count": 6,
+                    "startDelay": 3.44,
+                    "spawnInterval": 0.39,
+                    "formation": "pressure_mix",
+                    "lane": "all"
+                },
+                {
+                    "enemyId": "plated_spore",
+                    "count": 5,
+                    "startDelay": 4.72,
+                    "spawnInterval": 0.68,
+                    "formation": "stagger",
+                    "lane": "left"
+                }
+            ]
+        }
+    ]
+}
