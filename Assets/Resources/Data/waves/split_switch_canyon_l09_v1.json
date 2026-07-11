@@ -75,13 +75,15 @@
             "goalTag": "chapter_b_split_switch_canyon_l09_w01_introduce",
             "threatTags": [
                 "introduce",
-                "split_switch_canyon"
+                "split_switch_canyon",
+                "fast",
+                "swarm"
             ],
             "prepSeconds": 8.8,
             "rewardGold": 27,
             "budgetTarget": 23.4,
             "budgetTolerance": 1.1,
-            "hint": "[L09] W01: 识别新威胁并调整火力分工。",
+            "hint": "[L09] W01: 左线高速、中心群体；先按路线分配单体和AOE。",
             "groups": [
                 {
                     "enemyId": "skitter_runner",
@@ -107,13 +109,15 @@
             "goalTag": "chapter_b_split_switch_canyon_l09_w02_reinforce",
             "threatTags": [
                 "reinforce",
-                "split_switch_canyon"
+                "split_switch_canyon",
+                "attrition",
+                "swarm"
             ],
             "prepSeconds": 8.66,
             "rewardGold": 29,
             "budgetTarget": 27,
             "budgetTolerance": 1.1,
-            "hint": "[L09] W02: 持续压制并补齐覆盖空洞。",
+            "hint": "[L09] W02: 中线 Ember Leech 消耗预算，右线 Ash Swarm 测试AOE覆盖。",
             "groups": [
                 {
                     "enemyId": "ember_leech",
@@ -139,13 +143,16 @@
             "goalTag": "chapter_b_split_switch_canyon_l09_w03_exam",
             "threatTags": [
                 "exam",
-                "split_switch_canyon"
+                "split_switch_canyon",
+                "attrition",
+                "armored",
+                "swarm"
             ],
             "prepSeconds": 8.92,
             "rewardGold": 34,
             "budgetTarget": 35,
             "budgetTolerance": 1.1,
-            "hint": "[L09] W03: 综合考核：输出、控制、反制链稳定性。",
+            "hint": "[L09] W03: 右线消耗、左线群体、中线装甲；检查克制塔是否分工清楚。",
             "groups": [
                 {
                     "enemyId": "ember_leech",
@@ -179,13 +186,16 @@
             "goalTag": "chapter_b_split_switch_canyon_l09_w04_introduce",
             "threatTags": [
                 "introduce",
-                "split_switch_canyon"
+                "split_switch_canyon",
+                "attrition",
+                "swarm",
+                "center_pressure"
             ],
             "prepSeconds": 8.38,
             "rewardGold": 33,
             "budgetTarget": 34,
             "budgetTolerance": 1.1,
-            "hint": "[L09] W04: 识别新威胁并调整火力分工。",
+            "hint": "[L09] W04: 左线消耗牵制，中心群体推进；不要只堆单点火力。",
             "groups": [
                 {
                     "enemyId": "ember_leech",
@@ -211,13 +221,16 @@
             "goalTag": "chapter_b_split_switch_canyon_l09_w05_reinforce",
             "threatTags": [
                 "reinforce",
-                "split_switch_canyon"
+                "split_switch_canyon",
+                "attrition",
+                "armored",
+                "route_swap"
             ],
             "prepSeconds": 8.24,
             "rewardGold": 35,
             "budgetTarget": 35.8,
             "budgetTolerance": 1.1,
-            "hint": "[L09] W05: 持续压制并补齐覆盖空洞。",
+            "hint": "[L09] W05: 中线消耗、右线群体、左线装甲；准备一次路线换防。",
             "groups": [
                 {
                     "enemyId": "ember_leech",
@@ -252,13 +265,16 @@
             "threatTags": [
                 "exam",
                 "split_switch_canyon",
-                "split"
+                "split",
+                "flank",
+                "armored",
+                "swarm"
             ],
             "prepSeconds": 8.5,
             "rewardGold": 40,
             "budgetTarget": 46,
             "budgetTolerance": 1.1,
-            "hint": "[L09] W06: 综合考核：输出、控制、反制链稳定性。",
+            "hint": "[L09] W06: 分路突袭加三线装甲/群体压力；用 readiness 判断是否能开波。",
             "groups": [
                 {
                     "enemyId": "burrow_sapper",

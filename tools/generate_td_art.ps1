@@ -5,6 +5,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+. (Join-Path $PSScriptRoot "td_imagegen_common.ps1")
 
 function Resolve-CodexHome {
     if (-not [string]::IsNullOrWhiteSpace($env:CODEX_HOME)) {
@@ -19,15 +20,8 @@ if (-not $python) {
     throw "python is required but was not found in PATH."
 }
 
-$codexHome = Resolve-CodexHome
-$imageCli = Join-Path $codexHome "skills\imagegen\scripts\image_gen.py"
-if (-not (Test-Path $imageCli)) {
-    throw "image_gen.py not found at: $imageCli"
-}
-
-if (-not $DryRun -and [string]::IsNullOrWhiteSpace($env:OPENAI_API_KEY)) {
-    throw "OPENAI_API_KEY is missing. Set the key or rerun with -DryRun."
-}
+$imageCli = Resolve-TDImageGenCli
+Import-TDOpenAIApiKey -Required (-not $DryRun.IsPresent)
 
 $projectRoot = Resolve-Path (Join-Path $PSScriptRoot "..")
 $outDir = Join-Path $projectRoot "Assets\Resources\Art"

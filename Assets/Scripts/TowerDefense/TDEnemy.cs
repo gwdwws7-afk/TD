@@ -82,6 +82,11 @@ namespace TD
         private Transform _armorBreakIconRoot;
         private SpriteRenderer _armorBreakIconRenderer;
         private float _armorBreakIconPulse;
+        private Transform _threatMarkerRoot;
+        private SpriteRenderer _threatMarkerRenderer;
+        private Color _threatMarkerColor;
+        private float _threatMarkerPulse;
+        private bool _threatMarkerEnabled;
         private float _hitFxTimer;
         private bool _bossWarningFxPlayed;
         private bool _burrowAmbushFxPlayed;
@@ -94,6 +99,7 @@ namespace TD
 
         public string EnemyId => _enemyId;
         public bool IsMarked => _resonanceMarkTimer > 0f;
+        public float HealthRatio => _maxHp <= 0 ? 1f : Mathf.Clamp01(_hp / (float)_maxHp);
 
         public void Initialize(TDGameManager gameManager, IReadOnlyList<Vector3> path, TDEnemyCatalogEntry entry)
         {
@@ -122,6 +128,8 @@ namespace TD
             _armorBreakFlat = 0;
             _armorBreakTimer = 0f;
             _armorBreakIconPulse = 0f;
+            _threatMarkerPulse = 0f;
+            _threatMarkerEnabled = false;
             _exposedTimer = 0f;
             _exposedMultiplier = 1f;
             _hitFxTimer = 0f;
@@ -137,6 +145,7 @@ namespace TD
             ApplyVariantProfileIfNeeded();
             _maxHp = Mathf.Max(1, _hp);
             EnsureArmorBreakIcon();
+            EnsureThreatMarkerIcon();
             if (HasTag("flank"))
             {
                 _specialSpeedMultiplier *= 1.08f;
@@ -173,6 +182,7 @@ namespace TD
             TryUpdateSupportLinkFx();
             TryPlayElitePressureFx();
             TryPlaySporeSplitWarningFx();
+            UpdateThreatMarkerVisual();
 
             if (_hitFlashTimer > 0f)
             {
@@ -264,6 +274,24 @@ namespace TD
             for (var i = 0; i < _tags.Count; i++)
             {
                 if (_tags[i] == tag)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool HasAnyTag(params string[] tags)
+        {
+            if (tags == null)
+            {
+                return false;
+            }
+
+            for (var i = 0; i < tags.Length; i++)
+            {
+                if (HasTag(tags[i]))
                 {
                     return true;
                 }
@@ -423,6 +451,7 @@ namespace TD
             tinted.a = 1f;
             _visualRenderer.color = tinted;
             UpdateArmorBreakIconVisual();
+            UpdateThreatMarkerVisual();
         }
 
         private void UpdateDeathFade()
@@ -500,6 +529,105 @@ namespace TD
             {
                 _armorBreakIconRoot.gameObject.SetActive(visible);
             }
+        }
+
+        private void EnsureThreatMarkerIcon()
+        {
+            _threatMarkerEnabled = TryResolveThreatMarkerColor(out _threatMarkerColor);
+            if (!_threatMarkerEnabled)
+            {
+                if (_threatMarkerRoot != null)
+                {
+                    _threatMarkerRoot.gameObject.SetActive(false);
+                }
+
+                return;
+            }
+
+            if (_threatMarkerRoot == null)
+            {
+                var markerRoot = new GameObject("Fx_ThreatMarker");
+                markerRoot.transform.SetParent(transform, false);
+                markerRoot.transform.localPosition = new Vector3(0f, 0.72f, 0f);
+                markerRoot.transform.localScale = Vector3.one * 0.22f;
+                _threatMarkerRoot = markerRoot.transform;
+            }
+
+            if (_threatMarkerRenderer == null)
+            {
+                _threatMarkerRenderer = _threatMarkerRoot.GetComponent<SpriteRenderer>();
+                if (_threatMarkerRenderer == null)
+                {
+                    _threatMarkerRenderer = _threatMarkerRoot.gameObject.AddComponent<SpriteRenderer>();
+                }
+            }
+
+            _threatMarkerRenderer.sortingOrder = (_visualRenderer != null ? _visualRenderer.sortingOrder : 10) + 5;
+            _threatMarkerRenderer.sprite = TDArtLibrary.GetSoftRingSprite();
+            _threatMarkerRoot.gameObject.SetActive(_threatMarkerRenderer.sprite != null);
+        }
+
+        private void UpdateThreatMarkerVisual()
+        {
+            if (!_threatMarkerEnabled || _threatMarkerRoot == null || _threatMarkerRenderer == null || _resolved || _dying)
+            {
+                if (_threatMarkerRoot != null && _threatMarkerRoot.gameObject.activeSelf)
+                {
+                    _threatMarkerRoot.gameObject.SetActive(false);
+                }
+
+                return;
+            }
+
+            if (!_threatMarkerRoot.gameObject.activeSelf)
+            {
+                _threatMarkerRoot.gameObject.SetActive(true);
+            }
+
+            _threatMarkerPulse += Time.deltaTime * 5.0f;
+            var pulse = 0.5f + (Mathf.Sin(_threatMarkerPulse) * 0.5f);
+            var alpha = Mathf.Lerp(0.36f, 0.84f, pulse);
+            var scale = Mathf.Lerp(0.18f, 0.25f, pulse);
+            _threatMarkerRoot.localPosition = new Vector3(0f, 0.70f + (pulse * 0.035f), 0f);
+            _threatMarkerRoot.localRotation = Quaternion.Euler(0f, 0f, _threatMarkerPulse * 18f);
+            _threatMarkerRoot.localScale = Vector3.one * scale;
+            _threatMarkerRenderer.color = new Color(_threatMarkerColor.r, _threatMarkerColor.g, _threatMarkerColor.b, alpha);
+        }
+
+        private bool TryResolveThreatMarkerColor(out Color color)
+        {
+            if (HasTag("boss") || HasTag("final") || HasTag("elite"))
+            {
+                color = new Color(1f, 0.30f, 0.18f, 1f);
+                return true;
+            }
+
+            if (HasTag("support") || HasTag("attrition") || HasTag("zone_control"))
+            {
+                color = new Color(0.50f, 1f, 0.54f, 1f);
+                return true;
+            }
+
+            if (HasTag("armored") || HasTag("heavy") || HasTag("durability"))
+            {
+                color = new Color(1f, 0.68f, 0.22f, 1f);
+                return true;
+            }
+
+            if (HasTag("fast") || HasTag("flank") || HasTag("special"))
+            {
+                color = new Color(0.38f, 0.92f, 1f, 1f);
+                return true;
+            }
+
+            if (HasTag("swarm") || HasTag("split") || HasTag("spawn") || HasTag("mixed"))
+            {
+                color = new Color(1f, 0.50f, 0.24f, 1f);
+                return true;
+            }
+
+            color = Color.clear;
+            return false;
         }
 
         private void UpdateSpecialMovementState()

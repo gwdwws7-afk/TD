@@ -1,10 +1,12 @@
 param(
     [string]$Model = "gpt-image-1.5",
     [string]$Quality = "high",
-    [switch]$SkipCut
+    [switch]$SkipCut,
+    [switch]$DryRun
 )
 
 $ErrorActionPreference = "Stop"
+. (Join-Path $PSScriptRoot "td_imagegen_common.ps1")
 
 function Resolve-CodexHome {
     if (-not [string]::IsNullOrWhiteSpace($env:CODEX_HOME)) {
@@ -14,20 +16,14 @@ function Resolve-CodexHome {
     return Join-Path $HOME ".codex"
 }
 
-if ([string]::IsNullOrWhiteSpace($env:OPENAI_API_KEY)) {
-    throw "OPENAI_API_KEY is missing. Set it before running this script."
-}
+Import-TDOpenAIApiKey -Required (-not $DryRun.IsPresent)
 
 $python = Get-Command python -ErrorAction SilentlyContinue
 if (-not $python) {
     throw "python is required but was not found in PATH."
 }
 
-$codexHome = Resolve-CodexHome
-$imageCli = Join-Path $codexHome "skills\imagegen\scripts\image_gen.py"
-if (-not (Test-Path $imageCli)) {
-    throw "image_gen.py not found at: $imageCli"
-}
+$imageCli = Resolve-TDImageGenCli
 
 $projectRoot = Resolve-Path (Join-Path $PSScriptRoot "..")
 $rawDir = Join-Path $projectRoot "output\imagegen\batch9_raw"
@@ -100,18 +96,31 @@ $assets = @(
 foreach ($asset in $assets) {
     $rawOut = Join-Path $rawDir ($asset.Name + ".png")
     Write-Host "[batch9] generate $($asset.Name)"
-    & $python.Source $imageCli generate `
-        --model $Model `
-        --prompt $asset.Prompt `
-        --size 1024x1024 `
-        --quality $Quality `
-        --background transparent `
-        --output-format png `
-        --out $rawOut
+    $args = @(
+        $imageCli,
+        "generate",
+        "--model", $Model,
+        "--prompt", $asset.Prompt,
+        "--size", "1024x1024",
+        "--quality", $Quality,
+        "--background", "transparent",
+        "--output-format", "png",
+        "--out", $rawOut
+    )
+    if ($DryRun) {
+        $args += "--dry-run"
+    }
+
+    & $python.Source @args
 
     if ($LASTEXITCODE -ne 0) {
         throw "generation failed for $($asset.Name)"
     }
+}
+
+if ($DryRun) {
+    Write-Host "Batch 9 set-dressing dry-run complete."
+    return
 }
 
 if (-not $SkipCut) {

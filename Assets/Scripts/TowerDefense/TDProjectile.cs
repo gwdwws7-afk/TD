@@ -15,6 +15,8 @@ namespace TD
         private float _aoeMinFalloff;
         private float _slowPct;
         private float _slowDuration;
+        private bool _damageSpecialist;
+        private bool _utilitySpecialist;
         private SpriteRenderer _renderer;
         private float _trailTimer;
         private float _trailInterval;
@@ -70,6 +72,16 @@ namespace TD
         private const float GravPulseStaggerMinSpeed = 0.25f;
         private const float GravPulseExposeDuration = 0.90f;
         private const float GravPulseExposeMultiplier = 1.04f;
+        private const float DamageSpecThreatBonus = 1.12f;
+        private const float DamageSpecExecuteThreshold = 0.40f;
+        private const float DamageSpecExecuteBonus = 1.10f;
+        private const float UtilitySpecFieldRadiusMin = 0.85f;
+        private const float UtilitySpecFieldRadiusScale = 0.72f;
+        private const int UtilitySpecFieldMaxTargets = 4;
+        private const float UtilitySpecExposeDuration = 0.68f;
+        private const float UtilitySpecExposeMultiplier = 1.035f;
+        private const float UtilitySpecStaggerDuration = 0.11f;
+        private const float UtilitySpecStaggerMinSpeed = 0.48f;
         private const float ArcLinkBaseDuration = 0.11f;
         private const float ArcLinkDurationStep = 0.01f;
         private const float ArcLinkStartWidth = 0.19f;
@@ -81,6 +93,10 @@ namespace TD
         private static readonly Color ArcLinkEndColor = new(0.34f, 0.76f, 1f, 0f);
         private static readonly Color GravityBoundaryOuterColor = new(0.54f, 0.62f, 1f, 0.75f);
         private static readonly Color GravityBoundaryInnerColor = new(0.78f, 0.84f, 1f, 0.68f);
+        private static readonly Color DamageSpecPulseStartColor = new(1f, 0.88f, 0.36f, 0.86f);
+        private static readonly Color DamageSpecPulseEndColor = new(1f, 0.42f, 0.10f, 0f);
+        private static readonly Color UtilitySpecFieldStartColor = new(0.36f, 1f, 0.78f, 0.66f);
+        private static readonly Color UtilitySpecFieldEndColor = new(0.16f, 0.78f, 0.98f, 0f);
 
         public void Initialize(
             TDGameManager gameManager,
@@ -92,7 +108,9 @@ namespace TD
             int aoeMaxTargets,
             float aoeMinFalloff,
             float slowPct,
-            float slowDuration)
+            float slowDuration,
+            bool damageSpecialist,
+            bool utilitySpecialist)
         {
             _gameManager = gameManager;
             _target = target;
@@ -104,6 +122,8 @@ namespace TD
             _aoeMinFalloff = Mathf.Clamp01(aoeMinFalloff);
             _slowPct = Mathf.Clamp(slowPct, 0f, 0.9f);
             _slowDuration = Mathf.Max(0f, slowDuration);
+            _damageSpecialist = damageSpecialist;
+            _utilitySpecialist = utilitySpecialist;
             _renderer = GetComponent<SpriteRenderer>();
 
             ConfigureVisualProfile(sourceTowerKind);
@@ -167,6 +187,7 @@ namespace TD
                 return 0;
             }
 
+            rawDamage = ApplyDamageSpecialistBonus(enemy, rawDamage);
             var modifiedDamage = _gameManager != null
                 ? _gameManager.GetModifiedDamageForEnemy(_sourceTowerKind, enemy, rawDamage)
                 : rawDamage;
@@ -228,6 +249,80 @@ namespace TD
                         }
                     }
                     break;
+            }
+
+            if (_utilitySpecialist && isPrimaryImpact)
+            {
+                ApplyUtilitySpecialistField(impactPoint, enemy);
+            }
+        }
+
+        private int ApplyDamageSpecialistBonus(TDEnemy enemy, int rawDamage)
+        {
+            if (!_damageSpecialist || enemy == null)
+            {
+                return rawDamage;
+            }
+
+            var multiplier = 1f;
+            if (enemy.HasAnyTag("armored", "heavy", "boss", "final", "elite", "fast", "flank", "support", "attrition", "special"))
+            {
+                multiplier *= DamageSpecThreatBonus;
+            }
+
+            if (enemy.HealthRatio <= DamageSpecExecuteThreshold)
+            {
+                multiplier *= DamageSpecExecuteBonus;
+            }
+
+            if (multiplier > 1.001f)
+            {
+                SpawnSpecialistPulse(
+                    enemy.transform.position,
+                    0.72f,
+                    0.24f,
+                    DamageSpecPulseStartColor,
+                    DamageSpecPulseEndColor,
+                    "Fx_DamageSpecPulse",
+                    22);
+                _gameManager?.NotifySpecializationEffect(_sourceTowerKind, false);
+            }
+
+            return Mathf.Max(1, Mathf.RoundToInt(rawDamage * multiplier));
+        }
+
+        private void ApplyUtilitySpecialistField(Vector3 impactPoint, TDEnemy primaryTarget)
+        {
+            if (_gameManager == null)
+            {
+                return;
+            }
+
+            var radius = Mathf.Max(UtilitySpecFieldRadiusMin, _aoeRadius * UtilitySpecFieldRadiusScale);
+            SpawnSpecialistPulse(
+                impactPoint,
+                Mathf.Max(0.48f, radius * 0.42f),
+                Mathf.Max(0.92f, radius * 2.18f),
+                UtilitySpecFieldStartColor,
+                UtilitySpecFieldEndColor,
+                "Fx_UtilitySpecField",
+                20);
+            _gameManager.NotifySpecializationEffect(_sourceTowerKind, true);
+
+            var targets = _gameManager.GetEnemiesInRange(impactPoint, radius, UtilitySpecFieldMaxTargets);
+            for (var i = 0; i < targets.Count; i++)
+            {
+                var enemy = targets[i];
+                if (enemy == null)
+                {
+                    continue;
+                }
+
+                enemy.ApplyExposed(UtilitySpecExposeDuration, UtilitySpecExposeMultiplier);
+                if (enemy != primaryTarget && enemy.HasAnyTag("fast", "flank", "special", "swarm"))
+                {
+                    enemy.ApplyStagger(UtilitySpecStaggerDuration, UtilitySpecStaggerMinSpeed);
+                }
             }
         }
 
@@ -606,6 +701,38 @@ namespace TD
                 endScale,
                 new Color(0.65f, 0.90f, 1f, 0.80f),
                 new Color(0.65f, 0.90f, 1f, 0f));
+        }
+
+        private void SpawnSpecialistPulse(
+            Vector3 impactPoint,
+            float startDiameter,
+            float endDiameter,
+            Color startColor,
+            Color endColor,
+            string objectName,
+            int sortingOrder)
+        {
+            if (_gameManager == null || endDiameter <= 0f)
+            {
+                return;
+            }
+
+            var fx = new GameObject(objectName);
+            fx.transform.SetParent(_gameManager.transform, true);
+            fx.transform.position = impactPoint;
+
+            var renderer = fx.AddComponent<SpriteRenderer>();
+            renderer.sortingOrder = sortingOrder;
+            renderer.sprite = TDArtLibrary.GetSoftRingSprite();
+            renderer.color = startColor;
+
+            var ringFx = fx.AddComponent<TDTransientSpriteFx>();
+            ringFx.Configure(
+                0.24f,
+                Vector3.one * Mathf.Max(0.08f, startDiameter),
+                Vector3.one * Mathf.Max(startDiameter, endDiameter),
+                startColor,
+                endColor);
         }
     }
 }

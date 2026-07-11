@@ -7,8 +7,10 @@ namespace TD
     {
         private const int FallbackTextureSize = 64;
         private const int ShadowTextureSize = 128;
+        private const int RingTextureSize = 128;
         private static readonly Dictionary<string, Sprite> FallbackCache = new();
         private static Sprite _softShadowSprite;
+        private static Sprite _softRingSprite;
 
         public static Sprite LoadSpriteOrFallback(string resourcePath, Color fallbackColor)
         {
@@ -97,6 +99,50 @@ namespace TD
                 ShadowTextureSize);
             _softShadowSprite.name = texture.name;
             return _softShadowSprite;
+        }
+
+        public static Sprite GetSoftRingSprite()
+        {
+            if (_softRingSprite != null)
+            {
+                return _softRingSprite;
+            }
+
+            var texture = new Texture2D(RingTextureSize, RingTextureSize, TextureFormat.RGBA32, false)
+            {
+                filterMode = FilterMode.Bilinear,
+                wrapMode = TextureWrapMode.Clamp,
+                name = "soft_tactical_ring"
+            };
+
+            var pixels = new Color[RingTextureSize * RingTextureSize];
+            var center = (RingTextureSize - 1) * 0.5f;
+            var invRadius = 1f / center;
+
+            for (var y = 0; y < RingTextureSize; y++)
+            {
+                for (var x = 0; x < RingTextureSize; x++)
+                {
+                    var dx = (x - center) * invRadius;
+                    var dy = (y - center) * invRadius;
+                    var r = Mathf.Sqrt((dx * dx) + (dy * dy));
+                    var outer = Mathf.Clamp01(1f - Mathf.Abs(r - 0.72f) / 0.10f);
+                    var inner = Mathf.Clamp01(1f - Mathf.Abs(r - 0.49f) / 0.035f) * 0.38f;
+                    var alpha = Mathf.Clamp01((outer * outer) + inner);
+                    pixels[(y * RingTextureSize) + x] = new Color(1f, 1f, 1f, alpha);
+                }
+            }
+
+            texture.SetPixels(pixels);
+            texture.Apply();
+
+            _softRingSprite = Sprite.Create(
+                texture,
+                new Rect(0, 0, RingTextureSize, RingTextureSize),
+                new Vector2(0.5f, 0.5f),
+                RingTextureSize);
+            _softRingSprite.name = texture.name;
+            return _softRingSprite;
         }
     }
 }

@@ -73,12 +73,30 @@ namespace TD
         private Transform _visualRoot;
         private Transform _baseRoot;
         private Transform _shadowRoot;
+        private Transform _specializationRoot;
+        private SpriteRenderer _specializationRenderer;
+        private Color _specializationBaseColor;
+        private float _specializationPulse;
         private float _cooldown;
 
         public TDTowerKind Kind { get; private set; }
         public int Tier => _upgradeHistory.Count;
         public bool CanUpgrade => Tier < 3;
         public string DisplayName => _activeState?.displayName ?? Kind.ToString();
+        public int Damage => _activeState?.damage ?? 0;
+        public float AttackRange => _activeState?.range ?? 0f;
+        public float ShotsPerSecond => _activeState?.shotsPerSecond ?? 0f;
+        public float AoeRadius => _activeState?.aoeRadius ?? 0f;
+        public int AoeMaxTargets => _activeState?.aoeMaxTargets ?? 1;
+        public float SlowPct => _activeState?.slowPct ?? 0f;
+        public float SlowDuration => _activeState?.slowDuration ?? 0f;
+        public float HeavyMultiplier => _activeState?.heavyMultiplier ?? 1f;
+        public int DamageBranchCount => CountUpgradeBranch(TDTowerUpgradeBranch.Damage);
+        public int UtilityBranchCount => CountUpgradeBranch(TDTowerUpgradeBranch.Utility);
+        public bool IsDamageSpecialist => DamageBranchCount >= 2;
+        public bool IsUtilitySpecialist => UtilityBranchCount >= 2;
+        public string SpecializationLabel => BuildSpecializationLabel(_upgradeHistory);
+        public string SpecializationEffectLabel => BuildSpecializationEffectLabel(_upgradeHistory);
 
         public static IReadOnlyList<TDTowerKind> GetBuildOrder()
         {
@@ -167,6 +185,11 @@ namespace TD
             };
         }
 
+        public static float GetBaseRange(TDTowerKind kind)
+        {
+            return Mathf.Max(0f, CreateBaseState(kind).range);
+        }
+
         public void Initialize(TDGameManager gameManager, TDTowerKind kind)
         {
             _gameManager = gameManager;
@@ -201,12 +224,33 @@ namespace TD
             return true;
         }
 
+        public string GetUpgradePreviewSummary(TDTowerUpgradeBranch branch)
+        {
+            if (!CanUpgrade || _activeState == null)
+            {
+                return "MAX";
+            }
+
+            var before = CloneState(_activeState);
+            var previewHistory = new List<TDTowerUpgradeBranch>(_upgradeHistory)
+            {
+                branch
+            };
+            var after = BuildStateWithHistory(previewHistory);
+
+            var summary = BuildUpgradeDeltaSummary(before, after);
+            var specToken = GetSpecializationPreviewToken(branch);
+            return string.IsNullOrWhiteSpace(specToken) ? summary : $"{summary} {specToken}";
+        }
+
         private void Update()
         {
             if (_gameManager == null || _gameManager.IsGameOver)
             {
                 return;
             }
+
+            UpdateSpecializationVisualPulse();
 
             if (_cooldown > 0f)
             {
@@ -254,7 +298,9 @@ namespace TD
                 _activeState.aoeMaxTargets,
                 _activeState.aoeMinFalloff,
                 _activeState.slowPct * resonanceSlowStrength,
-                _activeState.slowDuration + resonanceSlowDurationBonus);
+                _activeState.slowDuration + resonanceSlowDurationBonus,
+                IsDamageSpecialist,
+                IsUtilitySpecialist);
         }
 
         private float GetDamageMultiplier(TDEnemy target)
@@ -298,20 +344,169 @@ namespace TD
 
         private void RebuildActiveState()
         {
-            _activeState = CloneState(_baseState);
-            for (var i = 0; i < _upgradeHistory.Count; i++)
+            _activeState = BuildStateWithHistory(_upgradeHistory);
+        }
+
+        private TowerState BuildStateWithHistory(IReadOnlyList<TDTowerUpgradeBranch> history)
+        {
+            var state = CloneState(_baseState);
+            var damageBranches = 0;
+            var utilityBranches = 0;
+
+            if (history == null)
             {
-                var branch = _upgradeHistory[i];
+                return state;
+            }
+
+            for (var i = 0; i < history.Count; i++)
+            {
+                var branch = history[i];
                 var factor = UpgradeDiminishing[Mathf.Min(i, UpgradeDiminishing.Length - 1)];
                 if (branch == TDTowerUpgradeBranch.Damage)
                 {
-                    ApplyDamageBranch(_activeState, factor);
+                    damageBranches++;
+                    ApplyDamageBranch(state, factor);
                 }
                 else
                 {
-                    ApplyUtilityBranch(_activeState, factor);
+                    utilityBranches++;
+                    ApplyUtilityBranch(state, factor);
                 }
             }
+
+            ApplySpecializationBonus(state, damageBranches, utilityBranches);
+            return state;
+        }
+
+        private static void ApplySpecializationBonus(TowerState state, int damageBranches, int utilityBranches)
+        {
+            if (state == null)
+            {
+                return;
+            }
+
+            if (damageBranches >= 2)
+            {
+                state.damage = Mathf.RoundToInt(state.damage * 1.08f);
+                state.heavyMultiplier += 0.05f;
+                if (state.aoeRadius > 0f)
+                {
+                    state.aoeMinFalloff = Mathf.Clamp01(state.aoeMinFalloff + 0.05f);
+                }
+            }
+
+            if (utilityBranches >= 2)
+            {
+                state.range *= 1.06f;
+                state.projectileSpeed *= 1.05f;
+                if (state.aoeRadius > 0f)
+                {
+                    state.aoeRadius *= 1.04f;
+                }
+
+                if (state.slowPct > 0f)
+                {
+                    state.slowDuration += 0.18f;
+                }
+            }
+        }
+
+        private int CountUpgradeBranch(TDTowerUpgradeBranch branch)
+        {
+            var count = 0;
+            for (var i = 0; i < _upgradeHistory.Count; i++)
+            {
+                if (_upgradeHistory[i] == branch)
+                {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+        private string GetSpecializationPreviewToken(TDTowerUpgradeBranch branch)
+        {
+            var currentCount = CountUpgradeBranch(branch);
+            if (currentCount != 1)
+            {
+                return string.Empty;
+            }
+
+            return branch == TDTowerUpgradeBranch.Damage ? "spec:D" : "spec:U";
+        }
+
+        private static string BuildSpecializationLabel(IReadOnlyList<TDTowerUpgradeBranch> history)
+        {
+            if (history == null || history.Count == 0)
+            {
+                return "Base";
+            }
+
+            var damageBranches = 0;
+            var utilityBranches = 0;
+            for (var i = 0; i < history.Count; i++)
+            {
+                if (history[i] == TDTowerUpgradeBranch.Damage)
+                {
+                    damageBranches++;
+                }
+                else
+                {
+                    utilityBranches++;
+                }
+            }
+
+            if (damageBranches >= 2)
+            {
+                return "Damage specialist";
+            }
+
+            if (utilityBranches >= 2)
+            {
+                return "Utility specialist";
+            }
+
+            if (damageBranches == utilityBranches)
+            {
+                return "Balanced";
+            }
+
+            return damageBranches > utilityBranches ? "Damage leaning" : "Utility leaning";
+        }
+
+        private static string BuildSpecializationEffectLabel(IReadOnlyList<TDTowerUpgradeBranch> history)
+        {
+            if (history == null || history.Count == 0)
+            {
+                return "Spec effect: none";
+            }
+
+            var damageBranches = 0;
+            var utilityBranches = 0;
+            for (var i = 0; i < history.Count; i++)
+            {
+                if (history[i] == TDTowerUpgradeBranch.Damage)
+                {
+                    damageBranches++;
+                }
+                else
+                {
+                    utilityBranches++;
+                }
+            }
+
+            if (damageBranches >= 2)
+            {
+                return "Spec effect: threat execute";
+            }
+
+            if (utilityBranches >= 2)
+            {
+                return "Spec effect: control field";
+            }
+
+            return "Spec effect: unlock at D2 or U2";
         }
 
         private void ApplyDamageBranch(TowerState state, float factor)
@@ -658,6 +853,65 @@ namespace TD
             };
         }
 
+        private static string BuildUpgradeDeltaSummary(TowerState before, TowerState after)
+        {
+            if (before == null || after == null)
+            {
+                return "-";
+            }
+
+            var deltas = new List<string>(4);
+            AddIntDelta(deltas, "dmg", before.damage, after.damage);
+            AddFloatDelta(deltas, "rng", before.range, after.range, "0.0");
+            AddFloatDelta(deltas, "rate", before.shotsPerSecond, after.shotsPerSecond, "0.00");
+            AddFloatDelta(deltas, "aoe", before.aoeRadius, after.aoeRadius, "0.0");
+            AddIntDelta(deltas, "targets", before.aoeMaxTargets, after.aoeMaxTargets);
+            AddPercentDelta(deltas, "slow", before.slowPct, after.slowPct);
+            AddFloatDelta(deltas, "slowT", before.slowDuration, after.slowDuration, "0.0");
+            AddFloatDelta(deltas, "heavy", before.heavyMultiplier, after.heavyMultiplier, "0.00");
+
+            if (deltas.Count == 0)
+            {
+                return "role tune";
+            }
+
+            var max = Mathf.Min(2, deltas.Count);
+            var shown = new List<string>(max);
+            for (var i = 0; i < max; i++)
+            {
+                shown.Add(deltas[i]);
+            }
+
+            return string.Join(" ", shown);
+        }
+
+        private static void AddIntDelta(List<string> deltas, string label, int before, int after)
+        {
+            var delta = after - before;
+            if (delta != 0)
+            {
+                deltas.Add($"{label} +{delta}");
+            }
+        }
+
+        private static void AddFloatDelta(List<string> deltas, string label, float before, float after, string format)
+        {
+            var delta = after - before;
+            if (Mathf.Abs(delta) > 0.005f)
+            {
+                deltas.Add($"{label} +{delta.ToString(format)}");
+            }
+        }
+
+        private static void AddPercentDelta(List<string> deltas, string label, float before, float after)
+        {
+            var delta = after - before;
+            if (Mathf.Abs(delta) > 0.005f)
+            {
+                deltas.Add($"{label} +{Mathf.RoundToInt(delta * 100f)}%");
+            }
+        }
+
         private void RefreshVisual()
         {
             ApplyBaseVisual();
@@ -675,7 +929,9 @@ namespace TD
             ResolveVisualResourcePaths(out var spritePath, out var animationPrefix, out var animationFrames);
             renderer.sortingOrder = _activeState.sortingOrder;
             renderer.sprite = TDArtLibrary.LoadSpriteOrFallback(spritePath, _activeState.fallbackColor);
+            renderer.color = ResolveSpecializationTowerTint();
             visualRoot.localScale = ResolveScaleToCellWidth(renderer.sprite, _activeState.visualScale, 1f);
+            ApplySpecializationVisual(renderer.sortingOrder);
 
             var animator = visualRoot.GetComponent<TDSpriteAnimator>();
             if (!string.IsNullOrWhiteSpace(animationPrefix) && animationFrames > 1)
@@ -691,6 +947,81 @@ namespace TD
             {
                 animator.enabled = false;
             }
+        }
+
+        private Color ResolveSpecializationTowerTint()
+        {
+            if (DamageBranchCount >= 2)
+            {
+                return new Color(1f, 0.91f, 0.76f, 1f);
+            }
+
+            if (UtilityBranchCount >= 2)
+            {
+                return new Color(0.78f, 0.96f, 1f, 1f);
+            }
+
+            return Color.white;
+        }
+
+        private void ApplySpecializationVisual(int towerSortingOrder)
+        {
+            if (!TryResolveSpecializationColor(out var color))
+            {
+                if (_specializationRoot != null)
+                {
+                    _specializationRoot.gameObject.SetActive(false);
+                }
+
+                return;
+            }
+
+            var renderer = GetOrCreateSpecializationRenderer();
+            var sprite = TDArtLibrary.GetSoftRingSprite();
+            renderer.sprite = sprite;
+            renderer.sortingOrder = Mathf.Max(1, towerSortingOrder - 2);
+            _specializationBaseColor = color;
+            _specializationRoot.gameObject.SetActive(sprite != null);
+            _specializationRoot.localPosition = new Vector3(0f, -0.10f, 0f);
+            _specializationRoot.localScale = ResolveScaleToCellWidth(sprite, 1.18f, 1.18f);
+            UpdateSpecializationVisualPulse();
+        }
+
+        private void UpdateSpecializationVisualPulse()
+        {
+            if (_specializationRoot == null || _specializationRenderer == null || !_specializationRoot.gameObject.activeSelf)
+            {
+                return;
+            }
+
+            _specializationPulse += Time.deltaTime * 3.2f;
+            var pulse = 0.5f + (Mathf.Sin(_specializationPulse) * 0.5f);
+            var alpha = Mathf.Lerp(0.28f, 0.54f, pulse);
+            var scale = Mathf.Lerp(0.98f, 1.05f, pulse);
+            _specializationRenderer.color = new Color(
+                _specializationBaseColor.r,
+                _specializationBaseColor.g,
+                _specializationBaseColor.b,
+                alpha);
+            _specializationRoot.localScale = ResolveScaleToCellWidth(_specializationRenderer.sprite, 1.18f * scale, 1.18f * scale);
+        }
+
+        private bool TryResolveSpecializationColor(out Color color)
+        {
+            if (DamageBranchCount >= 2)
+            {
+                color = new Color(1f, 0.54f, 0.18f, 1f);
+                return true;
+            }
+
+            if (UtilityBranchCount >= 2)
+            {
+                color = new Color(0.34f, 0.92f, 1f, 1f);
+                return true;
+            }
+
+            color = Color.clear;
+            return false;
         }
 
         private void ResolveVisualResourcePaths(out string spritePath, out string animationPrefix, out int animationFrames)
@@ -861,6 +1192,33 @@ namespace TD
             }
 
             return renderer;
+        }
+
+        private SpriteRenderer GetOrCreateSpecializationRenderer()
+        {
+            if (_specializationRoot == null)
+            {
+                var specChild = transform.Find("SpecAura");
+                if (specChild == null)
+                {
+                    var specObject = new GameObject("SpecAura");
+                    specChild = specObject.transform;
+                    specChild.SetParent(transform, false);
+                }
+
+                _specializationRoot = specChild;
+            }
+
+            if (_specializationRenderer == null)
+            {
+                _specializationRenderer = _specializationRoot.GetComponent<SpriteRenderer>();
+                if (_specializationRenderer == null)
+                {
+                    _specializationRenderer = _specializationRoot.gameObject.AddComponent<SpriteRenderer>();
+                }
+            }
+
+            return _specializationRenderer;
         }
 
         private Vector3 ResolveScaleToCellWidth(Sprite sprite, float targetCellCoverage, float fallbackScale)
