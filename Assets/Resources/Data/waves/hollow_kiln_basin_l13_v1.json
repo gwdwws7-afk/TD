@@ -78,14 +78,14 @@
                 "hollow_kiln_basin"
             ],
             "prepSeconds": 8.2,
-            "rewardGold": 31,
-            "budgetTarget": 34,
+            "rewardGold": 60,
+            "budgetTarget": 18.4,
             "budgetTolerance": 1.1,
             "hint": "[L13] W01: 识别新威胁并调整火力分工。",
             "groups": [
                 {
                     "enemyId": "skitter_runner",
-                    "count": 18,
+                    "count": 12,
                     "startDelay": 0.08,
                     "spawnInterval": 0.25,
                     "formation": "stream",
@@ -93,7 +93,7 @@
                 },
                 {
                     "enemyId": "spore_carrier",
-                    "count": 5,
+                    "count": 2,
                     "startDelay": 1.44,
                     "spawnInterval": 0.2,
                     "formation": "pack",
@@ -110,14 +110,14 @@
                 "hollow_kiln_basin"
             ],
             "prepSeconds": 8.06,
-            "rewardGold": 33,
-            "budgetTarget": 36.8,
+            "rewardGold": 55,
+            "budgetTarget": 20,
             "budgetTolerance": 1.1,
-            "hint": "[L13] W02: 持续压制并补齐覆盖空洞。",
+      "hint": "[L13] W02 REINFORCE: 窑炉净化已解锁；等敌群重叠后再消耗有限充能。",
             "groups": [
                 {
                     "enemyId": "cinder_glider",
-                    "count": 8,
+                    "count": 4,
                     "startDelay": 0,
                     "spawnInterval": 0.24,
                     "formation": "stream",
@@ -125,7 +125,7 @@
                 },
                 {
                     "enemyId": "ash_swarm",
-                    "count": 20,
+                    "count": 12,
                     "startDelay": 1.28,
                     "spawnInterval": 0.19,
                     "formation": "pack",
@@ -142,14 +142,14 @@
                 "hollow_kiln_basin"
             ],
             "prepSeconds": 8.32,
-            "rewardGold": 38,
-            "budgetTarget": 43.8,
+            "rewardGold": 60,
+            "budgetTarget": 32.2,
             "budgetTolerance": 1.1,
-            "hint": "[L13] W03: 综合考核：输出、控制、反制链稳定性。",
+      "hint": "[L13] W03 EXAM: 在装甲与高速敌人交汇时净化，破甲和停滞价值最高。",
             "groups": [
                 {
                     "enemyId": "cinder_glider",
-                    "count": 7,
+                    "count": 5,
                     "startDelay": 0,
                     "spawnInterval": 0.22,
                     "formation": "stream",
@@ -157,7 +157,7 @@
                 },
                 {
                     "enemyId": "spore_carrier",
-                    "count": 4,
+                    "count": 3,
                     "startDelay": 1,
                     "spawnInterval": 0.17,
                     "formation": "pack",
@@ -165,7 +165,7 @@
                 },
                 {
                     "enemyId": "plated_spore",
-                    "count": 4,
+                    "count": 3,
                     "startDelay": 2.24,
                     "spawnInterval": 0.69,
                     "formation": "burst",
@@ -695,7 +695,7 @@
             "rewardGold": 62,
             "budgetTarget": 105.6,
             "budgetTolerance": 1.05,
-            "hint": "[L13] W15: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+      "hint": "[L13] W15 EXAM PEAK: 不要把净化浪费在前排少量敌人，等待编织路线形成密集窗口。",
             "groups": [
                 {
                     "enemyId": "carapace_brute",
@@ -853,7 +853,7 @@
             "rewardGold": 68,
             "budgetTarget": 112.2,
             "budgetTolerance": 1.04,
-            "hint": "[L13] W18: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+      "hint": "[L13] W18 EXAM: 用净化打断最危险的交汇段，再让专精塔完成克制收割。",
             "groups": [
                 {
                     "enemyId": "carapace_brute",

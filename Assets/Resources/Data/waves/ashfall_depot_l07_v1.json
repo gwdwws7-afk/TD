@@ -78,24 +78,24 @@
                 "ashfall_depot"
             ],
             "prepSeconds": 9.3,
-            "rewardGold": 25,
-            "budgetTarget": 20.6,
+            "rewardGold": 99,
+            "budgetTarget": 7.2,
             "budgetTolerance": 1.1,
             "hint": "[L07] W01: 识别新威胁并调整火力分工。",
             "groups": [
                 {
                     "enemyId": "skitter_runner",
-                    "count": 11,
-                    "startDelay": 0.16,
-                    "spawnInterval": 0.25,
+                    "count": 4,
+                    "startDelay": 0.6,
+                    "spawnInterval": 0.32,
                     "formation": "stream",
                     "lane": "center"
                 },
                 {
                     "enemyId": "ash_swarm",
-                    "count": 12,
-                    "startDelay": 0.96,
-                    "spawnInterval": 0.2,
+                    "count": 4,
+                    "startDelay": 6.0,
+                    "spawnInterval": 0.3,
                     "formation": "pack",
                     "lane": "right"
                 }
@@ -110,24 +110,24 @@
                 "ashfall_depot"
             ],
             "prepSeconds": 9.16,
-            "rewardGold": 27,
-            "budgetTarget": 23.2,
+            "rewardGold": 67,
+            "budgetTarget": 12.8,
             "budgetTolerance": 1.1,
             "hint": "[L07] W02: 持续压制并补齐覆盖空洞。",
             "groups": [
                 {
                     "enemyId": "plated_spore",
-                    "count": 4,
-                    "startDelay": 0,
-                    "spawnInterval": 0.75,
+                    "count": 2,
+                    "startDelay": 0.4,
+                    "spawnInterval": 0.9,
                     "formation": "burst",
                     "lane": "right"
                 },
                 {
                     "enemyId": "ash_swarm",
-                    "count": 13,
-                    "startDelay": 1.36,
-                    "spawnInterval": 0.2,
+                    "count": 8,
+                    "startDelay": 6.0,
+                    "spawnInterval": 0.24,
                     "formation": "pack",
                     "lane": "left"
                 }
@@ -150,24 +150,24 @@
                 {
                     "enemyId": "plated_spore",
                     "count": 4,
-                    "startDelay": 0,
-                    "spawnInterval": 0.69,
+                    "startDelay": 0.4,
+                    "spawnInterval": 0.9,
                     "formation": "burst",
                     "lane": "left"
                 },
                 {
                     "enemyId": "ash_swarm",
                     "count": 11,
-                    "startDelay": 1.08,
-                    "spawnInterval": 0.2,
+                    "startDelay": 3.4,
+                    "spawnInterval": 0.28,
                     "formation": "pack",
                     "lane": "center"
                 },
                 {
                     "enemyId": "plated_spore",
                     "count": 2,
-                    "startDelay": 2.32,
-                    "spawnInterval": 0.69,
+                    "startDelay": 6.2,
+                    "spawnInterval": 0.9,
                     "formation": "burst",
                     "lane": "right"
                 }
@@ -190,16 +190,16 @@
                 {
                     "enemyId": "plated_spore",
                     "count": 5,
-                    "startDelay": 0.24,
-                    "spawnInterval": 0.79,
+                    "startDelay": 0.4,
+                    "spawnInterval": 0.95,
                     "formation": "burst",
                     "lane": "center"
                 },
                 {
                     "enemyId": "ash_swarm",
                     "count": 17,
-                    "startDelay": 1.04,
-                    "spawnInterval": 0.2,
+                    "startDelay": 3.8,
+                    "spawnInterval": 0.24,
                     "formation": "pack",
                     "lane": "right"
                 }
@@ -222,24 +222,24 @@
                 {
                     "enemyId": "plated_spore",
                     "count": 4,
-                    "startDelay": 0.08,
-                    "spawnInterval": 0.75,
+                    "startDelay": 0.4,
+                    "spawnInterval": 0.95,
                     "formation": "burst",
                     "lane": "right"
                 },
                 {
                     "enemyId": "ash_swarm",
                     "count": 12,
-                    "startDelay": 1.44,
-                    "spawnInterval": 0.2,
+                    "startDelay": 3.3,
+                    "spawnInterval": 0.26,
                     "formation": "pack",
                     "lane": "left"
                 },
                 {
                     "enemyId": "plated_spore",
                     "count": 3,
-                    "startDelay": 2.24,
-                    "spawnInterval": 0.75,
+                    "startDelay": 6.0,
+                    "spawnInterval": 0.9,
                     "formation": "burst",
                     "lane": "center"
                 }
@@ -263,32 +263,32 @@
                 {
                     "enemyId": "skitter_runner",
                     "count": 13,
-                    "startDelay": 0,
-                    "spawnInterval": 0.22,
+                    "startDelay": 0.4,
+                    "spawnInterval": 0.3,
                     "formation": "stream",
                     "lane": "left"
                 },
                 {
                     "enemyId": "ash_swarm",
                     "count": 12,
-                    "startDelay": 1.16,
-                    "spawnInterval": 0.2,
+                    "startDelay": 3.0,
+                    "spawnInterval": 0.25,
                     "formation": "pack",
                     "lane": "center"
                 },
                 {
                     "enemyId": "carapace_brute",
                     "count": 2,
-                    "startDelay": 2.4,
-                    "spawnInterval": 0.69,
+                    "startDelay": 5.5,
+                    "spawnInterval": 0.9,
                     "formation": "burst",
                     "lane": "right"
                 },
                 {
                     "enemyId": "plated_spore",
                     "count": 2,
-                    "startDelay": 3.08,
-                    "spawnInterval": 0.69,
+                    "startDelay": 6.7,
+                    "spawnInterval": 0.85,
                     "formation": "burst",
                     "lane": "left"
                 }
@@ -313,24 +313,24 @@
                 {
                     "enemyId": "ash_swarm",
                     "count": 21,
-                    "startDelay": 0,
-                    "spawnInterval": 0.2,
+                    "startDelay": 0.4,
+                    "spawnInterval": 0.23,
                     "formation": "pack",
                     "lane": "center"
                 },
                 {
                     "enemyId": "skitter_runner",
                     "count": 12,
-                    "startDelay": 1.12,
-                    "spawnInterval": 0.25,
+                    "startDelay": 2.8,
+                    "spawnInterval": 0.27,
                     "formation": "split_lane",
                     "lane": "split_lane"
                 },
                 {
                     "enemyId": "plated_spore",
                     "count": 3,
-                    "startDelay": 2.48,
-                    "spawnInterval": 0.79,
+                    "startDelay": 5.5,
+                    "spawnInterval": 0.85,
                     "formation": "burst",
                     "lane": "left"
                 }
@@ -406,32 +406,32 @@
                 {
                     "enemyId": "ash_swarm",
                     "count": 20,
-                    "startDelay": 0,
-                    "spawnInterval": 0.2,
+                    "startDelay": 0.4,
+                    "spawnInterval": 0.24,
                     "formation": "pack",
                     "lane": "left"
                 },
                 {
                     "enemyId": "skitter_runner",
                     "count": 12,
-                    "startDelay": 1.24,
-                    "spawnInterval": 0.21,
+                    "startDelay": 2.8,
+                    "spawnInterval": 0.26,
                     "formation": "cross_lane",
                     "lane": "cross_lane"
                 },
                 {
                     "enemyId": "plated_spore",
                     "count": 3,
-                    "startDelay": 1.92,
-                    "spawnInterval": 0.69,
+                    "startDelay": 4.4,
+                    "spawnInterval": 0.85,
                     "formation": "burst",
                     "lane": "right"
                 },
                 {
                     "enemyId": "carapace_brute",
                     "count": 3,
-                    "startDelay": 3.16,
-                    "spawnInterval": 0.69,
+                    "startDelay": 5.8,
+                    "spawnInterval": 0.85,
                     "formation": "burst",
                     "lane": "left"
                 }
@@ -858,40 +858,40 @@
                 {
                     "enemyId": "carapace_brute",
                     "count": 5,
-                    "startDelay": 0.24,
-                    "spawnInterval": 0.62,
+                    "startDelay": 0.5,
+                    "spawnInterval": 0.8,
                     "formation": "stagger",
                     "lane": "left"
                 },
                 {
                     "enemyId": "ash_swarm",
                     "count": 20,
-                    "startDelay": 0.84,
-                    "spawnInterval": 0.2,
+                    "startDelay": 2.0,
+                    "spawnInterval": 0.24,
                     "formation": "pack",
                     "lane": "center"
                 },
                 {
                     "enemyId": "skitter_runner",
                     "count": 15,
-                    "startDelay": 2,
-                    "spawnInterval": 0.2,
+                    "startDelay": 3.8,
+                    "spawnInterval": 0.26,
                     "formation": "split_lane",
                     "lane": "split_lane"
                 },
                 {
                     "enemyId": "plated_spore",
                     "count": 5,
-                    "startDelay": 3.16,
-                    "spawnInterval": 0.62,
+                    "startDelay": 5.5,
+                    "spawnInterval": 0.8,
                     "formation": "stagger",
                     "lane": "left"
                 },
                 {
                     "enemyId": "carapace_brute",
                     "count": 3,
-                    "startDelay": 3.76,
-                    "spawnInterval": 0.62,
+                    "startDelay": 7.0,
+                    "spawnInterval": 0.8,
                     "formation": "stagger",
                     "lane": "center"
                 }

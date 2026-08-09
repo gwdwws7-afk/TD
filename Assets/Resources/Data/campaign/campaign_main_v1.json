@@ -3,6 +3,126 @@
     "campaignId":  "emberline_campaign_main_v1",
     "displayName":  "Emberline Defense Campaign",
     "totalLevels":  20,
+    "difficultyTiers":  [
+                             {
+                                 "tier":  0,
+                                 "difficultyId":  "standard",
+                                 "displayName":  "Standard",
+                                 "description":  "The authored campaign rules and baseline enemy pressure."
+                             },
+                             {
+                                 "tier":  1,
+                                 "difficultyId":  "veteran",
+                                 "displayName":  "Veteran",
+                                 "description":  "A cleared chapter returns with tighter economy and reinforced enemies.",
+                                 "modifiers":  {
+                                                   "mutatorId":  "difficulty_veteran",
+                                                   "displayName":  "Veteran Pressure",
+                                                   "enemyHpMultiplier":  1.15,
+                                                   "enemySpeedMultiplier":  1.08,
+                                                   "enemyArmorBonus":  1,
+                                                   "startingBudgetDelta":  -14,
+                                                   "rewardMultiplier":  0.96,
+                                                   "scenarioCostMultiplier":  1.15
+                                               }
+                             },
+                             {
+                                 "tier":  2,
+                                 "difficultyId":  "ember_trial",
+                                 "displayName":  "Ember Trial",
+                                 "description":  "The completed campaign remixed at maximum pressure with scarce reserves.",
+                                 "modifiers":  {
+                                                   "mutatorId":  "difficulty_ember_trial",
+                                                   "displayName":  "Ember Trial Pressure",
+                                                   "enemyHpMultiplier":  1.3,
+                                                   "enemySpeedMultiplier":  1.15,
+                                                   "enemyArmorBonus":  3,
+                                                   "startingBudgetDelta":  -28,
+                                                   "startingIntegrityDelta":  -4,
+                                                   "rewardMultiplier":  1.0,
+                                                   "resonanceGainMultiplier":  1.1,
+                                                   "scenarioCostMultiplier":  1.3
+                                               }
+                             }
+                         ],
+    "metaProgression":  {
+                            "tacticalProtocols":  [
+                                                       {
+                                                           "protocolId":  "baseline",
+                                                           "displayName":  "Standard Charter",
+                                                           "description":  "Authored campaign rules with no additional modifier.",
+                                                           "unlockHint":  "Available from the first deployment."
+                                                       },
+                                                       {
+                                                           "protocolId":  "forward_recon",
+                                                           "displayName":  "Forward Recon",
+                                                           "description":  "+4 seconds of preparation, but deployment starts with 8 less budget.",
+                                                           "unlockHint":  "Earn 12 campaign stars.",
+                                                           "startingBudgetDelta":  -8,
+                                                           "prepSecondsDelta":  4
+                                                       },
+                                                       {
+                                                           "protocolId":  "salvage_mandate",
+                                                           "displayName":  "Salvage Mandate",
+                                                           "description":  "+12% combat income, but enemies deploy with +6% health.",
+                                                           "unlockHint":  "Earn 30 campaign stars.",
+                                                           "enemyHpMultiplier":  1.06,
+                                                           "rewardMultiplier":  1.12
+                                                       },
+                                                       {
+                                                           "protocolId":  "field_control",
+                                                           "displayName":  "Field Control",
+                                                           "description":  "+1 environment command charge, but each command costs 25% more.",
+                                                           "unlockHint":  "Complete 4 enemy behavior dossiers.",
+                                                           "scenarioChargeDelta":  1,
+                                                           "scenarioCostMultiplier":  1.25
+                                                       },
+                                                       {
+                                                           "protocolId":  "modular_reserve",
+                                                           "displayName":  "Modular Reserve",
+                                                           "description":  "+12 starting budget, but enemies deploy with +8% health.",
+                                                           "unlockHint":  "Complete 4 tower field dossiers.",
+                                                           "startingBudgetDelta":  12,
+                                                           "enemyHpMultiplier":  1.08
+                                                       }
+                                                   ],
+                            "ratingRewards":  [
+                                                   {
+                                                       "rewardId":  "rating_12_forward_recon",
+                                                       "displayName":  "Recon Charter",
+                                                       "description":  "Forward Recon is now selectable before each mission.",
+                                                       "sourceType":  "campaign_stars",
+                                                       "threshold":  12,
+                                                       "unlockProtocolId":  "forward_recon"
+                                                   },
+                                                   {
+                                                       "rewardId":  "rating_30_salvage_mandate",
+                                                       "displayName":  "Salvage Charter",
+                                                       "description":  "Salvage Mandate is now selectable before each mission.",
+                                                       "sourceType":  "campaign_stars",
+                                                       "threshold":  30,
+                                                       "unlockProtocolId":  "salvage_mandate"
+                                                   }
+                                               ],
+                            "codexRewards":  [
+                                                  {
+                                                      "rewardId":  "enemy_dossier_4_field_control",
+                                                      "displayName":  "Field Analyst Charter",
+                                                      "description":  "Field Control is now selectable before each mission.",
+                                                      "sourceType":  "enemy_dossiers",
+                                                      "threshold":  4,
+                                                      "unlockProtocolId":  "field_control"
+                                                  },
+                                                  {
+                                                      "rewardId":  "tower_dossier_4_modular_reserve",
+                                                      "displayName":  "Engineering Charter",
+                                                      "description":  "Modular Reserve is now selectable before each mission.",
+                                                      "sourceType":  "tower_dossiers",
+                                                      "threshold":  4,
+                                                      "unlockProtocolId":  "modular_reserve"
+                                                  }
+                                              ]
+                        },
     "chapters":  [
                      {
                          "chapterId":  "chapter_a",
@@ -12,7 +132,21 @@
                          "themeTags":  [
                                            "baseline",
                                            "coverage"
-                                       ]
+                                       ],
+                         "reward":  {
+                                        "rewardId":  "forward_reserves",
+                                        "displayName":  "Forward Reserves",
+                                        "description":  "+10 starting defense budget on every deployment.",
+                                        "startingBudgetBonus":  10,
+                                        "startingIntegrityBonus":  0,
+                                        "resonanceGainMultiplier":  1.0
+                                    },
+                         "challengeRemix":  {
+                                                  "mutatorId":  "chapter_a_rapid_escalation",
+                                                  "displayName":  "Rapid Escalation",
+                                                  "enemySpeedMultiplier":  1.06,
+                                                  "startingBudgetDelta":  -5
+                                    }
                      },
                      {
                          "chapterId":  "chapter_b",
@@ -22,7 +156,21 @@
                          "themeTags":  [
                                            "armor",
                                            "economy"
-                                       ]
+                                       ],
+                         "reward":  {
+                                        "rewardId":  "hardened_line",
+                                        "displayName":  "Hardened Line",
+                                        "description":  "+1 starting line integrity on every deployment.",
+                                        "startingBudgetBonus":  0,
+                                        "startingIntegrityBonus":  1,
+                                        "resonanceGainMultiplier":  1.0
+                                    },
+                         "challengeRemix":  {
+                                                  "mutatorId":  "chapter_b_plated_advance",
+                                                  "displayName":  "Plated Advance",
+                                                  "enemyHpMultiplier":  1.05,
+                                                  "enemyArmorBonus":  1
+                                    }
                      },
                      {
                          "chapterId":  "chapter_c",
@@ -32,7 +180,21 @@
                          "themeTags":  [
                                            "branching",
                                            "counter"
-                                       ]
+                                       ],
+                         "reward":  {
+                                        "rewardId":  "tuned_relay",
+                                        "displayName":  "Tuned Relay",
+                                        "description":  "+5% resonance gain on every deployment.",
+                                        "startingBudgetBonus":  0,
+                                        "startingIntegrityBonus":  0,
+                                        "resonanceGainMultiplier":  1.05
+                                    },
+                         "challengeRemix":  {
+                                                  "mutatorId":  "chapter_c_crossfire_tax",
+                                                  "displayName":  "Crossfire Tax",
+                                                  "startingBudgetDelta":  -8,
+                                                  "rewardMultiplier":  0.95
+                                    }
                      },
                      {
                          "chapterId":  "chapter_d",
@@ -42,7 +204,22 @@
                          "themeTags":  [
                                            "resonance",
                                            "finale"
-                                       ]
+                                       ],
+                         "reward":  {
+                                        "rewardId":  "emberline_charter",
+                                        "displayName":  "Emberline Charter",
+                                        "description":  "+10 starting budget and +1 integrity on campaign replays.",
+                                        "startingBudgetBonus":  10,
+                                        "startingIntegrityBonus":  1,
+                                        "resonanceGainMultiplier":  1.0
+                                    },
+                         "challengeRemix":  {
+                                                  "mutatorId":  "chapter_d_resonance_storm",
+                                                  "displayName":  "Resonance Storm",
+                                                  "enemyHpMultiplier":  1.08,
+                                                  "enemySpeedMultiplier":  1.04,
+                                                  "resonanceGainMultiplier":  1.15
+                                    }
                      }
                  ],
     "maps":  [
@@ -50,31 +227,84 @@
                      "mapId":  "grayline_junction",
                      "displayName":  "Grayline Junction",
                      "sceneKey":  "sample_scene",
-                     "tacticalHook":  "Single-route onboarding with one anchor bend."
+                     "tacticalHook":  "Single-route onboarding with one anchor bend.",
+                     "mechanic":  {
+                                       "mechanicId":  "grayline_signal_gate",
+                                       "displayName":  "Signal Gate",
+                                       "description":  "Spend budget during prep to hold every enemy group and widen response spacing.",
+                                       "commandLabel":  "Hold Gate",
+                                       "mechanicType":  "signal_gate",
+                                       "maxCharges":  3,
+                                       "budgetCost":  10,
+                                       "effectDurationSeconds":  3.0
+                                   }
                  },
                  {
                      "mapId":  "ashfall_depot",
                      "displayName":  "Ashfall Depot",
                      "sceneKey":  "sample_scene",
-                     "tacticalHook":  "Dual-route rail depot with merge timing checks."
+                     "tacticalHook":  "Dual-route rail depot with merge timing checks.",
+                     "mechanic":  {
+                                       "mechanicId":  "ashfall_reserve_train",
+                                       "displayName":  "Reserve Train",
+                                       "description":  "Invest budget for a delayed reserve shipment; early dispatch may begin before it arrives.",
+                                       "commandLabel":  "Call Train",
+                                       "mechanicType":  "timed_reinforcement",
+                                       "maxCharges":  3,
+                                       "budgetCost":  14,
+                                       "reinforcementDelaySeconds":  7.0
+                                   }
                  },
                  {
                      "mapId":  "split_switch_canyon",
                      "displayName":  "Split Switch Canyon",
                      "sceneKey":  "sample_scene",
-                     "tacticalHook":  "Tri-lane switchback with alternating split/cross pressure."
+                     "tacticalHook":  "Tri-lane switchback with alternating split/cross pressure.",
+                     "mechanic":  {
+                                       "mechanicId":  "split_canyon_switch",
+                                       "displayName":  "Canyon Switch",
+                                       "description":  "Cycle the junction during prep to divert center, split and cross traffic onto a chosen lane.",
+                                       "commandLabel":  "Cycle Route",
+                                       "mechanicType":  "route_switch",
+                                       "maxCharges":  0,
+                                       "budgetCost":  12
+                                   }
                  },
                  {
                      "mapId":  "hollow_kiln_basin",
                      "displayName":  "Hollow Kiln Basin",
                      "sceneKey":  "sample_scene",
-                     "tacticalHook":  "Braided basin routes with short reaction windows."
+                     "tacticalHook":  "Braided basin routes with short reaction windows.",
+                     "mechanic":  {
+                                       "mechanicId":  "hollow_kiln_purge",
+                                       "displayName":  "Kiln Purge",
+                                       "description":  "Fire a limited combat purge that damages, breaks armor and staggers every active enemy.",
+                                       "commandLabel":  "Purge Kiln",
+                                       "mechanicType":  "environment_device",
+                                       "maxCharges":  3,
+                                       "budgetCost":  20,
+                                       "effectDurationSeconds":  5.0
+                                   }
                  },
                  {
                      "mapId":  "last_ember_terminus",
                      "displayName":  "Last Ember Terminus",
                      "sceneKey":  "sample_scene",
-                     "tacticalHook":  "Final tri-route convergence and boss tempo test."
+                     "tacticalHook":  "Final tri-route convergence and boss tempo test.",
+                     "mechanic":  {
+                                       "mechanicId":  "terminus_phase_breaker",
+                                       "displayName":  "Phase Breaker",
+                                       "description":  "Expose and stagger the boss to suppress its next health-threshold overdrive.",
+                                       "commandLabel":  "Break Phase",
+                                       "mechanicType":  "boss_phase",
+                                       "maxCharges":  2,
+                                       "budgetCost":  28,
+                                       "effectDurationSeconds":  6.0,
+                                       "bossPhaseThresholds":  [
+                                                                     0.7,
+                                                                     0.35
+                                                                 ]
+                                   }
                  }
              ],
     "levels":  [
@@ -95,7 +325,21 @@
                                                "skitter_runner"
                                            ],
                        "recommendedPower":  1.0,
-                       "bossLevel":  false
+                       "bossLevel":  false,
+                       "contract":  {
+                                        "contractId":  "l01_hold_the_line",
+                                        "displayName":  "Hold the Line",
+                                        "metric":  "integrity",
+                                        "comparison":  "at_least",
+                                        "target":  16
+                                    },
+                       "mutators":  [
+                                         {
+                                             "mutatorId":  "l01_reserve_grant",
+                                             "displayName":  "Reserve Grant",
+                                             "startingBudgetDelta":  20
+                                         }
+                                     ]
                    },
                    {
                        "levelIndex":  2,
@@ -114,7 +358,21 @@
                                                "ash_swarm"
                                            ],
                        "recommendedPower":  1.18,
-                       "bossLevel":  false
+                       "bossLevel":  false,
+                       "contract":  {
+                                        "contractId":  "l02_seal_the_route",
+                                        "displayName":  "Seal the Route",
+                                        "metric":  "escapes",
+                                        "comparison":  "at_most",
+                                        "target":  2
+                                    },
+                       "mutators":  [
+                                         {
+                                             "mutatorId":  "l02_quickened_swarm",
+                                             "displayName":  "Quickened Swarm",
+                                             "enemySpeedMultiplier":  1.05
+                                         }
+                                     ]
                    },
                    {
                        "levelIndex":  3,
@@ -133,7 +391,21 @@
 
                                            ],
                        "recommendedPower":  1.36,
-                       "bossLevel":  false
+                       "bossLevel":  false,
+                       "contract":  {
+                                        "contractId":  "l03_compact_defense",
+                                        "displayName":  "Compact Defense",
+                                        "metric":  "tower_count",
+                                        "comparison":  "at_most",
+                                        "target":  3
+                                    },
+                       "mutators":  [
+                                         {
+                                             "mutatorId":  "l03_lean_supply",
+                                             "displayName":  "Lean Supply",
+                                             "startingBudgetDelta":  -10
+                                         }
+                                     ]
                    },
                    {
                        "levelIndex":  4,
@@ -152,7 +424,21 @@
 
                                            ],
                        "recommendedPower":  1.54,
-                       "bossLevel":  false
+                       "bossLevel":  false,
+                       "contract":  {
+                                        "contractId":  "l04_clean_execution",
+                                        "displayName":  "Clean Execution",
+                                        "metric":  "tactical_score",
+                                        "comparison":  "at_least",
+                                        "target":  65
+                                    },
+                       "mutators":  [
+                                         {
+                                             "mutatorId":  "l04_forced_march",
+                                             "displayName":  "Forced March",
+                                             "enemySpeedMultiplier":  1.08
+                                         }
+                                     ]
                    },
                    {
                        "levelIndex":  5,
@@ -171,7 +457,28 @@
 
                                            ],
                        "recommendedPower":  1.72,
-                       "bossLevel":  false
+                       "bossLevel":  false,
+                       "scenario":  {
+                                        "milestoneExam":  true,
+                                        "failureFocus":  "reserve_timing_and_route_coverage",
+                                        "intensity":  3
+                                    },
+                       "contract":  {
+                                        "contractId":  "l05_counter_drill",
+                                        "displayName":  "Counter Drill",
+                                        "metric":  "counter_score",
+                                        "comparison":  "at_least",
+                                        "target":  60
+                                    },
+                       "mutators":  [
+                                         {
+                                             "mutatorId":  "l05_hardened_vanguard",
+                                             "displayName":  "Hardened Vanguard",
+                                             "startingBudgetDelta":  65,
+                                             "startingIntegrityDelta":  8,
+                                             "enemyHpMultiplier":  1.04
+                                         }
+                                     ]
                    },
                    {
                        "levelIndex":  6,
@@ -192,7 +499,21 @@
                                                "carapace_brute"
                                            ],
                        "recommendedPower":  1.9,
-                       "bossLevel":  false
+                       "bossLevel":  false,
+                       "contract":  {
+                                        "contractId":  "l06_reserve_fund",
+                                        "displayName":  "Reserve Fund",
+                                        "metric":  "budget",
+                                        "comparison":  "at_least",
+                                        "target":  40
+                                    },
+                       "mutators":  [
+                                         {
+                                             "mutatorId":  "l06_plated_column",
+                                             "displayName":  "Plated Column",
+                                             "enemyArmorBonus":  1
+                                         }
+                                     ]
                    },
                    {
                        "levelIndex":  7,
@@ -213,7 +534,21 @@
                                                "plated_spore"
                                            ],
                        "recommendedPower":  2.08,
-                       "bossLevel":  false
+                       "bossLevel":  false,
+                       "contract":  {
+                                        "contractId":  "l07_field_refit",
+                                        "displayName":  "Field Refit",
+                                        "metric":  "upgrades",
+                                        "comparison":  "at_least",
+                                        "target":  2
+                                    },
+                       "mutators":  [
+                                         {
+                                             "mutatorId":  "l07_deep_reserves",
+                                             "displayName":  "Deep Reserves",
+                                             "enemyHpMultiplier":  1.1
+                                         }
+                                     ]
                    },
                    {
                        "levelIndex":  8,
@@ -232,7 +567,23 @@
                                                "burrow_sapper"
                                            ],
                        "recommendedPower":  2.26,
-                       "bossLevel":  false
+                       "bossLevel":  false,
+                       "contract":  {
+                                        "contractId":  "l08_leak_protocol",
+                                        "displayName":  "Leak Protocol",
+                                        "metric":  "escapes",
+                                        "comparison":  "at_most",
+                                        "target":  3
+                                    },
+                       "mutators":  [
+                     {
+                         "mutatorId":  "l08_compressed_bounties",
+                         "displayName":  "Emergency Reserves",
+                         "startingBudgetDelta":  30,
+                         "startingIntegrityDelta":  20,
+                         "rewardMultiplier":  0.9
+                     }
+                                     ]
                    },
                    {
                        "levelIndex":  9,
@@ -251,7 +602,26 @@
                                                "ember_leech"
                                            ],
                        "recommendedPower":  2.44,
-                       "bossLevel":  false
+                       "bossLevel":  false,
+                       "scenario":  {
+                                        "milestoneExam":  true,
+                                        "failureFocus":  "route_switch_commitment",
+                                        "intensity":  3
+                                    },
+                       "contract":  {
+                                        "contractId":  "l09_four_tower_line",
+                                        "displayName":  "Four-Tower Line",
+                                        "metric":  "tower_count",
+                                        "comparison":  "at_most",
+                                        "target":  4
+                                    },
+                       "mutators":  [
+                                         {
+                                             "mutatorId":  "l09_switchback_haste",
+                                             "displayName":  "Switchback Haste",
+                                             "enemySpeedMultiplier":  1.1
+                                         }
+                                     ]
                    },
                    {
                        "levelIndex":  10,
@@ -270,7 +640,22 @@
                                                "spore_carrier"
                                            ],
                        "recommendedPower":  2.62,
-                       "bossLevel":  false
+                       "bossLevel":  false,
+                       "contract":  {
+                                        "contractId":  "l10_tactical_grade",
+                                        "displayName":  "Tactical Grade",
+                                        "metric":  "tactical_score",
+                                        "comparison":  "at_least",
+                                        "target":  72
+                                    },
+                       "mutators":  [
+                                         {
+                                             "mutatorId":  "l10_armored_surge",
+                                             "displayName":  "Armored Surge",
+                                             "enemyHpMultiplier":  1.12,
+                                             "enemyArmorBonus":  1
+                                         }
+                                     ]
                    },
                    {
                        "levelIndex":  11,
@@ -291,7 +676,21 @@
                                                "rail_warden"
                                            ],
                        "recommendedPower":  2.8,
-                       "bossLevel":  false
+                       "bossLevel":  false,
+                       "contract":  {
+                                        "contractId":  "l11_precision_counters",
+                                        "displayName":  "Precision Counters",
+                                        "metric":  "counter_score",
+                                        "comparison":  "at_least",
+                                        "target":  68
+                                    },
+                       "mutators":  [
+                                         {
+                                             "mutatorId":  "l11_lean_supply_ii",
+                                             "displayName":  "Lean Supply II",
+                                             "startingBudgetDelta":  -15
+                                         }
+                                     ]
                    },
                    {
                        "levelIndex":  12,
@@ -312,7 +711,22 @@
 
                                            ],
                        "recommendedPower":  2.98,
-                       "bossLevel":  false
+                       "bossLevel":  false,
+                       "contract":  {
+                                        "contractId":  "l12_upgrade_cadence",
+                                        "displayName":  "Upgrade Cadence",
+                                        "metric":  "upgrades",
+                                        "comparison":  "at_least",
+                                        "target":  3
+                                    },
+                       "mutators":  [
+                                         {
+                                             "mutatorId":  "l12_rapid_rotation",
+                                             "displayName":  "Rapid Rotation",
+                                             "enemySpeedMultiplier":  1.1,
+                                             "rewardMultiplier":  0.95
+                                         }
+                                     ]
                    },
                    {
                        "levelIndex":  13,
@@ -331,7 +745,27 @@
                                                "cinder_glider"
                                            ],
                        "recommendedPower":  3.16,
-                       "bossLevel":  false
+                       "bossLevel":  false,
+                       "scenario":  {
+                                        "milestoneExam":  true,
+                                        "failureFocus":  "kiln_charge_timing",
+                                        "intensity":  3
+                                    },
+                       "contract":  {
+                                        "contractId":  "l13_integrity_reserve",
+                                        "displayName":  "Integrity Reserve",
+                                        "metric":  "integrity",
+                                        "comparison":  "at_least",
+                                        "target":  14
+                                    },
+                       "mutators":  [
+                                         {
+                                             "mutatorId":  "l13_kiln_vigor",
+                                             "displayName":  "Kiln Vigor",
+                                             "startingBudgetDelta":  40,
+                                             "enemyHpMultiplier":  1.0
+                                         }
+                                     ]
                    },
                    {
                        "levelIndex":  14,
@@ -350,7 +784,23 @@
 
                                            ],
                        "recommendedPower":  3.34,
-                       "bossLevel":  false
+                       "bossLevel":  false,
+                       "contract":  {
+                                        "contractId":  "l14_war_chest",
+                                        "displayName":  "War Chest",
+                                        "metric":  "budget",
+                                        "comparison":  "at_least",
+                                        "target":  60
+                                    },
+                       "mutators":  [
+                                         {
+                                             "mutatorId":  "l14_scarce_salvage",
+                                             "displayName":  "Scarce Salvage",
+                                             "startingBudgetDelta":  65,
+                                             "startingIntegrityDelta":  12,
+                                             "rewardMultiplier":  0.85
+                                         }
+                                     ]
                    },
                    {
                        "levelIndex":  15,
@@ -369,7 +819,24 @@
                                                "husk_titan"
                                            ],
                        "recommendedPower":  3.52,
-                       "bossLevel":  false
+                       "bossLevel":  false,
+                       "contract":  {
+                                        "contractId":  "l15_command_grade",
+                                        "displayName":  "Command Grade",
+                                        "metric":  "tactical_score",
+                                        "comparison":  "at_least",
+                                        "target":  78
+                                    },
+                       "mutators":  [
+                                         {
+                                       "mutatorId":  "l15_basin_bulwark",
+                                       "displayName":  "Basin Bulwark",
+                                       "enemyHpMultiplier":  1.08,
+                                       "enemyArmorBonus":  1,
+                                       "startingBudgetDelta":  14,
+                                       "startingIntegrityDelta":  8
+                                         }
+                                     ]
                    },
                    {
                        "levelIndex":  16,
@@ -390,7 +857,21 @@
 
                                            ],
                        "recommendedPower":  3.7,
-                       "bossLevel":  false
+                       "bossLevel":  false,
+                       "contract":  {
+                                        "contractId":  "l16_resonance_discipline",
+                                        "displayName":  "Resonance Discipline",
+                                        "metric":  "command_score",
+                                        "comparison":  "at_least",
+                                        "target":  65
+                                    },
+                       "mutators":  [
+                                         {
+                                             "mutatorId":  "l16_rationed_resonance",
+                                             "displayName":  "Rationed Resonance",
+                                             "resonanceGainMultiplier":  0.9
+                                         }
+                                     ]
                    },
                    {
                        "levelIndex":  17,
@@ -409,7 +890,28 @@
                                                "echo_mimic"
                                            ],
                        "recommendedPower":  3.88,
-                       "bossLevel":  false
+                       "bossLevel":  false,
+                       "scenario":  {
+                                        "milestoneExam":  true,
+                                        "failureFocus":  "terminus_phase_preparation",
+                                        "intensity":  3
+                                    },
+                       "contract":  {
+                                        "contractId":  "l17_matrix_alignment",
+                                        "displayName":  "Matrix Alignment",
+                                        "metric":  "matrix_full_matches",
+                                        "comparison":  "at_least",
+                                        "target":  6
+                                    },
+                       "mutators":  [
+                                         {
+                                             "mutatorId":  "l17_terminus_assault",
+                                             "displayName":  "Terminus Assault",
+                                             "startingBudgetDelta":  40,
+                                             "enemyHpMultiplier":  1.08,
+                                             "enemySpeedMultiplier":  1.12
+                                         }
+                                     ]
                    },
                    {
                        "levelIndex":  18,
@@ -428,7 +930,22 @@
 
                                            ],
                        "recommendedPower":  4.06,
-                       "bossLevel":  false
+                       "bossLevel":  false,
+                       "contract":  {
+                                        "contractId":  "l18_command_chain",
+                                        "displayName":  "Command Chain",
+                                        "metric":  "command_score",
+                                        "comparison":  "at_least",
+                                        "target":  75
+                                    },
+                       "mutators":  [
+                                         {
+                                             "mutatorId":  "l18_starved_supply",
+                                             "displayName":  "Starved Supply",
+                                             "startingBudgetDelta":  -20,
+                                             "rewardMultiplier":  0.8
+                                         }
+                                     ]
                    },
                    {
                        "levelIndex":  19,
@@ -447,7 +964,23 @@
 
                                            ],
                        "recommendedPower":  4.24,
-                       "bossLevel":  false
+                       "bossLevel":  false,
+                       "contract":  {
+                                        "contractId":  "l19_first_convergence",
+                                        "displayName":  "First Convergence",
+                                        "metric":  "convergence_triggers",
+                                        "comparison":  "at_least",
+                                        "target":  1
+                                    },
+                       "mutators":  [
+                                         {
+                                             "mutatorId":  "l19_fragile_line",
+                                             "displayName":  "Fragile Line",
+                                             "enemyHpMultiplier":  1.12,
+                                             "startingIntegrityDelta":  -4,
+                                             "rewardMultiplier":  0.75
+                                         }
+                                     ]
                    },
                    {
                        "levelIndex":  20,
@@ -466,12 +999,38 @@
                                                "furnace_matriarch"
                                            ],
                        "recommendedPower":  4.42,
-                       "bossLevel":  true
+                       "bossLevel":  true,
+                       "scenario":  {
+                                        "milestoneExam":  true,
+                                        "failureFocus":  "boss_phase_and_convergence_control",
+                                        "intensity":  3
+                                    },
+                       "contract":  {
+                                        "contractId":  "l20_double_convergence",
+                                        "displayName":  "Double Convergence",
+                                        "metric":  "convergence_triggers",
+                                        "comparison":  "at_least",
+                                        "target":  2
+                                    },
+                       "mutators":  [
+                                         {
+                                             "mutatorId":  "l20_final_siege",
+                                             "displayName":  "Final Siege",
+                                             "startingBudgetDelta":  50,
+                                             "enemyHpMultiplier":  1.18,
+                                             "enemySpeedMultiplier":  1.08,
+                                             "enemyArmorBonus":  2,
+                                             "rewardMultiplier":  0.75
+                                         }
+                                     ]
                    }
                ],
     "globalRules":  {
                         "maxFailureReasonsShown":  3,
                         "resonanceEnabledFromLevel":  16,
+                        "startingBudgetPerLevel":  6,
+                        "startingIntegrityPerChapter":  3,
+                        "towerPowerPerLevelPct":  2.5,
                         "allowEarlyWaveDispatch":  false
                     }
 }

@@ -21,6 +21,83 @@ namespace TD
         Utility = 1
     }
 
+    public enum TDResonanceAffinity
+    {
+        EmberSurge = 0,
+        FractureMark = 1,
+        Either = 2
+    }
+
+    public readonly struct TDTowerBalanceProfile
+    {
+        public readonly TDTowerKind kind;
+        public readonly int buildCost;
+        public readonly float range;
+        public readonly float shotsPerSecond;
+        public readonly int damage;
+        public readonly float aoeRadius;
+        public readonly int aoeMaxTargets;
+        public readonly float aoeMinFalloff;
+        public readonly float slowPct;
+        public readonly float slowDuration;
+        public readonly float heavyMultiplier;
+
+        public TDTowerBalanceProfile(
+            TDTowerKind kind,
+            int buildCost,
+            float range,
+            float shotsPerSecond,
+            int damage,
+            float aoeRadius,
+            int aoeMaxTargets,
+            float aoeMinFalloff,
+            float slowPct,
+            float slowDuration,
+            float heavyMultiplier)
+        {
+            this.kind = kind;
+            this.buildCost = buildCost;
+            this.range = range;
+            this.shotsPerSecond = shotsPerSecond;
+            this.damage = damage;
+            this.aoeRadius = aoeRadius;
+            this.aoeMaxTargets = aoeMaxTargets;
+            this.aoeMinFalloff = aoeMinFalloff;
+            this.slowPct = slowPct;
+            this.slowDuration = slowDuration;
+            this.heavyMultiplier = heavyMultiplier;
+        }
+    }
+
+    public sealed class TDTowerSpecializationDefinition
+    {
+        public readonly string specializationId;
+        public readonly TDTowerKind towerKind;
+        public readonly TDTowerUpgradeBranch branch;
+        public readonly string displayName;
+        public readonly string effectSummary;
+        public readonly string[] counterTags;
+        public readonly TDResonanceAffinity resonanceAffinity;
+
+        public TDTowerSpecializationDefinition(
+            string specializationId,
+            TDTowerKind towerKind,
+            TDTowerUpgradeBranch branch,
+            string displayName,
+            string effectSummary,
+            string[] counterTags,
+            TDResonanceAffinity resonanceAffinity)
+        {
+            this.specializationId = specializationId;
+            this.towerKind = towerKind;
+            this.branch = branch;
+            this.displayName = displayName;
+            this.effectSummary = effectSummary;
+            this.counterTags = counterTags ?? System.Array.Empty<string>();
+            this.resonanceAffinity = resonanceAffinity;
+        }
+    }
+
     public sealed class TDTower : MonoBehaviour
     {
         private sealed class TowerState
@@ -52,7 +129,6 @@ namespace TD
             public int baseSortingOrder;
         }
 
-        private static readonly float[] UpgradeTierMultiplier = { 1f, 1.6f, 2.4f };
         private static readonly float[] UpgradeDiminishing = { 1f, 0.9f, 0.8f };
         private static readonly TDTowerKind[] BuildOrder =
         {
@@ -66,6 +142,26 @@ namespace TD
             TDTowerKind.GravSnare
         };
 
+        private static readonly TDTowerSpecializationDefinition[] SpecializationDefinitions =
+        {
+            new("rail_armor_lance", TDTowerKind.RailLancer, TDTowerUpgradeBranch.Damage, "Armor Lance", "Pre-breaks armor and punishes heavy targets.", new[] { "armored", "heavy", "boss" }, TDResonanceAffinity.EmberSurge),
+            new("rail_pinning_rail", TDTowerKind.RailLancer, TDTowerUpgradeBranch.Utility, "Pinning Rail", "Pins and exposes priority runners.", new[] { "fast", "flank", "heavy" }, TDResonanceAffinity.FractureMark),
+            new("mortar_cinder_saturation", TDTowerKind.CinderMortar, TDTowerUpgradeBranch.Damage, "Cinder Saturation", "Amplifies swarm splash and low-health burn.", new[] { "swarm", "spawn", "support" }, TDResonanceAffinity.FractureMark),
+            new("mortar_ash_denial", TDTowerKind.CinderMortar, TDTowerUpgradeBranch.Utility, "Ash Denial", "Impact zones stagger and expose groups.", new[] { "swarm", "fast", "flank" }, TDResonanceAffinity.FractureMark),
+            new("frost_cryo_shatter", TDTowerKind.FrostCoil, TDTowerUpgradeBranch.Damage, "Cryo Shatter", "Shatters slowed, marked, or armored targets.", new[] { "fast", "flank", "armored" }, TDResonanceAffinity.FractureMark),
+            new("frost_absolute_zero", TDTowerKind.FrostCoil, TDTowerUpgradeBranch.Utility, "Absolute Zero", "Deep-freeze pulses pin advancing threats.", new[] { "fast", "flank", "boss" }, TDResonanceAffinity.FractureMark),
+            new("arc_chain_overload", TDTowerKind.ArcWelder, TDTowerUpgradeBranch.Damage, "Chain Overload", "Adds two stronger chain jumps.", new[] { "swarm", "mixed", "spawn" }, TDResonanceAffinity.FractureMark),
+            new("arc_conductive_net", TDTowerKind.ArcWelder, TDTowerUpgradeBranch.Utility, "Conductive Net", "Chain links expose and pin special targets.", new[] { "swarm", "fast", "special" }, TDResonanceAffinity.FractureMark),
+            new("siege_core_bore", TDTowerKind.SiegeDrill, TDTowerUpgradeBranch.Damage, "Core Bore", "Cracks armor before a massive bore hit.", new[] { "armored", "heavy", "boss" }, TDResonanceAffinity.EmberSurge),
+            new("siege_breach_lock", TDTowerKind.SiegeDrill, TDTowerUpgradeBranch.Utility, "Breach Lock", "Locks breached armor and staggers support lines.", new[] { "armored", "support", "heavy" }, TDResonanceAffinity.EmberSurge),
+            new("flak_redline_burst", TDTowerKind.EmberFlak, TDTowerUpgradeBranch.Damage, "Redline Burst", "Executes fast and flanking targets.", new[] { "fast", "flank", "swarm" }, TDResonanceAffinity.FractureMark),
+            new("flak_intercept_screen", TDTowerKind.EmberFlak, TDTowerUpgradeBranch.Utility, "Intercept Screen", "Wide stagger bursts intercept runner packs.", new[] { "fast", "flank", "spawn" }, TDResonanceAffinity.FractureMark),
+            new("beacon_signal_burn", TDTowerKind.ResonanceBeacon, TDTowerUpgradeBranch.Damage, "Signal Burn", "Burns marked, support, and attrition targets.", new[] { "support", "attrition", "special" }, TDResonanceAffinity.EmberSurge),
+            new("beacon_resonance_relay", TDTowerKind.ResonanceBeacon, TDTowerUpgradeBranch.Utility, "Resonance Relay", "Relays marks, exposure, and extra command charge.", new[] { "support", "attrition", "mixed" }, TDResonanceAffinity.Either),
+            new("grav_event_horizon", TDTowerKind.GravSnare, TDTowerUpgradeBranch.Damage, "Event Horizon", "Damage scales with mass and route progress.", new[] { "heavy", "fast", "boss" }, TDResonanceAffinity.EmberSurge),
+            new("grav_singularity_well", TDTowerKind.GravSnare, TDTowerUpgradeBranch.Utility, "Singularity Well", "Wide gravity pulses pin and expose groups.", new[] { "fast", "flank", "swarm" }, TDResonanceAffinity.FractureMark)
+        };
+
         private readonly List<TDTowerUpgradeBranch> _upgradeHistory = new();
         private TDGameManager _gameManager;
         private TowerState _baseState;
@@ -75,9 +171,13 @@ namespace TD
         private Transform _shadowRoot;
         private Transform _specializationRoot;
         private SpriteRenderer _specializationRenderer;
+        private TDTowerReadability _readability;
         private Color _specializationBaseColor;
         private float _specializationPulse;
         private float _cooldown;
+        private TDEnemy _windupTarget;
+        private float _windupTimer;
+        private float _windupDuration;
 
         public TDTowerKind Kind { get; private set; }
         public int Tier => _upgradeHistory.Count;
@@ -95,12 +195,47 @@ namespace TD
         public int UtilityBranchCount => CountUpgradeBranch(TDTowerUpgradeBranch.Utility);
         public bool IsDamageSpecialist => DamageBranchCount >= 2;
         public bool IsUtilitySpecialist => UtilityBranchCount >= 2;
-        public string SpecializationLabel => BuildSpecializationLabel(_upgradeHistory);
-        public string SpecializationEffectLabel => BuildSpecializationEffectLabel(_upgradeHistory);
+        public TDTowerSpecializationDefinition ActiveSpecialization => IsDamageSpecialist
+            ? GetSpecializationDefinition(Kind, TDTowerUpgradeBranch.Damage)
+            : IsUtilitySpecialist
+                ? GetSpecializationDefinition(Kind, TDTowerUpgradeBranch.Utility)
+                : null;
+        public string SpecializationLabel => BuildSpecializationLabel(Kind, _upgradeHistory);
+        public string SpecializationEffectLabel => BuildSpecializationEffectLabel(Kind, _upgradeHistory);
+        public Vector2Int GridCell { get; private set; }
+        public string AnalyticsId => gameObject != null ? gameObject.name : $"Tower_{GridCell.x}_{GridCell.y}";
+        public TDTowerReadability Readability => _readability;
+        public bool HasFoundation
+        {
+            get
+            {
+                var renderer = _baseRoot != null ? _baseRoot.GetComponent<SpriteRenderer>() : null;
+                return renderer != null && renderer.enabled && renderer.sprite != null;
+            }
+        }
 
         public static IReadOnlyList<TDTowerKind> GetBuildOrder()
         {
             return BuildOrder;
+        }
+
+        public static IReadOnlyList<TDTowerSpecializationDefinition> GetSpecializationDefinitions()
+        {
+            return SpecializationDefinitions;
+        }
+
+        public static TDTowerSpecializationDefinition GetSpecializationDefinition(TDTowerKind kind, TDTowerUpgradeBranch branch)
+        {
+            for (var i = 0; i < SpecializationDefinitions.Length; i++)
+            {
+                var definition = SpecializationDefinitions[i];
+                if (definition.towerKind == kind && definition.branch == branch)
+                {
+                    return definition;
+                }
+            }
+
+            return null;
         }
 
         public static bool TryParseTowerId(string towerId, out TDTowerKind kind)
@@ -190,13 +325,39 @@ namespace TD
             return Mathf.Max(0f, CreateBaseState(kind).range);
         }
 
-        public void Initialize(TDGameManager gameManager, TDTowerKind kind)
+        public static TDTowerBalanceProfile GetBalanceProfile(TDTowerKind kind)
+        {
+            var state = CreateBaseState(kind);
+            return new TDTowerBalanceProfile(
+                kind,
+                state.buildCost,
+                state.range,
+                state.shotsPerSecond,
+                state.damage,
+                state.aoeRadius,
+                state.aoeMaxTargets,
+                state.aoeMinFalloff,
+                state.slowPct,
+                state.slowDuration,
+                state.heavyMultiplier);
+        }
+
+        public void Initialize(TDGameManager gameManager, TDTowerKind kind, Vector2Int gridCell = default)
         {
             _gameManager = gameManager;
             Kind = kind;
+            GridCell = gridCell;
             _baseState = CreateBaseState(kind);
             RebuildActiveState();
+            _readability = GetComponent<TDTowerReadability>();
+            if (_readability == null)
+            {
+                _readability = gameObject.AddComponent<TDTowerReadability>();
+            }
+            _readability.Initialize(this, _gameManager != null ? _gameManager.CellWorldSize : 1f);
             RefreshVisual();
+            _readability.RefreshTier(_upgradeHistory);
+            RefreshDepthSorting();
         }
 
         public int GetUpgradeCost(TDTowerUpgradeBranch branch)
@@ -206,7 +367,7 @@ namespace TD
                 return int.MaxValue;
             }
 
-            var tierMultiplier = UpgradeTierMultiplier[Tier];
+            var tierMultiplier = TDEconomyTuning.GetUpgradeCostMultiplier(Tier);
             var branchFactor = branch == TDTowerUpgradeBranch.Utility ? 1.05f : 1f;
             return Mathf.CeilToInt(_baseState.buildCost * tierMultiplier * branchFactor);
         }
@@ -221,10 +382,24 @@ namespace TD
             _upgradeHistory.Add(branch);
             RebuildActiveState();
             RefreshVisual();
+            _readability?.RefreshTier(_upgradeHistory);
+            _readability?.PlayUpgrade(branch, Tier);
             return true;
         }
 
         public string GetUpgradePreviewSummary(TDTowerUpgradeBranch branch)
+        {
+            var summary = GetUpgradeStatDeltaSummary(branch);
+            if (summary == "MAX")
+            {
+                return summary;
+            }
+
+            var specToken = GetSpecializationPreviewToken(branch);
+            return string.IsNullOrWhiteSpace(specToken) ? summary : $"{summary} {specToken}";
+        }
+
+        public string GetUpgradeStatDeltaSummary(TDTowerUpgradeBranch branch)
         {
             if (!CanUpgrade || _activeState == null)
             {
@@ -238,15 +413,15 @@ namespace TD
             };
             var after = BuildStateWithHistory(previewHistory);
 
-            var summary = BuildUpgradeDeltaSummary(before, after);
-            var specToken = GetSpecializationPreviewToken(branch);
-            return string.IsNullOrWhiteSpace(specToken) ? summary : $"{summary} {specToken}";
+            return BuildUpgradeDeltaSummary(before, after);
         }
 
         private void Update()
         {
+            RefreshDepthSorting();
             if (_gameManager == null || _gameManager.IsGameOver)
             {
+                _readability?.SetChargeState(false, 0f);
                 return;
             }
 
@@ -255,22 +430,50 @@ namespace TD
             if (_cooldown > 0f)
             {
                 _cooldown -= Time.deltaTime;
+                _readability?.SetChargeState(false, 0f);
                 return;
             }
 
-            var target = _gameManager.GetClosestEnemy(transform.position, _activeState.range);
+            if (_windupTarget != null)
+            {
+                _windupTimer = Mathf.Max(0f, _windupTimer - Time.deltaTime);
+                var progress = _windupDuration <= 0f ? 1f : 1f - (_windupTimer / _windupDuration);
+                _readability?.SetChargeState(true, progress);
+                if (_windupTimer > 0f)
+                {
+                    return;
+                }
+
+                var chargedTarget = _windupTarget;
+                _windupTarget = null;
+                _readability?.SetChargeState(false, 0f);
+                if (chargedTarget != null)
+                {
+                    FireAt(chargedTarget);
+                    var fireRateMultiplier = _gameManager.GetTowerFireRateMultiplier(Kind);
+                    var shotInterval = 1f / Mathf.Max(0.01f, _activeState.shotsPerSecond * fireRateMultiplier);
+                    _cooldown = Mathf.Max(0.03f, shotInterval - _windupDuration);
+                }
+                return;
+            }
+
+            var target = _gameManager.GetPriorityEnemy(transform.position, _activeState.range, Kind);
             if (target == null)
             {
+                _readability?.SetChargeState(false, 0f);
                 return;
             }
 
-            FireAt(target);
-            var fireRateMultiplier = _gameManager.GetTowerFireRateMultiplier(Kind);
-            _cooldown = 1f / Mathf.Max(0.01f, _activeState.shotsPerSecond * fireRateMultiplier);
+            _windupTarget = target;
+            _windupDuration = ResolveWindupDuration();
+            _windupTimer = _windupDuration;
+            _readability?.SetChargeState(true, 0f);
         }
 
         private void FireAt(TDEnemy target)
         {
+            _readability?.PlayAttack();
+            _gameManager?.NotifyTowerFired(Kind);
             var resonanceDamageMultiplier = _gameManager != null ? _gameManager.GetTowerDamageMultiplier(Kind) : 1f;
             var resonanceProjectileSpeed = _gameManager != null ? _gameManager.GetProjectileSpeedMultiplier(Kind) : 1f;
             var resonanceAoeRadius = _gameManager != null ? _gameManager.GetAoeRadiusMultiplier(Kind) : 1f;
@@ -284,14 +487,14 @@ namespace TD
             shot.transform.localScale = Vector3.one * 1.05f;
 
             var renderer = shot.AddComponent<SpriteRenderer>();
-            renderer.sortingOrder = 20;
+            renderer.sortingOrder = TDWorldVisualOrder.Projectile;
             renderer.sprite = TDArtLibrary.LoadSpriteOrFallback("Art/projectile_bolt", new Color(0.95f, 0.92f, 0.28f));
 
             var projectile = shot.AddComponent<TDProjectile>();
             projectile.Initialize(
                 _gameManager,
                 target,
-                Kind,
+                this,
                 damage,
                 _activeState.projectileSpeed * resonanceProjectileSpeed,
                 _activeState.aoeRadius * resonanceAoeRadius,
@@ -301,6 +504,11 @@ namespace TD
                 _activeState.slowDuration + resonanceSlowDurationBonus,
                 IsDamageSpecialist,
                 IsUtilitySpecialist);
+        }
+
+        private float ResolveWindupDuration()
+        {
+            return TDTowerPresentationProfiles.Get(Kind).chargeDuration;
         }
 
         private float GetDamageMultiplier(TDEnemy target)
@@ -433,10 +641,13 @@ namespace TD
                 return string.Empty;
             }
 
-            return branch == TDTowerUpgradeBranch.Damage ? "spec:D" : "spec:U";
+            var definition = GetSpecializationDefinition(Kind, branch);
+            return definition == null
+                ? (branch == TDTowerUpgradeBranch.Damage ? "spec:D" : "spec:U")
+                : $"-> {definition.displayName}";
         }
 
-        private static string BuildSpecializationLabel(IReadOnlyList<TDTowerUpgradeBranch> history)
+        private static string BuildSpecializationLabel(TDTowerKind kind, IReadOnlyList<TDTowerUpgradeBranch> history)
         {
             if (history == null || history.Count == 0)
             {
@@ -459,12 +670,12 @@ namespace TD
 
             if (damageBranches >= 2)
             {
-                return "Damage specialist";
+                return GetSpecializationDefinition(kind, TDTowerUpgradeBranch.Damage)?.displayName ?? "Damage specialist";
             }
 
             if (utilityBranches >= 2)
             {
-                return "Utility specialist";
+                return GetSpecializationDefinition(kind, TDTowerUpgradeBranch.Utility)?.displayName ?? "Utility specialist";
             }
 
             if (damageBranches == utilityBranches)
@@ -475,7 +686,7 @@ namespace TD
             return damageBranches > utilityBranches ? "Damage leaning" : "Utility leaning";
         }
 
-        private static string BuildSpecializationEffectLabel(IReadOnlyList<TDTowerUpgradeBranch> history)
+        private static string BuildSpecializationEffectLabel(TDTowerKind kind, IReadOnlyList<TDTowerUpgradeBranch> history)
         {
             if (history == null || history.Count == 0)
             {
@@ -498,15 +709,31 @@ namespace TD
 
             if (damageBranches >= 2)
             {
-                return "Spec effect: threat execute";
+                var definition = GetSpecializationDefinition(kind, TDTowerUpgradeBranch.Damage);
+                return definition == null
+                    ? "Spec effect: threat execute"
+                    : $"{definition.effectSummary} [{GetResonanceAffinityLabel(definition.resonanceAffinity)}]";
             }
 
             if (utilityBranches >= 2)
             {
-                return "Spec effect: control field";
+                var definition = GetSpecializationDefinition(kind, TDTowerUpgradeBranch.Utility);
+                return definition == null
+                    ? "Spec effect: control field"
+                    : $"{definition.effectSummary} [{GetResonanceAffinityLabel(definition.resonanceAffinity)}]";
             }
 
             return "Spec effect: unlock at D2 or U2";
+        }
+
+        public static string GetResonanceAffinityLabel(TDResonanceAffinity affinity)
+        {
+            return affinity switch
+            {
+                TDResonanceAffinity.EmberSurge => "Ember",
+                TDResonanceAffinity.FractureMark => "Fracture",
+                _ => "Either"
+            };
         }
 
         private void ApplyDamageBranch(TowerState state, float factor)
@@ -615,7 +842,7 @@ namespace TD
                     visualScale = 0.94f,
                     visualYOffset = -0.10f,
                     sortingOrder = 12,
-                    baseSpritePath = string.Empty,
+                    baseSpritePath = "Art/tower_base_plate",
                     baseTint = new Color(0.60f, 0.74f, 0.84f, 0.92f),
                     baseScale = 0.96f,
                     baseYOffset = -0.10f,
@@ -625,13 +852,13 @@ namespace TD
                 {
                     displayName = "Cinder Mortar",
                     buildCost = 55,
-                    range = 2.8f,
-                    shotsPerSecond = 0.55f,
-                    damage = 22,
+                    range = 2.7f,
+                    shotsPerSecond = 0.50f,
+                    damage = 16,
                     projectileSpeed = 7.2f,
                     aoeRadius = 1.2f,
-                    aoeMaxTargets = 6,
-                    aoeMinFalloff = 0.45f,
+                    aoeMaxTargets = 5,
+                    aoeMinFalloff = 0.38f,
                     slowPct = 0f,
                     slowDuration = 0f,
                     heavyMultiplier = 1f,
@@ -643,7 +870,7 @@ namespace TD
                     visualScale = 1.00f,
                     visualYOffset = -0.09f,
                     sortingOrder = 12,
-                    baseSpritePath = string.Empty,
+                    baseSpritePath = "Art/tower_base_plate",
                     baseTint = new Color(0.82f, 0.64f, 0.50f, 0.92f),
                     baseScale = 0.98f,
                     baseYOffset = -0.09f,
@@ -671,7 +898,7 @@ namespace TD
                     visualScale = 0.90f,
                     visualYOffset = -0.07f,
                     sortingOrder = 12,
-                    baseSpritePath = string.Empty,
+                    baseSpritePath = "Art/tower_base_plate",
                     baseTint = new Color(0.54f, 0.82f, 0.92f, 0.92f),
                     baseScale = 0.92f,
                     baseYOffset = -0.08f,
@@ -683,7 +910,7 @@ namespace TD
                     buildCost = 62,
                     range = 2.7f,
                     shotsPerSecond = 0.85f,
-                    damage = 12,
+                    damage = 10,
                     projectileSpeed = 8.7f,
                     aoeRadius = 1.0f,
                     aoeMaxTargets = 3,
@@ -699,7 +926,7 @@ namespace TD
                     visualScale = 0.94f,
                     visualYOffset = -0.09f,
                     sortingOrder = 12,
-                    baseSpritePath = string.Empty,
+                    baseSpritePath = "Art/tower_base_plate",
                     baseTint = new Color(0.49f, 0.84f, 0.88f, 0.92f),
                     baseScale = 0.94f,
                     baseYOffset = -0.08f,
@@ -727,7 +954,7 @@ namespace TD
                     visualScale = 0.98f,
                     visualYOffset = -0.08f,
                     sortingOrder = 12,
-                    baseSpritePath = string.Empty,
+                    baseSpritePath = "Art/tower_base_plate",
                     baseTint = new Color(0.84f, 0.72f, 0.48f, 0.92f),
                     baseScale = 0.98f,
                     baseYOffset = -0.08f,
@@ -755,7 +982,7 @@ namespace TD
                     visualScale = 0.92f,
                     visualYOffset = -0.09f,
                     sortingOrder = 12,
-                    baseSpritePath = string.Empty,
+                    baseSpritePath = "Art/tower_base_plate",
                     baseTint = new Color(0.96f, 0.70f, 0.44f, 0.92f),
                     baseScale = 0.94f,
                     baseYOffset = -0.08f,
@@ -783,7 +1010,7 @@ namespace TD
                     visualScale = 0.96f,
                     visualYOffset = -0.08f,
                     sortingOrder = 12,
-                    baseSpritePath = string.Empty,
+                    baseSpritePath = "Art/tower_base_plate",
                     baseTint = new Color(0.66f, 0.88f, 0.68f, 0.92f),
                     baseScale = 0.96f,
                     baseYOffset = -0.08f,
@@ -811,7 +1038,7 @@ namespace TD
                     visualScale = 0.98f,
                     visualYOffset = -0.08f,
                     sortingOrder = 12,
-                    baseSpritePath = string.Empty,
+                    baseSpritePath = "Art/tower_base_plate",
                     baseTint = new Color(0.62f, 0.70f, 0.94f, 0.92f),
                     baseScale = 0.98f,
                     baseYOffset = -0.08f,
@@ -931,6 +1158,7 @@ namespace TD
             renderer.sprite = TDArtLibrary.LoadSpriteOrFallback(spritePath, _activeState.fallbackColor);
             renderer.color = ResolveSpecializationTowerTint();
             visualRoot.localScale = ResolveScaleToCellWidth(renderer.sprite, _activeState.visualScale, 1f);
+            visualRoot.localPosition = ResolveFoundationAnchoredVisualPosition(renderer);
             ApplySpecializationVisual(renderer.sortingOrder);
 
             var animator = visualRoot.GetComponent<TDSpriteAnimator>();
@@ -947,6 +1175,10 @@ namespace TD
             {
                 animator.enabled = false;
             }
+
+            _readability?.RefreshMotionBaseline();
+
+            RefreshDepthSorting();
         }
 
         private Color ResolveSpecializationTowerTint()
@@ -982,7 +1214,7 @@ namespace TD
             renderer.sortingOrder = Mathf.Max(1, towerSortingOrder - 2);
             _specializationBaseColor = color;
             _specializationRoot.gameObject.SetActive(sprite != null);
-            _specializationRoot.localPosition = new Vector3(0f, -0.10f, 0f);
+            _specializationRoot.localPosition = Vector3.zero;
             _specializationRoot.localScale = ResolveScaleToCellWidth(sprite, 1.18f, 1.18f);
             UpdateSpecializationVisualPulse();
         }
@@ -1090,10 +1322,13 @@ namespace TD
 
             shadowRenderer.sprite = shadowSprite;
             shadowRenderer.sortingOrder = Mathf.Max(0, _activeState.sortingOrder - 3);
-            shadowRenderer.color = new Color(0f, 0f, 0f, 0.32f);
+            // Stronger, warmer contact shadow so the body reads as grounded rather than floating.
+            shadowRenderer.color = new Color(0.05f, 0.04f, 0.06f, 0.58f);
 
-            var shadowCoverage = Mathf.Clamp(_activeState.visualScale * 0.86f, 0.50f, 1.05f);
-            _shadowRoot.localPosition = new Vector3(0f, -0.23f, 0f);
+            var shadowCoverage = Mathf.Clamp(_activeState.visualScale * 1.0f, 0.62f, 1.15f);
+            // Raise the shadow so it kisses the body's bottom anchor (+0.02), giving a tight 0.04 gap
+            // that reads as contact rather than the previous 0.10 floating gap.
+            _shadowRoot.localPosition = new Vector3(0f, -0.02f, 0f);
             _shadowRoot.localScale = ResolveScaleToCellWidth(shadowSprite, shadowCoverage, shadowCoverage);
         }
 
@@ -1120,11 +1355,67 @@ namespace TD
 
             baseRenderer.enabled = true;
             baseRenderer.sprite = sprite;
-            baseRenderer.color = _activeState.baseTint;
+            baseRenderer.color = new Color(0.92f, 0.95f, 0.96f, 0.84f);
             baseRenderer.sortingOrder = _activeState.baseSortingOrder;
 
-            _baseRoot.localPosition = new Vector3(0f, _activeState.baseYOffset, 0f);
-            _baseRoot.localScale = ResolveScaleToCellWidth(sprite, _activeState.baseScale, 0.9f);
+            _baseRoot.localPosition = Vector3.zero;
+            _baseRoot.localScale = ResolveScaleToCellWidth(sprite, 0.80f, 0.80f);
+        }
+
+        private Vector3 ResolveFoundationAnchoredVisualPosition(SpriteRenderer renderer)
+        {
+            if (renderer == null || renderer.sprite == null)
+            {
+                return new Vector3(0f, _activeState.visualYOffset, 0f);
+            }
+
+            if (Kind == TDTowerKind.FrostCoil ||
+                Kind == TDTowerKind.ResonanceBeacon ||
+                Kind == TDTowerKind.GravSnare)
+            {
+                return new Vector3(0f, 0.02f, 0f);
+            }
+
+            var scaledBottom = renderer.sprite.bounds.min.y * Mathf.Abs(renderer.transform.localScale.y);
+            return new Vector3(0f, -scaledBottom + 0.02f, 0f);
+        }
+
+        private void RefreshDepthSorting()
+        {
+            var bodyOrder = TDWorldVisualOrder.ResolveBodyOrder(transform.position.y);
+            if (_visualRoot != null)
+            {
+                var renderer = _visualRoot.GetComponent<SpriteRenderer>();
+                if (renderer != null)
+                {
+                    renderer.sortingOrder = bodyOrder;
+                }
+            }
+
+            if (_baseRoot != null)
+            {
+                var renderer = _baseRoot.GetComponent<SpriteRenderer>();
+                if (renderer != null)
+                {
+                    renderer.sortingOrder = bodyOrder - 2;
+                }
+            }
+
+            if (_shadowRoot != null)
+            {
+                var renderer = _shadowRoot.GetComponent<SpriteRenderer>();
+                if (renderer != null)
+                {
+                    renderer.sortingOrder = bodyOrder - 3;
+                }
+            }
+
+            if (_specializationRenderer != null)
+            {
+                _specializationRenderer.sortingOrder = bodyOrder - 1;
+            }
+
+            _readability?.ApplySorting(bodyOrder);
         }
 
         private Transform GetOrCreateVisualRoot()

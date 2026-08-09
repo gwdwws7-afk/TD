@@ -79,13 +79,13 @@
             ],
             "prepSeconds": 9.25,
             "rewardGold": 26,
-            "budgetTarget": 21.9,
+            "budgetTarget": 14.9,
             "budgetTolerance": 1.1,
             "hint": "[L08] W01: 识别新威胁并调整火力分工。",
             "groups": [
                 {
                     "enemyId": "burrow_sapper",
-                    "count": 5,
+                    "count": 3,
                     "startDelay": 0.24,
                     "spawnInterval": 0.25,
                     "formation": "stream",
@@ -93,7 +93,7 @@
                 },
                 {
                     "enemyId": "ash_swarm",
-                    "count": 13,
+                    "count": 10,
                     "startDelay": 1.04,
                     "spawnInterval": 0.2,
                     "formation": "pack",
@@ -111,13 +111,13 @@
             ],
             "prepSeconds": 9.11,
             "rewardGold": 28,
-            "budgetTarget": 25,
+            "budgetTarget": 18,
             "budgetTolerance": 1.1,
             "hint": "[L08] W02: 持续压制并补齐覆盖空洞。",
             "groups": [
                 {
                     "enemyId": "burrow_sapper",
-                    "count": 6,
+                    "count": 4,
                     "startDelay": 0.08,
                     "spawnInterval": 0.24,
                     "formation": "stream",
@@ -125,7 +125,7 @@
                 },
                 {
                     "enemyId": "ash_swarm",
-                    "count": 14,
+                    "count": 11,
                     "startDelay": 1.44,
                     "spawnInterval": 0.2,
                     "formation": "pack",
@@ -143,13 +143,13 @@
             ],
             "prepSeconds": 9.37,
             "rewardGold": 33,
-            "budgetTarget": 32.4,
+            "budgetTarget": 21.7,
             "budgetTolerance": 1.1,
             "hint": "[L08] W03: 综合考核：输出、控制、反制链稳定性。",
             "groups": [
                 {
                     "enemyId": "burrow_sapper",
-                    "count": 6,
+                    "count": 4,
                     "startDelay": 0,
                     "spawnInterval": 0.22,
                     "formation": "stream",
@@ -157,7 +157,7 @@
                 },
                 {
                     "enemyId": "ash_swarm",
-                    "count": 12,
+                    "count": 10,
                     "startDelay": 1.16,
                     "spawnInterval": 0.2,
                     "formation": "pack",
@@ -165,7 +165,7 @@
                 },
                 {
                     "enemyId": "carapace_brute",
-                    "count": 2,
+                    "count": 1,
                     "startDelay": 2.4,
                     "spawnInterval": 0.69,
                     "formation": "burst",
@@ -183,13 +183,13 @@
             ],
             "prepSeconds": 8.83,
             "rewardGold": 32,
-            "budgetTarget": 32,
+            "budgetTarget": 27.4,
             "budgetTolerance": 1.1,
             "hint": "[L08] W04: 识别新威胁并调整火力分工。",
             "groups": [
                 {
                     "enemyId": "burrow_sapper",
-                    "count": 8,
+                    "count": 6,
                     "startDelay": 0,
                     "spawnInterval": 0.25,
                     "formation": "stream",
@@ -215,13 +215,13 @@
             ],
             "prepSeconds": 8.69,
             "rewardGold": 34,
-            "budgetTarget": 33.2,
+            "budgetTarget": 30.9,
             "budgetTolerance": 1.1,
             "hint": "[L08] W05: 持续压制并补齐覆盖空洞。",
             "groups": [
                 {
                     "enemyId": "burrow_sapper",
-                    "count": 6,
+                    "count": 5,
                     "startDelay": 0.16,
                     "spawnInterval": 0.24,
                     "formation": "stream",
@@ -348,7 +348,7 @@
             ],
             "prepSeconds": 8.27,
             "rewardGold": 40,
-            "budgetTarget": 44.7,
+            "budgetTarget": 40.1,
             "budgetTolerance": 1.07,
             "hint": "[L08] W08: 持续压制并补齐覆盖空洞。 多线同时压测。",
             "groups": [
@@ -362,7 +362,7 @@
                 },
                 {
                     "enemyId": "burrow_sapper",
-                    "count": 5,
+                    "count": 4,
                     "startDelay": 1.04,
                     "spawnInterval": 0.23,
                     "formation": "cross_lane",
@@ -378,7 +378,7 @@
                 },
                 {
                     "enemyId": "burrow_sapper",
-                    "count": 4,
+                    "count": 3,
                     "startDelay": 3.76,
                     "spawnInterval": 0.24,
                     "formation": "stream",
@@ -399,7 +399,7 @@
             ],
             "prepSeconds": 8.53,
             "rewardGold": 45,
-            "budgetTarget": 52.5,
+            "budgetTarget": 50.2,
             "budgetTolerance": 1.07,
             "hint": "[L08] W09: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
             "groups": [
@@ -429,7 +429,7 @@
                 },
                 {
                     "enemyId": "burrow_sapper",
-                    "count": 4,
+                    "count": 3,
                     "startDelay": 3.24,
                     "spawnInterval": 0.21,
                     "formation": "cross_lane",
@@ -450,13 +450,13 @@
             ],
             "prepSeconds": 8.49,
             "rewardGold": 48,
-            "budgetTarget": 55.1,
+            "budgetTarget": 43.6,
             "budgetTolerance": 1.07,
             "hint": "[L08] W10: 识别新威胁并调整火力分工。 多线同时压测。",
             "groups": [
                 {
                     "enemyId": "burrow_sapper",
-                    "count": 10,
+                    "count": 7,
                     "startDelay": 0,
                     "spawnInterval": 0.25,
                     "formation": "split_lane",
@@ -464,7 +464,7 @@
                 },
                 {
                     "enemyId": "burrow_sapper",
-                    "count": 7,
+                    "count": 5,
                     "startDelay": 1.28,
                     "spawnInterval": 0.25,
                     "formation": "stream",
@@ -493,7 +493,7 @@
             ],
             "prepSeconds": 7.85,
             "rewardGold": 46,
-            "budgetTarget": 54.5,
+            "budgetTarget": 52.2,
             "budgetTolerance": 1.07,
             "hint": "[L08] W11: 持续压制并补齐覆盖空洞。 多线同时压测。",
             "groups": [
@@ -523,7 +523,7 @@
                 },
                 {
                     "enemyId": "burrow_sapper",
-                    "count": 5,
+                    "count": 4,
                     "startDelay": 3.84,
                     "spawnInterval": 0.24,
                     "formation": "stream",
@@ -544,7 +544,7 @@
             ],
             "prepSeconds": 8.11,
             "rewardGold": 51,
-            "budgetTarget": 62.7,
+            "budgetTarget": 55.8,
             "budgetTolerance": 1.07,
             "hint": "[L08] W12: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
             "groups": [
@@ -558,7 +558,7 @@
                 },
                 {
                     "enemyId": "burrow_sapper",
-                    "count": 7,
+                    "count": 5,
                     "startDelay": 0.84,
                     "spawnInterval": 0.22,
                     "formation": "split_lane",
@@ -574,7 +574,7 @@
                 },
                 {
                     "enemyId": "burrow_sapper",
-                    "count": 6,
+                    "count": 5,
                     "startDelay": 3.32,
                     "spawnInterval": 0.21,
                     "formation": "cross_lane",
@@ -596,7 +596,7 @@
             ],
             "prepSeconds": 7.57,
             "rewardGold": 50,
-            "budgetTarget": 61.5,
+            "budgetTarget": 56.9,
             "budgetTolerance": 1.05,
             "hint": "[L08] W13: 识别新威胁并调整火力分工。 多线同时压测。",
             "groups": [
@@ -618,7 +618,7 @@
                 },
                 {
                     "enemyId": "burrow_sapper",
-                    "count": 7,
+                    "count": 5,
                     "startDelay": 2.16,
                     "spawnInterval": 0.24,
                     "formation": "cross_lane",
@@ -640,7 +640,7 @@
             ],
             "prepSeconds": 7.43,
             "rewardGold": 52,
-            "budgetTarget": 64.5,
+            "budgetTarget": 59.9,
             "budgetTolerance": 1.05,
             "hint": "[L08] W14: 持续压制并补齐覆盖空洞。 多线同时压测。",
             "groups": [
@@ -670,7 +670,7 @@
                 },
                 {
                     "enemyId": "burrow_sapper",
-                    "count": 7,
+                    "count": 5,
                     "startDelay": 3.36,
                     "spawnInterval": 0.24,
                     "formation": "stream",
@@ -693,7 +693,7 @@
             ],
             "prepSeconds": 7.69,
             "rewardGold": 57,
-            "budgetTarget": 80.7,
+            "budgetTarget": 71.5,
             "budgetTolerance": 1.05,
             "hint": "[L08] W15: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
             "groups": [
@@ -715,7 +715,7 @@
                 },
                 {
                     "enemyId": "burrow_sapper",
-                    "count": 8,
+                    "count": 6,
                     "startDelay": 2.16,
                     "spawnInterval": 0.22,
                     "formation": "stream",
@@ -723,7 +723,7 @@
                 },
                 {
                     "enemyId": "burrow_sapper",
-                    "count": 7,
+                    "count": 5,
                     "startDelay": 3.4,
                     "spawnInterval": 0.21,
                     "formation": "cross_lane",
@@ -790,7 +790,7 @@
             ],
             "prepSeconds": 7.01,
             "rewardGold": 58,
-            "budgetTarget": 73.5,
+            "budgetTarget": 68.9,
             "budgetTolerance": 1.04,
             "hint": "[L08] W17: 持续压制并补齐覆盖空洞。 多线同时压测。",
             "groups": [
@@ -812,7 +812,7 @@
                 },
                 {
                     "enemyId": "burrow_sapper",
-                    "count": 6,
+                    "count": 5,
                     "startDelay": 2.48,
                     "spawnInterval": 0.22,
                     "formation": "split_lane",
@@ -820,7 +820,7 @@
                 },
                 {
                     "enemyId": "burrow_sapper",
-                    "count": 6,
+                    "count": 5,
                     "startDelay": 3.2,
                     "spawnInterval": 0.22,
                     "formation": "stream",
@@ -851,7 +851,7 @@
             ],
             "prepSeconds": 7.27,
             "rewardGold": 63,
-            "budgetTarget": 86.3,
+            "budgetTarget": 81.7,
             "budgetTolerance": 1.04,
             "hint": "[L08] W18: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
             "groups": [
@@ -881,7 +881,7 @@
                 },
                 {
                     "enemyId": "burrow_sapper",
-                    "count": 7,
+                    "count": 5,
                     "startDelay": 3.24,
                     "spawnInterval": 0.2,
                     "formation": "cross_lane",
@@ -912,7 +912,7 @@
             ],
             "prepSeconds": 6.73,
             "rewardGold": 62,
-            "budgetTarget": 80.7,
+            "budgetTarget": 71.5,
             "budgetTolerance": 1.04,
             "hint": "[L08] W19: 识别新威胁并调整火力分工。 多线同时压测。",
             "groups": [
@@ -934,7 +934,7 @@
                 },
                 {
                     "enemyId": "burrow_sapper",
-                    "count": 8,
+                    "count": 6,
                     "startDelay": 2.16,
                     "spawnInterval": 0.22,
                     "formation": "cross_lane",
@@ -942,7 +942,7 @@
                 },
                 {
                     "enemyId": "burrow_sapper",
-                    "count": 7,
+                    "count": 5,
                     "startDelay": 3.44,
                     "spawnInterval": 0.23,
                     "formation": "split_lane",
@@ -965,7 +965,7 @@
             ],
             "prepSeconds": 7.09,
             "rewardGold": 68,
-            "budgetTarget": 88.9,
+            "budgetTarget": 84.3,
             "budgetTolerance": 1.04,
             "hint": "[L08] W20: 持续压制并补齐覆盖空洞。 多线同时压测。",
             "groups": [
@@ -995,7 +995,7 @@
                 },
                 {
                     "enemyId": "burrow_sapper",
-                    "count": 7,
+                    "count": 5,
                     "startDelay": 3.28,
                     "spawnInterval": 0.22,
                     "formation": "stream",

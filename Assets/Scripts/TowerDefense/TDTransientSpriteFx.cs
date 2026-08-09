@@ -12,15 +12,25 @@ namespace TD
         private Vector3 _endScale = Vector3.one;
         private Color _startColor = Color.white;
         private Color _endColor = Color.white;
+        private TDCombatFxClass _budgetClass;
+        private bool _budgetLease;
 
         public void Configure(float duration, Vector3 startScale, Vector3 endScale, Color startColor, Color endColor)
         {
+            _budgetClass = TDCombatFxBudget.Classify(gameObject.name);
+            _budgetLease = TDCombatFxBudget.TryAcquire(_budgetClass);
+            if (!_budgetLease)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
             _renderer = GetComponent<SpriteRenderer>();
-            _duration = Mathf.Max(0.01f, duration);
+            _duration = TDCombatFxBudget.ClampDuration(_budgetClass, duration);
             _startScale = startScale;
             _endScale = endScale;
-            _startColor = startColor;
-            _endColor = endColor;
+            _startColor = TDCombatFxBudget.ClampColor(_budgetClass, startColor);
+            _endColor = TDCombatFxBudget.ClampColor(_budgetClass, endColor);
             _timer = 0f;
 
             transform.localScale = _startScale;
@@ -44,6 +54,15 @@ namespace TD
             if (t >= 1f)
             {
                 Destroy(gameObject);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (_budgetLease)
+            {
+                _budgetLease = false;
+                TDCombatFxBudget.Release(_budgetClass);
             }
         }
     }

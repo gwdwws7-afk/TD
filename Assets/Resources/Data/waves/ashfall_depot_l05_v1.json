@@ -78,14 +78,14 @@
                 "ashfall_depot"
             ],
             "prepSeconds": 9.4,
-            "rewardGold": 24,
-            "budgetTarget": 15.2,
+            "rewardGold": 34,
+            "budgetTarget": 11.6,
             "budgetTolerance": 1.1,
             "hint": "[L05] W01: 识别新威胁并调整火力分工。",
             "groups": [
                 {
                     "enemyId": "skitter_runner",
-                    "count": 8,
+                    "count": 6,
                     "startDelay": 0,
                     "spawnInterval": 0.25,
                     "formation": "stream",
@@ -93,7 +93,7 @@
                 },
                 {
                     "enemyId": "ash_swarm",
-                    "count": 9,
+                    "count": 7,
                     "startDelay": 1.36,
                     "spawnInterval": 0.2,
                     "formation": "pack",
@@ -110,14 +110,14 @@
                 "ashfall_depot"
             ],
             "prepSeconds": 9.26,
-            "rewardGold": 26,
-            "budgetTarget": 18,
+            "rewardGold": 36,
+            "budgetTarget": 14.4,
             "budgetTolerance": 1.1,
-            "hint": "[L05] W02: 持续压制并补齐覆盖空洞。",
+      "hint": "[L05] W02 REINFORCE: 呼叫储备列车，决定等待预算到站还是提前开波守双线。",
             "groups": [
                 {
                     "enemyId": "skitter_runner",
-                    "count": 10,
+                    "count": 8,
                     "startDelay": 0,
                     "spawnInterval": 0.24,
                     "formation": "stream",
@@ -125,7 +125,7 @@
                 },
                 {
                     "enemyId": "ash_swarm",
-                    "count": 10,
+                    "count": 8,
                     "startDelay": 1.2,
                     "spawnInterval": 0.2,
                     "formation": "pack",
@@ -142,14 +142,14 @@
                 "ashfall_depot"
             ],
             "prepSeconds": 9.52,
-            "rewardGold": 31,
-            "budgetTarget": 22.6,
+            "rewardGold": 45,
+            "budgetTarget": 17.4,
             "budgetTolerance": 1.1,
-            "hint": "[L05] W03: 综合考核：输出、控制、反制链稳定性。",
+      "hint": "[L05] W03 EXAM: 列车到站时机与左右线覆盖同时受考；过早开波会留下预算缺口。",
             "groups": [
                 {
                     "enemyId": "skitter_runner",
-                    "count": 9,
+                    "count": 7,
                     "startDelay": 0.24,
                     "spawnInterval": 0.22,
                     "formation": "stream",
@@ -157,7 +157,7 @@
                 },
                 {
                     "enemyId": "ash_swarm",
-                    "count": 8,
+                    "count": 6,
                     "startDelay": 0.92,
                     "spawnInterval": 0.2,
                     "formation": "pack",
@@ -165,7 +165,7 @@
                 },
                 {
                     "enemyId": "ash_swarm",
-                    "count": 9,
+                    "count": 7,
                     "startDelay": 2.16,
                     "spawnInterval": 0.2,
                     "formation": "pack",
@@ -686,7 +686,7 @@
             "rewardGold": 55,
             "budgetTarget": 62.2,
             "budgetTolerance": 1.05,
-            "hint": "[L05] W15: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+      "hint": "[L05] W15 EXAM PEAK: 用最后的列车投资补强薄弱线，保留足够即时预算处理侧翼。",
             "groups": [
                 {
                     "enemyId": "ash_swarm",
@@ -841,7 +841,7 @@
             "rewardGold": 61,
             "budgetTarget": 65.6,
             "budgetTolerance": 1.04,
-            "hint": "[L05] W18: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+      "hint": "[L05] W18 EXAM: 延迟增援、分路火力与早开波收益必须同时成立。",
             "groups": [
                 {
                     "enemyId": "skitter_runner",

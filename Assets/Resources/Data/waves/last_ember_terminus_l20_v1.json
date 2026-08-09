@@ -78,14 +78,14 @@
                 "last_ember_terminus"
             ],
             "prepSeconds": 7.45,
-            "rewardGold": 37,
-            "budgetTarget": 46.8,
+            "rewardGold": 65,
+            "budgetTarget": 25.6,
             "budgetTolerance": 1.1,
             "hint": "[L20] W01: 识别新威胁并调整火力分工。",
             "groups": [
                 {
                     "enemyId": "skitter_runner",
-                    "count": 26,
+                    "count": 16,
                     "startDelay": 0.08,
                     "spawnInterval": 0.25,
                     "formation": "stream",
@@ -93,7 +93,7 @@
                 },
                 {
                     "enemyId": "ash_swarm",
-                    "count": 26,
+                    "count": 12,
                     "startDelay": 1.44,
                     "spawnInterval": 0.2,
                     "formation": "pack",
@@ -110,14 +110,14 @@
                 "last_ember_terminus"
             ],
             "prepSeconds": 7.31,
-            "rewardGold": 39,
-            "budgetTarget": 51,
+            "rewardGold": 65,
+            "budgetTarget": 27.8,
             "budgetTolerance": 1.1,
             "hint": "[L20] W02: 持续压制并补齐覆盖空洞。",
             "groups": [
                 {
                     "enemyId": "cinder_glider",
-                    "count": 11,
+                    "count": 7,
                     "startDelay": 0,
                     "spawnInterval": 0.24,
                     "formation": "stream",
@@ -125,7 +125,7 @@
                 },
                 {
                     "enemyId": "spore_carrier",
-                    "count": 7,
+                    "count": 3,
                     "startDelay": 1.28,
                     "spawnInterval": 0.19,
                     "formation": "pack",
@@ -142,14 +142,14 @@
                 "last_ember_terminus"
             ],
             "prepSeconds": 7.57,
-            "rewardGold": 44,
-            "budgetTarget": 62.7,
+            "rewardGold": 75,
+            "budgetTarget": 41.5,
             "budgetTolerance": 1.1,
             "hint": "[L20] W03: 综合考核：输出、控制、反制链稳定性。",
             "groups": [
                 {
                     "enemyId": "burrow_sapper",
-                    "count": 11,
+                    "count": 8,
                     "startDelay": 0,
                     "spawnInterval": 0.22,
                     "formation": "stream",
@@ -157,7 +157,7 @@
                 },
                 {
                     "enemyId": "ash_swarm",
-                    "count": 23,
+                    "count": 17,
                     "startDelay": 1,
                     "spawnInterval": 0.17,
                     "formation": "pack",
@@ -165,7 +165,7 @@
                 },
                 {
                     "enemyId": "husk_titan",
-                    "count": 2,
+                    "count": 1,
                     "startDelay": 2.24,
                     "spawnInterval": 0.69,
                     "formation": "burst",
@@ -695,7 +695,7 @@
             "rewardGold": 68,
             "budgetTarget": 138.8,
             "budgetTolerance": 1.05,
-            "hint": "[L20] W15: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+      "hint": "[L20] W15 EXAM PEAK: 保留阶段破坏器与共鸣充能，为终局 Boss 的两次血线变化做准备。",
             "groups": [
                 {
                     "enemyId": "rail_warden",
@@ -853,7 +853,7 @@
             "rewardGold": 74,
             "budgetTarget": 157.5,
             "budgetTolerance": 1.04,
-            "hint": "[L20] W18: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+      "hint": "[L20] W18 EXAM: 修补最热道路分段，同时保留足够预算应对 Boss 增援。",
             "groups": [
                 {
                     "enemyId": "carapace_brute",
@@ -969,7 +969,7 @@
             "rewardGold": 91,
             "budgetTarget": 201.2,
             "budgetTolerance": 1.05,
-            "hint": "[L20] W20: 终局Boss与混编压制，优先击杀高价值目标。 多线同时压测。",
+      "hint": "[L20] W20 FINAL EXAM: Boss 在 70%/35% 血量触发过载与增援；用阶段破坏器取消最危险的一次。",
             "groups": [
                 {
                     "enemyId": "plated_spore",

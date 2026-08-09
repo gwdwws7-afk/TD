@@ -78,24 +78,24 @@
                 "hollow_kiln_basin"
             ],
             "prepSeconds": 8.1,
-            "rewardGold": 33,
-            "budgetTarget": 36,
+            "rewardGold": 72,
+            "budgetTarget": 17.6,
             "budgetTolerance": 1.1,
             "hint": "[L15] W01: 识别新威胁并调整火力分工。",
             "groups": [
                 {
                     "enemyId": "skitter_runner",
-                    "count": 20,
-                    "startDelay": 0.24,
-                    "spawnInterval": 0.25,
+                    "count": 8,
+                    "startDelay": 0.6,
+                    "spawnInterval": 0.32,
                     "formation": "stream",
                     "lane": "left"
                 },
                 {
                     "enemyId": "spore_carrier",
-                    "count": 5,
-                    "startDelay": 1.04,
-                    "spawnInterval": 0.2,
+                    "count": 3,
+                    "startDelay": 3.4,
+                    "spawnInterval": 0.55,
                     "formation": "pack",
                     "lane": "center"
                 }
@@ -110,24 +110,24 @@
                 "hollow_kiln_basin"
             ],
             "prepSeconds": 7.96,
-            "rewardGold": 35,
-            "budgetTarget": 40.6,
+            "rewardGold": 91,
+            "budgetTarget": 25.5,
             "budgetTolerance": 1.1,
             "hint": "[L15] W02: 持续压制并补齐覆盖空洞。",
             "groups": [
                 {
                     "enemyId": "husk_titan",
-                    "count": 2,
-                    "startDelay": 0.08,
-                    "spawnInterval": 0.75,
+                    "count": 1,
+                    "startDelay": 0.6,
+                    "spawnInterval": 1.3,
                     "formation": "burst",
                     "lane": "center"
                 },
                 {
                     "enemyId": "ash_swarm",
-                    "count": 27,
-                    "startDelay": 1.44,
-                    "spawnInterval": 0.19,
+                    "count": 20,
+                    "startDelay": 3.8,
+                    "spawnInterval": 0.23,
                     "formation": "pack",
                     "lane": "right"
                 }
@@ -150,24 +150,24 @@
                 {
                     "enemyId": "husk_titan",
                     "count": 2,
-                    "startDelay": 0,
-                    "spawnInterval": 0.69,
+                    "startDelay": 0.4,
+                    "spawnInterval": 0.9,
                     "formation": "burst",
                     "lane": "right"
                 },
                 {
                     "enemyId": "spore_carrier",
                     "count": 5,
-                    "startDelay": 1.16,
-                    "spawnInterval": 0.17,
+                    "startDelay": 2.2,
+                    "spawnInterval": 0.3,
                     "formation": "pack",
                     "lane": "left"
                 },
                 {
                     "enemyId": "plated_spore",
                     "count": 4,
-                    "startDelay": 2.4,
-                    "spawnInterval": 0.69,
+                    "startDelay": 4.0,
+                    "spawnInterval": 0.9,
                     "formation": "burst",
                     "lane": "center"
                 }
@@ -263,32 +263,32 @@
                 {
                     "enemyId": "cinder_glider",
                     "count": 8,
-                    "startDelay": 0,
-                    "spawnInterval": 0.22,
+                    "startDelay": 0.4,
+                    "spawnInterval": 0.28,
                     "formation": "split_lane",
                     "lane": "split_lane"
                 },
                 {
                     "enemyId": "ash_swarm",
                     "count": 19,
-                    "startDelay": 1.24,
-                    "spawnInterval": 0.17,
+                    "startDelay": 2.4,
+                    "spawnInterval": 0.23,
                     "formation": "pack",
                     "lane": "left"
                 },
                 {
                     "enemyId": "rail_warden",
                     "count": 3,
-                    "startDelay": 1.92,
-                    "spawnInterval": 0.69,
+                    "startDelay": 5.8,
+                    "spawnInterval": 0.9,
                     "formation": "burst",
                     "lane": "center"
                 },
                 {
                     "enemyId": "carapace_brute",
                     "count": 3,
-                    "startDelay": 3.16,
-                    "spawnInterval": 0.69,
+                    "startDelay": 7.2,
+                    "spawnInterval": 0.9,
                     "formation": "burst",
                     "lane": "right"
                 }
@@ -313,24 +313,24 @@
                 {
                     "enemyId": "ash_swarm",
                     "count": 32,
-                    "startDelay": 0,
-                    "spawnInterval": 0.2,
+                    "startDelay": 0.4,
+                    "spawnInterval": 0.22,
                     "formation": "pack",
                     "lane": "left"
                 },
                 {
                     "enemyId": "cinder_glider",
                     "count": 7,
-                    "startDelay": 1.2,
-                    "spawnInterval": 0.24,
+                    "startDelay": 3.0,
+                    "spawnInterval": 0.28,
                     "formation": "cross_lane",
                     "lane": "cross_lane"
                 },
                 {
                     "enemyId": "plated_spore",
                     "count": 6,
-                    "startDelay": 2.56,
-                    "spawnInterval": 0.79,
+                    "startDelay": 6.5,
+                    "spawnInterval": 0.9,
                     "formation": "burst",
                     "lane": "right"
                 }
@@ -355,32 +355,32 @@
                 {
                     "enemyId": "spore_carrier",
                     "count": 7,
-                    "startDelay": 0.24,
-                    "spawnInterval": 0.19,
+                    "startDelay": 0.4,
+                    "spawnInterval": 0.3,
                     "formation": "pack",
                     "lane": "center"
                 },
                 {
                     "enemyId": "skitter_runner",
                     "count": 16,
-                    "startDelay": 1.04,
-                    "spawnInterval": 0.24,
+                    "startDelay": 2.4,
+                    "spawnInterval": 0.28,
                     "formation": "split_lane",
                     "lane": "split_lane"
                 },
                 {
                     "enemyId": "husk_titan",
                     "count": 2,
-                    "startDelay": 2.4,
-                    "spawnInterval": 0.75,
+                    "startDelay": 5.8,
+                    "spawnInterval": 1.0,
                     "formation": "burst",
                     "lane": "left"
                 },
                 {
                     "enemyId": "rail_warden",
                     "count": 2,
-                    "startDelay": 3.76,
-                    "spawnInterval": 0.75,
+                    "startDelay": 7.2,
+                    "spawnInterval": 1.0,
                     "formation": "burst",
                     "lane": "center"
                 }
@@ -406,32 +406,32 @@
                 {
                     "enemyId": "ash_swarm",
                     "count": 31,
-                    "startDelay": 0.08,
-                    "spawnInterval": 0.17,
+                    "startDelay": 0.4,
+                    "spawnInterval": 0.22,
                     "formation": "pack",
                     "lane": "right"
                 },
                 {
                     "enemyId": "cinder_glider",
                     "count": 7,
-                    "startDelay": 1.32,
-                    "spawnInterval": 0.22,
+                    "startDelay": 2.8,
+                    "spawnInterval": 0.28,
                     "formation": "stream",
                     "lane": "left"
                 },
                 {
                     "enemyId": "carapace_brute",
                     "count": 4,
-                    "startDelay": 2,
-                    "spawnInterval": 0.69,
+                    "startDelay": 5.0,
+                    "spawnInterval": 0.9,
                     "formation": "burst",
                     "lane": "center"
                 },
                 {
                     "enemyId": "rail_warden",
                     "count": 4,
-                    "startDelay": 3.24,
-                    "spawnInterval": 0.69,
+                    "startDelay": 7.4,
+                    "spawnInterval": 0.9,
                     "formation": "burst",
                     "lane": "right"
                 }
@@ -500,32 +500,32 @@
                 {
                     "enemyId": "carapace_brute",
                     "count": 6,
-                    "startDelay": 0,
-                    "spawnInterval": 0.75,
+                    "startDelay": 0.4,
+                    "spawnInterval": 0.9,
                     "formation": "burst",
                     "lane": "center"
                 },
                 {
                     "enemyId": "cinder_glider",
                     "count": 7,
-                    "startDelay": 1.12,
-                    "spawnInterval": 0.24,
+                    "startDelay": 2.8,
+                    "spawnInterval": 0.3,
                     "formation": "split_lane",
                     "lane": "split_lane"
                 },
                 {
                     "enemyId": "ash_swarm",
                     "count": 22,
-                    "startDelay": 2.48,
-                    "spawnInterval": 0.19,
+                    "startDelay": 4.8,
+                    "spawnInterval": 0.23,
                     "formation": "pack",
                     "lane": "left"
                 },
                 {
                     "enemyId": "rail_warden",
                     "count": 4,
-                    "startDelay": 3.84,
-                    "spawnInterval": 0.75,
+                    "startDelay": 8.0,
+                    "spawnInterval": 0.9,
                     "formation": "burst",
                     "lane": "center"
                 }
@@ -551,32 +551,32 @@
                 {
                     "enemyId": "rail_warden",
                     "count": 7,
-                    "startDelay": 0.16,
-                    "spawnInterval": 0.69,
+                    "startDelay": 0.4,
+                    "spawnInterval": 0.8,
                     "formation": "stagger",
                     "lane": "right"
                 },
                 {
                     "enemyId": "skitter_runner",
                     "count": 22,
-                    "startDelay": 0.84,
-                    "spawnInterval": 0.21,
+                    "startDelay": 2.0,
+                    "spawnInterval": 0.25,
                     "formation": "adaptive",
                     "lane": "all"
                 },
                 {
                     "enemyId": "spore_carrier",
                     "count": 6,
-                    "startDelay": 2.08,
-                    "spawnInterval": 0.17,
+                    "startDelay": 4.5,
+                    "spawnInterval": 0.3,
                     "formation": "spawn_chain",
                     "lane": "all"
                 },
                 {
                     "enemyId": "rail_warden",
                     "count": 5,
-                    "startDelay": 3.32,
-                    "spawnInterval": 0.69,
+                    "startDelay": 6.5,
+                    "spawnInterval": 0.8,
                     "formation": "stagger",
                     "lane": "right"
                 }
@@ -700,32 +700,32 @@
                 {
                     "enemyId": "carapace_brute",
                     "count": 8,
-                    "startDelay": 0.24,
-                    "spawnInterval": 0.69,
+                    "startDelay": 0.4,
+                    "spawnInterval": 0.85,
                     "formation": "stagger",
                     "lane": "right"
                 },
                 {
                     "enemyId": "spore_carrier",
                     "count": 9,
-                    "startDelay": 0.92,
-                    "spawnInterval": 0.17,
+                    "startDelay": 2.4,
+                    "spawnInterval": 0.32,
                     "formation": "spawn_chain",
                     "lane": "all"
                 },
                 {
                     "enemyId": "skitter_runner",
                     "count": 25,
-                    "startDelay": 2.16,
-                    "spawnInterval": 0.22,
+                    "startDelay": 4.3,
+                    "spawnInterval": 0.28,
                     "formation": "flank_strike",
                     "lane": "center"
                 },
                 {
                     "enemyId": "rail_warden",
                     "count": 6,
-                    "startDelay": 3.4,
-                    "spawnInterval": 0.69,
+                    "startDelay": 7.2,
+                    "spawnInterval": 0.85,
                     "formation": "stagger",
                     "lane": "right"
                 }
@@ -745,31 +745,31 @@
             ],
             "prepSeconds": 6,
             "rewardGold": 63,
-            "budgetTarget": 100.2,
+            "budgetTarget": 78.4,
             "budgetTolerance": 1.05,
             "hint": "[L15] W16: 识别新威胁并调整火力分工。 多线同时压测。",
             "groups": [
                 {
                     "enemyId": "rail_warden",
-                    "count": 10,
-                    "startDelay": 0.08,
-                    "spawnInterval": 0.71,
+                    "count": 8,
+                    "startDelay": 0.4,
+                    "spawnInterval": 0.85,
                     "formation": "stagger",
                     "lane": "left"
                 },
                 {
                     "enemyId": "ash_swarm",
-                    "count": 37,
-                    "startDelay": 1.44,
-                    "spawnInterval": 0.18,
+                    "count": 30,
+                    "startDelay": 2.8,
+                    "spawnInterval": 0.22,
                     "formation": "pack",
                     "lane": "center"
                 },
                 {
                     "enemyId": "cinder_glider",
-                    "count": 11,
-                    "startDelay": 2.24,
-                    "spawnInterval": 0.23,
+                    "count": 8,
+                    "startDelay": 5.5,
+                    "spawnInterval": 0.28,
                     "formation": "flank_stream",
                     "lane": "right"
                 }
@@ -797,40 +797,40 @@
                 {
                     "enemyId": "plated_spore",
                     "count": 8,
-                    "startDelay": 0,
-                    "spawnInterval": 0.68,
+                    "startDelay": 0.4,
+                    "spawnInterval": 0.75,
                     "formation": "stagger",
                     "lane": "center"
                 },
                 {
                     "enemyId": "spore_carrier",
                     "count": 6,
-                    "startDelay": 1.2,
-                    "spawnInterval": 0.17,
+                    "startDelay": 2.0,
+                    "spawnInterval": 0.25,
                     "formation": "spawn_chain",
                     "lane": "all"
                 },
                 {
                     "enemyId": "skitter_runner",
                     "count": 19,
-                    "startDelay": 2.48,
-                    "spawnInterval": 0.21,
+                    "startDelay": 3.8,
+                    "spawnInterval": 0.25,
                     "formation": "adaptive",
                     "lane": "all"
                 },
                 {
                     "enemyId": "rail_warden",
                     "count": 4,
-                    "startDelay": 3.2,
-                    "spawnInterval": 0.68,
+                    "startDelay": 5.8,
+                    "spawnInterval": 0.7,
                     "formation": "stagger",
                     "lane": "center"
                 },
                 {
                     "enemyId": "plated_spore",
                     "count": 7,
-                    "startDelay": 4.48,
-                    "spawnInterval": 0.68,
+                    "startDelay": 6.8,
+                    "spawnInterval": 0.65,
                     "formation": "stagger",
                     "lane": "right"
                 }

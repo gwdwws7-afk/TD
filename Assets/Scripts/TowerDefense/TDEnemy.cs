@@ -9,10 +9,8 @@ namespace TD
         private static readonly Dictionary<string, bool> FxPrefixAvailability = new();
         private static readonly Color SlowTint = new(0.64f, 0.89f, 1f, 1f);
         private static readonly Color ResonanceMarkTint = new(1f, 0.66f, 0.24f, 1f);
-        private static readonly Color ArmorBreakIconColor = new(1f, 0.68f, 0.26f, 1f);
         private const float HitFlashDuration = 0.10f;
         private const float DeathFadeDuration = 0.22f;
-        private const string ArmorBreakIconSpritePath = "Art/projectile_bolt";
         private const float HitFxMinInterval = 0.06f;
         private const string HitFxPrefix = "Art/anim/fx_enemy_hit";
         private const int HitFxFrameCount = 6;
@@ -50,6 +48,7 @@ namespace TD
         private TDGameManager _gameManager;
         private IReadOnlyList<Vector3> _path;
         private int _nextWaypointIndex;
+        private int _lastReportedRoadSegment = -1;
         private float _baseSpeed;
         private float _slowPct;
         private float _slowTimer;
@@ -65,6 +64,7 @@ namespace TD
         private int _reward;
         private int _lineDamage;
         private string _enemyId;
+        private string _laneKey;
         private List<string> _tags;
         private bool _resolved;
         private bool _dying;
@@ -73,20 +73,16 @@ namespace TD
         private float _deathFadeTimer;
         private float _specialSpeedMultiplier;
         private float _specialBurstTimer;
+        private float _scenarioSpeedMultiplier = 1f;
+        private float _scenarioSpeedTimer;
         private bool _specialBurstUsed;
         private Color _variantTint;
         private Vector3 _deathStartScale;
         private BoxCollider2D _bodyCollider;
         private SpriteRenderer _visualRenderer;
+        private SpriteRenderer _shadowRenderer;
         private Transform _visualRoot;
-        private Transform _armorBreakIconRoot;
-        private SpriteRenderer _armorBreakIconRenderer;
-        private float _armorBreakIconPulse;
-        private Transform _threatMarkerRoot;
-        private SpriteRenderer _threatMarkerRenderer;
-        private Color _threatMarkerColor;
-        private float _threatMarkerPulse;
-        private bool _threatMarkerEnabled;
+        private TDEnemyReadability _readability;
         private float _hitFxTimer;
         private bool _bossWarningFxPlayed;
         private bool _burrowAmbushFxPlayed;
@@ -96,16 +92,66 @@ namespace TD
         private int _mimicVariantIndex = -1;
         private float _attritionSiphonFxTimer;
         private float _supportLinkFxTimer;
+        private Vector3 _visualBaseLocalPosition;
+        private Vector3 _visualBaseLocalScale = Vector3.one;
+        private float _motionPhase;
+        private float _hitReactionTimer;
+        private int _hitReactionCount;
+        private Vector2 _smoothedMovementDirection = Vector2.right;
+        private float _turnPose;
+        private int _facingSign = 1;
+        private float _maximumRouteDeviationObserved;
 
         public string EnemyId => _enemyId;
+        public string LaneKey => string.IsNullOrWhiteSpace(_laneKey) ? "default" : _laneKey;
+        public int MaxHealth => _maxHp;
+        public int ArmorFlat => _armorFlat;
         public bool IsMarked => _resonanceMarkTimer > 0f;
+        public bool IsSlowed => _slowTimer > 0f && _slowPct > 0f;
+        public bool IsStaggered => _staggerTimer > 0f;
+        public bool IsArmorBroken => _armorBreakTimer > 0f && _armorBreakFlat > 0;
+        public bool IsExposed => _exposedTimer > 0f && _exposedMultiplier > 1f;
         public float HealthRatio => _maxHp <= 0 ? 1f : Mathf.Clamp01(_hp / (float)_maxHp);
+        public float RouteProgress01 => CalculateRouteProgress01();
+        public float RouteDeviationWorld => CalculateRouteDeviationWorld();
+        public float GroundContactRouteDeviationWorld => CalculateRouteDeviationWorld(
+            _shadowRenderer != null ? _shadowRenderer.transform.position : transform.position);
+        public TDEnemyReadability Readability => _readability;
+        public bool MotionReady => _visualRoot != null;
+        public int HitReactionCount => _hitReactionCount;
+        public float MaximumRouteDeviationObserved => _maximumRouteDeviationObserved;
+        public float TurnPoseDegrees => _visualRoot != null ? Mathf.DeltaAngle(0f, _visualRoot.localEulerAngles.z) : 0f;
+        public int FacingSign => _facingSign;
+        public float ShadowAspectRatio => _shadowRenderer != null
+            ? Mathf.Abs(_shadowRenderer.transform.localScale.y) /
+              Mathf.Max(0.0001f, Mathf.Abs(_shadowRenderer.transform.localScale.x))
+            : 1f;
+        public float FootShadowGapWorld
+        {
+            get
+            {
+                if (_visualRenderer == null || _visualRenderer.sprite == null || _shadowRenderer == null)
+                {
+                    return float.MaxValue;
+                }
 
-        public void Initialize(TDGameManager gameManager, IReadOnlyList<Vector3> path, TDEnemyCatalogEntry entry)
+                var visualBottom = _visualRenderer.transform.localPosition.y +
+                                   (_visualRenderer.sprite.bounds.min.y *
+                                    Mathf.Abs(_visualRenderer.transform.localScale.y));
+                return _shadowRenderer.transform.localPosition.y - visualBottom;
+            }
+        }
+        public bool FootShadowAligned => FootShadowGapWorld >= 0.025f &&
+                                         FootShadowGapWorld <= 0.11f &&
+                                         ShadowAspectRatio >= 0.30f &&
+                                         ShadowAspectRatio <= 0.52f;
+
+        public void Initialize(TDGameManager gameManager, IReadOnlyList<Vector3> path, TDEnemyCatalogEntry entry, string laneKey = "default")
         {
             _gameManager = gameManager;
-            _path = path;
+            _path = path ?? Array.Empty<Vector3>();
             _enemyId = entry.enemyId;
+            _laneKey = string.IsNullOrWhiteSpace(laneKey) ? "default" : laneKey.Trim().ToLowerInvariant();
             _hp = entry.hp;
             _baseSpeed = entry.speed;
             _armorFlat = Mathf.Max(0, entry.armorFlat);
@@ -113,23 +159,34 @@ namespace TD
             _lineDamage = Mathf.Max(1, entry.lineDamage);
             _tags = new List<string>(entry.tags ?? Array.Empty<string>());
             _nextWaypointIndex = 1;
+            _lastReportedRoadSegment = -1;
             _bodyCollider = GetComponent<BoxCollider2D>();
             _visualRenderer = ResolveVisualRenderer();
+            var shadow = transform.Find("Shadow");
+            _shadowRenderer = shadow != null ? shadow.GetComponent<SpriteRenderer>() : null;
             _visualRoot = _visualRenderer != null ? _visualRenderer.transform : transform;
+            _visualBaseLocalPosition = _visualRoot.localPosition;
+            _visualBaseLocalScale = _visualRoot.localScale;
+            _motionPhase = UnityEngine.Random.Range(0f, Mathf.PI * 2f);
+            _hitReactionTimer = 0f;
+            _hitReactionCount = 0;
+            _smoothedMovementDirection = ResolveInitialMovementDirection(_path);
+            _turnPose = 0f;
+            _facingSign = _smoothedMovementDirection.x < -0.05f ? -1 : 1;
+            _maximumRouteDeviationObserved = 0f;
             _hitFlashTimer = 0f;
             _deathFadeTimer = 0f;
             _dying = false;
             _specialSpeedMultiplier = 1f;
             _specialBurstTimer = 0f;
+            _scenarioSpeedMultiplier = 1f;
+            _scenarioSpeedTimer = 0f;
             _specialBurstUsed = false;
             _variantTint = Color.white;
             _staggerTimer = 0f;
             _staggerMinSpeedMultiplier = 1f;
             _armorBreakFlat = 0;
             _armorBreakTimer = 0f;
-            _armorBreakIconPulse = 0f;
-            _threatMarkerPulse = 0f;
-            _threatMarkerEnabled = false;
             _exposedTimer = 0f;
             _exposedMultiplier = 1f;
             _hitFxTimer = 0f;
@@ -144,8 +201,12 @@ namespace TD
 
             ApplyVariantProfileIfNeeded();
             _maxHp = Mathf.Max(1, _hp);
-            EnsureArmorBreakIcon();
-            EnsureThreatMarkerIcon();
+            _readability = GetComponent<TDEnemyReadability>();
+            if (_readability == null)
+            {
+                _readability = gameObject.AddComponent<TDEnemyReadability>();
+            }
+            _readability.Initialize(this, _visualRenderer, entry.threatCost);
             if (HasTag("flank"))
             {
                 _specialSpeedMultiplier *= 1.08f;
@@ -156,12 +217,16 @@ namespace TD
                 transform.position = _path[0];
             }
 
+            RefreshDepthSorting();
+
             TryPlayBossWarningFx();
             TryPlayMimicShiftFx();
+            ReportRoadSegmentProgress();
         }
 
         private void Update()
         {
+            RefreshDepthSorting();
             if (_dying)
             {
                 UpdateDeathFade();
@@ -178,11 +243,15 @@ namespace TD
                 _hitFxTimer = Mathf.Max(0f, _hitFxTimer - Time.deltaTime);
             }
 
+            if (_hitReactionTimer > 0f)
+            {
+                _hitReactionTimer = Mathf.Max(0f, _hitReactionTimer - Time.deltaTime);
+            }
+
             TryUpdateAttritionSiphonFx();
             TryUpdateSupportLinkFx();
             TryPlayElitePressureFx();
             TryPlaySporeSplitWarningFx();
-            UpdateThreatMarkerVisual();
 
             if (_hitFlashTimer > 0f)
             {
@@ -231,17 +300,28 @@ namespace TD
                 }
             }
 
+            if (_scenarioSpeedTimer > 0f)
+            {
+                _scenarioSpeedTimer = Mathf.Max(0f, _scenarioSpeedTimer - Time.deltaTime);
+                if (_scenarioSpeedTimer <= 0f)
+                {
+                    _scenarioSpeedMultiplier = 1f;
+                }
+            }
+
             UpdateSpecialMovementState();
 
             if (_nextWaypointIndex >= _path.Count)
             {
+                RefreshEnemyMotion(Vector3.zero, 0f);
+                ReportRoadSegmentProgress();
                 ResolveEscape();
                 return;
             }
 
             var target = _path[_nextWaypointIndex];
             var delta = target - transform.position;
-            var effectiveSpeed = _baseSpeed * _specialSpeedMultiplier * Mathf.Clamp01(1f - _slowPct);
+            var effectiveSpeed = _baseSpeed * _specialSpeedMultiplier * _scenarioSpeedMultiplier * Mathf.Clamp01(1f - _slowPct);
             var minMoveFloor = 0.35f;
             if (_staggerTimer > 0f)
             {
@@ -256,12 +336,191 @@ namespace TD
             {
                 transform.position = target;
                 _nextWaypointIndex++;
+                RefreshEnemyMotion(delta.normalized, effectiveSpeed / Mathf.Max(0.01f, _baseSpeed));
+                _maximumRouteDeviationObserved = Mathf.Max(_maximumRouteDeviationObserved, CalculateRouteDeviationWorld());
+                ReportRoadSegmentProgress();
                 UpdateVisualTint();
                 return;
             }
 
             transform.position += delta.normalized * step;
+            RefreshEnemyMotion(delta.normalized, effectiveSpeed / Mathf.Max(0.01f, _baseSpeed));
+            _maximumRouteDeviationObserved = Mathf.Max(_maximumRouteDeviationObserved, CalculateRouteDeviationWorld());
+            ReportRoadSegmentProgress();
             UpdateVisualTint();
+        }
+
+        private void RefreshEnemyMotion(Vector3 direction, float speedRatio)
+        {
+            if (_visualRoot == null || _visualRoot == transform)
+            {
+                return;
+            }
+
+            var speed = Mathf.Clamp(speedRatio, 0f, 1.8f);
+            var stridePhase = (Time.time * Mathf.Lerp(5.5f, 9.5f, Mathf.Clamp01(speed))) + _motionPhase;
+            var stride = Mathf.Sin(stridePhase);
+            var lift = Mathf.Abs(stride) * Mathf.Clamp01(speed) * 0.012f;
+            var hit = _hitReactionTimer <= 0f
+                ? 0f
+                : Mathf.Sin((_hitReactionTimer / HitFlashDuration) * Mathf.PI);
+            var requestedDirection = new Vector2(direction.x, direction.y);
+            if (requestedDirection.sqrMagnitude > 0.0001f)
+            {
+                requestedDirection.Normalize();
+                var previousDirection = _smoothedMovementDirection;
+                var blend = 1f - Mathf.Exp(-Time.deltaTime * 11f);
+                _smoothedMovementDirection = Vector2.Lerp(previousDirection, requestedDirection, blend).normalized;
+                var turnCross = (previousDirection.x * _smoothedMovementDirection.y) -
+                                (previousDirection.y * _smoothedMovementDirection.x);
+                _turnPose = Mathf.Lerp(_turnPose, Mathf.Clamp(turnCross * 18f, -1f, 1f), blend);
+                if (Mathf.Abs(_smoothedMovementDirection.x) >= 0.08f)
+                {
+                    _facingSign = _smoothedMovementDirection.x < 0f ? -1 : 1;
+                }
+            }
+            else
+            {
+                _turnPose = Mathf.MoveTowards(_turnPose, 0f, Time.deltaTime * 5f);
+            }
+
+            _visualRoot.localPosition = _visualBaseLocalPosition + new Vector3(0f, lift, 0f);
+            _visualRoot.localScale = new Vector3(
+                _visualBaseLocalScale.x * (1f + (hit * 0.07f) - (stride * 0.010f)),
+                _visualBaseLocalScale.y * (1f - (hit * 0.09f) + (stride * 0.012f)),
+                _visualBaseLocalScale.z);
+            var travelLean = -_smoothedMovementDirection.x * 1.35f;
+            var cornerLean = -_turnPose * 3.1f;
+            _visualRoot.localRotation = Quaternion.Euler(
+                0f,
+                0f,
+                Mathf.Clamp(travelLean + cornerLean, -4.2f, 4.2f));
+            if (_visualRenderer != null)
+            {
+                _visualRenderer.flipX = _facingSign < 0;
+            }
+        }
+
+        private void ResetEnemyMotion()
+        {
+            if (_visualRoot == null || _visualRoot == transform)
+            {
+                return;
+            }
+
+            _visualRoot.localPosition = _visualBaseLocalPosition;
+            _visualRoot.localScale = _visualBaseLocalScale;
+            _visualRoot.localRotation = Quaternion.identity;
+        }
+
+        private static Vector2 ResolveInitialMovementDirection(IReadOnlyList<Vector3> path)
+        {
+            if (path == null)
+            {
+                return Vector2.right;
+            }
+
+            for (var i = 0; i < path.Count - 1; i++)
+            {
+                var direction = (Vector2)(path[i + 1] - path[i]);
+                if (direction.sqrMagnitude > 0.0001f)
+                {
+                    return direction.normalized;
+                }
+            }
+
+            return Vector2.right;
+        }
+
+        private void RefreshDepthSorting()
+        {
+            var bodyOrder = TDWorldVisualOrder.ResolveBodyOrder(transform.position.y);
+            if (_visualRenderer != null)
+            {
+                _visualRenderer.sortingOrder = bodyOrder;
+            }
+
+            if (_shadowRenderer != null)
+            {
+                _shadowRenderer.sortingOrder = bodyOrder - 3;
+            }
+        }
+
+        public int GetRoadSegmentIndex(int segmentCount)
+        {
+            var safeCount = Mathf.Max(1, segmentCount);
+            return Mathf.Clamp(Mathf.FloorToInt(RouteProgress01 * safeCount), 0, safeCount - 1);
+        }
+
+        private float CalculateRouteProgress01()
+        {
+            if (_path == null || _path.Count <= 1)
+            {
+                return 0f;
+            }
+
+            if (_nextWaypointIndex >= _path.Count)
+            {
+                return 1f;
+            }
+
+            var previousIndex = Mathf.Clamp(_nextWaypointIndex - 1, 0, _path.Count - 2);
+            var start = _path[previousIndex];
+            var end = _path[previousIndex + 1];
+            var segment = end - start;
+            var localProgress = segment.sqrMagnitude <= 0.0001f
+                ? 1f
+                : Mathf.Clamp01(Vector3.Dot(transform.position - start, segment) / segment.sqrMagnitude);
+            return Mathf.Clamp01((previousIndex + localProgress) / Mathf.Max(1f, _path.Count - 1f));
+        }
+
+        private float CalculateRouteDeviationWorld()
+        {
+            return CalculateRouteDeviationWorld(transform.position);
+        }
+
+        private float CalculateRouteDeviationWorld(Vector3 worldPoint)
+        {
+            if (_path == null || _path.Count == 0)
+            {
+                return 0f;
+            }
+
+            var point = (Vector2)worldPoint;
+            var closest = float.MaxValue;
+            for (var i = 0; i < _path.Count - 1; i++)
+            {
+                var start = (Vector2)_path[i];
+                var end = (Vector2)_path[i + 1];
+                var segment = end - start;
+                var progress = segment.sqrMagnitude <= 0.000001f
+                    ? 0f
+                    : Mathf.Clamp01(Vector2.Dot(point - start, segment) / segment.sqrMagnitude);
+                closest = Mathf.Min(closest, Vector2.Distance(point, start + (segment * progress)));
+            }
+
+            return closest == float.MaxValue ? Vector2.Distance(point, _path[0]) : closest;
+        }
+
+        private void ReportRoadSegmentProgress()
+        {
+            if (_gameManager == null || _resolved)
+            {
+                return;
+            }
+
+            var currentSegment = GetRoadSegmentIndex(TDGameManager.RoadSegmentCount);
+            if (currentSegment <= _lastReportedRoadSegment)
+            {
+                return;
+            }
+
+            for (var segment = _lastReportedRoadSegment + 1; segment <= currentSegment; segment++)
+            {
+                _gameManager.NotifyEnemyReachedRoadSegment(this, segment);
+            }
+
+            _lastReportedRoadSegment = currentSegment;
         }
 
         public bool HasTag(string tag)
@@ -300,25 +559,29 @@ namespace TD
             return false;
         }
 
-        public int TakeHit(int rawDamage, float slowPct, float slowDuration)
+        public int TakeHit(int rawDamage, float slowPct, float slowDuration, TDTower sourceTower = null)
         {
             if (_resolved || rawDamage <= 0)
             {
                 return 0;
             }
 
+            var wasSlowed = IsSlowed;
             var damageWithExposure = Mathf.RoundToInt(rawDamage * Mathf.Max(1f, _exposedMultiplier));
             var effectiveArmor = Mathf.Max(0, _armorFlat - _armorBreakFlat);
             var damageTaken = Mathf.Max(1, damageWithExposure - effectiveArmor);
+            var appliedDamage = Mathf.Min(Mathf.Max(0, _hp), damageTaken);
             _hitFlashTimer = HitFlashDuration;
-            _hp -= damageTaken;
+            _hitReactionTimer = HitFlashDuration;
+            _hitReactionCount++;
+            _hp = Mathf.Max(0, _hp - damageTaken);
             if (_hp <= 0)
             {
-                ResolveKill();
-                return damageTaken;
+                ResolveKill(sourceTower);
+                return appliedDamage;
             }
 
-            TryPlayHitFx();
+            TryPlayHitFx(sourceTower);
 
             if (slowPct > 0f && slowDuration > 0f)
             {
@@ -335,9 +598,13 @@ namespace TD
 
                 _slowPct = Mathf.Clamp(Mathf.Max(_slowPct, appliedSlow), 0f, 0.9f);
                 _slowTimer = Mathf.Max(_slowTimer, slowDuration);
+                if (!wasSlowed && IsSlowed)
+                {
+                    _gameManager?.NotifyEnemySlowed(this, _slowPct);
+                }
             }
 
-            return damageTaken;
+            return appliedDamage;
         }
 
         public void ApplyArmorBreak(int flatAmount, float duration)
@@ -347,8 +614,13 @@ namespace TD
                 return;
             }
 
+            var wasArmorBroken = IsArmorBroken;
             _armorBreakFlat = Mathf.Max(_armorBreakFlat, flatAmount);
             _armorBreakTimer = Mathf.Max(_armorBreakTimer, duration);
+            if (!wasArmorBroken && IsArmorBroken)
+            {
+                _gameManager?.NotifyEnemyArmorBroken(this, _armorBreakFlat);
+            }
         }
 
         public void ApplyStagger(float duration, float minSpeedMultiplier)
@@ -373,6 +645,17 @@ namespace TD
             _exposedMultiplier = Mathf.Max(_exposedMultiplier, damageMultiplier);
         }
 
+        public void ApplyScenarioSpeed(float duration, float speedMultiplier)
+        {
+            if (_resolved || duration <= 0f || speedMultiplier <= 0f)
+            {
+                return;
+            }
+
+            _scenarioSpeedTimer = Mathf.Max(_scenarioSpeedTimer, duration);
+            _scenarioSpeedMultiplier = Mathf.Max(_scenarioSpeedMultiplier, speedMultiplier);
+        }
+
         public void SetResonanceMark(float duration)
         {
             if (_resolved || duration <= 0f)
@@ -383,15 +666,16 @@ namespace TD
             _resonanceMarkTimer = Mathf.Max(_resonanceMarkTimer, duration);
         }
 
-        private void ResolveKill()
+        private void ResolveKill(TDTower sourceTower)
         {
             _resolved = true;
-            _gameManager.NotifyEnemyKilled(this, _reward);
+            _gameManager.NotifyEnemyKilled(this, _reward, sourceTower);
 
             _dying = true;
             _deathFadeTimer = 0f;
             _deathStartScale = transform.localScale;
-            SetArmorBreakIconVisible(false);
+            ResetEnemyMotion();
+            _readability?.SetPresentationVisible(false);
 
             if (_bodyCollider != null)
             {
@@ -404,7 +688,7 @@ namespace TD
         private void ResolveEscape()
         {
             _resolved = true;
-            SetArmorBreakIconVisible(false);
+            _readability?.SetPresentationVisible(false);
             _gameManager.NotifyEnemyEscaped(this, _lineDamage, _enemyId);
             Destroy(gameObject);
         }
@@ -450,8 +734,6 @@ namespace TD
 
             tinted.a = 1f;
             _visualRenderer.color = tinted;
-            UpdateArmorBreakIconVisual();
-            UpdateThreatMarkerVisual();
         }
 
         private void UpdateDeathFade()
@@ -471,163 +753,6 @@ namespace TD
             {
                 Destroy(gameObject);
             }
-        }
-
-        private void EnsureArmorBreakIcon()
-        {
-            if (_armorBreakIconRoot != null)
-            {
-                return;
-            }
-
-            var iconRoot = new GameObject("Fx_ArmorBreakIcon");
-            iconRoot.transform.SetParent(transform, false);
-            iconRoot.transform.localPosition = new Vector3(0f, 0.62f, 0f);
-            iconRoot.transform.localScale = Vector3.one * 0.24f;
-
-            var iconRenderer = iconRoot.AddComponent<SpriteRenderer>();
-            iconRenderer.sortingOrder = (_visualRenderer != null ? _visualRenderer.sortingOrder : 10) + 4;
-            iconRenderer.sprite = TDArtLibrary.LoadSpriteOrFallback(ArmorBreakIconSpritePath, ArmorBreakIconColor);
-            iconRenderer.color = new Color(ArmorBreakIconColor.r, ArmorBreakIconColor.g, ArmorBreakIconColor.b, 0f);
-
-            _armorBreakIconRoot = iconRoot.transform;
-            _armorBreakIconRenderer = iconRenderer;
-            SetArmorBreakIconVisible(false);
-        }
-
-        private void UpdateArmorBreakIconVisual()
-        {
-            if (_armorBreakIconRoot == null || _armorBreakIconRenderer == null)
-            {
-                return;
-            }
-
-            var active = _armorBreakFlat > 0 && _armorBreakTimer > 0f && !_resolved && !_dying;
-            SetArmorBreakIconVisible(active);
-            if (!active)
-            {
-                return;
-            }
-
-            _armorBreakIconPulse += Time.deltaTime * 7.2f;
-            var pulse = 0.5f + (Mathf.Sin(_armorBreakIconPulse) * 0.5f);
-            var alpha = Mathf.Lerp(0.45f, 0.92f, pulse);
-
-            _armorBreakIconRoot.localPosition = new Vector3(0f, 0.62f + (pulse * 0.03f), 0f);
-            _armorBreakIconRoot.localRotation = Quaternion.Euler(0f, 0f, pulse * 18f);
-            _armorBreakIconRoot.localScale = Vector3.one * Mathf.Lerp(0.22f, 0.28f, pulse);
-            _armorBreakIconRenderer.color = new Color(
-                ArmorBreakIconColor.r,
-                ArmorBreakIconColor.g,
-                ArmorBreakIconColor.b,
-                alpha);
-        }
-
-        private void SetArmorBreakIconVisible(bool visible)
-        {
-            if (_armorBreakIconRoot != null && _armorBreakIconRoot.gameObject.activeSelf != visible)
-            {
-                _armorBreakIconRoot.gameObject.SetActive(visible);
-            }
-        }
-
-        private void EnsureThreatMarkerIcon()
-        {
-            _threatMarkerEnabled = TryResolveThreatMarkerColor(out _threatMarkerColor);
-            if (!_threatMarkerEnabled)
-            {
-                if (_threatMarkerRoot != null)
-                {
-                    _threatMarkerRoot.gameObject.SetActive(false);
-                }
-
-                return;
-            }
-
-            if (_threatMarkerRoot == null)
-            {
-                var markerRoot = new GameObject("Fx_ThreatMarker");
-                markerRoot.transform.SetParent(transform, false);
-                markerRoot.transform.localPosition = new Vector3(0f, 0.72f, 0f);
-                markerRoot.transform.localScale = Vector3.one * 0.22f;
-                _threatMarkerRoot = markerRoot.transform;
-            }
-
-            if (_threatMarkerRenderer == null)
-            {
-                _threatMarkerRenderer = _threatMarkerRoot.GetComponent<SpriteRenderer>();
-                if (_threatMarkerRenderer == null)
-                {
-                    _threatMarkerRenderer = _threatMarkerRoot.gameObject.AddComponent<SpriteRenderer>();
-                }
-            }
-
-            _threatMarkerRenderer.sortingOrder = (_visualRenderer != null ? _visualRenderer.sortingOrder : 10) + 5;
-            _threatMarkerRenderer.sprite = TDArtLibrary.GetSoftRingSprite();
-            _threatMarkerRoot.gameObject.SetActive(_threatMarkerRenderer.sprite != null);
-        }
-
-        private void UpdateThreatMarkerVisual()
-        {
-            if (!_threatMarkerEnabled || _threatMarkerRoot == null || _threatMarkerRenderer == null || _resolved || _dying)
-            {
-                if (_threatMarkerRoot != null && _threatMarkerRoot.gameObject.activeSelf)
-                {
-                    _threatMarkerRoot.gameObject.SetActive(false);
-                }
-
-                return;
-            }
-
-            if (!_threatMarkerRoot.gameObject.activeSelf)
-            {
-                _threatMarkerRoot.gameObject.SetActive(true);
-            }
-
-            _threatMarkerPulse += Time.deltaTime * 5.0f;
-            var pulse = 0.5f + (Mathf.Sin(_threatMarkerPulse) * 0.5f);
-            var alpha = Mathf.Lerp(0.36f, 0.84f, pulse);
-            var scale = Mathf.Lerp(0.18f, 0.25f, pulse);
-            _threatMarkerRoot.localPosition = new Vector3(0f, 0.70f + (pulse * 0.035f), 0f);
-            _threatMarkerRoot.localRotation = Quaternion.Euler(0f, 0f, _threatMarkerPulse * 18f);
-            _threatMarkerRoot.localScale = Vector3.one * scale;
-            _threatMarkerRenderer.color = new Color(_threatMarkerColor.r, _threatMarkerColor.g, _threatMarkerColor.b, alpha);
-        }
-
-        private bool TryResolveThreatMarkerColor(out Color color)
-        {
-            if (HasTag("boss") || HasTag("final") || HasTag("elite"))
-            {
-                color = new Color(1f, 0.30f, 0.18f, 1f);
-                return true;
-            }
-
-            if (HasTag("support") || HasTag("attrition") || HasTag("zone_control"))
-            {
-                color = new Color(0.50f, 1f, 0.54f, 1f);
-                return true;
-            }
-
-            if (HasTag("armored") || HasTag("heavy") || HasTag("durability"))
-            {
-                color = new Color(1f, 0.68f, 0.22f, 1f);
-                return true;
-            }
-
-            if (HasTag("fast") || HasTag("flank") || HasTag("special"))
-            {
-                color = new Color(0.38f, 0.92f, 1f, 1f);
-                return true;
-            }
-
-            if (HasTag("swarm") || HasTag("split") || HasTag("spawn") || HasTag("mixed"))
-            {
-                color = new Color(1f, 0.50f, 0.24f, 1f);
-                return true;
-            }
-
-            color = Color.clear;
-            return false;
         }
 
         private void UpdateSpecialMovementState()
@@ -748,9 +873,9 @@ namespace TD
             return best ?? renderers[0];
         }
 
-        private void TryPlayHitFx()
+        private void TryPlayHitFx(TDTower sourceTower)
         {
-            if (_hitFxTimer > 0f)
+            if (sourceTower != null || _hitFxTimer > 0f)
             {
                 return;
             }

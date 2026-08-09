@@ -79,13 +79,13 @@
             ],
             "prepSeconds": 8.15,
             "rewardGold": 31,
-            "budgetTarget": 34.2,
+            "budgetTarget": 16,
             "budgetTolerance": 1.1,
             "hint": "[L14] W01: 识别新威胁并调整火力分工。",
             "groups": [
                 {
                     "enemyId": "skitter_runner",
-                    "count": 19,
+                    "count": 8,
                     "startDelay": 0.16,
                     "spawnInterval": 0.25,
                     "formation": "stream",
@@ -93,7 +93,7 @@
                 },
                 {
                     "enemyId": "ash_swarm",
-                    "count": 19,
+                    "count": 10,
                     "startDelay": 0.96,
                     "spawnInterval": 0.2,
                     "formation": "pack",
@@ -111,13 +111,13 @@
             ],
             "prepSeconds": 8.01,
             "rewardGold": 33,
-            "budgetTarget": 40,
+            "budgetTarget": 28.6,
             "budgetTolerance": 1.1,
             "hint": "[L14] W02: 持续压制并补齐覆盖空洞。",
             "groups": [
                 {
                     "enemyId": "cinder_glider",
-                    "count": 8,
+                    "count": 6,
                     "startDelay": 0,
                     "spawnInterval": 0.24,
                     "formation": "stream",
@@ -125,7 +125,7 @@
                 },
                 {
                     "enemyId": "spore_carrier",
-                    "count": 6,
+                    "count": 4,
                     "startDelay": 1.36,
                     "spawnInterval": 0.19,
                     "formation": "pack",
@@ -143,13 +143,13 @@
             ],
             "prepSeconds": 8.27,
             "rewardGold": 38,
-            "budgetTarget": 48.6,
+            "budgetTarget": 29.2,
             "budgetTolerance": 1.1,
             "hint": "[L14] W03: 综合考核：输出、控制、反制链稳定性。",
             "groups": [
                 {
                     "enemyId": "burrow_sapper",
-                    "count": 9,
+                    "count": 6,
                     "startDelay": 0,
                     "spawnInterval": 0.22,
                     "formation": "stream",
@@ -157,7 +157,7 @@
                 },
                 {
                     "enemyId": "ash_swarm",
-                    "count": 18,
+                    "count": 8,
                     "startDelay": 1.08,
                     "spawnInterval": 0.17,
                     "formation": "pack",
@@ -165,7 +165,7 @@
                 },
                 {
                     "enemyId": "carapace_brute",
-                    "count": 3,
+                    "count": 2,
                     "startDelay": 2.32,
                     "spawnInterval": 0.69,
                     "formation": "burst",

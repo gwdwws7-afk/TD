@@ -39,6 +39,16 @@ function Import-TDOpenAIApiKey {
         }
     }
 
+    if ([string]::IsNullOrWhiteSpace($env:OPENAI_API_KEY)) {
+        $projectKeyPath = Join-Path (Resolve-Path (Join-Path $PSScriptRoot "..")) "Assets\apikey.txt"
+        if (Test-Path -LiteralPath $projectKeyPath) {
+            $projectKey = (Get-Content -LiteralPath $projectKeyPath -Raw).Trim()
+            if (-not [string]::IsNullOrWhiteSpace($projectKey)) {
+                $env:OPENAI_API_KEY = $projectKey
+            }
+        }
+    }
+
     if ($Required -and [string]::IsNullOrWhiteSpace($env:OPENAI_API_KEY)) {
         throw "OPENAI_API_KEY is missing in process, user, and machine environment."
     }

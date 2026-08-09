@@ -14,6 +14,8 @@ namespace TD
         private float _endWidth;
         private Color _startColor;
         private Color _endColor;
+        private TDCombatFxClass _budgetClass;
+        private bool _budgetLease;
 
         public void Configure(
             Vector3 startPoint,
@@ -25,6 +27,14 @@ namespace TD
             Color endColor,
             int sortingOrder)
         {
+            _budgetClass = TDCombatFxBudget.Classify(gameObject.name);
+            _budgetLease = TDCombatFxBudget.TryAcquire(_budgetClass);
+            if (!_budgetLease)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
             _lineRenderer = GetComponent<LineRenderer>();
             var lineMaterial = GetSharedLineMaterial();
             if (lineMaterial != null)
@@ -42,11 +52,11 @@ namespace TD
             _lineRenderer.SetPosition(0, startPoint);
             _lineRenderer.SetPosition(1, endPoint);
 
-            _duration = Mathf.Max(0.01f, duration);
+            _duration = TDCombatFxBudget.ClampDuration(_budgetClass, duration);
             _startWidth = Mathf.Max(0.001f, startWidth);
             _endWidth = Mathf.Max(0.001f, endWidth);
-            _startColor = startColor;
-            _endColor = endColor;
+            _startColor = TDCombatFxBudget.ClampColor(_budgetClass, startColor);
+            _endColor = TDCombatFxBudget.ClampColor(_budgetClass, endColor);
             _timer = 0f;
 
             _lineRenderer.startWidth = _startWidth;
@@ -97,6 +107,15 @@ namespace TD
             if (t >= 1f)
             {
                 Destroy(gameObject);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (_budgetLease)
+            {
+                _budgetLease = false;
+                TDCombatFxBudget.Release(_budgetClass);
             }
         }
     }

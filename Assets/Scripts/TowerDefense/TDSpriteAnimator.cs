@@ -13,6 +13,10 @@ namespace TD
         private float _fps = 8f;
         private bool _loop = true;
 
+        public bool IsConfigured => _frames.Count > 0 && _renderer != null;
+        public int FrameCount => _frames.Count;
+        public int CurrentFrame => _index;
+
         public void Configure(string resourcePrefix, int frameCount, float fps, bool loop = true, bool randomStart = false)
         {
             _renderer = GetComponent<SpriteRenderer>();
@@ -42,6 +46,19 @@ namespace TD
                 _index = Random.Range(0, _frames.Count);
             }
 
+            _renderer.sprite = _frames[_index];
+            enabled = _frames.Count > 1;
+        }
+
+        public void Restart(int frameIndex = 0)
+        {
+            if (_frames.Count == 0 || _renderer == null)
+            {
+                return;
+            }
+
+            _index = Mathf.Clamp(frameIndex, 0, _frames.Count - 1);
+            _timer = 0f;
             _renderer.sprite = _frames[_index];
             enabled = _frames.Count > 1;
         }

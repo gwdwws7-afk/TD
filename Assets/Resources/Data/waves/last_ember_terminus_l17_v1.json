@@ -78,14 +78,14 @@
                 "last_ember_terminus"
             ],
             "prepSeconds": 7.6,
-            "rewardGold": 34,
-            "budgetTarget": 42.2,
+            "rewardGold": 60,
+            "budgetTarget": 24.6,
             "budgetTolerance": 1.1,
             "hint": "[L17] W01: 识别新威胁并调整火力分工。",
             "groups": [
                 {
                     "enemyId": "skitter_runner",
-                    "count": 23,
+                    "count": 15,
                     "startDelay": 0,
                     "spawnInterval": 0.25,
                     "formation": "stream",
@@ -93,7 +93,7 @@
                 },
                 {
                     "enemyId": "spore_carrier",
-                    "count": 6,
+                    "count": 3,
                     "startDelay": 1.2,
                     "spawnInterval": 0.2,
                     "formation": "pack",
@@ -110,14 +110,14 @@
                 "last_ember_terminus"
             ],
             "prepSeconds": 7.46,
-            "rewardGold": 36,
-            "budgetTarget": 46.4,
+            "rewardGold": 50,
+            "budgetTarget": 34.8,
             "budgetTolerance": 1.1,
             "hint": "[L17] W02: 持续压制并补齐覆盖空洞。",
             "groups": [
                 {
                     "enemyId": "echo_mimic",
-                    "count": 4,
+                    "count": 3,
                     "startDelay": 0.24,
                     "spawnInterval": 0.46,
                     "formation": "escort",
@@ -125,7 +125,7 @@
                 },
                 {
                     "enemyId": "ash_swarm",
-                    "count": 24,
+                    "count": 18,
                     "startDelay": 1.04,
                     "spawnInterval": 0.19,
                     "formation": "pack",
@@ -142,14 +142,14 @@
                 "last_ember_terminus"
             ],
             "prepSeconds": 7.72,
-            "rewardGold": 41,
-            "budgetTarget": 54.4,
+            "rewardGold": 60,
+            "budgetTarget": 39.9,
             "budgetTolerance": 1.1,
             "hint": "[L17] W03: 综合考核：输出、控制、反制链稳定性。",
             "groups": [
                 {
                     "enemyId": "echo_mimic",
-                    "count": 3,
+                    "count": 2,
                     "startDelay": 0.08,
                     "spawnInterval": 0.42,
                     "formation": "escort",
@@ -157,7 +157,7 @@
                 },
                 {
                     "enemyId": "spore_carrier",
-                    "count": 5,
+                    "count": 4,
                     "startDelay": 1.32,
                     "spawnInterval": 0.17,
                     "formation": "pack",
@@ -165,7 +165,7 @@
                 },
                 {
                     "enemyId": "carapace_brute",
-                    "count": 4,
+                    "count": 3,
                     "startDelay": 2,
                     "spawnInterval": 0.69,
                     "formation": "burst",
@@ -695,7 +695,7 @@
             "rewardGold": 65,
             "budgetTarget": 128.8,
             "budgetTolerance": 1.05,
-            "hint": "[L17] W15: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+      "hint": "[L17] W15 EXAM PEAK: 预留阶段破坏器给精英血线变化，不要只按总数量判断危险。",
             "groups": [
                 {
                     "enemyId": "plated_spore",
@@ -853,7 +853,7 @@
             "rewardGold": 71,
             "budgetTarget": 143,
             "budgetTolerance": 1.04,
-            "hint": "[L17] W18: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+      "hint": "[L17] W18 EXAM: 精英进入过载前暴露并停滞，随后用共鸣窗口集中击杀。",
             "groups": [
                 {
                     "enemyId": "rail_warden",
@@ -967,7 +967,7 @@
             "rewardGold": 76,
             "budgetTarget": 154.9,
             "budgetTolerance": 1.04,
-            "hint": "[L17] W20: 持续压制并补齐覆盖空洞。 多线同时压测。",
+      "hint": "[L17] W20 MILESTONE: 双精英阶段与三线压力并发；阶段破坏器必须留给失守方向。",
             "groups": [
                 {
                     "enemyId": "husk_titan",

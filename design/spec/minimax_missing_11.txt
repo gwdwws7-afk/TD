@@ -1,0 +1,73 @@
+还差 11 个音效,请逐个生成。延续"余烬铁道"工业废土基调(参考 Frostpunk + Disco Elysium)。
+
+全局格式:44.1kHz/16-bit,.wav,峰值≤-3dBTP,起音<5ms。
+每个生成后报时长我确认。严格按时长,不要生成超长版本。
+
+禁止:NO史诗交响/NO EDM/NO恐怖跳吓/NO卡通/NO激光/NO魔幻仙音/NO怪兽吼叫。
+核心:Must evoke "the last railway of a dying ember civilization."
+
+
+═══ 特殊敌人机制音效(6个,P1)═══
+这些是特定敌人的独有行为触发音,每个都有视觉特效但缺声音。
+
+1. burrow_ambush
+   时长 0.6 秒 | mono | 单声道 | 16-bit | WAV
+   响度 -12 LUFS
+   An enemy special-mechanic sound effect for the Burrow Sapper mid-route ambush burst (at 55 percent route progress) in a tower-defense game, industrial aesthetic. An underground churning rumble building for 400ms, then a wet percussive crack as the creature surfaces, plus loose-dirt scatter. An ambush being sprung. 600ms, mono, -12 LUFS. Must evoke the last railway of a dying ember civilization. NO cartoonish pop-up, NO monster roar.
+
+2. spore_split
+   时长 0.8 秒 | mono | 单声道 | 16-bit | WAV
+   响度 -12 LUFS
+   An enemy special-mechanic sound effect for the Spore Carrier splitting into smaller Ash Swarms on death in a tower-defense game, industrial aesthetic. A wet membrane pop followed by a flurry of small chitinous dispersal ticks spreading outward, with a faint ash-hiss. 800ms, mono, -12 LUFS. Must evoke the last railway of a dying ember civilization. NO alien birth, NO cartoonish splat.
+
+3. mimic_shift
+   时长 0.7 秒 | mono | 单声道 | 16-bit | WAV
+   响度 -12 LUFS
+   An enemy special-mechanic sound effect for the Echo Mimic copying a threat form at spawn in a tower-defense game, industrial aesthetic. An unstable pitch-gliding metallic wobble that cannot settle, like a shape trying to lock, capped by a brief crystalline snap when it resolves. 700ms, mono, -12 LUFS. Must evoke the last railway of a dying ember civilization. NO sci-fi morph, NO transformer sound.
+
+4. attrition_siphon
+   时长 0.5 秒 | mono | 单声道 | 16-bit | WAV
+   响度 -15 LUFS
+   An enemy special-mechanic sound effect for the Ember Leech periodic attrition siphon (drains resources) in a tower-defense game, industrial aesthetic. A low pulsing vacuum draw like a slow inhale through a metal pipe, with a faint ember-crackle. Unsettling and parasitic. 500ms, mono, -15 LUFS. Must evoke the last railway of a dying ember civilization. NO vampire drain, NO sci-fi tractor beam.
+
+5. support_link
+   时长 0.4 秒 | mono | 单声道 | 16-bit | WAV
+   响度 -15 LUFS
+   An enemy special-mechanic sound effect for the Rail Warden support link (shielding aura onto nearby armored/heavy/boss enemies) in a tower-defense game, industrial aesthetic. A brief resonant coupling tone, two metallic notes locking into harmony, with a faint sustained hum. A defensive link engaging. 400ms, mono, -15 LUFS. Must evoke the last railway of a dying ember civilization. NO sci-fi shield hum, NO magic aura.
+
+6. elite_pressure
+   时长 0.5 秒 | mono | 单声道 | 16-bit | WAV
+   响度 -15 LUFS
+   An enemy special-mechanic sound effect for elite enemies (husk_titan) entering a pressure state below 55 percent HP in a tower-defense game, industrial aesthetic. A low menacing mechanical groan building in intensity like a great engine pushed past its limit, with a stress-metal creak. Threatening and relentless. 500ms, mono, -15 LUFS. Must evoke the last railway of a dying ember civilization. NO monster rage, NO berserk scream.
+
+
+═══ 战役流程UI音效(4个,P1)═══
+玩家选关/部署/领奖/提前开波的操作反馈。
+
+7. level_select
+   时长 0.3 秒 | mono | 单声道 | 16-bit | WAV
+   响度 -15 LUFS
+   A campaign-level-select UI sound effect for a tower-defense game, industrial aesthetic. A focused mechanical clack of a route lever engaging plus a faint railway-points translation rumble. Choosing a destination on the rail network. 300ms, mono, -15 LUFS. Must evoke the last railway of a dying ember civilization. NO generic UI blip, NO map ping.
+
+8. deploy_confirm
+   时长 0.7 秒 | mono | 单声道 | 16-bit | WAV
+   响度 -12 LUFS
+   A mission-deployment-confirm UI sound effect for a tower-defense game, industrial aesthetic. A coordinated launch sequence: a deep mechanism cycling up, a heavy relay clunk, a final steam-blast release. Committing to a mission and the line going live. 700ms, mono, -12 LUFS. Must evoke the last railway of a dying ember civilization. NO rocket launch, NO generic confirm.
+
+9. chapter_reward
+   时长 0.8 秒 | mono | 单声道 | 16-bit | WAV
+   响度 -12 LUFS
+   A chapter-reward-claim UI sound effect for a tower-defense game, industrial aesthetic. A warm metallic chord of three ascending bell tones with a subtle reverberant tail. A permanent upgrade being installed. Earned and durable, not flashy. 800ms, mono, -12 LUFS. Must evoke the last railway of a dying ember civilization. NO RPG fanfare, NO coin collect.
+
+10. early_dispatch
+   时长 0.4 秒 | mono | 单声道 | 16-bit | WAV
+   响度 -12 LUFS
+   A wave-early-dispatch UI sound effect, played when the player voluntarily skips prep time to start the wave early in a tower-defense game, industrial aesthetic. A sharp steam-whistle toot plus an urgent mechanical lever-throw chunk. A decisive aggressive choice trading safety for tempo. 400ms, mono, -12 LUFS. Must evoke the last railway of a dying ember civilization. NO alarm buzzer, NO cartoonish toot.
+
+
+═══ 教程音效(1个,P2)═══
+
+11. tutorial_complete
+   时长 0.5 秒 | mono | 单声道 | 16-bit | WAV
+   响度 -15 LUFS
+   A tutorial-completion UI sound effect for a tower-defense game, industrial aesthetic. A brief gentle resolve: a single warm metallic bell tone with a soft decay, plus a faint mechanical sigh of release. The player is ready. 500ms, mono, -15 LUFS. Must evoke the last railway of a dying ember civilization. NO cartoonish ta-da, NO generic complete chime.

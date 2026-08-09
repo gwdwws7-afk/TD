@@ -7,6 +7,7 @@ namespace TD
     {
         private TDGameManager _gameManager;
         private TDEnemy _target;
+        private TDTower _sourceTower;
         private TDTowerKind _sourceTowerKind;
         private int _damage;
         private float _speed;
@@ -25,17 +26,25 @@ namespace TD
         private Color _trailEndColor;
         private Color _impactStartColor;
         private Color _impactEndColor;
+        private Color _aoeStartColor;
+        private Color _aoeEndColor;
+        private string _projectileSpritePath;
+        private string _impactSpritePath;
+        private float _projectileVisualScale;
+        private float _trailScaleMultiplier;
+        private float _trailDuration;
+        private float _spinDegreesPerSecond;
+        private float _rotationOffsetDegrees;
+        private bool _orientToVelocity;
         private float _impactScale;
         private float _impactDuration;
-        private const string AoeRingSpritePath = "Art/build_marker";
-        private const string SparkSpritePath = "Art/projectile_bolt";
         private const float ArcChainSearchRadiusMin = 1.15f;
         private const float ArcChainSearchRadiusScale = 1.22f;
         private const int ArcChainCandidateBonus = 3;
         private const int ArcChainCandidateMin = 3;
         private const int ArcChainCandidateMax = 9;
         private const int ArcChainCountMin = 2;
-        private const int ArcChainCountMax = 5;
+        private const int ArcChainCountMax = 7;
         private const float ArcChainDamageBaseScale = 0.70f;
         private const float ArcChainDamageDecayScale = 0.83f;
         private const float ArcChainExposeDuration = 1.0f;
@@ -72,9 +81,7 @@ namespace TD
         private const float GravPulseStaggerMinSpeed = 0.25f;
         private const float GravPulseExposeDuration = 0.90f;
         private const float GravPulseExposeMultiplier = 1.04f;
-        private const float DamageSpecThreatBonus = 1.12f;
         private const float DamageSpecExecuteThreshold = 0.40f;
-        private const float DamageSpecExecuteBonus = 1.10f;
         private const float UtilitySpecFieldRadiusMin = 0.85f;
         private const float UtilitySpecFieldRadiusScale = 0.72f;
         private const int UtilitySpecFieldMaxTargets = 4;
@@ -84,24 +91,34 @@ namespace TD
         private const float UtilitySpecStaggerMinSpeed = 0.48f;
         private const float ArcLinkBaseDuration = 0.11f;
         private const float ArcLinkDurationStep = 0.01f;
-        private const float ArcLinkStartWidth = 0.19f;
-        private const float ArcLinkEndWidth = 0.05f;
+        private const float ArcLinkStartWidth = 0.045f;
+        private const float ArcLinkEndWidth = 0.012f;
         private const float ArcLinkVerticalLift = 0.06f;
         private const float GravityBoundaryDuration = 0.46f;
         private const float GravityBoundaryInnerDuration = 0.33f;
-        private static readonly Color ArcLinkStartColor = new(0.70f, 0.94f, 1f, 0.90f);
+        private static readonly Color ArcLinkStartColor = new(0.70f, 0.94f, 1f, 0.58f);
         private static readonly Color ArcLinkEndColor = new(0.34f, 0.76f, 1f, 0f);
-        private static readonly Color GravityBoundaryOuterColor = new(0.54f, 0.62f, 1f, 0.75f);
-        private static readonly Color GravityBoundaryInnerColor = new(0.78f, 0.84f, 1f, 0.68f);
+        private static readonly Color GravityBoundaryOuterColor = new(0.54f, 0.62f, 1f, 0.46f);
+        private static readonly Color GravityBoundaryInnerColor = new(0.78f, 0.84f, 1f, 0.36f);
         private static readonly Color DamageSpecPulseStartColor = new(1f, 0.88f, 0.36f, 0.86f);
         private static readonly Color DamageSpecPulseEndColor = new(1f, 0.42f, 0.10f, 0f);
         private static readonly Color UtilitySpecFieldStartColor = new(0.36f, 1f, 0.78f, 0.66f);
         private static readonly Color UtilitySpecFieldEndColor = new(0.16f, 0.78f, 0.98f, 0f);
 
+        public static string GetProjectileResourcePath(TDTowerKind kind)
+        {
+            return $"Art/Combat/P11/projectile_{ResolveTowerVisualSlug(kind)}";
+        }
+
+        public static string GetImpactResourcePath(TDTowerKind kind)
+        {
+            return $"Art/Combat/P11/impact_{ResolveTowerVisualSlug(kind)}";
+        }
+
         public void Initialize(
             TDGameManager gameManager,
             TDEnemy target,
-            TDTowerKind sourceTowerKind,
+            TDTower sourceTower,
             int damage,
             float speed,
             float aoeRadius,
@@ -114,7 +131,8 @@ namespace TD
         {
             _gameManager = gameManager;
             _target = target;
-            _sourceTowerKind = sourceTowerKind;
+            _sourceTower = sourceTower;
+            _sourceTowerKind = sourceTower != null ? sourceTower.Kind : TDTowerKind.RailLancer;
             _damage = damage;
             _speed = speed;
             _aoeRadius = aoeRadius;
@@ -126,7 +144,13 @@ namespace TD
             _utilitySpecialist = utilitySpecialist;
             _renderer = GetComponent<SpriteRenderer>();
 
-            ConfigureVisualProfile(sourceTowerKind);
+            ConfigureVisualProfile(_sourceTowerKind);
+            if (_renderer != null)
+            {
+                _renderer.sprite = TDArtLibrary.LoadSpriteOrFallback(_projectileSpritePath, _projectileTint);
+                _renderer.color = Color.white;
+                transform.localScale = Vector3.one * _projectileVisualScale;
+            }
         }
 
         private void Update()
@@ -146,7 +170,9 @@ namespace TD
                 return;
             }
 
-            transform.position += toTarget.normalized * step;
+            var direction = toTarget.normalized;
+            UpdateProjectileRotation(direction);
+            transform.position += direction * step;
             EmitTrailGhost();
         }
 
@@ -189,10 +215,12 @@ namespace TD
 
             rawDamage = ApplyDamageSpecialistBonus(enemy, rawDamage);
             var modifiedDamage = _gameManager != null
-                ? _gameManager.GetModifiedDamageForEnemy(_sourceTowerKind, enemy, rawDamage)
+                ? _gameManager.GetModifiedDamageForEnemy(_sourceTower, enemy, rawDamage)
                 : rawDamage;
-            var damageTaken = enemy.TakeHit(modifiedDamage, slowPct, slowDuration);
-            _gameManager?.NotifyEnemyDamaged(_sourceTowerKind, enemy, damageTaken, slowPct > 0f);
+            var damageTaken = enemy.TakeHit(modifiedDamage, slowPct, slowDuration, _sourceTower);
+            var appliedSlowPct = damageTaken > 0 && enemy.HealthRatio > 0f ? slowPct : 0f;
+            var appliedSlowDuration = appliedSlowPct > 0f ? slowDuration : 0f;
+            _gameManager?.NotifyEnemyDamaged(_sourceTower, enemy, damageTaken, appliedSlowPct, appliedSlowDuration);
             return damageTaken;
         }
 
@@ -265,14 +293,67 @@ namespace TD
             }
 
             var multiplier = 1f;
-            if (enemy.HasAnyTag("armored", "heavy", "boss", "final", "elite", "fast", "flank", "support", "attrition", "special"))
+            switch (_sourceTowerKind)
             {
-                multiplier *= DamageSpecThreatBonus;
-            }
-
-            if (enemy.HealthRatio <= DamageSpecExecuteThreshold)
-            {
-                multiplier *= DamageSpecExecuteBonus;
+                case TDTowerKind.RailLancer:
+                    if (enemy.HasAnyTag("armored", "heavy", "boss"))
+                    {
+                        enemy.ApplyArmorBreak(6, 2.6f);
+                        multiplier *= 1.38f;
+                    }
+                    break;
+                case TDTowerKind.CinderMortar:
+                    if (enemy.HasAnyTag("swarm", "spawn", "support"))
+                    {
+                        multiplier *= 1.30f;
+                        if (enemy.HealthRatio <= 0.48f)
+                        {
+                            multiplier *= 1.14f;
+                        }
+                    }
+                    break;
+                case TDTowerKind.FrostCoil:
+                    if (enemy.IsSlowed || enemy.IsMarked || enemy.IsArmorBroken || enemy.HasTag("armored"))
+                    {
+                        multiplier *= 1.42f;
+                    }
+                    break;
+                case TDTowerKind.ArcWelder:
+                    if (enemy.HasAnyTag("swarm", "mixed", "spawn", "special"))
+                    {
+                        multiplier *= 1.24f;
+                    }
+                    break;
+                case TDTowerKind.SiegeDrill:
+                    if (enemy.HasAnyTag("armored", "heavy", "boss"))
+                    {
+                        enemy.ApplyArmorBreak(9, 3.4f);
+                        multiplier *= 1.48f;
+                    }
+                    break;
+                case TDTowerKind.EmberFlak:
+                    if (enemy.HasAnyTag("fast", "flank", "swarm"))
+                    {
+                        multiplier *= 1.38f;
+                        if (enemy.HealthRatio <= DamageSpecExecuteThreshold)
+                        {
+                            multiplier *= 1.16f;
+                        }
+                    }
+                    break;
+                case TDTowerKind.ResonanceBeacon:
+                    if (enemy.IsMarked || enemy.HasAnyTag("support", "attrition", "special"))
+                    {
+                        multiplier *= 1.35f;
+                        enemy.SetResonanceMark(1.9f);
+                    }
+                    break;
+                case TDTowerKind.GravSnare:
+                    if (enemy.HasAnyTag("heavy", "fast", "boss") || enemy.RouteProgress01 >= 0.55f)
+                    {
+                        multiplier *= 1.20f + (enemy.RouteProgress01 * 0.24f);
+                    }
+                    break;
             }
 
             if (multiplier > 1.001f)
@@ -284,8 +365,8 @@ namespace TD
                     DamageSpecPulseStartColor,
                     DamageSpecPulseEndColor,
                     "Fx_DamageSpecPulse",
-                    22);
-                _gameManager?.NotifySpecializationEffect(_sourceTowerKind, false);
+                    TDWorldVisualOrder.ProjectileFx);
+                _gameManager?.NotifyUltimateEffect(_sourceTower, enemy, false, 1);
             }
 
             return Mathf.Max(1, Mathf.RoundToInt(rawDamage * multiplier));
@@ -298,7 +379,27 @@ namespace TD
                 return;
             }
 
-            var radius = Mathf.Max(UtilitySpecFieldRadiusMin, _aoeRadius * UtilitySpecFieldRadiusScale);
+            var radiusMultiplier = _sourceTowerKind switch
+            {
+                TDTowerKind.CinderMortar => 1.30f,
+                TDTowerKind.ArcWelder => 1.22f,
+                TDTowerKind.EmberFlak => 1.26f,
+                TDTowerKind.ResonanceBeacon => 1.34f,
+                TDTowerKind.GravSnare => 1.36f,
+                _ => 1f
+            };
+            var targetBonus = _sourceTowerKind switch
+            {
+                TDTowerKind.CinderMortar => 3,
+                TDTowerKind.ArcWelder => 2,
+                TDTowerKind.EmberFlak => 3,
+                TDTowerKind.ResonanceBeacon => 4,
+                TDTowerKind.GravSnare => 4,
+                _ => 0
+            };
+            var synergyMultiplier = _gameManager.GetSpecializationSynergyMultiplier(_sourceTower, primaryTarget);
+            var radius = Mathf.Max(UtilitySpecFieldRadiusMin, _aoeRadius * UtilitySpecFieldRadiusScale) * radiusMultiplier * synergyMultiplier;
+            targetBonus += synergyMultiplier > 1.001f ? 2 : 0;
             SpawnSpecialistPulse(
                 impactPoint,
                 Mathf.Max(0.48f, radius * 0.42f),
@@ -306,10 +407,10 @@ namespace TD
                 UtilitySpecFieldStartColor,
                 UtilitySpecFieldEndColor,
                 "Fx_UtilitySpecField",
-                20);
-            _gameManager.NotifySpecializationEffect(_sourceTowerKind, true);
+                TDWorldVisualOrder.ProjectileBack);
 
-            var targets = _gameManager.GetEnemiesInRange(impactPoint, radius, UtilitySpecFieldMaxTargets);
+            var targets = _gameManager.GetEnemiesInRange(impactPoint, radius, UtilitySpecFieldMaxTargets + targetBonus);
+            var affected = 0;
             for (var i = 0; i < targets.Count; i++)
             {
                 var enemy = targets[i];
@@ -318,12 +419,62 @@ namespace TD
                     continue;
                 }
 
-                enemy.ApplyExposed(UtilitySpecExposeDuration, UtilitySpecExposeMultiplier);
-                if (enemy != primaryTarget && enemy.HasAnyTag("fast", "flank", "special", "swarm"))
+                switch (_sourceTowerKind)
                 {
-                    enemy.ApplyStagger(UtilitySpecStaggerDuration, UtilitySpecStaggerMinSpeed);
+                    case TDTowerKind.RailLancer:
+                        enemy.ApplyStagger(enemy == primaryTarget ? 0.46f : 0.18f, 0.08f);
+                        enemy.ApplyExposed(1.45f, 1.10f);
+                        break;
+                    case TDTowerKind.CinderMortar:
+                        enemy.ApplyStagger(0.24f, 0.24f);
+                        enemy.ApplyExposed(1.20f, 1.07f);
+                        break;
+                    case TDTowerKind.FrostCoil:
+                        enemy.ApplyStagger(enemy.HasTag("boss") ? 0.16f : 0.42f, enemy.HasTag("boss") ? 0.45f : 0.02f);
+                        enemy.ApplyExposed(1.10f, 1.08f);
+                        break;
+                    case TDTowerKind.ArcWelder:
+                        enemy.ApplyExposed(1.55f, 1.10f);
+                        if (enemy.HasAnyTag("fast", "special", "swarm"))
+                        {
+                            enemy.ApplyStagger(0.18f, 0.30f);
+                        }
+                        break;
+                    case TDTowerKind.SiegeDrill:
+                        enemy.ApplyArmorBreak(enemy.HasTag("armored") ? 7 : 3, 4.2f);
+                        if (enemy.HasAnyTag("support", "heavy"))
+                        {
+                            enemy.ApplyStagger(0.22f, 0.24f);
+                        }
+                        break;
+                    case TDTowerKind.EmberFlak:
+                        if (enemy.HasAnyTag("fast", "flank", "spawn"))
+                        {
+                            enemy.ApplyStagger(0.36f, 0.05f);
+                        }
+                        enemy.ApplyExposed(0.95f, 1.05f);
+                        break;
+                    case TDTowerKind.ResonanceBeacon:
+                        enemy.SetResonanceMark(2.1f);
+                        enemy.ApplyExposed(1.65f, 1.12f);
+                        break;
+                    case TDTowerKind.GravSnare:
+                        enemy.ApplyStagger(0.34f, 0.06f);
+                        enemy.ApplyExposed(1.35f, 1.10f);
+                        break;
+                    default:
+                        enemy.ApplyExposed(UtilitySpecExposeDuration, UtilitySpecExposeMultiplier);
+                        if (enemy != primaryTarget && enemy.HasAnyTag("fast", "flank", "special", "swarm"))
+                        {
+                            enemy.ApplyStagger(UtilitySpecStaggerDuration, UtilitySpecStaggerMinSpeed);
+                        }
+                        break;
                 }
+
+                affected++;
             }
+
+            _gameManager.NotifyUltimateEffect(_sourceTower, primaryTarget, true, Mathf.Max(1, affected));
         }
 
         private void TriggerArcChain(TDEnemy primaryTarget)
@@ -337,14 +488,14 @@ namespace TD
             var candidates = _gameManager.GetEnemiesInRange(
                 primaryTarget.transform.position,
                 radius,
-                Mathf.Clamp(_aoeMaxTargets + ArcChainCandidateBonus, ArcChainCandidateMin, ArcChainCandidateMax));
+                Mathf.Clamp(_aoeMaxTargets + ArcChainCandidateBonus + (_damageSpecialist ? 2 : 0), ArcChainCandidateMin, ArcChainCandidateMax));
             if (candidates.Count == 0)
             {
                 return;
             }
 
             var chained = 0;
-            var maxChains = Mathf.Clamp(_aoeMaxTargets, ArcChainCountMin, ArcChainCountMax);
+            var maxChains = Mathf.Clamp(_aoeMaxTargets + (_damageSpecialist ? 2 : 0), ArcChainCountMin, ArcChainCountMax);
             var visited = new HashSet<TDEnemy> { primaryTarget };
             var linkOrigin = primaryTarget.transform.position;
             for (var i = 0; i < candidates.Count && chained < maxChains; i++)
@@ -357,12 +508,16 @@ namespace TD
 
                 visited.Add(target);
                 chained++;
-                var chainDamageScale = ArcChainDamageBaseScale * Mathf.Pow(ArcChainDamageDecayScale, chained - 1);
+                var chainDamageScale = ArcChainDamageBaseScale * Mathf.Pow(ArcChainDamageDecayScale, chained - 1) * (_damageSpecialist ? 1.15f : 1f);
                 var chainDamage = Mathf.Max(1, Mathf.RoundToInt(_damage * chainDamageScale));
                 var damageTaken = ApplyDamage(target, chainDamage, 0f, 0f);
                 if (damageTaken > 0)
                 {
-                    target.ApplyExposed(ArcChainExposeDuration, ArcChainExposeMultiplier);
+                    target.ApplyExposed(_utilitySpecialist ? 1.55f : ArcChainExposeDuration, _utilitySpecialist ? 1.10f : ArcChainExposeMultiplier);
+                    if (_utilitySpecialist && target.HasAnyTag("fast", "special", "swarm"))
+                    {
+                        target.ApplyStagger(0.16f, 0.28f);
+                    }
                     SpawnImpactSpark(target.transform.position, false);
                     SpawnArcLink(linkOrigin, target.transform.position, chained);
                     linkOrigin = target.transform.position;
@@ -377,8 +532,8 @@ namespace TD
                 return;
             }
 
-            var splashRadius = Mathf.Max(EmberSplashRadiusMin, _aoeRadius * EmberSplashRadiusScale);
-            var targets = _gameManager.GetEnemiesInRange(impactPoint, splashRadius, EmberSplashMaxTargets);
+            var splashRadius = Mathf.Max(EmberSplashRadiusMin, _aoeRadius * EmberSplashRadiusScale) * (_utilitySpecialist ? 1.28f : 1f);
+            var targets = _gameManager.GetEnemiesInRange(impactPoint, splashRadius, EmberSplashMaxTargets + (_utilitySpecialist ? 3 : 0));
             for (var i = 0; i < targets.Count; i++)
             {
                 var enemy = targets[i];
@@ -396,7 +551,7 @@ namespace TD
                 var dealt = ApplyDamage(enemy, splashDamage, 0f, 0f);
                 if (dealt > 0)
                 {
-                    enemy.ApplyStagger(EmberSplashStaggerDuration, EmberSplashStaggerMinSpeed);
+                    enemy.ApplyStagger(_utilitySpecialist ? 0.32f : EmberSplashStaggerDuration, _utilitySpecialist ? 0.04f : EmberSplashStaggerMinSpeed);
                 }
             }
         }
@@ -408,8 +563,8 @@ namespace TD
                 return;
             }
 
-            var pulseRadius = Mathf.Max(BeaconPulseRadiusMin, _aoeRadius * BeaconPulseRadiusScale);
-            var targets = _gameManager.GetEnemiesInRange(impactPoint, pulseRadius, BeaconPulseMaxTargets);
+            var pulseRadius = Mathf.Max(BeaconPulseRadiusMin, _aoeRadius * BeaconPulseRadiusScale) * (_utilitySpecialist ? 1.30f : 1f);
+            var targets = _gameManager.GetEnemiesInRange(impactPoint, pulseRadius, BeaconPulseMaxTargets + (_utilitySpecialist ? 3 : 0));
             for (var i = 0; i < targets.Count; i++)
             {
                 var enemy = targets[i];
@@ -418,8 +573,8 @@ namespace TD
                     continue;
                 }
 
-                enemy.SetResonanceMark(BeaconPulseMarkDuration);
-                enemy.ApplyExposed(BeaconPulseExposeDuration, BeaconPulseExposeMultiplier);
+                enemy.SetResonanceMark(_utilitySpecialist ? 1.85f : BeaconPulseMarkDuration);
+                enemy.ApplyExposed(_utilitySpecialist ? 1.50f : BeaconPulseExposeDuration, _utilitySpecialist ? 1.10f : BeaconPulseExposeMultiplier);
             }
         }
 
@@ -430,9 +585,9 @@ namespace TD
                 return;
             }
 
-            var pulseRadius = Mathf.Max(GravPulseRadiusMin, _aoeRadius * GravPulseRadiusScale);
+            var pulseRadius = Mathf.Max(GravPulseRadiusMin, _aoeRadius * GravPulseRadiusScale) * (_utilitySpecialist ? 1.32f : 1f);
             SpawnGravityBoundary(impactPoint, pulseRadius);
-            var targets = _gameManager.GetEnemiesInRange(impactPoint, pulseRadius, Mathf.Max(_aoeMaxTargets, GravPulseMinTargets));
+            var targets = _gameManager.GetEnemiesInRange(impactPoint, pulseRadius, Mathf.Max(_aoeMaxTargets, GravPulseMinTargets) + (_utilitySpecialist ? 4 : 0));
             for (var i = 0; i < targets.Count; i++)
             {
                 var enemy = targets[i];
@@ -441,8 +596,8 @@ namespace TD
                     continue;
                 }
 
-                enemy.ApplyStagger(GravPulseStaggerDuration, GravPulseStaggerMinSpeed);
-                enemy.ApplyExposed(GravPulseExposeDuration, GravPulseExposeMultiplier);
+                enemy.ApplyStagger(_utilitySpecialist ? 0.30f : GravPulseStaggerDuration, _utilitySpecialist ? 0.05f : GravPulseStaggerMinSpeed);
+                enemy.ApplyExposed(_utilitySpecialist ? 1.30f : GravPulseExposeDuration, _utilitySpecialist ? 1.09f : GravPulseExposeMultiplier);
             }
         }
 
@@ -468,7 +623,7 @@ namespace TD
                 ArcLinkEndWidth,
                 ArcLinkStartColor,
                 ArcLinkEndColor,
-                23);
+                TDWorldVisualOrder.ProjectileFx);
         }
 
         private void SpawnGravityBoundary(Vector3 impactPoint, float radius)
@@ -483,13 +638,13 @@ namespace TD
             outer.transform.position = impactPoint;
 
             var outerRenderer = outer.AddComponent<SpriteRenderer>();
-            outerRenderer.sortingOrder = 18;
-            outerRenderer.sprite = TDArtLibrary.LoadSpriteOrFallback(AoeRingSpritePath, GravityBoundaryOuterColor);
+            outerRenderer.sortingOrder = TDWorldVisualOrder.ProjectileBack;
+            outerRenderer.sprite = TDArtLibrary.GetSoftRingSprite();
             outerRenderer.color = GravityBoundaryOuterColor;
 
             var outerFx = outer.AddComponent<TDTransientSpriteFx>();
-            var outerStartScale = Vector3.one * Mathf.Max(0.34f, radius * 1.28f);
-            var outerEndScale = Vector3.one * Mathf.Max(0.66f, radius * 2.72f);
+            var outerStartScale = Vector3.one * Mathf.Max(0.28f, radius * 0.72f);
+            var outerEndScale = Vector3.one * Mathf.Max(0.58f, radius * 2f);
             outerFx.Configure(
                 GravityBoundaryDuration,
                 outerStartScale,
@@ -502,13 +657,13 @@ namespace TD
             inner.transform.position = impactPoint;
 
             var innerRenderer = inner.AddComponent<SpriteRenderer>();
-            innerRenderer.sortingOrder = 19;
-            innerRenderer.sprite = TDArtLibrary.LoadSpriteOrFallback(AoeRingSpritePath, GravityBoundaryInnerColor);
+            innerRenderer.sortingOrder = TDWorldVisualOrder.Projectile;
+            innerRenderer.sprite = TDArtLibrary.GetSoftRingSprite();
             innerRenderer.color = GravityBoundaryInnerColor;
 
             var innerFx = inner.AddComponent<TDTransientSpriteFx>();
-            var innerStartScale = Vector3.one * Mathf.Max(0.24f, radius * 0.90f);
-            var innerEndScale = Vector3.one * Mathf.Max(0.54f, radius * 2.10f);
+            var innerStartScale = Vector3.one * Mathf.Max(0.20f, radius * 0.46f);
+            var innerEndScale = Vector3.one * Mathf.Max(0.42f, radius * 1.28f);
             innerFx.Configure(
                 GravityBoundaryInnerDuration,
                 innerStartScale,
@@ -519,9 +674,21 @@ namespace TD
 
         private void ConfigureVisualProfile(TDTowerKind sourceTowerKind)
         {
+            _projectileSpritePath = GetProjectileResourcePath(sourceTowerKind);
+            _impactSpritePath = GetImpactResourcePath(sourceTowerKind);
+            _projectileVisualScale = 0.30f;
+            _trailScaleMultiplier = 0.86f;
+            _trailDuration = 0.15f;
+            _spinDegreesPerSecond = 0f;
+            _rotationOffsetDegrees = 0f;
+            _orientToVelocity = true;
+
             switch (sourceTowerKind)
             {
                 case TDTowerKind.RailLancer:
+                    _projectileVisualScale = 0.30f;
+                    _trailScaleMultiplier = 0.90f;
+                    _trailDuration = 0.12f;
                     _trailInterval = 0.038f;
                     _projectileTint = new Color(0.92f, 0.97f, 1f, 1f);
                     _trailStartColor = new Color(0.86f, 0.95f, 1f, 0.58f);
@@ -532,6 +699,9 @@ namespace TD
                     _impactDuration = 0.13f;
                     break;
                 case TDTowerKind.CinderMortar:
+                    _projectileVisualScale = 0.42f;
+                    _trailScaleMultiplier = 0.72f;
+                    _trailDuration = 0.21f;
                     _trailInterval = 0.05f;
                     _projectileTint = new Color(1f, 0.90f, 0.64f, 1f);
                     _trailStartColor = new Color(1f, 0.74f, 0.36f, 0.6f);
@@ -542,6 +712,9 @@ namespace TD
                     _impactDuration = 0.18f;
                     break;
                 case TDTowerKind.FrostCoil:
+                    _projectileVisualScale = 0.30f;
+                    _trailScaleMultiplier = 0.88f;
+                    _trailDuration = 0.18f;
                     _trailInterval = 0.04f;
                     _projectileTint = new Color(0.86f, 1f, 1f, 1f);
                     _trailStartColor = new Color(0.78f, 0.98f, 1f, 0.62f);
@@ -552,6 +725,9 @@ namespace TD
                     _impactDuration = 0.15f;
                     break;
                 case TDTowerKind.ArcWelder:
+                    _projectileVisualScale = 0.28f;
+                    _trailScaleMultiplier = 0.82f;
+                    _trailDuration = 0.13f;
                     _trailInterval = 0.036f;
                     _projectileTint = new Color(0.72f, 0.97f, 1f, 1f);
                     _trailStartColor = new Color(0.62f, 0.92f, 1f, 0.62f);
@@ -562,6 +738,9 @@ namespace TD
                     _impactDuration = 0.15f;
                     break;
                 case TDTowerKind.SiegeDrill:
+                    _projectileVisualScale = 0.30f;
+                    _trailScaleMultiplier = 0.88f;
+                    _trailDuration = 0.16f;
                     _trailInterval = 0.05f;
                     _projectileTint = new Color(0.98f, 0.86f, 0.54f, 1f);
                     _trailStartColor = new Color(0.98f, 0.80f, 0.44f, 0.60f);
@@ -572,6 +751,9 @@ namespace TD
                     _impactDuration = 0.18f;
                     break;
                 case TDTowerKind.EmberFlak:
+                    _projectileVisualScale = 0.29f;
+                    _trailScaleMultiplier = 0.78f;
+                    _trailDuration = 0.11f;
                     _trailInterval = 0.03f;
                     _projectileTint = new Color(1f, 0.78f, 0.50f, 1f);
                     _trailStartColor = new Color(1f, 0.70f, 0.40f, 0.58f);
@@ -582,6 +764,11 @@ namespace TD
                     _impactDuration = 0.16f;
                     break;
                 case TDTowerKind.ResonanceBeacon:
+                    _projectileVisualScale = 0.30f;
+                    _trailScaleMultiplier = 0.84f;
+                    _trailDuration = 0.18f;
+                    _orientToVelocity = false;
+                    _spinDegreesPerSecond = 130f;
                     _trailInterval = 0.042f;
                     _projectileTint = new Color(0.78f, 1f, 0.84f, 1f);
                     _trailStartColor = new Color(0.70f, 0.98f, 0.78f, 0.60f);
@@ -592,6 +779,11 @@ namespace TD
                     _impactDuration = 0.15f;
                     break;
                 case TDTowerKind.GravSnare:
+                    _projectileVisualScale = 0.30f;
+                    _trailScaleMultiplier = 0.90f;
+                    _trailDuration = 0.20f;
+                    _orientToVelocity = false;
+                    _spinDegreesPerSecond = -105f;
                     _trailInterval = 0.044f;
                     _projectileTint = new Color(0.80f, 0.86f, 1f, 1f);
                     _trailStartColor = new Color(0.72f, 0.82f, 1f, 0.60f);
@@ -602,6 +794,7 @@ namespace TD
                     _impactDuration = 0.18f;
                     break;
                 default:
+                    _projectileVisualScale = 0.30f;
                     _trailInterval = 0.045f;
                     _projectileTint = new Color(0.96f, 0.94f, 0.76f, 1f);
                     _trailStartColor = new Color(0.92f, 0.92f, 0.75f, 0.56f);
@@ -613,10 +806,12 @@ namespace TD
                     break;
             }
 
+            _aoeStartColor = new Color(_impactStartColor.r, _impactStartColor.g, _impactStartColor.b, 0.68f);
+            _aoeEndColor = new Color(_impactEndColor.r, _impactEndColor.g, _impactEndColor.b, 0f);
             _trailTimer = 0f;
             if (_renderer != null)
             {
-                _renderer.color = _projectileTint;
+                _renderer.color = Color.white;
             }
         }
 
@@ -643,11 +838,12 @@ namespace TD
             ghostRenderer.sortingOrder = _renderer.sortingOrder - 1;
             ghostRenderer.sprite = _renderer.sprite;
             ghostRenderer.color = _trailStartColor;
+            ghost.transform.rotation = transform.rotation;
 
             var fx = ghost.AddComponent<TDTransientSpriteFx>();
-            var startScale = transform.localScale * 0.92f;
-            var endScale = transform.localScale * 0.45f;
-            fx.Configure(0.17f, startScale, endScale, _trailStartColor, _trailEndColor);
+            var startScale = transform.localScale * _trailScaleMultiplier;
+            var endScale = transform.localScale * (_trailScaleMultiplier * 0.42f);
+            fx.Configure(_trailDuration, startScale, endScale, _trailStartColor, _trailEndColor);
         }
 
         private void SpawnImpactSpark(Vector3 impactPoint, bool isAoe)
@@ -660,10 +856,11 @@ namespace TD
             var spark = new GameObject("Fx_ImpactSpark");
             spark.transform.SetParent(_gameManager.transform, true);
             spark.transform.position = impactPoint;
+            spark.transform.rotation = transform.rotation;
 
             var sparkRenderer = spark.AddComponent<SpriteRenderer>();
-            sparkRenderer.sortingOrder = 21;
-            sparkRenderer.sprite = TDArtLibrary.LoadSpriteOrFallback(SparkSpritePath, _impactStartColor);
+            sparkRenderer.sortingOrder = TDWorldVisualOrder.ProjectileFx;
+            sparkRenderer.sprite = TDArtLibrary.LoadSpriteOrFallback(_impactSpritePath, _impactStartColor);
 
             var fx = spark.AddComponent<TDTransientSpriteFx>();
             var startScaleFactor = isAoe ? _impactScale * 0.7f : _impactScale * 0.55f;
@@ -689,18 +886,33 @@ namespace TD
             fx.transform.position = impactPoint;
 
             var renderer = fx.AddComponent<SpriteRenderer>();
-            renderer.sortingOrder = 19;
-            renderer.sprite = TDArtLibrary.LoadSpriteOrFallback(AoeRingSpritePath, new Color(0.49f, 0.78f, 0.94f));
+            renderer.sortingOrder = TDWorldVisualOrder.ProjectileBack;
+            renderer.sprite = TDArtLibrary.GetSoftRingSprite();
 
             var ringFx = fx.AddComponent<TDTransientSpriteFx>();
-            var startScale = Vector3.one * 0.28f;
-            var endScale = Vector3.one * Mathf.Max(0.55f, radius * 2.2f);
+            var startScale = Vector3.one * Mathf.Max(0.20f, radius * 0.34f);
+            var endScale = Vector3.one * Mathf.Max(0.55f, radius * 2f);
             ringFx.Configure(
                 0.24f,
                 startScale,
                 endScale,
-                new Color(0.65f, 0.90f, 1f, 0.80f),
-                new Color(0.65f, 0.90f, 1f, 0f));
+                _aoeStartColor,
+                _aoeEndColor);
+        }
+
+        private void UpdateProjectileRotation(Vector3 direction)
+        {
+            if (_orientToVelocity && direction.sqrMagnitude > 0.0001f)
+            {
+                var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                transform.rotation = Quaternion.Euler(0f, 0f, angle + _rotationOffsetDegrees);
+                return;
+            }
+
+            if (Mathf.Abs(_spinDegreesPerSecond) > 0.01f)
+            {
+                transform.Rotate(0f, 0f, _spinDegreesPerSecond * Time.deltaTime);
+            }
         }
 
         private void SpawnSpecialistPulse(
@@ -733,6 +945,22 @@ namespace TD
                 Vector3.one * Mathf.Max(startDiameter, endDiameter),
                 startColor,
                 endColor);
+        }
+
+        private static string ResolveTowerVisualSlug(TDTowerKind kind)
+        {
+            return kind switch
+            {
+                TDTowerKind.RailLancer => "rail_lancer",
+                TDTowerKind.CinderMortar => "cinder_mortar",
+                TDTowerKind.FrostCoil => "frost_coil",
+                TDTowerKind.ArcWelder => "arc_welder",
+                TDTowerKind.SiegeDrill => "siege_drill",
+                TDTowerKind.EmberFlak => "ember_flak",
+                TDTowerKind.ResonanceBeacon => "resonance_beacon",
+                TDTowerKind.GravSnare => "grav_snare",
+                _ => "rail_lancer"
+            };
         }
     }
 }

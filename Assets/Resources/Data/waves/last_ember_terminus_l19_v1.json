@@ -964,7 +964,7 @@
                 "endgame"
             ],
             "prepSeconds": 5.34,
-            "rewardGold": 78,
+      "rewardGold": 76,
             "budgetTarget": 161.9,
             "budgetTolerance": 1.04,
             "hint": "[L19] W20: 持续压制并补齐覆盖空洞。 多线同时压测。",

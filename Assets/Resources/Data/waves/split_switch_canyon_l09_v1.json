@@ -711,7 +711,7 @@
             "rewardGold": 58,
             "budgetTarget": 84.6,
             "budgetTolerance": 1.05,
-            "hint": "[L09] W15: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+      "hint": "[L09] W15 EXAM PEAK: 开波前切换中心流量，让装甲与群体压力进入不同火力区。",
             "groups": [
                 {
                     "enemyId": "plated_spore",
@@ -869,7 +869,7 @@
             "rewardGold": 64,
             "budgetTarget": 90.3,
             "budgetTolerance": 1.04,
-            "hint": "[L09] W18: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+      "hint": "[L09] W18 EXAM: 根据道路热区切换中心、分路与交叉流量，不要沿用上一波路线。",
             "groups": [
                 {
                     "enemyId": "carapace_brute",
@@ -983,7 +983,7 @@
             "rewardGold": 69,
             "budgetTarget": 96.4,
             "budgetTolerance": 1.04,
-            "hint": "[L09] W20: 持续压制并补齐覆盖空洞。 多线同时压测。",
+      "hint": "[L09] W20 MILESTONE: 最终换轨会放大一条线路；先看预告，再提交路线与阵容。",
             "groups": [
                 {
                     "enemyId": "carapace_brute",

@@ -3,18 +3,149 @@ using UnityEngine;
 
 namespace TD
 {
+    public enum TDBuildSiteValidity
+    {
+        Valid = 0,
+        OutsideBoard = 1,
+        OutsideAuthoredSite = 2,
+        Occupied = 3,
+        FootprintOutsideBoard = 4,
+        RoadOverlap = 5
+    }
+
     public sealed class TDGridMap
     {
+        private readonly struct RoadSegment
+        {
+            public RoadSegment(Vector2 start, Vector2 end)
+            {
+                Start = start;
+                End = end;
+            }
+
+            public Vector2 Start { get; }
+            public Vector2 End { get; }
+        }
+
+        private readonly struct AuthoredBuildSite
+        {
+            public AuthoredBuildSite(Vector2Int cell, Vector2 worldOffset)
+            {
+                Cell = cell;
+                WorldOffset = worldOffset;
+            }
+
+            public Vector2Int Cell { get; }
+            public Vector2 WorldOffset { get; }
+        }
+
+        private static readonly AuthoredBuildSite[] GraylineSafeBuildSites =
+        {
+            new(new Vector2Int(2, 6), Vector2.zero),
+            new(new Vector2Int(4, 6), Vector2.zero),
+            new(new Vector2Int(6, 6), Vector2.zero),
+            new(new Vector2Int(8, 6), Vector2.zero),
+            new(new Vector2Int(10, 6), new Vector2(0f, 0.10f)),
+            new(new Vector2Int(9, 4), Vector2.zero),
+            new(new Vector2Int(11, 4), Vector2.zero),
+            new(new Vector2Int(1, 2), Vector2.zero),
+            new(new Vector2Int(3, 2), Vector2.zero),
+            new(new Vector2Int(5, 2), Vector2.zero),
+            new(new Vector2Int(8, 1), new Vector2(0f, 0.10f)),
+            new(new Vector2Int(10, 2), Vector2.zero)
+        };
+
+        private static readonly AuthoredBuildSite[] AshfallSafeBuildSites =
+        {
+            new(new Vector2Int(1, 5), Vector2.zero),
+            new(new Vector2Int(3, 5), Vector2.zero),
+            new(new Vector2Int(10, 6), new Vector2(0f, 0.20f)),
+            new(new Vector2Int(6, 7), Vector2.zero),
+            new(new Vector2Int(8, 7), Vector2.zero),
+            new(new Vector2Int(3, 2), Vector2.zero),
+            new(new Vector2Int(5, 1), Vector2.zero),
+            new(new Vector2Int(7, 1), Vector2.zero),
+            new(new Vector2Int(9, 3), Vector2.zero),
+            new(new Vector2Int(11, 2), Vector2.zero),
+            new(new Vector2Int(6, 2), Vector2.zero),
+            new(new Vector2Int(1, 3), Vector2.zero)
+        };
+
+        private static readonly AuthoredBuildSite[] SplitSwitchSafeBuildSites =
+        {
+            new(new Vector2Int(6, 7), Vector2.zero),
+            new(new Vector2Int(6, 1), Vector2.zero),
+            new(new Vector2Int(9, 5), new Vector2(0.00f, -0.18f)),
+            new(new Vector2Int(10, 4), Vector2.zero),
+            new(new Vector2Int(2, 4), new Vector2(-0.30f, -0.35f)),
+            new(new Vector2Int(8, 4), Vector2.zero),
+            new(new Vector2Int(5, 3), new Vector2(0.10f, -0.20f)),
+            new(new Vector2Int(1, 2), new Vector2(-0.20f, -0.25f)),
+            new(new Vector2Int(3, 2), new Vector2(-0.20f, -0.25f)),
+            new(new Vector2Int(9, 2), new Vector2(-0.30f, -0.25f)),
+            new(new Vector2Int(11, 2), new Vector2(-0.10f, -0.25f)),
+            new(new Vector2Int(7, 2), Vector2.zero)
+        };
+
+        private static readonly AuthoredBuildSite[] HollowKilnSafeBuildSites =
+        {
+            new(new Vector2Int(0, 3), Vector2.zero),
+            new(new Vector2Int(1, 2), new Vector2(0.10f, 0.35f)),
+            new(new Vector2Int(4, 6), new Vector2(-0.20f, 0.35f)),
+            new(new Vector2Int(6, 6), Vector2.zero),
+            new(new Vector2Int(8, 7), new Vector2(-0.10f, -0.35f)),
+            new(new Vector2Int(9, 6), Vector2.zero),
+            new(new Vector2Int(10, 5), Vector2.zero),
+            new(new Vector2Int(7, 3), Vector2.zero),
+            new(new Vector2Int(6, 1), Vector2.zero),
+            new(new Vector2Int(9, 1), Vector2.zero),
+            new(new Vector2Int(13, 3), Vector2.zero),
+            new(new Vector2Int(11, 7), Vector2.zero)
+        };
+
+        private static readonly AuthoredBuildSite[] LastEmberSafeBuildSites =
+        {
+            new(new Vector2Int(0, 2), Vector2.zero),
+            new(new Vector2Int(8, 7), Vector2.zero),
+            new(new Vector2Int(10, 7), Vector2.zero),
+            new(new Vector2Int(9, 2), new Vector2(-0.10f, -0.20f)),
+            new(new Vector2Int(2, 5), Vector2.zero),
+            new(new Vector2Int(4, 5), Vector2.zero),
+            new(new Vector2Int(6, 5), Vector2.zero),
+            new(new Vector2Int(3, 3), Vector2.zero),
+            new(new Vector2Int(6, 3), Vector2.zero),
+            new(new Vector2Int(10, 3), new Vector2(0.20f, 0.10f)),
+            new(new Vector2Int(6, 1), Vector2.zero),
+            new(new Vector2Int(8, 1), Vector2.zero)
+        };
+
+        private const float MinimumRoadClearanceInCells = 0.78f;
+        private const float FoundationRadiusInCells = 0.39f;
         private readonly bool[,] _isPath;
         private readonly bool[,] _hasTower;
         private readonly List<Vector3> _pathWorldPoints = new();
         private readonly List<Vector2Int> _recommendedBuildCells = new();
+        private readonly List<Vector2Int> _authoredBuildCells = new();
+        private readonly HashSet<Vector2Int> _authoredBuildCellSet = new();
+        private readonly Dictionary<Vector2Int, Vector2> _authoredBuildOffsets = new();
+        private readonly List<RoadSegment> _roadSegments = new();
+        private readonly Dictionary<Vector2Int, SpriteRenderer> _buildSpotRenderers = new();
+        private readonly Dictionary<Vector2Int, SpriteRenderer> _buildSpotShadowRenderers = new();
         private readonly Vector2 _bottomLeft;
         private readonly string _mapId;
         private Transform _previewMarkerTransform;
         private SpriteRenderer _previewMarkerRenderer;
+        private Transform _previewOutlineTransform;
+        private SpriteRenderer _previewOutlineRenderer;
 
-        public TDGridMap(int width, int height, float cellSize, IReadOnlyList<Vector2Int> pathCells, Transform root, string mapId = null)
+        public TDGridMap(
+            int width,
+            int height,
+            float cellSize,
+            IReadOnlyList<Vector2Int> pathCells,
+            Transform root,
+            string mapId = null,
+            IEnumerable<IReadOnlyList<Vector3>> roadPaths = null)
         {
             Width = width;
             Height = height;
@@ -22,6 +153,8 @@ namespace TD
             _isPath = new bool[width, height];
             _hasTower = new bool[width, height];
             _mapId = string.IsNullOrWhiteSpace(mapId) ? "grayline_junction" : mapId;
+            ConfigureAuthoredBuildCells();
+            ConfigureRoadSegments(roadPaths);
 
             _bottomLeft = new Vector2(-(width * cellSize) * 0.5f, -(height * cellSize) * 0.5f);
 
@@ -41,6 +174,38 @@ namespace TD
         public int Height { get; }
         public float CellSize { get; }
         public IReadOnlyList<Vector3> PathWorldPoints => _pathWorldPoints;
+        public IReadOnlyList<Vector2Int> RecommendedBuildCells => _recommendedBuildCells;
+        public IReadOnlyList<Vector2Int> AuthoredBuildCells => _authoredBuildCells;
+        public int RecommendedBuildSpotCount => _recommendedBuildCells.Count;
+        public int AuthoredBuildSpotCount => _authoredBuildCells.Count;
+        public bool UsesAuthoredBuildCells => _authoredBuildCells.Count > 0;
+        public float RequiredRoadClearance => CellSize * MinimumRoadClearanceInCells;
+        public int HiddenBuildSpotCount => Mathf.Max(0, RecommendedBuildSpotCount - ActiveBuildSpotCount);
+        public int ActiveBuildSpotCount
+        {
+            get
+            {
+                var count = 0;
+                foreach (var pair in _buildSpotRenderers)
+                {
+                    if (pair.Value != null && pair.Value.enabled)
+                    {
+                        count++;
+                    }
+                }
+
+                return count;
+            }
+        }
+        public bool PreviewUsesFoundation => _previewMarkerRenderer != null &&
+                                             _previewMarkerRenderer.sprite != null &&
+                                             _previewMarkerRenderer.sprite.name.Contains("tower_base_plate");
+        public bool PreviewHasLegalityOutline => _previewOutlineRenderer != null &&
+                                                 _previewOutlineRenderer.sprite != null;
+        public float FoundationDiameterWorld => CellSize * FoundationRadiusInCells * 2f;
+        public TDBuildSiteValidity LastPreviewValidity { get; private set; } = TDBuildSiteValidity.OutsideBoard;
+        public bool BuildPreviewVisible => _previewMarkerRenderer != null && _previewMarkerRenderer.enabled &&
+                                           _previewOutlineRenderer != null && _previewOutlineRenderer.enabled;
 
         public bool TryWorldToCell(Vector3 world, out Vector2Int cell)
         {
@@ -57,9 +222,79 @@ namespace TD
             return new Vector3(worldX, worldY, 0f);
         }
 
+        public Vector3 CellToBuildWorld(Vector2Int cell)
+        {
+            var world = CellToWorld(cell);
+            if (_authoredBuildOffsets.TryGetValue(cell, out var offset))
+            {
+                world += new Vector3(offset.x, offset.y, 0f);
+            }
+
+            return world;
+        }
+
         public bool IsBuildable(Vector2Int cell)
         {
-            return IsInside(cell) && !_isPath[cell.x, cell.y] && !_hasTower[cell.x, cell.y];
+            return GetBuildSiteValidity(cell) == TDBuildSiteValidity.Valid;
+        }
+
+        public TDBuildSiteValidity GetBuildSiteValidity(Vector2Int cell)
+        {
+            if (!IsInside(cell))
+            {
+                return TDBuildSiteValidity.OutsideBoard;
+            }
+
+            if (_authoredBuildCellSet.Count > 0 && !_authoredBuildCellSet.Contains(cell))
+            {
+                return TDBuildSiteValidity.OutsideAuthoredSite;
+            }
+
+            if (_authoredBuildCellSet.Count == 0 && _isPath[cell.x, cell.y])
+            {
+                return TDBuildSiteValidity.RoadOverlap;
+            }
+
+            if (_hasTower[cell.x, cell.y])
+            {
+                return TDBuildSiteValidity.Occupied;
+            }
+
+            if (!IsFoundationInsideBoard(cell))
+            {
+                return TDBuildSiteValidity.FootprintOutsideBoard;
+            }
+
+            return GetRoadClearance(cell) >= RequiredRoadClearance
+                ? TDBuildSiteValidity.Valid
+                : TDBuildSiteValidity.RoadOverlap;
+        }
+
+        public bool IsRecommendedBuildCell(Vector2Int cell)
+        {
+            return _recommendedBuildCells.Contains(cell);
+        }
+
+        public bool IsBuildFootprintInsideBoard(Vector2Int cell)
+        {
+            return IsFoundationInsideBoard(cell);
+        }
+
+        public float GetRoadClearance(Vector2Int cell)
+        {
+            if (!IsInside(cell) || _roadSegments.Count == 0)
+            {
+                return _roadSegments.Count == 0 ? float.MaxValue : 0f;
+            }
+
+            var point = (Vector2)CellToBuildWorld(cell);
+            var closest = float.MaxValue;
+            for (var i = 0; i < _roadSegments.Count; i++)
+            {
+                closest = Mathf.Min(closest, DistanceToSegment(point, _roadSegments[i].Start, _roadSegments[i].End));
+            }
+
+            return closest;
         }
 
         public void SetTower(Vector2Int cell, bool hasTower)
@@ -70,6 +305,15 @@ namespace TD
             }
 
             _hasTower[cell.x, cell.y] = hasTower;
+            if (_buildSpotRenderers.TryGetValue(cell, out var renderer) && renderer != null)
+            {
+                renderer.enabled = !hasTower;
+            }
+
+            if (_buildSpotShadowRenderers.TryGetValue(cell, out var shadowRenderer) && shadowRenderer != null)
+            {
+                shadowRenderer.enabled = !hasTower;
+            }
         }
 
         public void UpdateBuildPreview(Vector3 worldPosition)
@@ -81,17 +325,34 @@ namespace TD
 
             if (!TryWorldToCell(worldPosition, out var cell))
             {
+                LastPreviewValidity = TDBuildSiteValidity.OutsideBoard;
                 _previewMarkerRenderer.enabled = false;
+                if (_previewOutlineRenderer != null)
+                {
+                    _previewOutlineRenderer.enabled = false;
+                }
                 return;
             }
 
             _previewMarkerRenderer.enabled = true;
-            _previewMarkerTransform.position = CellToWorld(cell);
+            _previewMarkerTransform.position = CellToBuildWorld(cell);
+            if (_previewOutlineRenderer != null && _previewOutlineTransform != null)
+            {
+                _previewOutlineRenderer.enabled = true;
+                _previewOutlineTransform.position = _previewMarkerTransform.position + new Vector3(0f, -0.02f, 0f);
+            }
 
-            var buildable = IsBuildable(cell);
+            LastPreviewValidity = GetBuildSiteValidity(cell);
+            var buildable = LastPreviewValidity == TDBuildSiteValidity.Valid;
             _previewMarkerRenderer.color = buildable
-                ? new Color(0.67f, 0.95f, 0.88f, 0.72f)
-                : new Color(1f, 0.46f, 0.41f, 0.64f);
+                ? new Color(0.78f, 0.96f, 0.86f, 0.94f)
+                : new Color(0.82f, 0.30f, 0.22f, 0.76f);
+            if (_previewOutlineRenderer != null)
+            {
+                _previewOutlineRenderer.color = buildable
+                    ? new Color(0.30f, 0.92f, 0.62f, 0.68f)
+                    : new Color(1f, 0.22f, 0.14f, 0.82f);
+            }
         }
 
         public void HideBuildPreview()
@@ -99,6 +360,11 @@ namespace TD
             if (_previewMarkerRenderer != null)
             {
                 _previewMarkerRenderer.enabled = false;
+            }
+
+            if (_previewOutlineRenderer != null)
+            {
+                _previewOutlineRenderer.enabled = false;
             }
         }
 
@@ -159,7 +425,7 @@ namespace TD
                 BuildBoardSurface(root, boardSurface);
                 DecorateBoardSurface(root, grassDecals, pathDecals, propSprites, mapAnchorProps, buildSpotSprite, buildMarker);
                 BuildAtmosphereOverlays(root, shadowOverlay, lightOverlay);
-                CreateBuildPreview(root, buildMarker);
+                CreateBuildPreview(root, buildSpotSprite != null ? buildSpotSprite : buildMarker, buildMarker);
                 return;
             }
 
@@ -181,8 +447,9 @@ namespace TD
                 }
             }
 
+            BuildRecommendedSpots(root, buildSpotSprite != null ? buildSpotSprite : buildMarker);
             BuildAtmosphereOverlays(root, shadowOverlay, lightOverlay);
-            CreateBuildPreview(root, buildMarker);
+            CreateBuildPreview(root, buildSpotSprite != null ? buildSpotSprite : buildMarker, buildMarker);
         }
 
         private void BuildBackdrop(Transform root, Sprite sprite)
@@ -291,17 +558,27 @@ namespace TD
             overlay.transform.localScale = new Vector3(targetWidth / safeWidth, targetHeight / safeHeight, 1f);
         }
 
-        private void CreateBuildPreview(Transform root, Sprite buildMarker)
+        private void CreateBuildPreview(Transform root, Sprite foundationSprite, Sprite legalitySprite)
         {
             var preview = new GameObject("BuildPreview");
             preview.transform.SetParent(root, false);
-            preview.transform.localScale = ResolveSpriteScaleForCell(buildMarker, 0.92f);
+            preview.transform.localScale = ResolveSpriteScaleForCell(foundationSprite, 0.74f);
             _previewMarkerTransform = preview.transform;
 
             _previewMarkerRenderer = preview.AddComponent<SpriteRenderer>();
-            _previewMarkerRenderer.sprite = buildMarker;
-            _previewMarkerRenderer.sortingOrder = 7;
+            _previewMarkerRenderer.sprite = foundationSprite;
+            _previewMarkerRenderer.sortingOrder = TDWorldVisualOrder.BuildPreview;
             _previewMarkerRenderer.enabled = false;
+
+            var outline = new GameObject("BuildPreviewLegality");
+            outline.transform.SetParent(root, false);
+            outline.transform.localScale = ResolveSpriteScaleForCell(legalitySprite, 0.82f);
+            _previewOutlineTransform = outline.transform;
+
+            _previewOutlineRenderer = outline.AddComponent<SpriteRenderer>();
+            _previewOutlineRenderer.sprite = legalitySprite;
+            _previewOutlineRenderer.sortingOrder = TDWorldVisualOrder.GroundInteraction;
+            _previewOutlineRenderer.enabled = false;
         }
 
         private Vector3 ResolveSpriteScaleForCell(Sprite sprite, float cellCoverage)
@@ -546,32 +823,43 @@ namespace TD
             }
 
             _recommendedBuildCells.Clear();
+            _buildSpotRenderers.Clear();
+            _buildSpotShadowRenderers.Clear();
             var candidates = new List<Vector2Int>();
-            for (var y = 0; y < Height; y++)
+            if (_authoredBuildCells.Count > 0)
             {
-                for (var x = 0; x < Width; x++)
+                for (var i = 0; i < _authoredBuildCells.Count; i++)
                 {
-                    var cell = new Vector2Int(x, y);
-                    if (!IsBuildable(cell) || !IsNearPath(cell))
+                    var cell = _authoredBuildCells[i];
+                    if (IsBuildable(cell))
                     {
-                        continue;
+                        candidates.Add(cell);
                     }
-
-                    if (Hash01(x, y, 801) > 0.52f)
-                    {
-                        continue;
-                    }
-
-                    candidates.Add(cell);
                 }
             }
-
-            candidates.Sort((a, b) =>
+            else
             {
-                var aScore = Hash01(a.x, a.y, 809) + (Mathf.Abs((Width * 0.5f) - a.x) * 0.018f);
-                var bScore = Hash01(b.x, b.y, 809) + (Mathf.Abs((Width * 0.5f) - b.x) * 0.018f);
-                return aScore.CompareTo(bScore);
-            });
+                for (var y = 0; y < Height; y++)
+                {
+                    for (var x = 0; x < Width; x++)
+                    {
+                        var cell = new Vector2Int(x, y);
+                        if (!IsBuildable(cell) || !IsNearPath(cell))
+                        {
+                            continue;
+                        }
+
+                        candidates.Add(cell);
+                    }
+                }
+
+                candidates.Sort((a, b) =>
+                {
+                    var aScore = Hash01(a.x, a.y, 809) + (Mathf.Abs((Width * 0.5f) - a.x) * 0.018f);
+                    var bScore = Hash01(b.x, b.y, 809) + (Mathf.Abs((Width * 0.5f) - b.x) * 0.018f);
+                    return aScore.CompareTo(bScore);
+                });
+            }
 
             for (var i = 0; i < candidates.Count; i++)
             {
@@ -581,7 +869,8 @@ namespace TD
                 {
                     var other = _recommendedBuildCells[j];
                     var manhattan = Mathf.Abs(cell.x - other.x) + Mathf.Abs(cell.y - other.y);
-                    if (manhattan < 3)
+                    var minimumSpacing = 2;
+                    if (manhattan < minimumSpacing)
                     {
                         blocked = true;
                         break;
@@ -594,7 +883,8 @@ namespace TD
                 }
 
                 _recommendedBuildCells.Add(cell);
-                if (_recommendedBuildCells.Count >= 8)
+                var targetCount = _authoredBuildCells.Count > 0 ? _authoredBuildCells.Count : 12;
+                if (_recommendedBuildCells.Count >= targetCount)
                 {
                     break;
                 }
@@ -605,14 +895,26 @@ namespace TD
                 var cell = _recommendedBuildCells[i];
                 var marker = new GameObject($"BuildSpot_{cell.x}_{cell.y}");
                 marker.transform.SetParent(root, false);
-                marker.transform.position = CellToWorld(cell) + new Vector3(0f, -0.06f, 0f);
-                marker.transform.rotation = Quaternion.Euler(0f, 0f, Hash01(cell.x, cell.y, 821) * 360f);
-                marker.transform.localScale = ResolveSpriteScaleForCell(sprite, 0.80f);
+                marker.transform.position = CellToBuildWorld(cell);
+                marker.transform.rotation = Quaternion.identity;
+                marker.transform.localScale = ResolveSpriteScaleForCell(sprite, 0.70f);
 
                 var renderer = marker.AddComponent<SpriteRenderer>();
-                renderer.sortingOrder = 5;
+                renderer.sortingOrder = TDWorldVisualOrder.BuildSpot;
                 renderer.sprite = sprite;
-                renderer.color = new Color(0.88f, 0.95f, 1f, 0.24f);
+                renderer.color = new Color(0.84f, 0.83f, 0.75f, 0.46f);
+                _buildSpotRenderers[cell] = renderer;
+
+                var shadow = new GameObject($"BuildSpotShadow_{cell.x}_{cell.y}");
+                shadow.transform.SetParent(root, false);
+                shadow.transform.position = CellToBuildWorld(cell) + new Vector3(0f, -0.08f, 0f);
+                var shadowRenderer = shadow.AddComponent<SpriteRenderer>();
+                shadowRenderer.sortingOrder = TDWorldVisualOrder.BuildSpot - 1;
+                shadowRenderer.sprite = TDArtLibrary.GetSoftShadowSprite();
+                shadowRenderer.color = new Color(0f, 0f, 0f, 0.28f);
+                var shadowScale = ResolveSpriteScaleForCell(shadowRenderer.sprite, 0.72f);
+                shadow.transform.localScale = new Vector3(shadowScale.x, shadowScale.y * 0.46f, shadowScale.z);
+                _buildSpotShadowRenderers[cell] = shadowRenderer;
             }
         }
 
@@ -642,6 +944,85 @@ namespace TD
             }
 
             return false;
+        }
+
+        private void ConfigureAuthoredBuildCells()
+        {
+            var sites = string.Equals(_mapId, "grayline_junction", System.StringComparison.OrdinalIgnoreCase)
+                ? GraylineSafeBuildSites
+                : string.Equals(_mapId, "ashfall_depot", System.StringComparison.OrdinalIgnoreCase)
+                    ? AshfallSafeBuildSites
+                    : string.Equals(_mapId, "split_switch_canyon", System.StringComparison.OrdinalIgnoreCase)
+                        ? SplitSwitchSafeBuildSites
+                        : string.Equals(_mapId, "hollow_kiln_basin", System.StringComparison.OrdinalIgnoreCase)
+                            ? HollowKilnSafeBuildSites
+                            : string.Equals(_mapId, "last_ember_terminus", System.StringComparison.OrdinalIgnoreCase)
+                                ? LastEmberSafeBuildSites
+                                : null;
+            if (sites == null)
+            {
+                return;
+            }
+
+            for (var i = 0; i < sites.Length; i++)
+            {
+                var site = sites[i];
+                if (IsInside(site.Cell) && _authoredBuildCellSet.Add(site.Cell))
+                {
+                    _authoredBuildCells.Add(site.Cell);
+                    _authoredBuildOffsets[site.Cell] = site.WorldOffset;
+                }
+            }
+        }
+
+        private bool IsFoundationInsideBoard(Vector2Int cell)
+        {
+            if (!IsInside(cell))
+            {
+                return false;
+            }
+
+            var world = CellToBuildWorld(cell);
+            var halfWidth = Width * CellSize * 0.5f;
+            var halfHeight = Height * CellSize * 0.5f;
+            var radius = CellSize * FoundationRadiusInCells;
+            return world.x - radius >= -halfWidth &&
+                   world.x + radius <= halfWidth &&
+                   world.y - radius >= -halfHeight &&
+                   world.y + radius <= halfHeight;
+        }
+
+        private void ConfigureRoadSegments(IEnumerable<IReadOnlyList<Vector3>> roadPaths)
+        {
+            if (roadPaths == null)
+            {
+                return;
+            }
+
+            foreach (var path in roadPaths)
+            {
+                if (path == null)
+                {
+                    continue;
+                }
+
+                for (var i = 0; i < path.Count - 1; i++)
+                {
+                    _roadSegments.Add(new RoadSegment(path[i], path[i + 1]));
+                }
+            }
+        }
+
+        private static float DistanceToSegment(Vector2 point, Vector2 start, Vector2 end)
+        {
+            var segment = end - start;
+            if (segment.sqrMagnitude <= 0.000001f)
+            {
+                return Vector2.Distance(point, start);
+            }
+
+            var progress = Mathf.Clamp01(Vector2.Dot(point - start, segment) / segment.sqrMagnitude);
+            return Vector2.Distance(point, start + (segment * progress));
         }
 
         private Vector2Int[] GetMapAnchorCells()
