@@ -508,16 +508,27 @@ namespace TD
             var resonanceSlowDurationBonus = _gameManager != null ? _gameManager.GetSlowDurationBonus(Kind) : 0f;
             var damage = Mathf.RoundToInt(_activeState.damage * GetDamageMultiplier(target) * resonanceDamageMultiplier);
 
-            var shot = new GameObject("Projectile");
-            shot.transform.position = transform.position;
-            shot.transform.SetParent(_gameManager.transform, true);
-            shot.transform.localScale = Vector3.one * 1.05f;
+            var pool = TDObjectPool.Instance;
+            TDProjectile projectile;
+            SpriteRenderer renderer;
+            if (pool != null)
+            {
+                projectile = pool.GetProjectile();
+                renderer = projectile.GetComponent<SpriteRenderer>();
+            }
+            else
+            {
+                var shot = new GameObject("Projectile");
+                shot.transform.SetParent(_gameManager != null ? _gameManager.transform : null, true);
+                renderer = shot.AddComponent<SpriteRenderer>();
+                projectile = shot.AddComponent<TDProjectile>();
+            }
 
-            var renderer = shot.AddComponent<SpriteRenderer>();
+            projectile.transform.position = transform.position;
+            projectile.transform.localScale = Vector3.one * 1.05f;
             renderer.sortingOrder = TDWorldVisualOrder.Projectile;
             renderer.sprite = TDArtLibrary.LoadSpriteOrFallback("Art/projectile_bolt", new Color(0.95f, 0.92f, 0.28f));
 
-            var projectile = shot.AddComponent<TDProjectile>();
             projectile.Initialize(
                 _gameManager,
                 target,

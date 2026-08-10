@@ -1055,12 +1055,21 @@ namespace TD
             LoadP123PresentationPreferences();
             ConfigureCamera();
             ConfigureSfx();
+            EnsureObjectPool();
             LoadCampaignContext();
             BuildBoard();
             LoadEnemyCatalog();
             LoadWaveConfig();
             RefreshUnlockedTowerKinds();
             BuildBattleUi();
+        }
+
+        private void EnsureObjectPool()
+        {
+            if (GetComponent<TDObjectPool>() == null)
+            {
+                gameObject.AddComponent<TDObjectPool>();
+            }
         }
 
         private void Start()

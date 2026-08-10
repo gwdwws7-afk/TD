@@ -21,7 +21,7 @@ namespace TD
             _budgetLease = TDCombatFxBudget.TryAcquire(_budgetClass);
             if (!_budgetLease)
             {
-                Destroy(gameObject);
+                ReturnToPool();
                 return;
             }
 
@@ -40,6 +40,48 @@ namespace TD
             }
         }
 
+        /// <summary>
+        /// Called by the object pool when this FX is returned.
+        /// Clears animation state and releases the budget lease.
+        /// </summary>
+        public void ResetForPool()
+        {
+            if (_budgetLease)
+            {
+                _budgetLease = false;
+                TDCombatFxBudget.Release(_budgetClass);
+            }
+
+            _timer = 0f;
+            _duration = 0f;
+            _startScale = Vector3.one;
+            _endScale = Vector3.one;
+            _startColor = Color.white;
+            _endColor = Color.white;
+            transform.localScale = Vector3.one;
+            transform.localPosition = Vector3.zero;
+            transform.localRotation = Quaternion.identity;
+            if (_renderer != null)
+            {
+                _renderer.color = Color.white;
+                _renderer.sprite = null;
+            }
+        }
+
+        private void ReturnToPool()
+        {
+            var pool = TDObjectPool.Instance;
+            if (pool != null)
+            {
+                transform.SetParent(pool.transform, false);
+                pool.ReleaseFx(this);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        }
+
         private void Update()
         {
             _timer += Time.deltaTime;
@@ -53,7 +95,7 @@ namespace TD
 
             if (t >= 1f)
             {
-                Destroy(gameObject);
+                ReturnToPool();
             }
         }
 

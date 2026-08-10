@@ -151,13 +151,69 @@ namespace TD
                 _renderer.color = Color.white;
                 transform.localScale = Vector3.one * _projectileVisualScale;
             }
+
+            // Detach from pool parent so it moves freely in world space.
+            if (transform.parent != null && transform.parent.GetComponent<TDObjectPool>() != null)
+            {
+                var pos = transform.position;
+                var rot = transform.rotation;
+                var scale = transform.localScale;
+                transform.SetParent(gameManager != null ? gameManager.transform : null, true);
+                transform.SetPositionAndRotation(pos, rot);
+                transform.localScale = scale;
+            }
+        }
+
+        /// <summary>
+        /// Called by the object pool when this projectile is returned.
+        /// Clears all combat state so the next Get() starts clean.
+        /// </summary>
+        public void ResetForPool()
+        {
+            _gameManager = null;
+            _target = null;
+            _sourceTower = null;
+            _sourceTowerKind = TDTowerKind.RailLancer;
+            _damage = 0;
+            _speed = 0f;
+            _aoeRadius = 0f;
+            _aoeMaxTargets = 1;
+            _aoeMinFalloff = 1f;
+            _slowPct = 0f;
+            _slowDuration = 0f;
+            _damageSpecialist = false;
+            _utilitySpecialist = false;
+            _trailTimer = 0f;
+            transform.localPosition = Vector3.zero;
+            transform.localRotation = Quaternion.identity;
+            if (_renderer != null)
+            {
+                _renderer.sprite = null;
+                _renderer.color = Color.white;
+            }
+        }
+
+        /// <summary>Return this projectile to the pool instead of destroying it.</summary>
+        private void ReturnToPool()
+        {
+            var pool = TDObjectPool.Instance;
+            if (pool != null)
+            {
+                // Re-parent to pool before release so it's out of the scene hierarchy.
+                transform.SetParent(pool.transform, false);
+                pool.ReleaseProjectile(this);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
         }
 
         private void Update()
         {
             if (_target == null)
             {
-                Destroy(gameObject);
+                ReturnToPool();
                 return;
             }
 
@@ -166,7 +222,7 @@ namespace TD
             if (toTarget.sqrMagnitude <= step * step)
             {
                 ResolveHit(_target.transform.position);
-                Destroy(gameObject);
+                ReturnToPool();
                 return;
             }
 
@@ -633,16 +689,13 @@ namespace TD
                 return;
             }
 
-            var outer = new GameObject("Fx_GravityBoundary");
-            outer.transform.SetParent(_gameManager.transform, true);
-            outer.transform.position = impactPoint;
+            var (outer, outerFx, outerRenderer) = TDObjectPool.GetFxObject(
+                _gameManager.transform, impactPoint, "Fx_GravityBoundary");
 
-            var outerRenderer = outer.AddComponent<SpriteRenderer>();
             outerRenderer.sortingOrder = TDWorldVisualOrder.ProjectileBack;
             outerRenderer.sprite = TDArtLibrary.GetSoftRingSprite();
             outerRenderer.color = GravityBoundaryOuterColor;
 
-            var outerFx = outer.AddComponent<TDTransientSpriteFx>();
             var outerStartScale = Vector3.one * Mathf.Max(0.28f, radius * 0.72f);
             var outerEndScale = Vector3.one * Mathf.Max(0.58f, radius * 2f);
             outerFx.Configure(
@@ -652,16 +705,13 @@ namespace TD
                 GravityBoundaryOuterColor,
                 new Color(GravityBoundaryOuterColor.r, GravityBoundaryOuterColor.g, GravityBoundaryOuterColor.b, 0f));
 
-            var inner = new GameObject("Fx_GravityBoundaryCore");
-            inner.transform.SetParent(_gameManager.transform, true);
-            inner.transform.position = impactPoint;
+            var (inner, innerFx, innerRenderer) = TDObjectPool.GetFxObject(
+                _gameManager.transform, impactPoint, "Fx_GravityBoundaryCore");
 
-            var innerRenderer = inner.AddComponent<SpriteRenderer>();
             innerRenderer.sortingOrder = TDWorldVisualOrder.Projectile;
             innerRenderer.sprite = TDArtLibrary.GetSoftRingSprite();
             innerRenderer.color = GravityBoundaryInnerColor;
 
-            var innerFx = inner.AddComponent<TDTransientSpriteFx>();
             var innerStartScale = Vector3.one * Mathf.Max(0.20f, radius * 0.46f);
             var innerEndScale = Vector3.one * Mathf.Max(0.42f, radius * 1.28f);
             innerFx.Configure(
@@ -830,17 +880,14 @@ namespace TD
 
             _trailTimer -= _trailInterval;
 
-            var ghost = new GameObject("Fx_ProjectileTrail");
-            ghost.transform.SetParent(_gameManager.transform, true);
-            ghost.transform.position = transform.position;
+            var (ghost, fx, ghostRenderer) = TDObjectPool.GetFxObject(
+                _gameManager.transform, transform.position, "Fx_ProjectileTrail");
 
-            var ghostRenderer = ghost.AddComponent<SpriteRenderer>();
             ghostRenderer.sortingOrder = _renderer.sortingOrder - 1;
             ghostRenderer.sprite = _renderer.sprite;
             ghostRenderer.color = _trailStartColor;
             ghost.transform.rotation = transform.rotation;
 
-            var fx = ghost.AddComponent<TDTransientSpriteFx>();
             var startScale = transform.localScale * _trailScaleMultiplier;
             var endScale = transform.localScale * (_trailScaleMultiplier * 0.42f);
             fx.Configure(_trailDuration, startScale, endScale, _trailStartColor, _trailEndColor);
@@ -853,16 +900,13 @@ namespace TD
                 return;
             }
 
-            var spark = new GameObject("Fx_ImpactSpark");
-            spark.transform.SetParent(_gameManager.transform, true);
-            spark.transform.position = impactPoint;
-            spark.transform.rotation = transform.rotation;
+            var (spark, fx, sparkRenderer) = TDObjectPool.GetFxObject(
+                _gameManager.transform, impactPoint, "Fx_ImpactSpark");
 
-            var sparkRenderer = spark.AddComponent<SpriteRenderer>();
+            spark.transform.rotation = transform.rotation;
             sparkRenderer.sortingOrder = TDWorldVisualOrder.ProjectileFx;
             sparkRenderer.sprite = TDArtLibrary.LoadSpriteOrFallback(_impactSpritePath, _impactStartColor);
 
-            var fx = spark.AddComponent<TDTransientSpriteFx>();
             var startScaleFactor = isAoe ? _impactScale * 0.7f : _impactScale * 0.55f;
             var endScaleFactor = isAoe ? _impactScale * 1.9f : _impactScale * 1.5f;
             var duration = isAoe ? _impactDuration + 0.05f : _impactDuration;
@@ -881,15 +925,12 @@ namespace TD
                 return;
             }
 
-            var fx = new GameObject("Fx_AoeIndicator");
-            fx.transform.SetParent(_gameManager.transform, true);
-            fx.transform.position = impactPoint;
+            var (fx, ringFx, renderer) = TDObjectPool.GetFxObject(
+                _gameManager.transform, impactPoint, "Fx_AoeIndicator");
 
-            var renderer = fx.AddComponent<SpriteRenderer>();
             renderer.sortingOrder = TDWorldVisualOrder.ProjectileBack;
             renderer.sprite = TDArtLibrary.GetSoftRingSprite();
 
-            var ringFx = fx.AddComponent<TDTransientSpriteFx>();
             var startScale = Vector3.one * Mathf.Max(0.20f, radius * 0.34f);
             var endScale = Vector3.one * Mathf.Max(0.55f, radius * 2f);
             ringFx.Configure(
@@ -929,16 +970,13 @@ namespace TD
                 return;
             }
 
-            var fx = new GameObject(objectName);
-            fx.transform.SetParent(_gameManager.transform, true);
-            fx.transform.position = impactPoint;
+            var (fx, ringFx, renderer) = TDObjectPool.GetFxObject(
+                _gameManager.transform, impactPoint, objectName);
 
-            var renderer = fx.AddComponent<SpriteRenderer>();
             renderer.sortingOrder = sortingOrder;
             renderer.sprite = TDArtLibrary.GetSoftRingSprite();
             renderer.color = startColor;
 
-            var ringFx = fx.AddComponent<TDTransientSpriteFx>();
             ringFx.Configure(
                 0.24f,
                 Vector3.one * Mathf.Max(0.08f, startDiameter),
