@@ -694,6 +694,7 @@ namespace TD
         private string _activeMusicState;
         private float _nextUltimateSfxTime;
         private TDTower _lastHoverSfxTower;
+        private TDTowerTooltip _towerTooltip;
         private const string AudioBasePath = "Audio";
         private TDCampaignDefinition _campaign;
         private TDCampaignRoute _campaignRoute;
@@ -3567,6 +3568,7 @@ namespace TD
             HideRangePreview();
             HideRoutePreview();
             StartCoroutine(SelectUiNextFrame(GetMissionLevelButton(_missionBoardSelectedLevel)));
+            TDUiAnimator.PanelOpen(this, _uiMissionBoardRoot);
             PlaySfxTone("ui_panel_open", 540f, 0.10f, 0.52f, true);
         }
 
@@ -3587,6 +3589,7 @@ namespace TD
                 EventSystem.current.SetSelectedGameObject(_uiMissionButton.gameObject);
             }
 
+            TDUiAnimator.PanelClose(this, _uiMissionBoardRoot);
             PlaySfxTone("ui_panel_close", 420f, 0.08f, 0.48f, false);
         }
 
@@ -3684,6 +3687,7 @@ namespace TD
             _campaignProfileStatus = "PROFILE READY";
             _missionBoardNeedsRefresh = true;
             StartCoroutine(SelectUiNextFrame(_uiCampaignProfileSlotButtons.FirstOrDefault()));
+            TDUiAnimator.PanelOpen(this, _uiCampaignProfileRoot);
             PlaySfxTone("ui_panel_open", 540f, 0.10f, 0.52f, true);
         }
 
@@ -3695,6 +3699,7 @@ namespace TD
             _campaignProfilePendingImport = string.Empty;
             _missionBoardNeedsRefresh = true;
             StartCoroutine(SelectUiNextFrame(GetMissionLevelButton(_missionBoardSelectedLevel)));
+            TDUiAnimator.PanelClose(this, _uiCampaignProfileRoot);
             PlaySfxTone("ui_panel_close", 420f, 0.08f, 0.48f, false);
         }
 
@@ -4016,6 +4021,7 @@ namespace TD
             _uiFormationRoot?.SetAsLastSibling();
             RefreshFormationPanelUi();
             StartCoroutine(SelectUiNextFrame(_uiFormationTowerButtons.FirstOrDefault(button => button != null && button.interactable)));
+            TDUiAnimator.PanelOpen(this, _uiFormationRoot);
             PlaySfxTone("ui_panel_open", 540f, 0.10f, 0.52f, true);
         }
 
@@ -4025,7 +4031,7 @@ namespace TD
             _missionBoardNeedsRefresh = true;
             if (_uiFormationRoot != null)
             {
-                _uiFormationRoot.gameObject.SetActive(false);
+                TDUiAnimator.PanelClose(this, _uiFormationRoot, () => _uiFormationRoot.gameObject.SetActive(false));
             }
             StartCoroutine(SelectUiNextFrame(GetMissionLevelButton(_missionBoardSelectedLevel)));
             PlaySfxTone("ui_panel_close", 420f, 0.08f, 0.48f, false);
@@ -18721,6 +18727,7 @@ namespace TD
 
                 _hoveredTower = tower;
                 tower.Readability?.SetInteractionState(true, tower == _selectedTowerForUi);
+                UpdateTowerTooltip(tower);
                 _gridMap.HideBuildPreview();
                 if (tower == _selectedTowerForUi)
                 {
@@ -18754,6 +18761,27 @@ namespace TD
             }
 
             HideRangePreview();
+            UpdateTowerTooltip(null);
+        }
+
+        private void UpdateTowerTooltip(TDTower tower)
+        {
+            if (_towerTooltip == null && tower != null && _battleCanvas != null)
+            {
+                _towerTooltip = TDTowerTooltip.Create(_battleCanvas.transform);
+            }
+
+            if (_towerTooltip != null)
+            {
+                if (tower != null)
+                {
+                    _towerTooltip.HoverTower(tower);
+                }
+                else
+                {
+                    _towerTooltip.ClearHover();
+                }
+            }
         }
 
         private void EnsureRangePreview()
