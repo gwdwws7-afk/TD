@@ -682,6 +682,14 @@ namespace TD
         private AudioSource _sfxSource;
         private AudioSource _tacticalSfxSource;
         private AudioSource _criticalSfxSource;
+        private AudioSource _musicSource;
+        private AudioSource _ambienceSource;
+        private AudioClip _musicClip;
+        private AudioClip _ambienceClip;
+        private string _activeMusicState;
+        private float _nextUltimateSfxTime;
+        private TDTower _lastHoverSfxTower;
+        private const string AudioBasePath = "Audio";
         private TDCampaignDefinition _campaign;
         private TDCampaignRoute _campaignRoute;
         private TDWaveSet _waveSet;
@@ -1072,6 +1080,7 @@ namespace TD
         private void Update()
         {
             _settingsPanel?.Tick();
+            UpdateMusicState();
             UpdateP124Autoplay();
             UpdateP1254ContinuousSoak();
             if (_settingsPanel != null && _settingsPanel.IsOpen)
@@ -1678,6 +1687,7 @@ namespace TD
             _musicVolume = Mathf.Clamp01(value);
             PlayerPrefs.SetFloat(P123MusicVolumeKey, _musicVolume);
             PlayerPrefs.Save();
+            ApplySfxVolumes();
         }
 
         private void SetEffectsVolume(float value)
@@ -1972,6 +1982,7 @@ namespace TD
             PlayerPrefs.SetInt(GetTutorialStepKey(), (int)_tutorialStep);
             PlayerPrefs.Save();
             RefreshTutorialUi();
+            PlaySfxTone("ui_tutorial_advance", 580f, 0.09f, 0.52f, true);
         }
 
         private void SkipFirstRunTutorial()
@@ -1990,6 +2001,7 @@ namespace TD
             PlayerPrefs.Save();
             _battlePresentation?.SetTutorial(string.Empty, string.Empty, string.Empty, false, false, string.Empty);
             PushTacticalEvent(skipped ? "Interactive tutorial skipped" : "Interactive tutorial complete", 4.6f);
+            PlaySfxTone("ui_tutorial_complete", 820f, 0.20f, 0.68f, true);
         }
 
         private void IncrementTutorialTelemetry(string eventName)
@@ -2678,20 +2690,25 @@ namespace TD
                 case "route_switch":
                     _scenarioRouteBias = _scenarioRouteBias == "center" ? "left" : _scenarioRouteBias == "left" ? "right" : "center";
                     PushTacticalEvent($"Route switch: center traffic -> {_scenarioRouteBias}", 5.2f);
+                    PlaySfxTone("scenario_route_switch", 430f, 0.18f, 0.72f, true);
                     break;
                 case "timed_reinforcement":
                     StartCoroutine(DeliverScenarioReinforcement());
                     PushTacticalEvent("Reserve train dispatched. Hold until arrival or start under-strength.", 6.0f);
+                    PlaySfxTone("scenario_reinforcement_train", 520f, 0.22f, 0.72f, true);
                     break;
                 case "environment_device":
                     ActivateScenarioEnvironmentDevice();
+                    PlaySfxTone("scenario_kiln_purge", 360f, 0.20f, 0.74f, false);
                     break;
                 case "boss_phase":
                     ActivateScenarioBossBreaker();
+                    PlaySfxTone("scenario_boss_breaker", 240f, 0.24f, 0.80f, true);
                     break;
                 default:
                     _scenarioWaveDelayBonus = Mathf.Max(1f, _activeScenarioMechanic.effectDurationSeconds);
                     PushTacticalEvent($"Signal gate armed: enemy deployment held {_scenarioWaveDelayBonus:0.0}s", 5.2f);
+                    PlaySfxTone("scenario_signal_gate", 480f, 0.16f, 0.70f, true);
                     break;
             }
 
@@ -3536,6 +3553,7 @@ namespace TD
             HideRangePreview();
             HideRoutePreview();
             StartCoroutine(SelectUiNextFrame(GetMissionLevelButton(_missionBoardSelectedLevel)));
+            PlaySfxTone("ui_panel_open", 540f, 0.10f, 0.52f, true);
         }
 
         private void CloseMissionBoard()
@@ -3554,6 +3572,8 @@ namespace TD
             {
                 EventSystem.current.SetSelectedGameObject(_uiMissionButton.gameObject);
             }
+
+            PlaySfxTone("ui_panel_close", 420f, 0.08f, 0.48f, false);
         }
 
         private void SelectMissionBoardLevel(int levelIndex)
@@ -3568,6 +3588,7 @@ namespace TD
             _formationPanelOpen = false;
             _campaignProfileOpen = false;
             _missionBoardNeedsRefresh = true;
+            PlaySfxTone("ui_level_select", 620f, 0.09f, 0.52f, true);
         }
 
         private void SelectMissionBoardChapter(int chapterIndex)
@@ -3636,6 +3657,7 @@ namespace TD
             PushTacticalEvent($"Chapter reward: {reward.displayName}", 5.8f);
             _missionBoardNeedsRefresh = true;
             RefreshMissionBoardUi();
+            PlaySfxTone("ui_chapter_reward", 760f, 0.22f, 0.72f, true);
         }
 
         private void OpenCampaignProfile()
@@ -3648,6 +3670,7 @@ namespace TD
             _campaignProfileStatus = "PROFILE READY";
             _missionBoardNeedsRefresh = true;
             StartCoroutine(SelectUiNextFrame(_uiCampaignProfileSlotButtons.FirstOrDefault()));
+            PlaySfxTone("ui_panel_open", 540f, 0.10f, 0.52f, true);
         }
 
         private void CloseCampaignProfile()
@@ -3658,6 +3681,7 @@ namespace TD
             _campaignProfilePendingImport = string.Empty;
             _missionBoardNeedsRefresh = true;
             StartCoroutine(SelectUiNextFrame(GetMissionLevelButton(_missionBoardSelectedLevel)));
+            PlaySfxTone("ui_panel_close", 420f, 0.08f, 0.48f, false);
         }
 
         private void SwitchCampaignSaveSlot(int slotId)
@@ -3978,6 +4002,7 @@ namespace TD
             _uiFormationRoot?.SetAsLastSibling();
             RefreshFormationPanelUi();
             StartCoroutine(SelectUiNextFrame(_uiFormationTowerButtons.FirstOrDefault(button => button != null && button.interactable)));
+            PlaySfxTone("ui_panel_open", 540f, 0.10f, 0.52f, true);
         }
 
         private void CloseFormationPanel()
@@ -3989,6 +4014,7 @@ namespace TD
                 _uiFormationRoot.gameObject.SetActive(false);
             }
             StartCoroutine(SelectUiNextFrame(GetMissionLevelButton(_missionBoardSelectedLevel)));
+            PlaySfxTone("ui_panel_close", 420f, 0.08f, 0.48f, false);
         }
 
         private void ToggleFormationTower(TDTowerKind kind)
@@ -5074,6 +5100,7 @@ namespace TD
 
             TDCampaignRouter.SaveLevelIndex(selectedLevel);
             SetStatus($"Deploying mission L{selectedLevel:00}...");
+            PlaySfxTone("ui_deploy", 700f, 0.16f, 0.66f, true);
             RestartCurrentScene();
         }
 
@@ -6097,6 +6124,12 @@ namespace TD
 
             var kind = sourceTower != null ? sourceTower.Kind : TDTowerKind.RailLancer;
             var definition = sourceTower.ActiveSpecialization;
+            if (Time.unscaledTime >= _nextUltimateSfxTime)
+            {
+                _nextUltimateSfxTime = Time.unscaledTime + 0.35f;
+                PlaySfxTone("specialization_ult", 840f, 0.16f, 0.66f, true);
+            }
+
             var towerStat = GetOrCreateTowerStat(sourceTower);
             if (towerStat != null)
             {
@@ -10707,6 +10740,11 @@ namespace TD
             }
         }
 
+        public void PlayEnemySfx(string key, float volumeScale = 1f)
+        {
+            PlaySfxTone(key, 440f, 0.12f, volumeScale, false);
+        }
+
         public void NotifyEnemyKilled(TDEnemy enemy, int reward, TDTower sourceTower)
         {
             _activeEnemies.Remove(enemy);
@@ -10733,17 +10771,21 @@ namespace TD
                 towerStat.kills++;
             }
 
+            PlaySfxTone("enemy_death", 380f, 0.10f, 0.22f, false);
+
             if (enemy != null && enemy.EnemyId == "spore_carrier")
             {
                 _spawnSplitEvents++;
                 PushTacticalEvent("Split spawn: Spore Carrier released Ash Swarm x2", 5.0f);
                 StartCoroutine(SpawnSplitChildren("ash_swarm", 2, 0.22f, enemy.LaneKey));
+                PlaySfxTone("enemy_spore_split", 300f, 0.22f, 0.62f, false);
             }
             else if (enemy != null && enemy.EnemyId == "furnace_matriarch")
             {
                 _spawnSplitEvents++;
                 PushTacticalEvent("Boss split: Furnace Matriarch released Ash Swarm x6", 5.4f);
                 StartCoroutine(SpawnSplitChildren("ash_swarm", 6, 0.16f, enemy.LaneKey));
+                PlaySfxTone("enemy_spore_split", 280f, 0.26f, 0.68f, false);
             }
 
             AddResonanceCharge(ResonanceKillCharge);
@@ -11231,6 +11273,12 @@ namespace TD
             ConfigureSfxSource(_sfxSource, 0f);
             ConfigureSfxSource(_tacticalSfxSource, 0f);
             ConfigureSfxSource(_criticalSfxSource, 0f);
+
+            _musicSource = gameObject.AddComponent<AudioSource>();
+            _ambienceSource = gameObject.AddComponent<AudioSource>();
+            ConfigureLoopSource(_musicSource);
+            ConfigureLoopSource(_ambienceSource);
+
             ApplySfxVolumes();
         }
 
@@ -11251,6 +11299,17 @@ namespace TD
             {
                 _criticalSfxSource.volume = SfxDefaultVolume * 1.12f * mix;
             }
+
+            var musicMix = Mathf.Clamp01(_masterVolume) * Mathf.Clamp01(_musicVolume);
+            if (_musicSource != null)
+            {
+                _musicSource.volume = 0.42f * musicMix;
+            }
+
+            if (_ambienceSource != null)
+            {
+                _ambienceSource.volume = 0.55f * musicMix;
+            }
         }
 
         private static void ConfigureSfxSource(AudioSource source, float volume)
@@ -11267,6 +11326,117 @@ namespace TD
             source.volume = Mathf.Clamp01(volume);
         }
 
+        private static void ConfigureLoopSource(AudioSource source)
+        {
+            if (source == null)
+            {
+                return;
+            }
+
+            source.playOnAwake = false;
+            source.loop = true;
+            source.spatialBlend = 0f;
+            source.dopplerLevel = 0f;
+            source.volume = 0f;
+        }
+
+        private static string ResolveMapAmbiencePath(string mapId)
+        {
+            return mapId switch
+            {
+                "grayline_junction" => "Ambience/grayline_junction",
+                "ashfall_depot" => "Ambience/ashfall_depot",
+                "split_switch_canyon" => "Ambience/split_switch_canyon",
+                "hollow_kiln_basin" => "Ambience/hollow_kiln_basin",
+                "last_ember_terminus" => "Ambience/last_ember_terminus",
+                _ => "Ambience/grayline_junction",
+            };
+        }
+
+        private string ResolveChapterMusicPath()
+        {
+            var levelIndex = _campaignRoute?.level?.levelIndex ?? 1;
+            var chapter = Mathf.Clamp((levelIndex - 1) / 5, 0, 3);
+            return chapter switch
+            {
+                0 => "Music/combat_chapter_a",
+                1 => "Music/combat_chapter_b",
+                2 => "Music/combat_chapter_c",
+                _ => "Music/combat_chapter_d",
+            };
+        }
+
+        private void StartAmbienceForMap(string mapId)
+        {
+            if (_ambienceSource == null)
+            {
+                return;
+            }
+
+            var path = ResolveMapAmbiencePath(mapId);
+            if (_ambienceClip == null || _ambienceClip.name != System.IO.Path.GetFileNameWithoutExtension(path))
+            {
+                _ambienceClip = Resources.Load<AudioClip>(AudioBasePath + "/" + path);
+            }
+
+            if (_ambienceClip != null && _ambienceSource.clip != _ambienceClip)
+            {
+                _ambienceSource.clip = _ambienceClip;
+                _ambienceSource.Play();
+            }
+        }
+
+        private void UpdateMusicState()
+        {
+            if (_musicSource == null)
+            {
+                return;
+            }
+
+            string targetState;
+            string targetPath;
+
+            if (_gameOver)
+            {
+                targetState = _victory ? "victory" : "defeat";
+                targetPath = _victory ? "Music/victory_stinger" : "Music/defeat_stinger";
+            }
+            else if (_missionBoardOpen)
+            {
+                targetState = "menu";
+                targetPath = "Music/menu_theme";
+            }
+            else if (IsResonanceWindowActive)
+            {
+                targetState = "resonance";
+                targetPath = "Music/resonance_window";
+            }
+            else
+            {
+                targetState = "combat";
+                targetPath = ResolveChapterMusicPath();
+            }
+
+            if (_activeMusicState == targetState && _musicClip != null)
+            {
+                return;
+            }
+
+            _activeMusicState = targetState;
+            var newClip = Resources.Load<AudioClip>(AudioBasePath + "/" + targetPath);
+            if (newClip == null)
+            {
+                return;
+            }
+
+            // Stingers (victory/defeat) play once and do not loop; everything else loops.
+            var isStinger = targetState == "victory" || targetState == "defeat";
+            _musicSource.loop = !isStinger;
+            _musicClip = newClip;
+            _musicSource.clip = newClip;
+            _musicSource.Play();
+        }
+
         private void PlaySfxTone(string key, float frequency, float duration, float volumeScale = 1f, bool rising = false)
         {
             if (_sfxSource == null || volumeScale <= 0f || duration <= 0f || frequency <= 0f)
@@ -11276,7 +11446,17 @@ namespace TD
 
             if (!_sfxClipCache.TryGetValue(key, out var clip) || clip == null)
             {
-                clip = CreateSfxClip(key, frequency, duration, rising);
+                var resourcePath = ResolveSfxResourcePath(key);
+                if (!string.IsNullOrEmpty(resourcePath))
+                {
+                    clip = Resources.Load<AudioClip>(AudioBasePath + "/" + resourcePath);
+                }
+
+                if (clip == null)
+                {
+                    clip = CreateSfxClip(key, frequency, duration, rising);
+                }
+
                 if (clip == null)
                 {
                     return;
@@ -11298,7 +11478,17 @@ namespace TD
 
             if (!_sfxClipCache.TryGetValue(key, out var clip) || clip == null)
             {
-                clip = CreateSfxClip(key, frequency, duration, rising);
+                var resourcePath = ResolveSfxResourcePath(key);
+                if (!string.IsNullOrEmpty(resourcePath))
+                {
+                    clip = Resources.Load<AudioClip>(AudioBasePath + "/" + resourcePath);
+                }
+
+                if (clip == null)
+                {
+                    clip = CreateSfxClip(key, frequency, duration, rising);
+                }
+
                 if (clip == null)
                 {
                     return;
@@ -11309,6 +11499,201 @@ namespace TD
 
             _criticalSfxSource.Stop();
             _criticalSfxSource.PlayOneShot(clip, Mathf.Clamp01(volumeScale));
+        }
+
+        private string ResolveSfxResourcePath(string key)
+        {
+            if (string.IsNullOrEmpty(key))
+            {
+                return null;
+            }
+
+            // Exact-key matches first (most specific).
+            switch (key)
+            {
+                case "tower_build":
+                    return "SFX/UI/tower_place";
+                case "wave_start":
+                case "wave_transition":
+                    return "SFX/UI/wave_start";
+                case "wave_clear":
+                    return "SFX/UI/wave_clear";
+                case "run_victory":
+                    return "Music/victory_stinger";
+                case "run_defeat":
+                    return "Music/defeat_stinger";
+                case "resonance_ready":
+                    return "SFX/Resonance/window_open";
+                case "resonance_end":
+                    return "SFX/Resonance/window_close";
+                case "resonance_locked":
+                    return "SFX/Resonance/window_close";
+                case "resonance_ember_surge":
+                    return "SFX/Resonance/ember_surge";
+                case "resonance_fracture_mark":
+                    return "SFX/Resonance/fracture_mark";
+                case "resonance_chain_bonus":
+                    return "SFX/Resonance/matrix_convergence";
+                case "boss_phase":
+                    return "SFX/Enemy/boss_phase_shift";
+                case "boss_warning":
+                    return "SFX/Enemy/boss_spawn";
+                case "critical_defense":
+                    return "SFX/Hit/boss_hit";
+                case "enemy_death":
+                    return "SFX/Enemy/death_generic";
+                case "enemy_spore_split":
+                    return "SFX/Enemy/spore_split";
+                case "enemy_mimic_shift":
+                    return "SFX/Enemy/mimic_shift";
+                case "enemy_burrow_ambush":
+                    return "SFX/Enemy/burrow_ambush";
+                case "enemy_elite_pressure":
+                    return "SFX/Enemy/elite_pressure";
+                case "enemy_attrition":
+                    return "SFX/Enemy/attrition_siphon";
+                case "enemy_support_link":
+                    return "SFX/Enemy/support_link";
+                case "status_expose":
+                    return "SFX/Status/expose_mark";
+                case "specialization_ult":
+                    return "SFX/Status/specialization_ult";
+                case "feedback_armor_break":
+                case "p121_armor_break":
+                case "p134_armor_break":
+                    return "SFX/Status/armor_break";
+                case "feedback_slow":
+                case "p121_slow_control":
+                case "p134_slow":
+                    return "SFX/Status/slow_apply";
+                case "feedback_special_damage":
+                case "feedback_special_utility":
+                case "p134_specialization":
+                case "p121_specialization":
+                    return "SFX/Status/specialization_ult";
+                case "leak_default":
+                case "leak_attrition":
+                case "p121_leak":
+                case "p134_leak":
+                    return "SFX/Enemy/enemy_leak";
+                case "p134_boss_phase":
+                    return "SFX/Enemy/boss_phase_shift";
+                case "p134_boss_damage":
+                    return "SFX/Hit/boss_hit";
+                case "p134_defense_breach":
+                    return "SFX/Hit/boss_hit";
+                case "p134_danger_lane":
+                case "danger_lane":
+                    return "SFX/Scenario/route_switch";
+                case "p134_critical_hit":
+                case "feedback_critical":
+                    return "SFX/Hit/critical_hit";
+                case "p134_hit":
+                case "p121_feedback_hit":
+                case "feedback_hit":
+                    return "SFX/Hit/routine_hit";
+                case "p134_resonance":
+                case "p121_resonance":
+                    return "SFX/Resonance/window_open";
+                case "p134_wave_transition":
+                    return "SFX/UI/wave_start";
+                case "scenario_command":
+                    return "SFX/Scenario/route_switch";
+                case "scenario_reinforcement":
+                    return "SFX/Scenario/reinforcement_train";
+                case "ui_hover":
+                    return "SFX/UI/hover";
+                case "ui_click":
+                    return "SFX/UI/click_confirm";
+                case "ui_panel_open":
+                    return "SFX/UI/panel_open";
+                case "ui_panel_close":
+                    return "SFX/UI/panel_close";
+                case "ui_level_select":
+                    return "SFX/UI/level_select";
+                case "ui_deploy":
+                    return "SFX/UI/deploy_confirm";
+                case "ui_early_dispatch":
+                    return "SFX/UI/early_dispatch";
+                case "ui_tutorial_advance":
+                    return "SFX/UI/tutorial_advance";
+                case "ui_tutorial_complete":
+                    return "SFX/UI/tutorial_complete";
+                case "ui_chapter_reward":
+                    return "SFX/UI/chapter_reward";
+                case "scenario_route_switch":
+                    return "SFX/Scenario/route_switch";
+                case "scenario_reinforcement_train":
+                    return "SFX/Scenario/reinforcement_train";
+                case "scenario_kiln_purge":
+                    return "SFX/Scenario/kiln_purge";
+                case "scenario_boss_breaker":
+                    return "SFX/Scenario/boss_breaker";
+                case "scenario_signal_gate":
+                    return "SFX/Scenario/signal_gate";
+            }
+
+            // Dynamic-key families: tower fire / upgrade / exam beats / matrix convergence.
+            var lower = key.ToLowerInvariant();
+
+            if (lower.StartsWith("tower_fire_", StringComparison.Ordinal))
+            {
+                return ResolveTowerFirePath(lower);
+            }
+
+            if (lower.StartsWith("tower_upgrade_", StringComparison.Ordinal))
+            {
+                return "SFX/UI/tower_upgrade";
+            }
+
+            if (lower.StartsWith("feedback_hit", StringComparison.Ordinal) ||
+                lower.StartsWith("p121_feedback_hit", StringComparison.Ordinal))
+            {
+                return "SFX/Hit/routine_hit";
+            }
+
+            if (lower.StartsWith("feedback_critical", StringComparison.Ordinal) ||
+                lower.StartsWith("p134_critical", StringComparison.Ordinal))
+            {
+                return "SFX/Hit/critical_hit";
+            }
+
+            if (lower.StartsWith("feedback_boss_damage", StringComparison.Ordinal) ||
+                lower.StartsWith("p134_boss_damage", StringComparison.Ordinal))
+            {
+                return "SFX/Hit/boss_hit";
+            }
+
+            if (lower.StartsWith("matrix_convergence", StringComparison.Ordinal))
+            {
+                return "SFX/Resonance/matrix_convergence";
+            }
+
+            // Exam presentation beats map to scenario/level-select for now.
+            if (lower.StartsWith("exam_", StringComparison.Ordinal))
+            {
+                return "SFX/UI/level_select";
+            }
+
+            return null;
+        }
+
+        private static string ResolveTowerFirePath(string lowerKey)
+        {
+            // tower_fire_<kind> -> SFX/Tower/fire_<snake_kind>
+            var token = lowerKey.Substring("tower_fire_".Length);
+            return token switch
+            {
+                "raillancer" => "SFX/Tower/fire_rail_lancer",
+                "cindermortar" => "SFX/Tower/fire_cinder_mortar",
+                "frostcoil" => "SFX/Tower/fire_frost_coil",
+                "arcwelder" => "SFX/Tower/fire_arc_welder",
+                "siegedrill" => "SFX/Tower/fire_siege_drill",
+                "emberflak" => "SFX/Tower/fire_ember_flak",
+                "resonancebeacon" => "SFX/Tower/fire_resonance_beacon",
+                "gravsnare" => "SFX/Tower/fire_grav_snare",
+                _ => null,
+            };
         }
 
         private static AudioClip CreateSfxClip(string key, float frequency, float duration, bool rising)
@@ -11407,6 +11792,7 @@ namespace TD
 
             var mapId = _campaignRoute?.level?.mapId ?? "grayline_junction";
             ConfigureActiveLanePaths(mapId);
+            StartAmbienceForMap(mapId);
             var roadPaths = _activeLanePaths.Values
                 .Where(path => path != null && path.Count > 1)
                 .Distinct()
@@ -12617,6 +13003,7 @@ namespace TD
             {
                 _waveDispatchedEarly = true;
                 _earlyDispatchCount++;
+                PlaySfxTone("ui_early_dispatch", 660f, 0.12f, 0.58f, true);
             }
 
             _waveStartRequested = true;
@@ -18219,6 +18606,12 @@ namespace TD
 
             if (TryGetTowerUnderCursor(world, out var tower))
             {
+                if (_hoveredTower != tower && _lastHoverSfxTower != tower)
+                {
+                    _lastHoverSfxTower = tower;
+                    PlaySfxTone("ui_hover", 620f, 0.045f, 0.22f, true);
+                }
+
                 _hoveredTower = tower;
                 tower.Readability?.SetInteractionState(true, tower == _selectedTowerForUi);
                 _gridMap.HideBuildPreview();

@@ -643,6 +643,7 @@ namespace TD
 
             _exposedTimer = Mathf.Max(_exposedTimer, duration);
             _exposedMultiplier = Mathf.Max(_exposedMultiplier, damageMultiplier);
+            _gameManager?.PlayEnemySfx("status_expose", 0.5f);
         }
 
         public void ApplyScenarioSpeed(float duration, float speedMultiplier)
@@ -941,6 +942,7 @@ namespace TD
             }
 
             _burrowAmbushFxPlayed = true;
+            _gameManager?.PlayEnemySfx("enemy_burrow_ambush", 0.66f);
             SpawnFxSequence(
                 "Fx_BurrowAmbush",
                 BurrowAmbushFxPrefix,
@@ -999,6 +1001,7 @@ namespace TD
             }
 
             _mimicShiftFxPlayed = true;
+            _gameManager?.PlayEnemySfx("enemy_mimic_shift", 0.64f);
             var color = _mimicVariantIndex switch
             {
                 0 => new Color(1f, 0.78f, 0.46f, 0.92f),
@@ -1040,6 +1043,7 @@ namespace TD
             }
 
             _attritionSiphonFxTimer = AttritionSiphonPulseInterval + UnityEngine.Random.Range(-0.25f, 0.25f);
+            _gameManager?.PlayEnemySfx("enemy_attrition", 0.50f);
             SpawnFxSequence(
                 "Fx_AttritionSiphon",
                 AttritionSiphonFxPrefix,
@@ -1073,6 +1077,7 @@ namespace TD
                 return;
             }
 
+            _gameManager?.PlayEnemySfx("enemy_support_link", 0.54f);
             SpawnFxSequence(
                 "Fx_SupportLink",
                 SupportLinkFxPrefix,
@@ -1131,6 +1136,7 @@ namespace TD
             }
 
             _elitePressureFxPlayed = true;
+            _gameManager?.PlayEnemySfx("enemy_elite_pressure", 0.68f);
             SpawnFxSequence(
                 "Fx_ElitePressure",
                 ElitePressureFxPrefix,
