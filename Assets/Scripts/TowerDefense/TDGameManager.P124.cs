@@ -121,6 +121,16 @@ namespace TD
             int siteVariant = 0,
             float maxRealSeconds = P124DefaultMaxRealSeconds)
         {
+            // If the title screen is blocking, auto-dismiss it for automation.
+            if (_titleScreen != null && _titleScreen.IsVisible)
+            {
+                _titleScreen.Hide();
+                _campaignDeploymentConfirmed = true;
+                _missionBoardOpen = false;
+                _formationPanelOpen = false;
+                _campaignProfileOpen = false;
+            }
+
             if (!_campaignDeploymentConfirmed || _gridMap == null || _campaignRoute?.level == null)
             {
                 return "skip: P12.4 requires a deployed campaign mission";
@@ -152,6 +162,16 @@ namespace TD
 
         public string DebugPrepareP124RepresentativeProgressionForTest()
         {
+            // Auto-dismiss the title screen for automation if it's blocking.
+            if (_titleScreen != null && _titleScreen.IsVisible)
+            {
+                _titleScreen.Hide();
+                _campaignDeploymentConfirmed = true;
+                _missionBoardOpen = false;
+                _formationPanelOpen = false;
+                _campaignProfileOpen = false;
+            }
+
             if (_campaignRoute?.level == null || _campaign == null)
             {
                 return "skip: P12.4 representative progression requires campaign data";

@@ -416,6 +416,28 @@ Assert-McpToolSuccess -Step "enter play mode" -Response $playResult
 $sessionId = Wait-GameManager -Url $McpUrl -TimeoutSeconds $UnityReadyTimeoutSeconds
 
 $runtimeSetupCode = @"
+TD.TDGameManager.SkipTitleScreenForAutomation();
+var gm = UnityEngine.Object.FindFirstObjectByType<TD.TDGameManager>();
+if (gm != null)
+{
+    var flags = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
+    var t = typeof(TD.TDGameManager);
+    var tsField = t.GetField("_titleScreen", flags);
+    var ts = tsField != null ? tsField.GetValue(gm) : null;
+    if (ts != null)
+    {
+        var tsType = ts.GetType();
+        tsType.GetMethod("Hide")?.Invoke(ts, null);
+    }
+    var dcField = t.GetField("_campaignDeploymentConfirmed", flags);
+    if (dcField != null) dcField.SetValue(gm, true);
+    var mbField = t.GetField("_missionBoardOpen", flags);
+    if (mbField != null) mbField.SetValue(gm, false);
+    var ffField = t.GetField("_formationPanelOpen", flags);
+    if (ffField != null) ffField.SetValue(gm, false);
+    var cpField = t.GetField("_campaignProfileOpen", flags);
+    if (cpField != null) cpField.SetValue(gm, false);
+}
 UnityEngine.Random.InitState($RandomSeed);
 UnityEngine.Time.timeScale = 1f;
 UnityEngine.QualitySettings.vSyncCount = 0;

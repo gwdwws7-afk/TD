@@ -886,6 +886,8 @@ namespace TD
         private TDTower _selectedTowerForUi;
         private Font _uiFont;
         private Canvas _battleCanvas;
+        private TDTitleScreen _titleScreen;
+        private static bool _skipTitleForAutomation;
         private CanvasScaler _battleCanvasScaler;
         private TDP123SettingsPanel _settingsPanel;
         private RectTransform _uiTopPanel;
@@ -1098,6 +1100,14 @@ namespace TD
             UpdateMusicState();
             UpdateP124Autoplay();
             UpdateP1254ContinuousSoak();
+            if (_titleScreen != null && _titleScreen.IsVisible)
+            {
+                // Title screen is covering everything — skip combat input and HUD.
+                _gridMap?.HideBuildPreview();
+                HideRangePreview();
+                return;
+            }
+
             if (_settingsPanel != null && _settingsPanel.IsOpen)
             {
                 if (!_settingsPanel.IsRebinding && TDInputBindings.GetKeyDown(TDInputAction.Settings))
@@ -1552,6 +1562,98 @@ namespace TD
             ApplyLargeTextMode();
             SetBattlePlaybackSpeed(_playbackSpeed, false);
             InitializeFirstRunTutorial();
+            BuildTitleScreen();
+        }
+
+        /// <summary>Skip title screen on next Awake — used by MCP automation.</summary>
+        public static void SkipTitleScreenForAutomation()
+        {
+            _skipTitleForAutomation = true;
+        }
+
+        /// <summary>Reset the skip flag — title screen will show on next Awake.</summary>
+        public static void ResetTitleScreenSkip()
+        {
+            _skipTitleForAutomation = false;
+        }
+
+        private void BuildTitleScreen()
+        {
+            if (_battleCanvas == null || _titleScreen != null)
+            {
+                return;
+            }
+
+            // Skip the title screen entirely for automated smoke/autoplay probes.
+            var skipTitle = System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "--td-skip-title") >= 0
+                || TDStandaloneSmokeProbe.IsRequested()
+                || TDP1254StandaloneProbe.IsRequested()
+                || _skipTitleForAutomation;
+            if (skipTitle)
+            {
+                return;
+            }
+
+            // Detect if player has any existing progress (level > 1 unlocked)
+            var totalLevels = _campaign?.totalLevels ?? 20;
+            var hasProgress = TDCampaignProgression.IsLevelUnlocked(2, totalLevels);
+
+            // Create the title screen on its own child GameObject so Hide()
+            // doesn't disable the game manager.
+            var titleGo = new GameObject("TD Title Screen");
+            titleGo.transform.SetParent(_battleCanvas.transform, false);
+            _titleScreen = titleGo.AddComponent<TDTitleScreen>();
+            _titleScreen.Build(_battleCanvas, hasProgress);
+            _titleScreen.OnNewGame = HandleTitleNewGame;
+            _titleScreen.OnContinue = HandleTitleContinue;
+            _titleScreen.OnOpenSettings = HandleTitleSettings;
+
+            // While the title screen is up, the game is NOT auto-deployed.
+            // Selecting New Game / Continue will open the mission board.
+            _campaignDeploymentConfirmed = false;
+        }
+
+        private void HandleTitleNewGame()
+        {
+            // Reset to level 1 for a fresh campaign
+            TDCampaignRouter.SaveLevelIndex(1);
+            _missionBoardSelectedLevel = 1;
+            HandleTitleEnterGame();
+        }
+
+        private void HandleTitleContinue()
+        {
+            // Keep the saved level index
+            _missionBoardSelectedLevel = TDCampaignRouter.GetSavedLevelIndex(DefaultCampaignLevelIndex);
+            HandleTitleEnterGame();
+        }
+
+        private void HandleTitleEnterGame()
+        {
+            // Reload the campaign context with the selected level
+            LoadCampaignContext();
+            _titleScreen?.Hide();
+
+            // Force-open the mission board (bypass the OpenMissionBoard guard which
+            // blocks when _campaignDeploymentConfirmed is true).
+            if (_campaignRoute?.level != null)
+            {
+                _missionBoardSelectedLevel = _campaignRoute.level.levelIndex;
+                _missionBoardSelectedChapter = Mathf.Clamp((_missionBoardSelectedLevel - 1) / 5, 0, 3);
+                _missionBoardOpen = true;
+                _formationPanelOpen = false;
+                _campaignProfileOpen = false;
+                _missionBoardNeedsRefresh = true;
+                _gridMap?.HideBuildPreview();
+                HideRangePreview();
+                HideRoutePreview();
+                PlaySfxTone("ui_panel_open", 540f, 0.10f, 0.52f, true);
+            }
+        }
+
+        private void HandleTitleSettings()
+        {
+            _settingsPanel?.Open();
         }
 
         private void BuildP123SettingsUi()
