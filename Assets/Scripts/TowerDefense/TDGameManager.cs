@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.SceneManagement;
@@ -686,6 +687,10 @@ namespace TD
         private AudioSource _ambienceSource;
         private AudioClip _musicClip;
         private AudioClip _ambienceClip;
+        private AudioMixer _emberlineMixer;
+        private AudioMixerGroup _mixerMusicGroup;
+        private AudioMixerGroup _mixerSfxGroup;
+        private AudioMixerGroup _mixerAmbienceGroup;
         private string _activeMusicState;
         private float _nextUltimateSfxTime;
         private TDTower _lastHoverSfxTower;
@@ -11271,6 +11276,8 @@ namespace TD
 
         private void ConfigureSfx()
         {
+            LoadAudioMixer();
+
             _sfxSource = GetComponent<AudioSource>();
             if (_sfxSource == null)
             {
@@ -11288,7 +11295,72 @@ namespace TD
             ConfigureLoopSource(_musicSource);
             ConfigureLoopSource(_ambienceSource);
 
+            RouteAudioSourcesToMixer();
             ApplySfxVolumes();
+        }
+
+        private void LoadAudioMixer()
+        {
+            _emberlineMixer = Resources.Load<AudioMixer>(AudioBasePath + "/EmberlineMixer");
+            if (_emberlineMixer == null)
+            {
+                return;
+            }
+
+            var groups = _emberlineMixer.FindMatchingGroups(string.Empty);
+            foreach (var group in groups)
+            {
+                if (group.name == "Music") _mixerMusicGroup = group;
+                else if (group.name == "SFX") _mixerSfxGroup = group;
+                else if (group.name == "Ambience") _mixerAmbienceGroup = group;
+            }
+        }
+
+        private void RouteAudioSourcesToMixer()
+        {
+            if (_emberlineMixer == null)
+            {
+                return;
+            }
+
+            if (_mixerMusicGroup != null && _musicSource != null)
+            {
+                _musicSource.outputAudioMixerGroup = _mixerMusicGroup;
+            }
+
+            if (_mixerAmbienceGroup != null && _ambienceSource != null)
+            {
+                _ambienceSource.outputAudioMixerGroup = _mixerAmbienceGroup;
+            }
+
+            // Route SFX sources to sub-groups if they exist, otherwise the main SFX group.
+            if (_mixerSfxGroup != null)
+            {
+                // GetChildGroups returns the immediate child AudioMixerGroups of this group.
+                var subGroups = _emberlineMixer.FindMatchingGroups("SFX");
+                RouteSfxSource(_sfxSource, subGroups, "Routine");
+                RouteSfxSource(_tacticalSfxSource, subGroups, "Tactical");
+                RouteSfxSource(_criticalSfxSource, subGroups, "Critical");
+            }
+        }
+
+        private void RouteSfxSource(AudioSource source, AudioMixerGroup[] subGroups, string groupName)
+        {
+            if (source == null)
+            {
+                return;
+            }
+
+            foreach (var sg in subGroups)
+            {
+                if (sg.name == groupName)
+                {
+                    source.outputAudioMixerGroup = sg;
+                    return;
+                }
+            }
+
+            source.outputAudioMixerGroup = _mixerSfxGroup;
         }
 
         private void ApplySfxVolumes()
@@ -11432,6 +11504,7 @@ namespace TD
             }
 
             _activeMusicState = targetState;
+            TransitionMusicSnapshot(targetState);
             var newClip = Resources.Load<AudioClip>(AudioBasePath + "/" + targetPath);
             if (newClip == null)
             {
@@ -11444,6 +11517,31 @@ namespace TD
             _musicClip = newClip;
             _musicSource.clip = newClip;
             _musicSource.Play();
+        }
+
+        /// <summary>
+        /// Transition the AudioMixer snapshot based on the current music state.
+        /// Ducking: boss/resonance states lower music volume so SFX cut through.
+        /// Falls back gracefully if no mixer or snapshots are configured.
+        /// </summary>
+        private void TransitionMusicSnapshot(string state)
+        {
+            if (_emberlineMixer == null)
+            {
+                return;
+            }
+
+            var snapshotName = state switch
+            {
+                "resonance" => "Resonance",
+                "victory" => "Victory",
+                "defeat" => "Defeat",
+                "menu" => "Normal",
+                _ => "Normal",
+            };
+
+            var snapshot = _emberlineMixer.FindSnapshot(snapshotName);
+            snapshot?.TransitionTo(0.8f);
         }
 
         private void PlaySfxTone(string key, float frequency, float duration, float volumeScale = 1f, bool rising = false)
