@@ -12,6 +12,7 @@ namespace TD
         private const float HitFlashDuration = 0.10f;
         private const float DeathFadeDuration = 0.22f;
         private const float HitFxMinInterval = 0.06f;
+        private const float FastEvadeSpeedThreshold = 2.2f;
         private const string HitFxPrefix = "Art/anim/fx_enemy_hit";
         private const int HitFxFrameCount = 6;
         private const float HitFxFps = 24f;
@@ -566,10 +567,32 @@ namespace TD
                 return 0;
             }
 
+            // Fast enemies (speed >= 2.2) have a chance to evade fire from slow-firing
+            // towers (shotsPerSecond <= 1.0). Slowed enemies lose this evasion entirely,
+            // making Frost Coil / Grav Snare a hard requirement for Burrow Sapper and
+            // Cinder Glider. High fire-rate towers (Ember Flak 1.35/s, Arc Welder 0.85/s
+            // but chain) also bypass this via their own flag on the source tower.
+            if (sourceTower != null && !IsSlowed && _baseSpeed >= FastEvadeSpeedThreshold)
+            {
+                var evadeChance = sourceTower.EvadeableFastEnemyMissChance;
+                if (evadeChance > 0f && UnityEngine.Random.value < evadeChance)
+                {
+                    return 0;
+                }
+            }
+
             var wasSlowed = IsSlowed;
             var damageWithExposure = Mathf.RoundToInt(rawDamage * Mathf.Max(1f, _exposedMultiplier));
             var effectiveArmor = Mathf.Max(0, _armorFlat - _armorBreakFlat);
-            var damageTaken = Mathf.Max(1, damageWithExposure - effectiveArmor);
+            // Hybrid armor model: flat subtraction PLUS percentage mitigation.
+            // Each point of armor now also reduces damage by 4% (capped at 60%),
+            // so high-armor enemies (Husk Titan 9, Furnace Matriarch 12) are a real
+            // wall for low-per-hit towers like RailLancer, while SiegeDrill's
+            // armor-piercing multiplier becomes mandatory. The flat floor stays
+            // at 1 so chip damage is always possible.
+            var armorPercentReduction = Mathf.Min(0.60f, effectiveArmor * 0.04f);
+            var afterPercent = damageWithExposure * (1f - armorPercentReduction);
+            var damageTaken = Mathf.Max(1, Mathf.RoundToInt(afterPercent - effectiveArmor));
             var appliedDamage = Mathf.Min(Mathf.Max(0, _hp), damageTaken);
             _hitFlashTimer = HitFlashDuration;
             _hitReactionTimer = HitFlashDuration;

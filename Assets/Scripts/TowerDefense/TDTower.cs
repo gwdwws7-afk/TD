@@ -191,6 +191,33 @@ namespace TD
         public float SlowPct => _activeState?.slowPct ?? 0f;
         public float SlowDuration => _activeState?.slowDuration ?? 0f;
         public float HeavyMultiplier => _activeState?.heavyMultiplier ?? 1f;
+
+        /// <summary>
+        /// Miss chance vs fast (speed >= 2.2) unslowed enemies for slow-firing
+        /// single-target towers. AoE and high fire-rate towers bypass this.
+        /// Returns 0 for towers that should never miss (AoE radius > 0, or
+        /// fire rate > 1.1/s). For slow single-shot towers (<= 1.0/s), scales
+        /// from 0.18 at 1.0/s up to 0.30 at 0.5/s.
+        /// </summary>
+        public float EvadeableFastEnemyMissChance
+        {
+            get
+            {
+                var state = _activeState;
+                if (state == null || state.aoeRadius > 0f || state.shotsPerSecond > 1.1f)
+                {
+                    return 0f;
+                }
+
+                if (state.shotsPerSecond >= 1.0f)
+                {
+                    return 0.18f;
+                }
+
+                return Mathf.Lerp(0.18f, 0.30f, Mathf.InverseLerp(1.0f, 0.5f, state.shotsPerSecond));
+            }
+        }
+
         public int DamageBranchCount => CountUpgradeBranch(TDTowerUpgradeBranch.Damage);
         public int UtilityBranchCount => CountUpgradeBranch(TDTowerUpgradeBranch.Utility);
         public bool IsDamageSpecialist => DamageBranchCount >= 2;
@@ -833,7 +860,7 @@ namespace TD
                     aoeMinFalloff = 1f,
                     slowPct = 0f,
                     slowDuration = 0f,
-                    heavyMultiplier = 1.25f,
+                    heavyMultiplier = 1.0f,
                     spritePath = "Art/anim/tower_rail_lancer_00",
                     fallbackColor = new Color(0.20f, 0.38f, 0.80f),
                     animationPrefix = "Art/anim/tower_rail_lancer",

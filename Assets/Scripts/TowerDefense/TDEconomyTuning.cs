@@ -4,13 +4,13 @@ namespace TD
 {
     public static class TDEconomyTuning
     {
-        public const float CombatBountyShare = 0.58f;
+        public const float CombatBountyShare = 0.40f;
         public const int DecisionReserveLimit = 999;
 
-        private const float LateIncomeStartProgress = 0.55f;
-        private const float FinalCombatIncomeMultiplier = 0.08f;
-        private const float LateClearRewardStartProgress = 0.60f;
-        private const float FinalClearRewardMultiplier = 0.70f;
+        private const float LateIncomeStartProgress = 0.45f;
+        private const float FinalCombatIncomeMultiplier = 0.06f;
+        private const float LateClearRewardStartProgress = 0.50f;
+        private const float FinalClearRewardMultiplier = 0.50f;
         private const float FinalScenarioPhaseMultiplier = 1.55f;
         private const float ScenarioRepeatStep = 0.22f;
         private const float MaxScenarioRepeatMultiplier = 1.88f;
