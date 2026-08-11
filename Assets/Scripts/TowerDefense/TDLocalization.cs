@@ -592,6 +592,8 @@ namespace TD
 
         private static Font _chineseFont;
         private static bool _initialized;
+        private static System.Collections.Generic.List<Replacement> _activeReplacements;
+        private const string LocalizationJsonPath = "Localization/strings";
 
         public static TDUiLanguage CurrentLanguage { get; private set; } = TDUiLanguage.English;
         public static bool IsChinese => CurrentLanguage == TDUiLanguage.SimplifiedChinese;
@@ -602,6 +604,8 @@ namespace TD
             {
                 return;
             }
+
+            LoadJsonReplacements();
 
             var defaultLanguage = Application.systemLanguage == SystemLanguage.Chinese ||
                                   Application.systemLanguage == SystemLanguage.ChineseSimplified
@@ -625,6 +629,96 @@ namespace TD
 
             PlayerPrefs.SetInt(LanguagePlayerPrefsKey, (int)language);
             PlayerPrefs.Save();
+        }
+
+        /// <summary>
+        /// Load replacement pairs from Localization/strings.json (data-driven).
+        /// Falls back to the hardcoded ChineseReplacements array if the JSON
+        /// is missing or fails to parse.
+        /// </summary>
+        private static void LoadJsonReplacements()
+        {
+            _activeReplacements = null;
+            try
+            {
+                var jsonAsset = Resources.Load<TextAsset>(LocalizationJsonPath);
+                if (jsonAsset != null)
+                {
+                    var parsed = ParseLocalizationJson(jsonAsset.text);
+                    if (parsed != null && parsed.Count > 0)
+                    {
+                        _activeReplacements = parsed;
+                    }
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning($"[TD] Localization JSON load failed, using hardcoded fallback: {e.Message}");
+            }
+
+            // Fallback: use the hardcoded array directly.
+            _activeReplacements ??= new System.Collections.Generic.List<Replacement>(ChineseReplacements);
+        }
+
+        private static System.Collections.Generic.List<Replacement> ParseLocalizationJson(string json)
+        {
+            // Minimal JSON parser for {"languages":{"zh":{"en":"zh",...}}}
+            // Avoids dependency on Newtonsoft or JsonUtility (which needs [Serializable]).
+            var result = new System.Collections.Generic.List<Replacement>();
+            var langKey = IsChinese ? "zh" : "en";
+
+            // Use JsonUtility with a wrapper since Unity's JsonUtility handles Dictionary-like
+            // structures via [Serializable]. But our JSON is nested, so we use a simple
+            // regex-based extraction for the zh block.
+            var zhMatch = System.Text.RegularExpressions.Regex.Match(
+                json, @"""zh""\s*:\s*\{");
+            if (!zhMatch.Success)
+            {
+                return null;
+            }
+
+            // Find the zh block: from zhMatch.Index+zhMatch.Length to the matching closing brace.
+            var start = zhMatch.Index + zhMatch.Length;
+            var depth = 1;
+            var end = start;
+            while (end < json.Length && depth > 0)
+            {
+                if (json[end] == '{') depth++;
+                else if (json[end] == '}') depth--;
+                end++;
+            }
+
+            if (depth != 0)
+            {
+                return null;
+            }
+
+            var zhBlock = json.Substring(start, end - start - 1);
+
+            // Extract "key": "value" pairs.
+            var pairPattern = new System.Text.RegularExpressions.Regex(
+                @"""((?:[^""\\]|\\.)*)""\s*:\s*""((?:[^""\\]|\\.)*)""");
+            var matches = pairPattern.Matches(zhBlock);
+            foreach (System.Text.RegularExpressions.Match m in matches)
+            {
+                var key = UnescapeJson(m.Groups[1].Value);
+                var value = UnescapeJson(m.Groups[2].Value);
+                if (!string.IsNullOrEmpty(key))
+                {
+                    result.Add(new Replacement(key, value));
+                }
+            }
+
+            return result;
+        }
+
+        private static string UnescapeJson(string s)
+        {
+            return s
+                .Replace("\\\"", "\"")
+                .Replace("\\n", "\n")
+                .Replace("\\t", "\t")
+                .Replace("\\\\", "\\");
         }
 
         public static Font ResolveFont(Font latinFallback)
@@ -675,9 +769,10 @@ namespace TD
             }
 
             var localized = source;
-            for (var i = 0; i < ChineseReplacements.Length; i++)
+            var replacements = _activeReplacements ?? new System.Collections.Generic.List<Replacement>(ChineseReplacements);
+            for (var i = 0; i < replacements.Count; i++)
             {
-                var replacement = ChineseReplacements[i];
+                var replacement = replacements[i];
                 localized = localized.Replace(replacement.English, replacement.Chinese);
             }
 

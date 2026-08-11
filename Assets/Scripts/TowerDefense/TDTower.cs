@@ -172,6 +172,7 @@ namespace TD
         private Transform _specializationRoot;
         private SpriteRenderer _specializationRenderer;
         private TDTowerReadability _readability;
+        private TDSpriteAnimator _animator;
         private Color _specializationBaseColor;
         private float _specializationPulse;
         private float _cooldown;
@@ -500,6 +501,7 @@ namespace TD
         private void FireAt(TDEnemy target)
         {
             _readability?.PlayAttack();
+            _animator?.PlayFire();
             _gameManager?.NotifyTowerFired(Kind);
             var resonanceDamageMultiplier = _gameManager != null ? _gameManager.GetTowerDamageMultiplier(Kind) : 1f;
             var resonanceProjectileSpeed = _gameManager != null ? _gameManager.GetProjectileSpeedMultiplier(Kind) : 1f;
@@ -1199,19 +1201,21 @@ namespace TD
             visualRoot.localPosition = ResolveFoundationAnchoredVisualPosition(renderer);
             ApplySpecializationVisual(renderer.sortingOrder);
 
-            var animator = visualRoot.GetComponent<TDSpriteAnimator>();
+            _animator = visualRoot.GetComponent<TDSpriteAnimator>();
             if (!string.IsNullOrWhiteSpace(animationPrefix) && animationFrames > 1)
             {
-                if (animator == null)
+                if (_animator == null)
                 {
-                    animator = visualRoot.gameObject.AddComponent<TDSpriteAnimator>();
+                    _animator = visualRoot.gameObject.AddComponent<TDSpriteAnimator>();
                 }
 
-                animator.Configure(animationPrefix, animationFrames, _activeState.animationFps);
+                _animator.Configure(animationPrefix, animationFrames, _activeState.animationFps);
+                // Load fire animation frames if they exist (e.g. tower_rail_lancer_fire_00).
+                _animator.ConfigureFire(animationPrefix, 3, 15f);
             }
-            else if (animator != null)
+            else if (_animator != null)
             {
-                animator.enabled = false;
+                _animator.enabled = false;
             }
 
             _readability?.RefreshMotionBaseline();
