@@ -887,6 +887,7 @@ namespace TD
         private Font _uiFont;
         private Canvas _battleCanvas;
         private TDTitleScreen _titleScreen;
+        private TDPauseMenu _pauseMenu;
         private static bool _skipTitleForAutomation;
         private CanvasScaler _battleCanvasScaler;
         private TDP123SettingsPanel _settingsPanel;
@@ -1108,6 +1109,19 @@ namespace TD
                 return;
             }
 
+            if (_pauseMenu != null && _pauseMenu.IsVisible)
+            {
+                // ESC or P closes the pause menu (resumes).
+                if (TDInputBindings.GetKeyDown(TDInputAction.Settings) ||
+                    TDInputBindings.GetKeyDown(TDInputAction.Pause) ||
+                    TDInputCompat.GetGamepadButtonDown(TDGamepadButton.Start))
+                {
+                    HandlePauseResume();
+                }
+
+                return;
+            }
+
             if (_settingsPanel != null && _settingsPanel.IsOpen)
             {
                 if (!_settingsPanel.IsRebinding && TDInputBindings.GetKeyDown(TDInputAction.Settings))
@@ -1120,7 +1134,8 @@ namespace TD
 
             if (TDInputBindings.GetKeyDown(TDInputAction.Settings) || TDInputCompat.GetGamepadButtonDown(TDGamepadButton.Select))
             {
-                _settingsPanel?.Open();
+                // ESC opens the pause menu during combat (settings accessible from there).
+                TogglePauseMenu();
                 return;
             }
 
@@ -1563,6 +1578,72 @@ namespace TD
             SetBattlePlaybackSpeed(_playbackSpeed, false);
             InitializeFirstRunTutorial();
             BuildTitleScreen();
+            BuildPauseMenu();
+        }
+
+        private void BuildPauseMenu()
+        {
+            if (_battleCanvas == null || _pauseMenu != null)
+            {
+                return;
+            }
+
+            var pauseGo = new GameObject("TD Pause Menu");
+            pauseGo.transform.SetParent(_battleCanvas.transform, false);
+            _pauseMenu = pauseGo.AddComponent<TDPauseMenu>();
+            _pauseMenu.Build(_battleCanvas);
+            _pauseMenu.OnResume = HandlePauseResume;
+            _pauseMenu.OnRestart = HandlePauseRestart;
+            _pauseMenu.OnOpenSettings = HandlePauseSettings;
+            _pauseMenu.OnQuitToTitle = HandlePauseQuitToTitle;
+        }
+
+        private void TogglePauseMenu()
+        {
+            if (_pauseMenu == null)
+            {
+                ToggleBattlePause();
+                return;
+            }
+
+            if (_pauseMenu.IsVisible)
+            {
+                HandlePauseResume();
+            }
+            else
+            {
+                _pauseMenu.Show();
+                SetBattlePlaybackSpeed(0f, false);
+                PlaySfxTone("ui_panel_open", 540f, 0.10f, 0.52f, true);
+            }
+        }
+
+        private void HandlePauseResume()
+        {
+            _pauseMenu?.Hide();
+            SetBattlePlaybackSpeed(_lastActivePlaybackSpeed > 0 ? _lastActivePlaybackSpeed : 1f, false);
+            PlaySfxTone("ui_panel_close", 420f, 0.08f, 0.48f, false);
+        }
+
+        private void HandlePauseRestart()
+        {
+            _pauseMenu?.Hide();
+            RestartCurrentScene();
+        }
+
+        private void HandlePauseSettings()
+        {
+            _settingsPanel?.Open();
+        }
+
+        private void HandlePauseQuitToTitle()
+        {
+            _pauseMenu?.Hide();
+            // Reload the scene — Awake will rebuild the title screen.
+            // Reset deployment so the title appears.
+            _campaignDeploymentConfirmed = false;
+            _skipTitleForAutomation = false;
+            RestartCurrentScene();
         }
 
         /// <summary>Skip title screen on next Awake — used by MCP automation.</summary>
@@ -1896,7 +1977,7 @@ namespace TD
                 TDInputCompat.GetKeyDown(KeyCode.Pause) ||
                 TDInputCompat.GetGamepadButtonDown(TDGamepadButton.Start))
             {
-                ToggleBattlePause();
+                TogglePauseMenu();
                 return;
             }
 
