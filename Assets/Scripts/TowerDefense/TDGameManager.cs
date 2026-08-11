@@ -13802,14 +13802,14 @@ namespace TD
             // Wait for deployment confirmation with a timeout safeguard.
             // The title screen sets _campaignDeploymentConfirmed=false until the player
             // picks New Game / Continue. Automation (P124) may set it via reflection
-            // after a delay. A 15s timeout prevents a permanent deadlock if the flag
+            // after a delay. A 5s timeout prevents a permanent deadlock if the flag
             // is never set (e.g. coroutine started before title screen exists).
             var waitStart = Time.realtimeSinceStartup;
             while (!_campaignDeploymentConfirmed && !_gameOver)
             {
-                if (Time.realtimeSinceStartup - waitStart > 15f)
+                if (Time.realtimeSinceStartup - waitStart > 5f)
                 {
-                    Debug.LogError("[TD] WaveLoop waited >15s for deployment confirmation — forcing resume.");
+                    Debug.LogWarning("[TD] WaveLoop waited >5s for deployment confirmation — forcing resume (automation/title path).");
                     _campaignDeploymentConfirmed = true;
                 }
 
