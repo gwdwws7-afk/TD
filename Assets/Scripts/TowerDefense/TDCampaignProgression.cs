@@ -595,6 +595,20 @@ namespace TD
                    levelIndex <= GetHighestUnlockedLevel(totalLevels);
         }
 
+        /// <summary>
+        /// Set the difficulty preference for a specific level (used by New Game+).
+        /// This does NOT change highestDifficultyCleared — only the player's
+        /// preference for what difficulty the mission board defaults to.
+        /// </summary>
+        public static void SetDifficultyPreference(int levelIndex, TDCampaignDifficultyTier difficulty)
+        {
+            var safeLevel = Mathf.Max(1, levelIndex);
+            PlayerPrefs.SetInt(
+                GetLevelKey(safeLevel, "difficulty_preference"),
+                Mathf.Clamp((int)difficulty, (int)TDCampaignDifficultyTier.Standard, (int)TDCampaignDifficultyTier.EmberTrial));
+            PlayerPrefs.Save();
+        }
+
         public static TDCampaignLevelProgress GetLevelProgress(int levelIndex)
         {
             var safeLevel = Mathf.Max(1, levelIndex);

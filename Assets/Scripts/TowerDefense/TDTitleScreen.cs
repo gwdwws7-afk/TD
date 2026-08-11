@@ -23,6 +23,7 @@ namespace TD
 
         // Callbacks set by TDGameManager
         public System.Action OnNewGame;
+        public System.Action OnNewGamePlus;
         public System.Action OnContinue;
         public System.Action OnOpenSettings;
 
@@ -35,7 +36,7 @@ namespace TD
         private static readonly Color TextDim = new(0.62f, 0.70f, 0.78f, 0.80f);
         private static readonly Color ButtonHover = new(0.12f, 0.14f, 0.18f, 0.92f);
 
-        public void Build(Canvas parent, bool hasExistingProgress)
+        public void Build(Canvas parent, bool hasExistingProgress, bool hasClearedCampaign = false)
         {
             // Root panel — full screen
             _root = CreateRect("TitleScreen", parent.transform);
@@ -90,12 +91,29 @@ namespace TD
 
             // Menu buttons — centered
             var hasContinue = hasExistingProgress;
-            var buttonLabels = hasContinue
-                ? new[] { ("CONTINUE", "continue"), ("NEW GAME", "new"), ("SETTINGS", "settings"), ("CREDITS", "credits"), ("QUIT", "quit") }
-                : new[] { ("NEW GAME", "new"), ("SETTINGS", "settings"), ("CREDITS", "credits"), ("QUIT", "quit") };
+            var ngPlusAvailable = hasClearedCampaign;
 
-            var startY = hasContinue ? 0.42f : 0.46f;
-            var stepY = 0.062f;
+            // Build button list based on what's available
+            var buttonList = new System.Collections.Generic.List<(string, string)>();
+            if (hasContinue)
+            {
+                buttonList.Add(("CONTINUE", "continue"));
+            }
+
+            buttonList.Add(("NEW GAME", "new"));
+            if (ngPlusAvailable)
+            {
+                buttonList.Add(("NEW GAME+", "ngplus"));
+            }
+
+            buttonList.Add(("SETTINGS", "settings"));
+            buttonList.Add(("CREDITS", "credits"));
+            buttonList.Add(("QUIT", "quit"));
+            var buttonLabels = buttonList.ToArray();
+
+            // Pack buttons tighter if there are more of them
+            var stepY = buttonLabels.Length > 5 ? 0.054f : 0.062f;
+            var startY = 0.42f;
 
             for (var i = 0; i < buttonLabels.Length; i++)
             {
@@ -191,6 +209,9 @@ namespace TD
             {
                 case "new":
                     OnNewGame?.Invoke();
+                    break;
+                case "ngplus":
+                    OnNewGamePlus?.Invoke();
                     break;
                 case "continue":
                     OnContinue?.Invoke();

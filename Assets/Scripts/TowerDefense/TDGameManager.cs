@@ -1789,14 +1789,19 @@ namespace TD
             // Detect if player has any existing progress (level > 1 unlocked)
             var totalLevels = _campaign?.totalLevels ?? 20;
             var hasProgress = TDCampaignProgression.IsLevelUnlocked(2, totalLevels);
+            var campaignSummary = GetCampaignProgressSummary();
+            var hasClearedCampaign = campaignSummary != null &&
+                campaignSummary.totalLevels > 0 &&
+                campaignSummary.clearedLevels == campaignSummary.totalLevels;
 
             // Create the title screen on its own child GameObject so Hide()
             // doesn't disable the game manager.
             var titleGo = new GameObject("TD Title Screen");
             titleGo.transform.SetParent(_battleCanvas.transform, false);
             _titleScreen = titleGo.AddComponent<TDTitleScreen>();
-            _titleScreen.Build(_battleCanvas, hasProgress);
+            _titleScreen.Build(_battleCanvas, hasProgress, hasClearedCampaign);
             _titleScreen.OnNewGame = HandleTitleNewGame;
+            _titleScreen.OnNewGamePlus = HandleTitleNewGamePlus;
             _titleScreen.OnContinue = HandleTitleContinue;
             _titleScreen.OnOpenSettings = HandleTitleSettings;
 
@@ -1810,6 +1815,23 @@ namespace TD
             // Reset to level 1 for a fresh campaign
             TDCampaignRouter.SaveLevelIndex(1);
             _missionBoardSelectedLevel = 1;
+            HandleTitleEnterGame();
+        }
+
+        private void HandleTitleNewGamePlus()
+        {
+            // NG+: reset to level 1 but flag EmberTrial difficulty for the whole campaign.
+            // The player keeps their claimed chapter rewards (meta progression persists).
+            TDCampaignRouter.SaveLevelIndex(1);
+            _missionBoardSelectedLevel = 1;
+
+            // Set EmberTrial preference for all levels so the mission board defaults to it.
+            var totalLevels = _campaign?.totalLevels ?? 20;
+            for (var lvl = 1; lvl <= totalLevels; lvl++)
+            {
+                TDCampaignProgression.SetDifficultyPreference(lvl, TDCampaignDifficultyTier.EmberTrial);
+            }
+
             HandleTitleEnterGame();
         }
 
