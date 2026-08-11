@@ -2,15 +2,17 @@
     "name": "TD.Tests",
     "rootNamespace": "TD.Tests",
     "references": [
-        "Assembly-CSharp"
+        "Assembly-CSharp",
+        "UnityEngine.TestRunner",
+        "nunit.framework"
     ],
     "includePlatforms": [
         "Editor"
     ],
     "excludePlatforms": [],
     "autoReferenced": false,
-    "optionalUnityReferences": [
-        "TestAssemblies"
-    ],
-    "overrideReferences": false
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ]
 }
