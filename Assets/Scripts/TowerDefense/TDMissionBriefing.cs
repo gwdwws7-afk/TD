@@ -107,7 +107,13 @@ namespace TD
             btnColors.highlightedColor = new Color(0.96f, 0.58f, 0.24f, 0.40f);
             btnColors.pressedColor = new Color(0.96f, 0.58f, 0.24f, 0.60f);
             btn.colors = btnColors;
-            var btnLabel = CreateText(btnRect, "BEGIN OPERATION", 13, FontStyle.Bold, AccentEmber);
+            // Text on a child rect — can't share a GameObject with Image.
+            var btnLabelRect = CreateRect("BriefingBtnLabel", btnRect);
+            btnLabelRect.anchorMin = Vector2.zero;
+            btnLabelRect.anchorMax = Vector2.one;
+            btnLabelRect.offsetMin = Vector2.zero;
+            btnLabelRect.offsetMax = Vector2.zero;
+            var btnLabel = CreateText(btnLabelRect, "BEGIN OPERATION", 13, FontStyle.Bold, AccentEmber);
             btnLabel.alignment = TextAnchor.MiddleCenter;
             btn.onClick.AddListener(() => OnBegin?.Invoke());
 

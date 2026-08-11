@@ -19,7 +19,6 @@ namespace TD
         private CanvasGroup _fader;
         private RectTransform _root;
         private RectTransform _creditsOverlay;
-        private bool _creditsVisible;
 
         // Callbacks set by TDGameManager
         public System.Action OnNewGame;
@@ -169,11 +168,16 @@ namespace TD
             var backBtn = backRect.gameObject.AddComponent<Button>();
             var backImg = backRect.gameObject.AddComponent<Image>();
             backImg.color = new Color(0.08f, 0.10f, 0.14f, 0.80f);
-            var backLabel = CreateText(backRect, "BACK", 12, FontStyle.Bold, TextBright);
+            // Text must be on a child — can't share a GameObject with Image.
+            var backLabelRect = CreateRect("CreditsBackLabel", backRect);
+            backLabelRect.anchorMin = Vector2.zero;
+            backLabelRect.anchorMax = Vector2.one;
+            backLabelRect.offsetMin = Vector2.zero;
+            backLabelRect.offsetMax = Vector2.zero;
+            var backLabel = CreateText(backLabelRect, "BACK", 12, FontStyle.Bold, TextBright);
             backLabel.alignment = TextAnchor.MiddleCenter;
             backBtn.onClick.AddListener(() =>
             {
-                _creditsVisible = false;
                 _creditsOverlay.gameObject.SetActive(false);
             });
         }
@@ -220,7 +224,6 @@ namespace TD
                     OnOpenSettings?.Invoke();
                     break;
                 case "credits":
-                    _creditsVisible = true;
                     if (_creditsOverlay != null)
                     {
                         _creditsOverlay.gameObject.SetActive(true);

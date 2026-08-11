@@ -1129,6 +1129,17 @@ namespace TD
 
             if (_pauseMenu != null && _pauseMenu.IsVisible)
             {
+                // If settings is open on top of pause menu, ESC closes settings first.
+                if (_settingsPanel != null && _settingsPanel.IsOpen)
+                {
+                    if (!_settingsPanel.IsRebinding && TDInputBindings.GetKeyDown(TDInputAction.Settings))
+                    {
+                        _settingsPanel.Close();
+                    }
+
+                    return;
+                }
+
                 // ESC or P closes the pause menu (resumes).
                 if (TDInputBindings.GetKeyDown(TDInputAction.Settings) ||
                     TDInputBindings.GetKeyDown(TDInputAction.Pause) ||
