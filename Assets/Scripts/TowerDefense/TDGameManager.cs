@@ -889,7 +889,9 @@ namespace TD
         private TDTitleScreen _titleScreen;
         private TDPauseMenu _pauseMenu;
         private TDLoadingScreen _loadingScreen;
+        private TDMissionBriefing _missionBriefing;
         private static bool _skipTitleForAutomation;
+        private static bool _showBriefingNextAwake;
         private CanvasScaler _battleCanvasScaler;
         private TDP123SettingsPanel _settingsPanel;
         private RectTransform _uiTopPanel;
@@ -1085,6 +1087,13 @@ namespace TD
         private void Start()
         {
             _waveRoutine = StartCoroutine(_waveSet != null ? WaveLoopFromConfig() : FallbackWaveLoop());
+
+            // Show the mission briefing if the deploy flow requested it.
+            if (_showBriefingNextAwake)
+            {
+                _showBriefingNextAwake = false;
+                ShowMissionBriefing();
+            }
         }
 
         private void OnDestroy()
@@ -1105,6 +1114,14 @@ namespace TD
             if (_titleScreen != null && _titleScreen.IsVisible)
             {
                 // Title screen is covering everything — skip combat input and HUD.
+                _gridMap?.HideBuildPreview();
+                HideRangePreview();
+                return;
+            }
+
+            if (_missionBriefing != null && _missionBriefing.IsVisible)
+            {
+                // Briefing is up — block combat input until player clicks BEGIN.
                 _gridMap?.HideBuildPreview();
                 HideRangePreview();
                 return;
@@ -1581,6 +1598,85 @@ namespace TD
             BuildTitleScreen();
             BuildPauseMenu();
             BuildLoadingScreen();
+            BuildMissionBriefing();
+        }
+
+        private void BuildMissionBriefing()
+        {
+            if (_battleCanvas == null || _missionBriefing != null)
+            {
+                return;
+            }
+
+            var go = new GameObject("TD Mission Briefing");
+            go.transform.SetParent(_battleCanvas.transform, false);
+            _missionBriefing = go.AddComponent<TDMissionBriefing>();
+            _missionBriefing.Build(_battleCanvas);
+            _missionBriefing.OnBegin = HandleBriefingBegin;
+        }
+
+        private void ShowMissionBriefing()
+        {
+            if (_missionBriefing == null || _campaignRoute?.level == null)
+            {
+                return;
+            }
+
+            var level = _campaignRoute.level;
+            var map = _campaignRoute.map;
+            var levelTitle = $"{(level.bossLevel ? "BOSS MISSION" : "FIELD MISSION")}  L{level.levelIndex:00}";
+            if (map != null && !string.IsNullOrWhiteSpace(map.displayName))
+            {
+                levelTitle += $"\n{map.displayName}";
+            }
+
+            var mapHook = map != null && !string.IsNullOrWhiteSpace(map.tacticalHook)
+                ? map.tacticalHook
+                : string.Empty;
+
+            // Scenario mechanic intel
+            string scenarioIntel;
+            if (map?.mechanic != null)
+            {
+                var m = map.mechanic;
+                scenarioIntel = $"TACTICAL DEVICE\n{m.displayName}\n\n{m.description}";
+            }
+            else
+            {
+                scenarioIntel = "TACTICAL DEVICE\nNo map device — pure defense.";
+            }
+
+            // Threat composition from wave intel
+            BuildMissionWaveIntel(level, out var waveCount, out var laneCount, out var composition, out var threatTags, out _);
+            var threatLines = $"THREAT ASSESSMENT\n{waveCount} waves / {laneCount} lane(s)\n\n{composition}";
+            if (level.newEnemyUnlocks != null && level.newEnemyUnlocks.Length > 0)
+            {
+                threatLines += $"\n\nNEW: {string.Join(", ", level.newEnemyUnlocks)}";
+            }
+
+            // Contract
+            string contractIntel;
+            if (level.contract != null)
+            {
+                var c = level.contract;
+                contractIntel = $"CONTRACT\n{c.displayName}\n\nObjective: {c.metric} {c.comparison} {c.target}";
+            }
+            else
+            {
+                contractIntel = "CONTRACT\nSurvive all 20 waves.";
+            }
+
+            // Pause the game while briefing is up
+            SetBattlePlaybackSpeed(0f, false);
+            _missionBriefing.Show(levelTitle, mapHook, scenarioIntel, threatIntel: threatLines, contractIntel);
+            PlaySfxTone("ui_panel_open", 540f, 0.10f, 0.52f, true);
+        }
+
+        private void HandleBriefingBegin()
+        {
+            _missionBriefing?.Hide();
+            SetBattlePlaybackSpeed(_lastActivePlaybackSpeed > 0 ? _lastActivePlaybackSpeed : 1f, false);
+            PlaySfxTone("ui_panel_close", 420f, 0.08f, 0.48f, false);
         }
 
         private void BuildLoadingScreen()
@@ -5333,6 +5429,7 @@ namespace TD
             TDCampaignRouter.SaveLevelIndex(selectedLevel);
             SetStatus($"Deploying mission L{selectedLevel:00}...");
             PlaySfxTone("ui_deploy", 700f, 0.16f, 0.66f, true);
+            _showBriefingNextAwake = true;
             var selectedMap = _campaign.maps?.FirstOrDefault(m => m.mapId == _campaignRoute.level.mapId);
             var deployLabel = selectedMap != null && !string.IsNullOrWhiteSpace(selectedMap.displayName)
                 ? $"L{selectedLevel:00}  {selectedMap.displayName}"
@@ -5360,6 +5457,7 @@ namespace TD
             }
 
             TDCampaignRouter.SaveLevelIndex(nextLevel);
+            _showBriefingNextAwake = true;
             LoadingTransition("ADVANCING", $"MISSION L{nextLevel:00}");
         }
 
