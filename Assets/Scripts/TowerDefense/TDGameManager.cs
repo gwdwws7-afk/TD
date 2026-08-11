@@ -1633,6 +1633,8 @@ namespace TD
             // Reload the campaign context with the selected level
             LoadCampaignContext();
             _titleScreen?.Hide();
+            _campaignDeploymentConfirmed = true;
+            EnsureWaveRoutineRunning();
 
             // Force-open the mission board (bypass the OpenMissionBoard guard which
             // blocks when _campaignDeploymentConfirmed is true).
@@ -1648,6 +1650,18 @@ namespace TD
                 HideRangePreview();
                 HideRoutePreview();
                 PlaySfxTone("ui_panel_open", 540f, 0.10f, 0.52f, true);
+            }
+        }
+
+        /// <summary>
+        /// Ensure the wave loop coroutine is running. If it died (e.g. due to a
+        /// transient null during title-screen wait), restart it.
+        /// </summary>
+        private void EnsureWaveRoutineRunning()
+        {
+            if (_waveRoutine == null && _waveSet != null)
+            {
+                _waveRoutine = StartCoroutine(WaveLoopFromConfig());
             }
         }
 
@@ -13554,12 +13568,33 @@ namespace TD
 
         private IEnumerator WaveLoopFromConfig()
         {
+            // Wait for deployment confirmation with a timeout safeguard.
+            // The title screen sets _campaignDeploymentConfirmed=false until the player
+            // picks New Game / Continue. Automation (P124) may set it via reflection
+            // after a delay. A 15s timeout prevents a permanent deadlock if the flag
+            // is never set (e.g. coroutine started before title screen exists).
+            var waitStart = Time.realtimeSinceStartup;
             while (!_campaignDeploymentConfirmed && !_gameOver)
             {
+                if (Time.realtimeSinceStartup - waitStart > 15f)
+                {
+                    Debug.LogError("[TD] WaveLoop waited >15s for deployment confirmation — forcing resume.");
+                    _campaignDeploymentConfirmed = true;
+                }
+
                 yield return null;
             }
 
-            yield return new WaitForSeconds(1f);
+            // Ensure wave data is ready before entering the loop.
+            if (_waveSet == null || _waveSet.waves == null || _waveSet.waves.Length == 0)
+            {
+                Debug.LogWarning("[TD] WaveLoopFromConfig: _waveSet null/empty — falling back.");
+                yield return FallbackWaveLoop();
+                yield break;
+            }
+
+            // Use real-time delay so timeScale (e.g. 0 during pause) doesn't stall the loop.
+            yield return new WaitForSecondsRealtime(1f);
 
             var waves = _waveSet.waves;
             Array.Sort(waves, (a, b) => a.waveIndex.CompareTo(b.waveIndex));

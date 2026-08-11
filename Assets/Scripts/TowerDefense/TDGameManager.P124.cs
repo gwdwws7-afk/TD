@@ -129,6 +129,7 @@ namespace TD
                 _missionBoardOpen = false;
                 _formationPanelOpen = false;
                 _campaignProfileOpen = false;
+                EnsureWaveRoutineRunning();
             }
 
             if (!_campaignDeploymentConfirmed || _gridMap == null || _campaignRoute?.level == null)
@@ -170,6 +171,7 @@ namespace TD
                 _missionBoardOpen = false;
                 _formationPanelOpen = false;
                 _campaignProfileOpen = false;
+                EnsureWaveRoutineRunning();
             }
 
             if (_campaignRoute?.level == null || _campaign == null)

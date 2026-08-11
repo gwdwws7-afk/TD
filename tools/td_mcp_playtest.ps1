@@ -416,10 +416,12 @@ Assert-McpToolSuccess -Step "enter play mode" -Response $playResult
 $sessionId = Wait-GameManager -Url $McpUrl -TimeoutSeconds $UnityReadyTimeoutSeconds
 
 $runtimeSetupCode = @"
-TD.TDGameManager.SkipTitleScreenForAutomation();
 var gm = UnityEngine.Object.FindFirstObjectByType<TD.TDGameManager>();
 if (gm != null)
 {
+    // Dismiss the title screen and force-deploy for automation.
+    // The wave loop coroutine has a 60s timeout safeguard that will also
+    // force-resume if _campaignDeploymentConfirmed is never set.
     var flags = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
     var t = typeof(TD.TDGameManager);
     var tsField = t.GetField("_titleScreen", flags);
@@ -437,6 +439,8 @@ if (gm != null)
     if (ffField != null) ffField.SetValue(gm, false);
     var cpField = t.GetField("_campaignProfileOpen", flags);
     if (cpField != null) cpField.SetValue(gm, false);
+    // Restart the wave loop coroutine if it died during the title-screen wait.
+    gm.GetType().GetMethod("EnsureWaveRoutineRunning", flags | System.Reflection.BindingFlags.NonPublic)?.Invoke(gm, null);
 }
 UnityEngine.Random.InitState($RandomSeed);
 UnityEngine.Time.timeScale = 1f;
