@@ -888,6 +888,7 @@ namespace TD
         private Canvas _battleCanvas;
         private TDTitleScreen _titleScreen;
         private TDPauseMenu _pauseMenu;
+        private TDLoadingScreen _loadingScreen;
         private static bool _skipTitleForAutomation;
         private CanvasScaler _battleCanvasScaler;
         private TDP123SettingsPanel _settingsPanel;
@@ -1579,6 +1580,20 @@ namespace TD
             InitializeFirstRunTutorial();
             BuildTitleScreen();
             BuildPauseMenu();
+            BuildLoadingScreen();
+        }
+
+        private void BuildLoadingScreen()
+        {
+            if (_battleCanvas == null || _loadingScreen != null)
+            {
+                return;
+            }
+
+            var go = new GameObject("TD Loading Screen");
+            go.transform.SetParent(_battleCanvas.transform, false);
+            _loadingScreen = go.AddComponent<TDLoadingScreen>();
+            _loadingScreen.Build(_battleCanvas);
         }
 
         private void BuildPauseMenu()
@@ -1643,7 +1658,7 @@ namespace TD
             // Reset deployment so the title appears.
             _campaignDeploymentConfirmed = false;
             _skipTitleForAutomation = false;
-            RestartCurrentScene();
+            LoadingTransition("RETURNING TO TITLE", "EMBERLINE DEFENSE");
         }
 
         /// <summary>Skip title screen on next Awake — used by MCP automation.</summary>
@@ -5318,7 +5333,11 @@ namespace TD
             TDCampaignRouter.SaveLevelIndex(selectedLevel);
             SetStatus($"Deploying mission L{selectedLevel:00}...");
             PlaySfxTone("ui_deploy", 700f, 0.16f, 0.66f, true);
-            RestartCurrentScene();
+            var selectedMap = _campaign.maps?.FirstOrDefault(m => m.mapId == _campaignRoute.level.mapId);
+            var deployLabel = selectedMap != null && !string.IsNullOrWhiteSpace(selectedMap.displayName)
+                ? $"L{selectedLevel:00}  {selectedMap.displayName}"
+                : $"MISSION L{selectedLevel:00}";
+            LoadingTransition("DEPLOYING", deployLabel);
         }
 
         private void GoToNextMission()
@@ -5341,7 +5360,7 @@ namespace TD
             }
 
             TDCampaignRouter.SaveLevelIndex(nextLevel);
-            RestartCurrentScene();
+            LoadingTransition("ADVANCING", $"MISSION L{nextLevel:00}");
         }
 
         private TDCampaignProgressSummary GetCampaignProgressSummary()
@@ -13956,6 +13975,48 @@ namespace TD
         }
 
         private void RestartCurrentScene()
+        {
+            LoadingTransition("RESTARTING", null);
+        }
+
+        /// <summary>
+        /// Show the loading screen, yield one frame to render it, then reload the scene.
+        /// The loadingVerb controls the text ("DEPLOYING" / "RESTARTING" / etc.).
+        /// The levelLabel shows the target level name (null = use current).
+        /// </summary>
+        private void LoadingTransition(string loadingVerb, string levelLabel)
+        {
+            var label = levelLabel;
+            if (string.IsNullOrEmpty(label) && _campaignRoute?.level != null)
+            {
+                var map = _campaignRoute.map;
+                label = map != null && !string.IsNullOrWhiteSpace(map.displayName)
+                    ? map.displayName
+                    : _campaignRoute.level.mapId;
+                label = $"L{_campaignRoute.level.levelIndex:00}  {label}";
+            }
+
+            if (_loadingScreen != null)
+            {
+                StartCoroutine(LoadingTransitionRoutine(loadingVerb, label));
+            }
+            else
+            {
+                DoSceneReload();
+            }
+        }
+
+        private IEnumerator LoadingTransitionRoutine(string loadingVerb, string label)
+        {
+            _loadingScreen.Show(label, loadingVerb);
+            // Yield twice: once to ensure the Canvas renders the overlay,
+            // once more for safety margin before the synchronous LoadScene blocks.
+            yield return null;
+            yield return null;
+            DoSceneReload();
+        }
+
+        private void DoSceneReload()
         {
             Time.timeScale = Mathf.Max(1f, _lastActivePlaybackSpeed);
             var scene = SceneManager.GetActiveScene();
