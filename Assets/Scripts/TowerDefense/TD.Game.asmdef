@@ -1,0 +1,8 @@
+{
+    "name": "TD.Game",
+    "rootNamespace": "TD",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "autoReferenced": true
+}

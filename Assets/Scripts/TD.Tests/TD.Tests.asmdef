@@ -2,7 +2,7 @@
     "name": "TD.Tests",
     "rootNamespace": "TD.Tests",
     "references": [
-        "Assembly-CSharp",
+        "TD.Game",
         "UnityEngine.TestRunner",
         "nunit.framework"
     ],
