@@ -1,7 +1,10 @@
 {
     "name": "TD.Game",
     "rootNamespace": "TD",
-    "references": [],
+    "references": [
+        "Unity.InputSystem",
+        "UnityEngine.UI"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "autoReferenced": true
