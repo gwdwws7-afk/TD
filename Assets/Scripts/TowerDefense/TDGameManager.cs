@@ -1112,6 +1112,13 @@ namespace TD
             UpdateMusicState();
             UpdateP124Autoplay();
             UpdateP1254ContinuousSoak();
+            if (_worldMap != null && _worldMap.IsVisible)
+            {
+                _gridMap?.HideBuildPreview();
+                HideRangePreview();
+                return;
+            }
+
             if (_titleScreen != null && _titleScreen.IsVisible)
             {
                 // Title screen is covering everything — skip combat input and HUD.
@@ -1862,21 +1869,30 @@ namespace TD
             _campaignDeploymentConfirmed = true;
             EnsureWaveRoutineRunning();
 
-            // Force-open the mission board (bypass the OpenMissionBoard guard which
-            // blocks when _campaignDeploymentConfirmed is true).
-            if (_campaignRoute?.level != null)
+            // Show the full-screen world map for level selection.
+            if (_worldMap != null)
             {
-                _missionBoardSelectedLevel = _campaignRoute.level.levelIndex;
-                _missionBoardSelectedChapter = Mathf.Clamp((_missionBoardSelectedLevel - 1) / 5, 0, 3);
-                _missionBoardOpen = true;
-                _formationPanelOpen = false;
-                _campaignProfileOpen = false;
-                _missionBoardNeedsRefresh = true;
-                _gridMap?.HideBuildPreview();
-                HideRangePreview();
-                HideRoutePreview();
+                _missionBoardSelectedLevel = _campaignRoute?.level?.levelIndex ?? 1;
+                RefreshWorldMap();
+                _worldMap.Show();
                 PlaySfxTone("ui_panel_open", 540f, 0.10f, 0.52f, true);
             }
+        }
+
+        private void RefreshWorldMap()
+        {
+            if (_worldMap == null || _campaign == null) return;
+            var totalLevels = _campaign.totalLevels;
+            var highestUnlocked = TDCampaignProgression.GetHighestUnlockedLevel(totalLevels);
+            var clearedArr = new bool[totalLevels];
+            var starsArr = new int[totalLevels];
+            for (var lvl = 1; lvl <= totalLevels; lvl++)
+            {
+                var prog = TDCampaignProgression.GetLevelProgress(lvl);
+                clearedArr[lvl - 1] = prog.cleared;
+                starsArr[lvl - 1] = prog.bestStars;
+            }
+            _worldMap.Refresh(_missionBoardSelectedLevel, highestUnlocked, clearedArr, starsArr, totalLevels, 20);
         }
 
         /// <summary>
@@ -1894,6 +1910,62 @@ namespace TD
         private void HandleTitleSettings()
         {
             _settingsPanel?.Open();
+        }
+
+        private void HandleWorldMapNodeClick(int levelIndex)
+        {
+            _missionBoardSelectedLevel = levelIndex;
+            // Build intel text for the selected level.
+            var level = GetCampaignLevel(levelIndex);
+            if (level == null) return;
+
+            var map = GetCampaignMap(level.mapId);
+            var progress = TDCampaignProgression.GetLevelProgress(levelIndex);
+            var unlocked = TDCampaignProgression.IsLevelUnlocked(levelIndex, _campaign.totalLevels);
+
+            var title = $"{(level.bossLevel ? "BOSS " : "")}L{levelIndex:00}";
+            if (map != null) title += $"\n{map.displayName}";
+
+            var body = string.Empty;
+            if (map != null && !string.IsNullOrWhiteSpace(map.tacticalHook))
+                body += $"{map.tacticalHook}\n\n";
+            if (level.newEnemyUnlocks != null && level.newEnemyUnlocks.Length > 0)
+                body += $"New enemies: {string.Join(", ", level.newEnemyUnlocks)}\n\n";
+            if (progress.cleared)
+                body += $"Best: {progress.bestStars}★  Score: {progress.bestTacticalScore}";
+            else if (unlocked)
+                body += "Ready for deployment.";
+            else
+                body += $"Locked — clear L{levelIndex - 1:00} first.";
+
+            _worldMap?.ShowIntel(title, body, unlocked);
+            PlaySfxTone("ui_level_select", 620f, 0.09f, 0.52f, true);
+        }
+
+        private void HandleWorldMapDeploy()
+        {
+            var selectedLevel = _missionBoardSelectedLevel;
+            if (_campaign == null || !TDCampaignProgression.IsLevelUnlocked(selectedLevel, _campaign.totalLevels))
+            {
+                return;
+            }
+
+            TDCampaignRouter.SaveLevelIndex(selectedLevel);
+            _worldMap?.Hide();
+            _showBriefingNextAwake = true;
+            var map = _campaign.maps?.FirstOrDefault(m => m.mapId == GetCampaignLevel(selectedLevel)?.mapId);
+            var deployLabel = map != null && !string.IsNullOrWhiteSpace(map.displayName)
+                ? $"L{selectedLevel:00}  {map.displayName}"
+                : $"MISSION L{selectedLevel:00}";
+            LoadingTransition("DEPLOYING", deployLabel);
+        }
+
+        private void HandleWorldMapBack()
+        {
+            _worldMap?.Hide();
+            _campaignDeploymentConfirmed = false;
+            _skipTitleForAutomation = false;
+            RestartCurrentScene();
         }
 
         private void BuildP123SettingsUi()
@@ -2429,13 +2501,14 @@ namespace TD
             _uiMissionChapterRewardButtons.Clear();
             _uiMissionChapterRewardButtonTexts.Clear();
 
-            // World map: visual 20-node S-curve replacing the flat button grid.
-            // Positioned in the left portion of the mission board (the old level button area).
+            // World map: full-screen visual map.
             var worldMapGo = new GameObject("TD World Map");
-            worldMapGo.transform.SetParent(_uiMissionBoardRoot, false);
+            worldMapGo.transform.SetParent(_battleCanvas.transform, false);
             _worldMap = worldMapGo.AddComponent<TDWorldMap>();
-            _worldMap.Build(_uiMissionBoardRoot, 372f, -290f);
-            _worldMap.OnNodeClicked = SelectMissionBoardLevel;
+            _worldMap.BuildFullScreen(_battleCanvas);
+            _worldMap.OnNodeClicked = HandleWorldMapNodeClick;
+            _worldMap.DeployButton?.onClick.AddListener(() => HandleWorldMapDeploy());
+            _worldMap.BackButton?.onClick.AddListener(() => HandleWorldMapBack());
 
             // Chapter tabs remain as quick-jump buttons above the map.
             for (var chapterIndex = 0; chapterIndex < 4; chapterIndex++)
