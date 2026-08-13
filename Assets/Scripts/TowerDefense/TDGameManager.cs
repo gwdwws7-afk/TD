@@ -5493,27 +5493,29 @@ namespace TD
                 return;
             }
 
-            if (selectedLevel == _campaignRoute.level.levelIndex)
+            if (selectedLevel == _campaignRoute.level.levelIndex && !_gameOver)
             {
-                if (_gameOver)
-                {
-                    RestartCurrentScene();
-                    return;
-                }
-
                 CloseMissionBoard();
                 return;
             }
 
+            // Deploy WITHOUT scene reload — switch level data in-place.
             TDCampaignRouter.SaveLevelIndex(selectedLevel);
-            SetStatus($"Deploying mission L{selectedLevel:00}...");
             PlaySfxTone("ui_deploy", 700f, 0.16f, 0.66f, true);
-            _showBriefingNextAwake = true;
-            var selectedMap = _campaign.maps?.FirstOrDefault(m => m.mapId == _campaignRoute.level.mapId);
-            var deployLabel = selectedMap != null && !string.IsNullOrWhiteSpace(selectedMap.displayName)
-                ? $"L{selectedLevel:00}  {selectedMap.displayName}"
-                : $"MISSION L{selectedLevel:00}";
-            LoadingTransition("DEPLOYING", deployLabel);
+
+            // Close all overlay panels.
+            _missionBoardOpen = false;
+            _formationPanelOpen = false;
+            _campaignProfileOpen = false;
+            if (_uiFormationRoot != null) _uiFormationRoot.gameObject.SetActive(false);
+            if (_uiMissionBoardRoot != null) _uiMissionBoardRoot.gameObject.SetActive(false);
+            _worldMap?.Hide();
+
+            // Reload level data in-place.
+            LoadCampaignContext();
+            _campaignDeploymentConfirmed = true;
+            EnsureWaveRoutineRunning();
+            ShowMissionBriefing();
         }
 
         private void GoToNextMission()
@@ -5536,8 +5538,11 @@ namespace TD
             }
 
             TDCampaignRouter.SaveLevelIndex(nextLevel);
-            _showBriefingNextAwake = true;
-            LoadingTransition("ADVANCING", $"MISSION L{nextLevel:00}");
+            // Switch level data in-place — no scene reload.
+            LoadCampaignContext();
+            _campaignDeploymentConfirmed = true;
+            EnsureWaveRoutineRunning();
+            ShowMissionBriefing();
         }
 
         private TDCampaignProgressSummary GetCampaignProgressSummary()
