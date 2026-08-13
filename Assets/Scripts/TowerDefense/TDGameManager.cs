@@ -1907,6 +1907,70 @@ namespace TD
             }
         }
 
+        /// <summary>
+        /// Enter a new level without scene reload. Destroys old board/enemies/towers,
+        /// reloads all level data, rebuilds the board, and restarts the wave loop.
+        /// </summary>
+        private void EnterLevelInPlace()
+        {
+            // Destroy old board (paths, build sites, grid).
+            var oldBoard = transform.Find("Board");
+            if (oldBoard != null) Destroy(oldBoard.gameObject);
+
+            // Clear all active enemies.
+            for (var i = _activeEnemies.Count - 1; i >= 0; i--)
+            {
+                if (_activeEnemies[i] != null) Destroy(_activeEnemies[i].gameObject);
+            }
+            _activeEnemies.Clear();
+
+            // Destroy all towers (they're children of the Board or the transform).
+            var towers = FindObjectsByType<TDTower>(FindObjectsSortMode.None);
+            foreach (var tower in towers)
+            {
+                if (tower != null) Destroy(tower.gameObject);
+            }
+
+            // Destroy stray projectiles and FX.
+            var projectiles = FindObjectsByType<TDProjectile>(FindObjectsSortMode.None);
+            foreach (var proj in projectiles)
+            {
+                if (proj != null) Destroy(proj.gameObject);
+            }
+
+            // Reset game state.
+            _wave = 0;
+            _gameOver = false;
+            _victory = false;
+            _builtTowerCount = 0;
+            _isInPrepPhase = false;
+            _selectedTowerKind = TDTowerKind.RailLancer;
+            _selectedTowerForUi = null;
+            _hoveredTower = null;
+            _lineIntegrity = 0;
+            _defenseBudget = 0;
+
+            // Reload all level data.
+            LoadCampaignContext();
+            LoadEnemyCatalog();
+            LoadWaveConfig();
+            RefreshUnlockedTowerKinds();
+
+            // Rebuild the board for the new level (paths + build sites + grid).
+            _gridMap = null;
+            BuildBoard();
+
+            // Deploy and start wave loop.
+            _campaignDeploymentConfirmed = true;
+            EnsureWaveRoutineRunning();
+
+            // Hide game over UI if it was visible.
+            if (_uiGameOverRoot != null) _uiGameOverRoot.gameObject.SetActive(false);
+
+            // Show the mission briefing.
+            ShowMissionBriefing();
+        }
+
         private void HandleTitleSettings()
         {
             _settingsPanel?.Open();
@@ -1952,15 +2016,9 @@ namespace TD
 
             TDCampaignRouter.SaveLevelIndex(selectedLevel);
 
-            // Reload campaign context for the selected level WITHOUT scene reload.
-            // The game scene is already running; just switch the level data.
-            LoadCampaignContext();
-            _campaignDeploymentConfirmed = true;
-            EnsureWaveRoutineRunning();
-
-            // Hide world map, show briefing, then enter combat.
+            // Hide world map, then enter the level in-place.
             _worldMap?.Hide();
-            ShowMissionBriefing();
+            EnterLevelInPlace();
         }
 
         private void HandleWorldMapBack()
@@ -5511,11 +5569,20 @@ namespace TD
             if (_uiMissionBoardRoot != null) _uiMissionBoardRoot.gameObject.SetActive(false);
             _worldMap?.Hide();
 
-            // Reload level data in-place.
-            LoadCampaignContext();
-            _campaignDeploymentConfirmed = true;
-            EnsureWaveRoutineRunning();
-            ShowMissionBriefing();
+            // Deploy WITHOUT scene reload — switch level data in-place.
+            TDCampaignRouter.SaveLevelIndex(selectedLevel);
+            PlaySfxTone("ui_deploy", 700f, 0.16f, 0.66f, true);
+
+            // Close all overlay panels.
+            _missionBoardOpen = false;
+            _formationPanelOpen = false;
+            _campaignProfileOpen = false;
+            if (_uiFormationRoot != null) _uiFormationRoot.gameObject.SetActive(false);
+            if (_uiMissionBoardRoot != null) _uiMissionBoardRoot.gameObject.SetActive(false);
+            _worldMap?.Hide();
+
+            // Full level reset + rebuild in-place.
+            EnterLevelInPlace();
         }
 
         private void GoToNextMission()
@@ -5538,11 +5605,7 @@ namespace TD
             }
 
             TDCampaignRouter.SaveLevelIndex(nextLevel);
-            // Switch level data in-place — no scene reload.
-            LoadCampaignContext();
-            _campaignDeploymentConfirmed = true;
-            EnsureWaveRoutineRunning();
-            ShowMissionBriefing();
+            EnterLevelInPlace();
         }
 
         private TDCampaignProgressSummary GetCampaignProgressSummary()
@@ -14158,7 +14221,9 @@ namespace TD
 
         private void RestartCurrentScene()
         {
-            LoadingTransition("RESTARTING", null);
+            // Reset the current level in-place (no scene reload — avoids blue screen).
+            if (_pauseMenu != null && _pauseMenu.IsVisible) HandlePauseResume();
+            EnterLevelInPlace();
         }
 
         /// <summary>
