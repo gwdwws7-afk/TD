@@ -1001,6 +1001,7 @@ namespace TD
         private Text _uiMissionDeployButtonText;
         private readonly List<Button> _uiMissionLevelButtons = new();
         private readonly List<Text> _uiMissionLevelButtonTexts = new();
+        private TDWorldMap _worldMap;
         private readonly List<Button> _uiMissionChapterButtons = new();
         private readonly List<Text> _uiMissionChapterTitleTexts = new();
         private readonly List<Text> _uiMissionChapterProgressTexts = new();
@@ -2427,15 +2428,16 @@ namespace TD
             _uiMissionChapterProgressTexts.Clear();
             _uiMissionChapterRewardButtons.Clear();
             _uiMissionChapterRewardButtonTexts.Clear();
-            CreateUiImage(
-                "Campaign Rail Track",
-                _uiMissionBoardRoot,
-                new Vector2(0f, 1f),
-                new Vector2(0f, 1f),
-                new Vector2(0f, 1f),
-                new Vector2(48f, -226f),
-                new Vector2(642f, 4f),
-                new Color(0.70f, 0.54f, 0.28f, 0.72f));
+
+            // World map: visual 20-node S-curve replacing the flat button grid.
+            // Positioned in the left portion of the mission board (the old level button area).
+            var worldMapGo = new GameObject("TD World Map");
+            worldMapGo.transform.SetParent(_uiMissionBoardRoot, false);
+            _worldMap = worldMapGo.AddComponent<TDWorldMap>();
+            _worldMap.Build(_uiMissionBoardRoot, 372f, -290f);
+            _worldMap.OnNodeClicked = SelectMissionBoardLevel;
+
+            // Chapter tabs remain as quick-jump buttons above the map.
             for (var chapterIndex = 0; chapterIndex < 4; chapterIndex++)
             {
                 var chapter = GetCampaignChapterAt(chapterIndex);
@@ -2476,23 +2478,10 @@ namespace TD
                 _uiMissionChapterRewardButtons.Add(rewardButton);
                 _uiMissionChapterRewardButtonTexts.Add(rewardButton.GetComponentInChildren<Text>());
 
-                for (var column = 0; column < 5; column++)
-                {
-                    var levelIndex = (chapterIndex * 5) + column + 1;
-                    var button = CreateUiButton(
-                        $"Mission Level {levelIndex:00}",
-                        _uiMissionBoardRoot,
-                        new Vector2(24f + (column * 140f), -174f),
-                        new Vector2(128f, 104f),
-                        $"L{levelIndex:00}",
-                        12,
-                        () => SelectMissionBoardLevel(levelIndex));
-                    _uiMissionLevelButtons.Add(button);
-                    _uiMissionLevelButtonTexts.Add(button.GetComponentInChildren<Text>());
-                }
+                // Level buttons are now handled by the world map (TDWorldMap).
             }
 
-            CreateUiText("Chapter Overview Header", _uiMissionBoardRoot, new Vector2(24f, -314f), new Vector2(690f, 22f), "MISSION INTEL", 12, FontStyle.Bold, TextAnchor.MiddleLeft, new Color(0.96f, 0.68f, 0.28f, 1f));
+            CreateUiText("Chapter Overview Header", _uiMissionBoardRoot, new Vector2(24f, -514f), new Vector2(340f, 22f), "MISSION INTEL", 12, FontStyle.Bold, TextAnchor.MiddleLeft, new Color(0.96f, 0.68f, 0.28f, 1f));
             CreateUiImage("Chapter Overview Rule", _uiMissionBoardRoot, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(24f, -344f), new Vector2(690f, 2f), new Color(0.56f, 0.72f, 0.80f, 0.34f));
             _uiMissionChapterOverviewText = CreateUiText("Chapter Overview", _uiMissionBoardRoot, new Vector2(24f, -360f), new Vector2(690f, 76f), string.Empty, 12, FontStyle.Bold, TextAnchor.UpperLeft, new Color(0.80f, 0.91f, 0.97f, 1f));
             _uiMissionChapterRewardText = CreateUiText("Chapter Reward Summary", _uiMissionBoardRoot, new Vector2(24f, -456f), new Vector2(690f, 84f), string.Empty, 12, FontStyle.Bold, TextAnchor.UpperLeft, new Color(0.80f, 0.98f, 0.82f, 1f));
@@ -3739,46 +3728,27 @@ namespace TD
                 }
             }
 
-            for (var i = 0; i < _uiMissionLevelButtons.Count; i++)
+            // Refresh world map node states.
+            if (_worldMap != null)
             {
-                var levelIndex = i + 1;
-                var button = _uiMissionLevelButtons[i];
-                var label = i < _uiMissionLevelButtonTexts.Count ? _uiMissionLevelButtonTexts[i] : null;
-                var level = GetCampaignLevel(levelIndex);
-                var progress = TDCampaignProgression.GetLevelProgress(levelIndex);
-                var unlocked = TDCampaignProgression.IsLevelUnlocked(levelIndex, _campaign.totalLevels);
-                var selected = levelIndex == _missionBoardSelectedLevel;
-                var chapterVisible = ((levelIndex - 1) / 5) == _missionBoardSelectedChapter;
-                button.gameObject.SetActive(chapterVisible);
-                var bossLabel = level != null && level.bossLevel ? "  BOSS" : string.Empty;
-                var contractLabel = progress.contractCompleted ? "  C" : string.Empty;
-                var challengeLabel = progress.highestDifficultyCleared >= (int)TDCampaignDifficultyTier.EmberTrial
-                    ? "  E"
-                    : progress.highestDifficultyCleared >= (int)TDCampaignDifficultyTier.Veteran
-                        ? "  V"
-                        : string.Empty;
-                var stateLabel = !unlocked
-                    ? $"REQ L{Mathf.Max(1, levelIndex - 1):00}"
-                    : progress.cleared
-                        ? $"BEST {progress.bestStars}/3{contractLabel}{challengeLabel}"
-                        : levelIndex == _campaignRoute.level.levelIndex
-                            ? "CURRENT"
-                            : "OPEN";
-
-                button.interactable = unlocked;
-                SetUiText(label, $"L{levelIndex:00}{bossLabel}\n{stateLabel}");
-                if (button.targetGraphic is Image image)
+                var totalLevels = _campaign.totalLevels;
+                var highestUnlocked = TDCampaignProgression.GetHighestUnlockedLevel(totalLevels);
+                var clearedArr = new bool[totalLevels];
+                var starsArr = new int[totalLevels];
+                for (var lvl = 1; lvl <= totalLevels; lvl++)
                 {
-                    image.color = selected
-                        ? new Color(0.18f, 0.54f, 0.68f, 0.98f)
-                        : !unlocked
-                            ? new Color(0.10f, 0.11f, 0.12f, 0.72f)
-                            : progress.cleared
-                                ? new Color(0.16f, 0.38f, 0.30f, 0.94f)
-                                : level != null && level.bossLevel
-                                    ? new Color(0.46f, 0.20f, 0.16f, 0.94f)
-                                    : new Color(0.14f, 0.22f, 0.27f, 0.94f);
+                    var prog = TDCampaignProgression.GetLevelProgress(lvl);
+                    clearedArr[lvl - 1] = prog.cleared;
+                    starsArr[lvl - 1] = prog.bestStars;
                 }
+
+                _worldMap.Refresh(
+                    _missionBoardSelectedLevel,
+                    highestUnlocked,
+                    clearedArr,
+                    starsArr,
+                    totalLevels,
+                    20);
             }
 
             var selectedLevel = GetCampaignLevel(_missionBoardSelectedLevel) ?? _campaignRoute.level;
