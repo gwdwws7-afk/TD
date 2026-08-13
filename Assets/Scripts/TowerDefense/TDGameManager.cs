@@ -1951,15 +1951,16 @@ namespace TD
             }
 
             TDCampaignRouter.SaveLevelIndex(selectedLevel);
+
+            // Reload campaign context for the selected level WITHOUT scene reload.
+            // The game scene is already running; just switch the level data.
+            LoadCampaignContext();
+            _campaignDeploymentConfirmed = true;
+            EnsureWaveRoutineRunning();
+
+            // Hide world map, show briefing, then enter combat.
             _worldMap?.Hide();
-            _showBriefingNextAwake = true;
-            // Skip title screen on reload — go straight into the mission.
-            _skipTitleForAutomation = true;
-            var map = _campaign.maps?.FirstOrDefault(m => m.mapId == GetCampaignLevel(selectedLevel)?.mapId);
-            var deployLabel = map != null && !string.IsNullOrWhiteSpace(map.displayName)
-                ? $"L{selectedLevel:00}  {map.displayName}"
-                : $"MISSION L{selectedLevel:00}";
-            LoadingTransition("DEPLOYING", deployLabel);
+            ShowMissionBriefing();
         }
 
         private void HandleWorldMapBack()
