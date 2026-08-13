@@ -68,16 +68,34 @@ namespace TD
                 StretchFullScreen(bgRect);
                 var bgImage = bgRect.gameObject.AddComponent<Image>();
                 bgImage.sprite = bgSprite;
-                bgImage.color = new Color(0.42f, 0.44f, 0.48f, 0.35f); // dimmed overlay
+                bgImage.color = new Color(0.52f, 0.50f, 0.54f, 0.50f); // semi-visible background
                 bgRect.SetAsFirstSibling();
             }
+            else
+            {
+                // No background art — use a dark gradient feel with vignette overlay.
+                var vbgRect = CreateRect("TitleVignette", _root);
+                StretchFullScreen(vbgRect);
+                var vbgImage = vbgRect.gameObject.AddComponent<Image>();
+                vbgImage.color = new Color(0.02f, 0.025f, 0.035f, 0.80f);
+                vbgRect.SetAsFirstSibling();
+            }
 
-            // Title text — centered, upper third
+            // Title shadow (dark offset behind main title for depth).
+            var shadowRect = CreateRect("TitleShadow", _root);
+            shadowRect.anchorMin = new Vector2(0.5f, 0.62f);
+            shadowRect.anchorMax = new Vector2(0.5f, 0.62f);
+            shadowRect.sizeDelta = new Vector2(720f, 80f);
+            shadowRect.anchoredPosition = new Vector2(3f, -3f);
+            var shadowText = CreateText(shadowRect, "EMBERLINE DEFENSE", 42, FontStyle.Bold, new Color(0f, 0f, 0f, 0.55f));
+            shadowText.alignment = TextAnchor.MiddleCenter;
+
+            // Title text — centered, upper third, larger with outline feel.
             var titleRect = CreateRect("TitleLabel", _root);
             titleRect.anchorMin = new Vector2(0.5f, 0.62f);
             titleRect.anchorMax = new Vector2(0.5f, 0.62f);
-            titleRect.sizeDelta = new Vector2(700f, 72f);
-            var titleText = CreateText(titleRect, "EMBERLINE DEFENSE", 38, FontStyle.Bold, AccentEmber);
+            titleRect.sizeDelta = new Vector2(720f, 80f);
+            var titleText = CreateText(titleRect, "EMBERLINE DEFENSE", 42, FontStyle.Bold, AccentEmber);
             titleText.alignment = TextAnchor.MiddleCenter;
 
             // Subtitle
@@ -124,12 +142,29 @@ namespace TD
                 CreateMenuButton(btnRect, label, tag);
             }
 
+            // Decorative divider above buttons.
+            var divRect = CreateRect("TitleDivider", _root);
+            divRect.anchorMin = new Vector2(0.5f, 0.50f);
+            divRect.anchorMax = new Vector2(0.5f, 0.50f);
+            divRect.sizeDelta = new Vector2(280f, 2f);
+            var divImg = divRect.gameObject.AddComponent<Image>();
+            divImg.color = new Color(0.96f, 0.58f, 0.24f, 0.30f);
+            divImg.raycastTarget = false;
+
+            // Tagline below subtitle.
+            var tagRect = CreateRect("TitleTagline", _root);
+            tagRect.anchorMin = new Vector2(0.5f, 0.52f);
+            tagRect.anchorMax = new Vector2(0.5f, 0.52f);
+            tagRect.sizeDelta = new Vector2(500f, 18f);
+            var tagText = CreateText(tagRect, "Hold the line. Tend the ember.", 11, FontStyle.Italic, new Color(0.72f, 0.66f, 0.54f, 0.70f));
+            tagText.alignment = TextAnchor.MiddleCenter;
+
             // Version text — bottom corner
             var verRect = CreateRect("VersionLabel", _root);
             verRect.anchorMin = new Vector2(0.98f, 0.02f);
             verRect.anchorMax = new Vector2(0.98f, 0.02f);
             verRect.sizeDelta = new Vector2(200f, 16f);
-            var verText = CreateText(verRect, "v0.12.5  ·  2026 Emberline Studios", 8, FontStyle.Normal, TextDim);
+            var verText = CreateText(verRect, "v0.13.0  ·  2026 Emberline Studios", 8, FontStyle.Normal, TextDim);
             verText.alignment = TextAnchor.LowerRight;
 
             BuildCreditsOverlay();
