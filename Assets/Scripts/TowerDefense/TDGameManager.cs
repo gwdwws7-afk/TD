@@ -695,6 +695,7 @@ namespace TD
         private float _nextUltimateSfxTime;
         private TDTower _lastHoverSfxTower;
         private TDTowerTooltip _towerTooltip;
+        private TDRadialTowerMenu _radialTowerMenu;
         private const string AudioBasePath = "Audio";
         private TDCampaignDefinition _campaign;
         private TDCampaignRoute _campaignRoute;
@@ -1618,6 +1619,36 @@ namespace TD
             BuildPauseMenu();
             BuildLoadingScreen();
             BuildMissionBriefing();
+            BuildRadialTowerMenu();
+        }
+
+        private void BuildRadialTowerMenu()
+        {
+            if (_battleCanvas == null || _radialTowerMenu != null) return;
+            var go = new GameObject("TD Radial Tower Menu");
+            go.transform.SetParent(_battleCanvas.transform, false);
+            _radialTowerMenu = go.AddComponent<TDRadialTowerMenu>();
+            _radialTowerMenu.Build(_battleCanvas);
+            _radialTowerMenu.OnTowerSelected = HandleRadialTowerSelected;
+        }
+
+        private void HandleRadialTowerSelected(Vector2Int cell, TDTowerKind kind)
+        {
+            if (!IsBuildWindowOpen() || !IsTowerUnlocked(kind)) return;
+            var cost = TDTower.GetBuildCost(kind);
+            if (_defenseBudget < cost) return;
+
+            _defenseBudget -= cost;
+            _budgetSpentOnBuilds += cost;
+            _gridMap.SetTower(cell, true);
+            var tower = SpawnTower(cell, kind);
+            SelectTowerForUi(tower);
+            _builtTowerCount++;
+            _selectedTowerKind = kind;
+            PushTacticalEvent($"Build: {GetTowerKindLabel(kind)} at {cell.x},{cell.y} (-{cost})", 4.2f);
+            SetStatus($"Built {GetTowerKindLabel(kind)} (-{cost} budget)");
+            PlaySfxTone("tower_build", 420f, 0.10f, 0.55f, true);
+            AdvanceTutorial(TDFirstRunTutorialStep.BuildTower);
         }
 
         private void BuildMissionBriefing()
@@ -13635,16 +13666,10 @@ namespace TD
                 return;
             }
 
-            if (!IsTowerUnlocked(_selectedTowerKind))
+            // If radial menu is open and player clicks outside, close it.
+            if (_radialTowerMenu != null && _radialTowerMenu.IsVisible)
             {
-                SetStatus($"{GetTowerKindLabel(_selectedTowerKind)} is not in the active formation.");
-                return;
-            }
-
-            var towerCost = TDTower.GetBuildCost(_selectedTowerKind);
-            if (_defenseBudget < towerCost)
-            {
-                SetStatus("Insufficient defense budget for this tower.");
+                _radialTowerMenu.Hide();
                 return;
             }
 
@@ -13658,6 +13683,7 @@ namespace TD
                 return;
             }
 
+            // Clicking an existing tower selects it for upgrade.
             if (TryGetTowerUnderCursor(world, out var existingTower))
             {
                 SelectTowerForUi(existingTower);
@@ -13667,22 +13693,25 @@ namespace TD
 
             if (!_gridMap.IsBuildable(cell))
             {
-                SetStatus("This cell is not buildable.");
                 return;
             }
 
-            _defenseBudget -= towerCost;
-            _budgetSpentOnBuilds += towerCost;
-            _gridMap.SetTower(cell, true);
-            var tower = SpawnTower(cell, _selectedTowerKind);
-            SelectTowerForUi(tower);
-            _builtTowerCount++;
-            PushTacticalEvent($"Build: {GetTowerKindLabel(_selectedTowerKind)} at {cell.x},{cell.y} (-{towerCost})", 4.2f);
-            SetStatus(_wave <= 1 && _wavesCleared == 0 && _builtTowerCount == 1
-                ? $"Built {GetTowerKindLabel(_selectedTowerKind)} (-{towerCost}). Press Start Wave."
-                : $"Built {GetTowerKindLabel(_selectedTowerKind)} (-{towerCost} budget)");
-            PlaySfxTone("tower_build", 420f, 0.10f, 0.55f, true);
-            AdvanceTutorial(TDFirstRunTutorialStep.BuildTower);
+            // Show the radial tower selection menu at this build site.
+            if (_radialTowerMenu != null && _unlockedTowerKinds.Count > 0)
+            {
+                var kinds = new TDTowerKind[_unlockedTowerKinds.Count];
+                var costs = new int[_unlockedTowerKinds.Count];
+                var unlocked = new bool[_unlockedTowerKinds.Count];
+                for (var i = 0; i < _unlockedTowerKinds.Count; i++)
+                {
+                    kinds[i] = _unlockedTowerKinds[i];
+                    costs[i] = TDTower.GetBuildCost(kinds[i]);
+                    unlocked[i] = true;
+                }
+
+                _radialTowerMenu.Show(mouse, cell, world, kinds, costs, _defenseBudget, unlocked);
+                PlaySfxTone("ui_hover", 620f, 0.045f, 0.22f, true);
+            }
         }
 
         private void TryUpgradeTowerAtCursor()
