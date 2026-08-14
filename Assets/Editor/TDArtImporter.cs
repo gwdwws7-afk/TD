@@ -74,8 +74,16 @@ namespace TD.Editor
                 return false;
             }
 
+            // Full-quality UI art (title screen background + logo): uncompressed, 4096 max.
+            var isUiArt = path.IndexOf("/Branding/", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                          path.IndexOf("/Branding/", StringComparison.OrdinalIgnoreCase, 0) >= 0;
             var changed = false;
             var maxSize = ResolveMaxTextureSize(path);
+            if (isUiArt)
+            {
+                maxSize = 4096;
+            }
+
             changed |= SetIfDifferent(importer.textureType, TextureImporterType.Sprite, value => importer.textureType = value);
             changed |= SetIfDifferent(importer.spriteImportMode, SpriteImportMode.Single, value => importer.spriteImportMode = value);
             var pixelsPerUnit = path.StartsWith(P112CombatFolder, StringComparison.OrdinalIgnoreCase) ? 128f : 1024f;
@@ -84,13 +92,26 @@ namespace TD.Editor
             changed |= SetIfDifferent(importer.alphaIsTransparency, true, value => importer.alphaIsTransparency = value);
             changed |= SetIfDifferent(
                 importer.textureCompression,
-                TextureImporterCompression.CompressedHQ,
+                isUiArt ? TextureImporterCompression.Uncompressed : TextureImporterCompression.CompressedHQ,
                 value => importer.textureCompression = value);
             changed |= SetIfDifferent(importer.filterMode, FilterMode.Bilinear, value => importer.filterMode = value);
             changed |= SetIfDifferent(importer.wrapMode, TextureWrapMode.Clamp, value => importer.wrapMode = value);
             changed |= SetIfDifferent(importer.maxTextureSize, maxSize, value => importer.maxTextureSize = value);
 
             var standalone = importer.GetPlatformTextureSettings("Standalone");
+            if (isUiArt)
+            {
+                // UI art: uncompressed, auto format, 4096.
+                standalone.overridden = true;
+                standalone.maxTextureSize = 4096;
+                standalone.format = TextureImporterFormat.Automatic;
+                standalone.textureCompression = TextureImporterCompression.Uncompressed;
+                standalone.compressionQuality = 100;
+                standalone.crunchedCompression = false;
+                importer.SetPlatformTextureSettings(standalone);
+                return true;
+            }
+
             var format = importer.DoesSourceTextureHaveAlpha()
                 ? TextureImporterFormat.DXT5
                 : TextureImporterFormat.DXT1;

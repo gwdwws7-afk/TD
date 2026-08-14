@@ -54,7 +54,7 @@ namespace TD
             backingImg.color = new Color(0.02f, 0.024f, 0.032f, 1.0f); // fully opaque dark
             backingImg.raycastTarget = true;
 
-            var bgArtTex = Resources.Load<Texture2D>("Art/Branding/main_menu_bg");
+            var bgArtTex = LoadFullResTexture("Art/Branding/main_menu_bg");
             if (bgArtTex != null)
             {
                 var bgArtRect = CreateRect("TitleBgArt", _root);
@@ -72,7 +72,7 @@ namespace TD
             CreateEmbers(10);
 
             // ── Game logo (image badge, replaces text title) ──
-            var logoTex = Resources.Load<Texture2D>("Art/Branding/game_logo");
+            var logoTex = LoadFullResTexture("Art/Branding/game_logo");
             if (logoTex != null)
             {
                 // Strip the black background: make near-black pixels transparent.
@@ -430,6 +430,39 @@ namespace TD
             result.SetPixels(pixels);
             result.Apply();
             return result;
+        }
+
+        /// <summary>
+        /// Load a texture at FULL resolution from disk, bypassing Unity's
+        /// import pipeline (which may compress/downscale). Works in editor
+        /// and standalone builds (reads from Resources folder on disk).
+        /// </summary>
+        private static Texture2D LoadFullResTexture(string resourcePath)
+        {
+            // Try Resources.Load first (works in builds).
+            var loaded = Resources.Load<Texture2D>(resourcePath);
+            if (loaded != null && loaded.width > 512)
+            {
+                return loaded;
+            }
+
+            // Fallback: read raw bytes from file (editor / dev mode).
+            // The resource path maps to Assets/Resources/{path}.png
+            var filePath = System.IO.Path.Combine(Application.dataPath, "Resources", resourcePath + ".png");
+            if (!System.IO.File.Exists(filePath))
+            {
+                return loaded; // return whatever Resources.Load gave us
+            }
+
+            var bytes = System.IO.File.ReadAllBytes(filePath);
+            var tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            if (!ImageConversion.LoadImage(tex, bytes, false))
+            {
+                Object.Destroy(tex);
+                return loaded;
+            }
+
+            return tex;
         }
 
         // ── Sprite generation ───────────────────────────────────
