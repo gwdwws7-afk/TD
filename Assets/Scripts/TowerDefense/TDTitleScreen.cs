@@ -47,7 +47,13 @@ namespace TD
             _root = CreateRect("TitleScreen", parent.transform);
             StretchFull(_root);
 
-            // ── Background art (full-screen, clearly visible) ──
+            // ── Background: solid dark backing + art layer (fully opaque) ──
+            var backingRect = CreateRect("TitleBacking", _root);
+            StretchFull(backingRect);
+            var backingImg = backingRect.gameObject.AddComponent<Image>();
+            backingImg.color = new Color(0.02f, 0.024f, 0.032f, 1.0f); // fully opaque dark
+            backingImg.raycastTarget = true;
+
             var bgArtTex = Resources.Load<Texture2D>("Art/Branding/main_menu_bg");
             if (bgArtTex != null)
             {
@@ -57,19 +63,9 @@ namespace TD
                 bgArtImg.sprite = Sprite.Create(bgArtTex,
                     new Rect(0, 0, bgArtTex.width, bgArtTex.height),
                     new Vector2(0.5f, 0.5f));
-                bgArtImg.color = new Color(0.82f, 0.80f, 0.84f, 0.85f);
+                bgArtImg.color = new Color(0.82f, 0.80f, 0.84f, 1.0f);
                 bgArtImg.preserveAspect = true;
                 bgArtImg.raycastTarget = true;
-            }
-            else
-            {
-                // Fallback: gradient background.
-                var bgRect = CreateRect("TitleBg", _root);
-                StretchFull(bgRect);
-                var bgImg = bgRect.gameObject.AddComponent<Image>();
-                bgImg.sprite = CreateGradientSprite();
-                bgImg.color = Color.white;
-                bgImg.raycastTarget = true;
             }
 
             // ── Ember particles (subtle) ──

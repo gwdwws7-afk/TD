@@ -1122,10 +1122,46 @@ namespace TD
 
             if (_titleScreen != null && _titleScreen.IsVisible)
             {
-                // Title screen is covering everything — skip combat input and HUD.
+                // Title screen is covering everything — hide all game UI and skip combat input.
                 _gridMap?.HideBuildPreview();
                 HideRangePreview();
+                if (_battleCanvas != null && _battleCanvas.transform.childCount > 0)
+                {
+                    // Hide the HUD root (first child of the canvas is typically the HUD).
+                    // The title screen is a separate child with its own sorting.
+                    for (var i = 0; i < _battleCanvas.transform.childCount; i++)
+                    {
+                        var child = _battleCanvas.transform.GetChild(i);
+                        // Don't hide the title screen itself or its siblings.
+                        if (child.name.Contains("Title") || child.name.Contains("Settings") ||
+                            child.name.Contains("Emberline"))
+                        {
+                            continue;
+                        }
+
+                        // Hide the main HUD panel and board visuals.
+                        if (child.name.Contains("TD Battle UI") || child.name.Contains("Board"))
+                        {
+                            child.gameObject.SetActive(false);
+                        }
+                    }
+                }
                 return;
+            }
+            else if (_battleCanvas != null)
+            {
+                // Re-show the HUD when title is gone.
+                for (var i = 0; i < _battleCanvas.transform.childCount; i++)
+                {
+                    var child = _battleCanvas.transform.GetChild(i);
+                    if (child.name.Contains("TD Battle UI") || child.name.Contains("Board"))
+                    {
+                        if (!child.gameObject.activeSelf)
+                        {
+                            child.gameObject.SetActive(true);
+                        }
+                    }
+                }
             }
 
             if (_missionBriefing != null && _missionBriefing.IsVisible)
