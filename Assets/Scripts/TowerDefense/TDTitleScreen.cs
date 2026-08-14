@@ -75,22 +75,24 @@ namespace TD
             var logoTex = Resources.Load<Texture2D>("Art/Branding/game_logo");
             if (logoTex != null)
             {
+                // Strip the black background: make near-black pixels transparent.
+                var cleanLogo = RemoveBlackBackground(logoTex);
+
                 var logoRect = CreateRect("TitleLogo", _root);
                 logoRect.anchorMin = new Vector2(0.5f, 0.68f);
                 logoRect.anchorMax = new Vector2(0.5f, 0.68f);
-                // Logo is portrait (1792x2400) — size to ~28% of screen height.
                 var logoH = 260f;
-                var logoW = logoH * (1792f / 2400f);
+                var logoW = logoH * ((float)cleanLogo.width / cleanLogo.height);
                 logoRect.sizeDelta = new Vector2(logoW, logoH);
                 var logoImg = logoRect.gameObject.AddComponent<Image>();
-                logoImg.sprite = Sprite.Create(logoTex,
-                    new Rect(0, 0, logoTex.width, logoTex.height),
+                logoImg.sprite = Sprite.Create(cleanLogo,
+                    new Rect(0, 0, cleanLogo.width, cleanLogo.height),
                     new Vector2(0.5f, 0.5f));
                 logoImg.color = Color.white;
                 logoImg.preserveAspect = true;
                 logoImg.raycastTarget = false;
-                _titleText = null; // no text title when logo exists
-                _titleGlow = null; // no glow when logo exists
+                _titleText = null;
+                _titleGlow = null;
             }
             else
             {
@@ -373,6 +375,61 @@ namespace TD
             if (_glowRoutine != null) StopCoroutine(_glowRoutine);
             if (_fader != null) { _fader.alpha = 0f; _fader.blocksRaycasts = false; }
             if (_root != null) _root.gameObject.SetActive(false);
+        }
+
+        /// <summary>
+        /// Remove near-black background from a texture, making it transparent.
+        /// Uses a luminance threshold + edge feathering for smooth transitions.
+        /// </summary>
+        private static Texture2D RemoveBlackBackground(Texture2D source)
+        {
+            // Ensure the texture is readable.
+            var readable = source;
+            if (!readable.isReadable)
+            {
+                // Create a readable copy via RenderTexture.
+                var rt = RenderTexture.GetTemporary(source.width, source.height);
+                Graphics.Blit(source, rt);
+                var prev = RenderTexture.active;
+                RenderTexture.active = rt;
+                readable = new Texture2D(source.width, source.height);
+                readable.ReadPixels(new Rect(0, 0, source.width, source.height), 0, 0);
+                readable.Apply();
+                RenderTexture.active = prev;
+                RenderTexture.ReleaseTemporary(rt);
+            }
+
+            var w = readable.width;
+            var h = readable.height;
+            var pixels = readable.GetPixels();
+            var result = new Texture2D(w, h, TextureFormat.RGBA32, false);
+
+            const float threshold = 0.09f; // pixels darker than this become transparent
+            const float feather = 0.07f;   // soft edge band
+
+            for (var i = 0; i < pixels.Length; i++)
+            {
+                var p = pixels[i];
+                var lum = p.r * 0.299f + p.g * 0.587f + p.b * 0.114f;
+                if (lum < threshold)
+                {
+                    p.a = 0f;
+                }
+                else if (lum < threshold + feather)
+                {
+                    // Smooth transition.
+                    p.a = (lum - threshold) / feather;
+                }
+                else
+                {
+                    p.a = 1f;
+                }
+                pixels[i] = p;
+            }
+
+            result.SetPixels(pixels);
+            result.Apply();
+            return result;
         }
 
         // ── Sprite generation ───────────────────────────────────
