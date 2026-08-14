@@ -69,8 +69,8 @@ namespace TD
                 artImg.raycastTarget = false;
             }
 
-            // ── Ember particles (behind everything) ──
-            CreateEmbers(24);
+            // ── Ember particles (subtle, behind everything) ──
+            CreateEmbers(10);
 
             // ── Title glow halo ──
             var glowRect = CreateRect("TitleGlow", _root);
@@ -186,7 +186,8 @@ namespace TD
         {
             while (true)
             {
-                var pulse = 0.06f + Mathf.Sin(Time.unscaledTime * 1.2f) * 0.04f;
+                // Very subtle pulse: 0.03-0.06 alpha, slow 0.5Hz.
+                var pulse = 0.045f + Mathf.Sin(Time.unscaledTime * 0.5f) * 0.015f;
                 if (_titleGlow != null) _titleGlow.color = new Color(AccentEmber.r, AccentEmber.g, AccentEmber.b, pulse);
                 yield return null;
             }
@@ -199,11 +200,15 @@ namespace TD
             for (var i = 0; i < count; i++)
             {
                 var ember = CreateRect($"Ember_{i}", _root);
-                ember.sizeDelta = new Vector2(4f, 4f);
-                ember.anchorMin = new Vector2(Random.value, 0f);
-                ember.anchorMax = new Vector2(Random.value, 0f);
+                ember.sizeDelta = new Vector2(3f, 3f);
+                // Fixed center anchor — position controlled purely by anchoredPosition.
+                ember.anchorMin = new Vector2(0.5f, 0.5f);
+                ember.anchorMax = new Vector2(0.5f, 0.5f);
+                ember.anchoredPosition = new Vector2(
+                    Random.Range(-400f, 400f),
+                    Random.Range(-250f, 250f));
                 var img = ember.gameObject.AddComponent<Image>();
-                img.color = new Color(0.96f, 0.52f + Random.value * 0.2f, 0.18f, 0.3f + Random.value * 0.3f);
+                img.color = new Color(0.96f, 0.55f, 0.20f, Random.Range(0.15f, 0.35f));
                 img.raycastTarget = false;
                 _embers.Add(ember);
             }
@@ -211,30 +216,34 @@ namespace TD
 
         private IEnumerator EmberRoutine()
         {
-            // Pre-randomize state.
-            var speeds = new float[_embers.Count];
-            var drifts = new float[_embers.Count];
+            // Pre-randomize velocity (pixels per second).
+            var vx = new float[_embers.Count];
+            var vy = new float[_embers.Count];
+            var halfH = 300f;
+            var halfW = 550f;
             for (var i = 0; i < _embers.Count; i++)
             {
-                speeds[i] = Random.Range(0.003f, 0.012f);
-                drifts[i] = Random.Range(-0.001f, 0.001f);
+                vy[i] = Random.Range(8f, 25f);
+                vx[i] = Random.Range(-6f, 6f);
             }
 
             while (true)
             {
+                var dt = Time.unscaledDeltaTime;
                 for (var i = 0; i < _embers.Count; i++)
                 {
                     var e = _embers[i];
-                    var y = e.anchoredPosition.y + Screen.height;
-                    y += speeds[i] * Screen.height;
-                    var x = e.anchoredPosition.x + drifts[i] * Screen.width;
-                    if (y > Screen.height + 10)
+                    var pos = e.anchoredPosition;
+                    pos.y += vy[i] * dt;
+                    pos.x += vx[i] * dt;
+                    if (pos.y > halfH)
                     {
-                        y = -10;
-                        x = Random.Range(-Screen.width * 0.4f, Screen.width * 0.4f);
-                        speeds[i] = Random.Range(0.003f, 0.012f);
+                        pos.y = -halfH;
+                        pos.x = Random.Range(-halfW, halfW);
+                        vy[i] = Random.Range(8f, 25f);
+                        vx[i] = Random.Range(-6f, 6f);
                     }
-                    e.anchoredPosition = new Vector2(x, y - Screen.height);
+                    e.anchoredPosition = pos;
                 }
                 yield return null;
             }
