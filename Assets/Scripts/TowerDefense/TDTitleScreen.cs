@@ -1,269 +1,329 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace TD
 {
     /// <summary>
-    /// Title screen / main menu overlay shown on game launch.
-    /// Renders on top of the battle canvas, fades to reveal the mission board
-    /// when the player chooses New Game or Continue.
-    ///
-    /// Flow:
-    ///   Splash → Title Screen → [New/Continue] → Mission Board → Deploy → Battle
-    ///                     ↘ [Settings] → Settings Panel
-    ///                     ↘ [Credits] → Credits overlay
-    ///                     ↘ [Quit] → Exit (standalone only)
+    /// Polished title screen with gradient bg, ember particles, title glow,
+    /// animated entrance, and styled buttons.
     /// </summary>
     public sealed class TDTitleScreen : MonoBehaviour
     {
-        private CanvasGroup _fader;
         private RectTransform _root;
         private RectTransform _creditsOverlay;
+        private CanvasGroup _fader;
+        private Text _titleText;
+        private Image _titleGlow;
+        private readonly List<RectTransform> _embers = new();
+        private Coroutine _emberRoutine;
+        private Coroutine _glowRoutine;
+        private Coroutine _enterRoutine;
 
-        // Callbacks set by TDGameManager
         public System.Action OnNewGame;
         public System.Action OnNewGamePlus;
         public System.Action OnContinue;
         public System.Action OnOpenSettings;
 
-        /// <summary>True while the title screen is covering the game.</summary>
         public bool IsVisible => _root != null && _root.gameObject.activeSelf;
 
-        private static readonly Color PanelBg = new(0.025f, 0.030f, 0.038f, 0.96f);
-        private static readonly Color AccentEmber = new(0.96f, 0.58f, 0.24f, 1f);
-        private static readonly Color TextBright = new(0.93f, 0.96f, 0.98f, 1f);
-        private static readonly Color TextDim = new(0.62f, 0.70f, 0.78f, 0.80f);
-        private static readonly Color ButtonHover = new(0.12f, 0.14f, 0.18f, 0.92f);
+        // Palette.
+        private static readonly Color BgTop = new(0.018f, 0.022f, 0.030f, 1f);
+        private static readonly Color BgBottom = new(0.045f, 0.028f, 0.018f, 1f);
+        private static readonly Color AccentEmber = new(0.96f, 0.52f, 0.18f, 1f);
+        private static readonly Color AccentEmberDim = new(0.96f, 0.52f, 0.18f, 0.12f);
+        private static readonly Color TextBright = new(0.94f, 0.96f, 0.98f, 1f);
+        private static readonly Color TextDim = new(0.56f, 0.60f, 0.66f, 0.75f);
+        private static readonly Color BtnNormal = new(0.06f, 0.07f, 0.09f, 0.80f);
+        private static readonly Color BtnHover = new(0.14f, 0.10f, 0.06f, 0.90f);
+        private static readonly Color DividerColor = new(0.96f, 0.52f, 0.18f, 0.20f);
+
+        private static Sprite _roundedSprite;
 
         public void Build(Canvas parent, bool hasExistingProgress, bool hasClearedCampaign = false)
         {
-            // Root panel — full screen
+            // ── Root ──
             _root = CreateRect("TitleScreen", parent.transform);
-            StretchFullScreen(_root);
+            StretchFull(_root);
 
-            var rootImage = _root.gameObject.AddComponent<Image>();
-            rootImage.color = PanelBg;
-            rootImage.raycastTarget = true;
+            // ── Gradient background ──
+            var bgRect = CreateRect("TitleBg", _root);
+            StretchFull(bgRect);
+            var bgImg = bgRect.gameObject.AddComponent<Image>();
+            bgImg.sprite = CreateGradientSprite();
+            bgImg.color = Color.white;
+            bgImg.raycastTarget = true;
 
-            _fader = _root.gameObject.AddComponent<CanvasGroup>();
-            _fader.alpha = 1f;
-            _fader.blocksRaycasts = true;
-
-            // Background image (startup background branding art)
+            // Try background art.
             var bgPath = "Art/Branding/emberline_startup_background";
-            var bgSprite = Resources.Load<Sprite>(bgPath) ?? Resources.Load<Texture2D>(bgPath) as object as Sprite;
-            if (bgSprite == null)
+            var bgTex = Resources.Load<Texture2D>(bgPath);
+            if (bgTex != null)
             {
-                // Try loading as texture and converting
-                var tex = Resources.Load<Texture2D>(bgPath);
-                if (tex != null)
-                {
-                    bgSprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
-                }
+                var artSprite = Sprite.Create(bgTex, new Rect(0, 0, bgTex.width, bgTex.height), new Vector2(0.5f, 0.5f));
+                var artRect = CreateRect("TitleArt", _root);
+                StretchFull(artRect);
+                var artImg = artRect.gameObject.AddComponent<Image>();
+                artImg.sprite = artSprite;
+                artImg.color = new Color(0.38f, 0.36f, 0.40f, 0.35f);
+                artImg.raycastTarget = false;
             }
 
-            if (bgSprite != null)
-            {
-                var bgRect = CreateRect("TitleBackground", _root);
-                StretchFullScreen(bgRect);
-                var bgImage = bgRect.gameObject.AddComponent<Image>();
-                bgImage.sprite = bgSprite;
-                bgImage.color = new Color(0.52f, 0.50f, 0.54f, 0.50f); // semi-visible background
-                bgRect.SetAsFirstSibling();
-            }
-            else
-            {
-                // No background art — use a dark gradient feel with vignette overlay.
-                var vbgRect = CreateRect("TitleVignette", _root);
-                StretchFullScreen(vbgRect);
-                var vbgImage = vbgRect.gameObject.AddComponent<Image>();
-                vbgImage.color = new Color(0.02f, 0.025f, 0.035f, 0.80f);
-                vbgRect.SetAsFirstSibling();
-            }
+            // ── Ember particles (behind everything) ──
+            CreateEmbers(24);
 
-            // Title shadow (dark offset behind main title for depth).
-            var shadowRect = CreateRect("TitleShadow", _root);
-            shadowRect.anchorMin = new Vector2(0.5f, 0.62f);
-            shadowRect.anchorMax = new Vector2(0.5f, 0.62f);
-            shadowRect.sizeDelta = new Vector2(720f, 80f);
-            shadowRect.anchoredPosition = new Vector2(3f, -3f);
-            var shadowText = CreateText(shadowRect, "EMBERLINE DEFENSE", 42, FontStyle.Bold, new Color(0f, 0f, 0f, 0.55f));
-            shadowText.alignment = TextAnchor.MiddleCenter;
+            // ── Title glow halo ──
+            var glowRect = CreateRect("TitleGlow", _root);
+            glowRect.anchorMin = new Vector2(0.5f, 0.64f);
+            glowRect.anchorMax = new Vector2(0.5f, 0.64f);
+            glowRect.sizeDelta = new Vector2(800f, 200f);
+            _titleGlow = glowRect.gameObject.AddComponent<Image>();
+            _titleGlow.sprite = CreateRadialGradientSprite(400, 100);
+            _titleGlow.color = AccentEmberDim;
+            _titleGlow.raycastTarget = false;
 
-            // Title text — centered, upper third, larger with outline feel.
+            // ── Title text ──
+            var titleShadowRect = CreateRect("TitleShadow", _root);
+            titleShadowRect.anchorMin = new Vector2(0.5f, 0.64f);
+            titleShadowRect.anchorMax = new Vector2(0.5f, 0.64f);
+            titleShadowRect.sizeDelta = new Vector2(750f, 90f);
+            titleShadowRect.anchoredPosition = new Vector2(4f, -4f);
+            var shadowTxt = CreateText(titleShadowRect, "EMBERLINE DEFENSE", 46, FontStyle.Bold, new Color(0f, 0f, 0f, 0.50f));
+            shadowTxt.alignment = TextAnchor.MiddleCenter;
+
             var titleRect = CreateRect("TitleLabel", _root);
-            titleRect.anchorMin = new Vector2(0.5f, 0.62f);
-            titleRect.anchorMax = new Vector2(0.5f, 0.62f);
-            titleRect.sizeDelta = new Vector2(720f, 80f);
-            var titleText = CreateText(titleRect, "EMBERLINE DEFENSE", 42, FontStyle.Bold, AccentEmber);
-            titleText.alignment = TextAnchor.MiddleCenter;
+            titleRect.anchorMin = new Vector2(0.5f, 0.64f);
+            titleRect.anchorMax = new Vector2(0.5f, 0.64f);
+            titleRect.sizeDelta = new Vector2(750f, 90f);
+            _titleText = CreateText(titleRect, "EMBERLINE DEFENSE", 46, FontStyle.Bold, AccentEmber);
+            _titleText.alignment = TextAnchor.MiddleCenter;
 
-            // Subtitle
+            // ── Subtitle ──
             var subRect = CreateRect("TitleSubtitle", _root);
-            subRect.anchorMin = new Vector2(0.5f, 0.56f);
-            subRect.anchorMax = new Vector2(0.5f, 0.56f);
-            subRect.sizeDelta = new Vector2(500f, 22f);
-            var subText = CreateText(subRect, "余烬铁道", 15, FontStyle.Italic, TextDim);
-            subText.alignment = TextAnchor.MiddleCenter;
+            subRect.anchorMin = new Vector2(0.5f, 0.555f);
+            subRect.anchorMax = new Vector2(0.5f, 0.555f);
+            subRect.sizeDelta = new Vector2(400f, 24f);
+            var subTxt = CreateText(subRect, "余 烬 铁 道", 16, FontStyle.Italic, new Color(0.72f, 0.64f, 0.52f, 0.80f));
+            subTxt.alignment = TextAnchor.MiddleCenter;
 
-            // Menu buttons — centered
-            var hasContinue = hasExistingProgress;
-            var ngPlusAvailable = hasClearedCampaign;
+            // ── Tagline ──
+            var tagRect = CreateRect("TitleTagline", _root);
+            tagRect.anchorMin = new Vector2(0.5f, 0.515f);
+            tagRect.anchorMax = new Vector2(0.5f, 0.515f);
+            tagRect.sizeDelta = new Vector2(500f, 18f);
+            var tagTxt = CreateText(tagRect, "Hold the line. Tend the ember.", 11, FontStyle.Italic, TextDim);
+            tagTxt.alignment = TextAnchor.MiddleCenter;
 
-            // Build button list based on what's available
-            var buttonList = new System.Collections.Generic.List<(string, string)>();
-            if (hasContinue)
-            {
-                buttonList.Add(("CONTINUE", "continue"));
-            }
+            // ── Divider ──
+            var divRect = CreateRect("TitleDivider", _root);
+            divRect.anchorMin = new Vector2(0.5f, 0.48f);
+            divRect.anchorMax = new Vector2(0.5f, 0.48f);
+            divRect.sizeDelta = new Vector2(320f, 2f);
+            var divImg = divRect.gameObject.AddComponent<Image>();
+            divImg.color = DividerColor;
+            divImg.raycastTarget = false;
 
+            // ── Menu buttons ──
+            var buttonList = new List<(string, string)>();
+            if (hasExistingProgress) buttonList.Add(("CONTINUE", "continue"));
             buttonList.Add(("NEW GAME", "new"));
-            if (ngPlusAvailable)
-            {
-                buttonList.Add(("NEW GAME+", "ngplus"));
-            }
-
+            if (hasClearedCampaign) buttonList.Add(("NEW GAME+", "ngplus"));
             buttonList.Add(("SETTINGS", "settings"));
             buttonList.Add(("CREDITS", "credits"));
             buttonList.Add(("QUIT", "quit"));
-            var buttonLabels = buttonList.ToArray();
 
-            // Pack buttons tighter if there are more of them
-            var stepY = buttonLabels.Length > 5 ? 0.054f : 0.062f;
-            var startY = 0.42f;
-
-            for (var i = 0; i < buttonLabels.Length; i++)
+            var stepY = 0.065f;
+            var startY = 0.40f;
+            for (var i = 0; i < buttonList.Count; i++)
             {
-                var (label, tag) = buttonLabels[i];
+                var (label, tag) = buttonList[i];
                 var btnRect = CreateRect($"TitleBtn_{tag}", _root);
-                btnRect.anchorMin = new Vector2(0.5f, startY - (i * stepY));
-                btnRect.anchorMax = new Vector2(0.5f, startY - (i * stepY));
-                btnRect.sizeDelta = new Vector2(240f, 38f);
-                CreateMenuButton(btnRect, label, tag);
+                btnRect.anchorMin = new Vector2(0.5f, startY - i * stepY);
+                btnRect.anchorMax = new Vector2(0.5f, startY - i * stepY);
+                btnRect.sizeDelta = new Vector2(280f, 40f);
+                CreateStyledButton(btnRect, label, tag);
             }
 
-            // Decorative divider above buttons.
-            var divRect = CreateRect("TitleDivider", _root);
-            divRect.anchorMin = new Vector2(0.5f, 0.50f);
-            divRect.anchorMax = new Vector2(0.5f, 0.50f);
-            divRect.sizeDelta = new Vector2(280f, 2f);
-            var divImg = divRect.gameObject.AddComponent<Image>();
-            divImg.color = new Color(0.96f, 0.58f, 0.24f, 0.30f);
-            divImg.raycastTarget = false;
-
-            // Tagline below subtitle.
-            var tagRect = CreateRect("TitleTagline", _root);
-            tagRect.anchorMin = new Vector2(0.5f, 0.52f);
-            tagRect.anchorMax = new Vector2(0.5f, 0.52f);
-            tagRect.sizeDelta = new Vector2(500f, 18f);
-            var tagText = CreateText(tagRect, "Hold the line. Tend the ember.", 11, FontStyle.Italic, new Color(0.72f, 0.66f, 0.54f, 0.70f));
-            tagText.alignment = TextAnchor.MiddleCenter;
-
-            // Version text — bottom corner
-            var verRect = CreateRect("VersionLabel", _root);
+            // ── Version ──
+            var verRect = CreateRect("Version", _root);
             verRect.anchorMin = new Vector2(0.98f, 0.02f);
             verRect.anchorMax = new Vector2(0.98f, 0.02f);
-            verRect.sizeDelta = new Vector2(200f, 16f);
-            var verText = CreateText(verRect, "v0.13.0  ·  2026 Emberline Studios", 8, FontStyle.Normal, TextDim);
-            verText.alignment = TextAnchor.LowerRight;
+            verRect.sizeDelta = new Vector2(240f, 16f);
+            var verTxt = CreateText(verRect, "v0.13.0  ·  Emberline Studios  ·  2026", 8, FontStyle.Normal, TextDim);
+            verTxt.alignment = TextAnchor.LowerRight;
+
+            _fader = _root.gameObject.AddComponent<CanvasGroup>();
+            _fader.alpha = 0f;
+            _fader.blocksRaycasts = true;
 
             BuildCreditsOverlay();
             gameObject.SetActive(true);
+
+            // Start entrance animation.
+            _enterRoutine = StartCoroutine(EntranceRoutine());
         }
 
-        private void BuildCreditsOverlay()
+        // ── Entrance animation ──────────────────────────────────
+
+        private IEnumerator EntranceRoutine()
         {
-            _creditsOverlay = CreateRect("CreditsOverlay", _root);
-            StretchFullScreen(_creditsOverlay);
-            var credImage = _creditsOverlay.gameObject.AddComponent<Image>();
-            credImage.color = new Color(0.02f, 0.03f, 0.04f, 0.94f);
-            _creditsOverlay.gameObject.SetActive(false);
-
-            var credTitle = CreateRect("CreditsTitle", _creditsOverlay);
-            credTitle.anchorMin = new Vector2(0.5f, 0.80f);
-            credTitle.anchorMax = new Vector2(0.5f, 0.80f);
-            credTitle.sizeDelta = new Vector2(400f, 40f);
-            var ct = CreateText(credTitle, "CREDITS", 22, FontStyle.Bold, AccentEmber);
-            ct.alignment = TextAnchor.MiddleCenter;
-
-            var creditsText = "Design & Engineering\nEmberline Team\n\nAudio\nGenerated via MiniMax\n\nArt\nProcedural + Image Pipeline\n\nSpecial Thanks\nTo all defenders of the Emberline\n\nBuilt with Unity 2022.3";
-            var credBody = CreateRect("CreditsBody", _creditsOverlay);
-            credBody.anchorMin = new Vector2(0.5f, 0.40f);
-            credBody.anchorMax = new Vector2(0.5f, 0.40f);
-            credBody.sizeDelta = new Vector2(400f, 300f);
-            var cb = CreateText(credBody, creditsText, 11, FontStyle.Normal, TextBright);
-            cb.alignment = TextAnchor.UpperCenter;
-            cb.lineSpacing = 1.4f;
-
-            // Back button
-            var backRect = CreateRect("CreditsBack", _creditsOverlay);
-            backRect.anchorMin = new Vector2(0.5f, 0.08f);
-            backRect.anchorMax = new Vector2(0.5f, 0.08f);
-            backRect.sizeDelta = new Vector2(160f, 36f);
-            var backBtn = backRect.gameObject.AddComponent<Button>();
-            var backImg = backRect.gameObject.AddComponent<Image>();
-            backImg.color = new Color(0.08f, 0.10f, 0.14f, 0.80f);
-            // Text must be on a child — can't share a GameObject with Image.
-            var backLabelRect = CreateRect("CreditsBackLabel", backRect);
-            backLabelRect.anchorMin = Vector2.zero;
-            backLabelRect.anchorMax = Vector2.one;
-            backLabelRect.offsetMin = Vector2.zero;
-            backLabelRect.offsetMax = Vector2.zero;
-            var backLabel = CreateText(backLabelRect, "BACK", 12, FontStyle.Bold, TextBright);
-            backLabel.alignment = TextAnchor.MiddleCenter;
-            backBtn.onClick.AddListener(() =>
+            var elapsed = 0f;
+            var duration = 0.6f;
+            while (elapsed < duration)
             {
-                _creditsOverlay.gameObject.SetActive(false);
-            });
+                elapsed += Time.unscaledDeltaTime;
+                _fader.alpha = Mathf.Lerp(0f, 1f, elapsed / duration);
+                yield return null;
+            }
+            _fader.alpha = 1f;
+
+            // Start ember + glow loops.
+            _emberRoutine = StartCoroutine(EmberRoutine());
+            _glowRoutine = StartCoroutine(TitleGlowRoutine());
         }
 
-        private Button CreateMenuButton(RectTransform parent, string label, string tag)
+        private IEnumerator TitleGlowRoutine()
+        {
+            while (true)
+            {
+                var pulse = 0.06f + Mathf.Sin(Time.unscaledTime * 1.2f) * 0.04f;
+                if (_titleGlow != null) _titleGlow.color = new Color(AccentEmber.r, AccentEmber.g, AccentEmber.b, pulse);
+                yield return null;
+            }
+        }
+
+        // ── Ember particles ─────────────────────────────────────
+
+        private void CreateEmbers(int count)
+        {
+            for (var i = 0; i < count; i++)
+            {
+                var ember = CreateRect($"Ember_{i}", _root);
+                ember.sizeDelta = new Vector2(4f, 4f);
+                ember.anchorMin = new Vector2(Random.value, 0f);
+                ember.anchorMax = new Vector2(Random.value, 0f);
+                var img = ember.gameObject.AddComponent<Image>();
+                img.color = new Color(0.96f, 0.52f + Random.value * 0.2f, 0.18f, 0.3f + Random.value * 0.3f);
+                img.raycastTarget = false;
+                _embers.Add(ember);
+            }
+        }
+
+        private IEnumerator EmberRoutine()
+        {
+            // Pre-randomize state.
+            var speeds = new float[_embers.Count];
+            var drifts = new float[_embers.Count];
+            for (var i = 0; i < _embers.Count; i++)
+            {
+                speeds[i] = Random.Range(0.003f, 0.012f);
+                drifts[i] = Random.Range(-0.001f, 0.001f);
+            }
+
+            while (true)
+            {
+                for (var i = 0; i < _embers.Count; i++)
+                {
+                    var e = _embers[i];
+                    var y = e.anchoredPosition.y + Screen.height;
+                    y += speeds[i] * Screen.height;
+                    var x = e.anchoredPosition.x + drifts[i] * Screen.width;
+                    if (y > Screen.height + 10)
+                    {
+                        y = -10;
+                        x = Random.Range(-Screen.width * 0.4f, Screen.width * 0.4f);
+                        speeds[i] = Random.Range(0.003f, 0.012f);
+                    }
+                    e.anchoredPosition = new Vector2(x, y - Screen.height);
+                }
+                yield return null;
+            }
+        }
+
+        // ── Styled buttons ──────────────────────────────────────
+
+        private void CreateStyledButton(RectTransform parent, string label, string tag)
         {
             var img = parent.gameObject.AddComponent<Image>();
-            img.color = new Color(0.06f, 0.08f, 0.11f, 0.75f);
+            img.sprite = GetRoundedSprite();
+            img.color = BtnNormal;
+            img.type = Image.Type.Sliced;
 
             var btn = parent.gameObject.AddComponent<Button>();
             var colors = btn.colors;
-            colors.normalColor = new Color(1f, 1f, 1f, 0.10f);
-            colors.highlightedColor = new Color(0.96f, 0.58f, 0.24f, 0.20f);
-            colors.pressedColor = new Color(0.96f, 0.58f, 0.24f, 0.40f);
-            colors.selectedColor = new Color(0.96f, 0.58f, 0.24f, 0.15f);
+            colors.normalColor = Color.white;
+            colors.highlightedColor = new Color(1.2f, 1.0f, 0.6f);
+            colors.pressedColor = new Color(1.5f, 1.2f, 0.8f);
+            colors.fadeDuration = 0.12f;
             btn.colors = colors;
 
-            var labelRect = CreateRect($"TitleBtnLabel_{tag}", parent);
+            // Label on child.
+            var labelRect = CreateRect($"BtnLabel_{tag}", parent);
             labelRect.anchorMin = Vector2.zero;
             labelRect.anchorMax = Vector2.one;
             labelRect.offsetMin = Vector2.zero;
             labelRect.offsetMax = Vector2.zero;
-            var text = CreateText(labelRect, label, 13, FontStyle.Bold, TextBright);
-            text.alignment = TextAnchor.MiddleCenter;
+            var txt = CreateText(labelRect, label, 14, FontStyle.Bold, TextBright);
+            txt.alignment = TextAnchor.MiddleCenter;
 
-            btn.onClick.AddListener(() => HandleMenuClick(tag));
-            return btn;
+            btn.onClick.AddListener(() => HandleClick(tag));
         }
 
-        private void HandleMenuClick(string tag)
+        // ── Credits overlay ─────────────────────────────────────
+
+        private void BuildCreditsOverlay()
+        {
+            _creditsOverlay = CreateRect("CreditsOverlay", _root);
+            StretchFull(_creditsOverlay);
+            var credImg = _creditsOverlay.gameObject.AddComponent<Image>();
+            credImg.color = new Color(0.015f, 0.020f, 0.028f, 0.96f);
+            _creditsOverlay.gameObject.SetActive(false);
+
+            var titleRect = CreateRect("CreditsTitle", _creditsOverlay);
+            titleRect.anchorMin = new Vector2(0.5f, 0.82f);
+            titleRect.anchorMax = new Vector2(0.5f, 0.82f);
+            titleRect.sizeDelta = new Vector2(400f, 44f);
+            var ct = CreateText(titleRect, "CREDITS", 24, FontStyle.Bold, AccentEmber);
+            ct.alignment = TextAnchor.MiddleCenter;
+
+            var body = "Design & Engineering\nEmberline Team\n\nAudio\nGenerated via MiniMax\n\nArt\nProcedural + Image Pipeline\n\nSpecial Thanks\nTo all defenders of the Emberline\n\nBuilt with Unity 2022.3";
+            var bodyRect = CreateRect("CreditsBody", _creditsOverlay);
+            bodyRect.anchorMin = new Vector2(0.5f, 0.38f);
+            bodyRect.anchorMax = new Vector2(0.5f, 0.38f);
+            bodyRect.sizeDelta = new Vector2(400f, 320f);
+            var bt = CreateText(bodyRect, body, 11, FontStyle.Normal, TextBright);
+            bt.alignment = TextAnchor.UpperCenter;
+            bt.lineSpacing = 1.5f;
+
+            // Back button.
+            var backRect = CreateRect("CreditsBack", _creditsOverlay);
+            backRect.anchorMin = new Vector2(0.5f, 0.06f);
+            backRect.anchorMax = new Vector2(0.5f, 0.06f);
+            backRect.sizeDelta = new Vector2(160f, 36f);
+            var backBtn = backRect.gameObject.AddComponent<Button>();
+            var backImg = backRect.gameObject.AddComponent<Image>();
+            backImg.sprite = GetRoundedSprite();
+            backImg.color = BtnNormal;
+            backImg.type = Image.Type.Sliced;
+            var backLabelRect = CreateRect("CreditsBackLabel", backRect);
+            backLabelRect.anchorMin = Vector2.zero; backLabelRect.anchorMax = Vector2.one;
+            backLabelRect.offsetMin = Vector2.zero; backLabelRect.offsetMax = Vector2.zero;
+            var backLabel = CreateText(backLabelRect, "← BACK", 12, FontStyle.Bold, TextBright);
+            backLabel.alignment = TextAnchor.MiddleCenter;
+            backBtn.onClick.AddListener(() => _creditsOverlay.gameObject.SetActive(false));
+        }
+
+        // ── Click handler ───────────────────────────────────────
+
+        private void HandleClick(string tag)
         {
             switch (tag)
             {
-                case "new":
-                    OnNewGame?.Invoke();
-                    break;
-                case "ngplus":
-                    OnNewGamePlus?.Invoke();
-                    break;
-                case "continue":
-                    OnContinue?.Invoke();
-                    break;
-                case "settings":
-                    OnOpenSettings?.Invoke();
-                    break;
-                case "credits":
-                    if (_creditsOverlay != null)
-                    {
-                        _creditsOverlay.gameObject.SetActive(true);
-                    }
-                    break;
+                case "new": OnNewGame?.Invoke(); break;
+                case "ngplus": OnNewGamePlus?.Invoke(); break;
+                case "continue": OnContinue?.Invoke(); break;
+                case "settings": OnOpenSettings?.Invoke(); break;
+                case "credits": _creditsOverlay?.gameObject.SetActive(true); break;
                 case "quit":
 #if UNITY_STANDALONE && !UNITY_EDITOR
                     Application.Quit();
@@ -274,23 +334,83 @@ namespace TD
             }
         }
 
-        /// <summary>Hide the title screen immediately (synchronous).</summary>
+        // ── Show / Hide ─────────────────────────────────────────
+
         public void Hide()
         {
-            if (_fader != null)
-            {
-                _fader.alpha = 0f;
-                _fader.blocksRaycasts = false;
-            }
-
-            // Deactivate the root panel (the child RectTransform that holds all UI).
-            if (_root != null)
-            {
-                _root.gameObject.SetActive(false);
-            }
+            if (_emberRoutine != null) StopCoroutine(_emberRoutine);
+            if (_glowRoutine != null) StopCoroutine(_glowRoutine);
+            if (_fader != null) { _fader.alpha = 0f; _fader.blocksRaycasts = false; }
+            if (_root != null) _root.gameObject.SetActive(false);
         }
 
-        // ─── UI helpers ──────────────────────────────────────────
+        // ── Sprite generation ───────────────────────────────────
+
+        private static Sprite CreateGradientSprite()
+        {
+            var tex = new Texture2D(2, 64);
+            for (var y = 0; y < 64; y++)
+            {
+                var t = y / 63f;
+                var c = Color.Lerp(BgBottom, BgTop, t);
+                tex.SetPixel(0, y, c);
+                tex.SetPixel(1, y, c);
+            }
+            tex.Apply();
+            return Sprite.Create(tex, new Rect(0, 0, 2, 64), new Vector2(0.5f, 0.5f));
+        }
+
+        private static Sprite CreateRadialGradientSprite(int w, int h)
+        {
+            var tex = new Texture2D(w, h);
+            var cx = w * 0.5f;
+            var cy = h * 0.5f;
+            var maxDist = Mathf.Sqrt(cx * cx + cy * cy);
+            for (var y = 0; y < h; y++)
+            {
+                for (var x = 0; x < w; x++)
+                {
+                    var dist = Mathf.Sqrt((x - cx) * (x - cx) + (y - cy) * (y - cy));
+                    var alpha = Mathf.Clamp01(1f - dist / maxDist);
+                    tex.SetPixel(x, y, new Color(1f, 1f, 1f, alpha * alpha));
+                }
+            }
+            tex.Apply();
+            return Sprite.Create(tex, new Rect(0, 0, w, h), new Vector2(0.5f, 0.5f));
+        }
+
+        private static Sprite GetRoundedSprite()
+        {
+            if (_roundedSprite != null) return _roundedSprite;
+            var size = 32;
+            var radius = 8;
+            var tex = new Texture2D(size, size);
+            for (var y = 0; y < size; y++)
+            {
+                for (var x = 0; x < size; x++)
+                {
+                    var alpha = 1f;
+                    // Check corners.
+                    if (x < radius && y < radius)
+                        alpha = Mathf.Clamp01(((x - radius) * (x - radius) + (y - radius) * (y - radius)) / (float)(radius * radius));
+                    else if (x >= size - radius && y < radius)
+                        alpha = Mathf.Clamp01(((x - (size - radius - 1)) * (x - (size - radius - 1)) + (y - radius) * (y - radius)) / (float)(radius * radius));
+                    else if (x < radius && y >= size - radius)
+                        alpha = Mathf.Clamp01(((x - radius) * (x - radius) + (y - (size - radius - 1)) * (y - (size - radius - 1))) / (float)(radius * radius));
+                    else if (x >= size - radius && y >= size - radius)
+                        alpha = Mathf.Clamp01(((x - (size - radius - 1)) * (x - (size - radius - 1)) + (y - (size - radius - 1)) * (y - (size - radius - 1))) / (float)(radius * radius));
+                    tex.SetPixel(x, y, new Color(1f, 1f, 1f, alpha));
+                }
+            }
+            tex.Apply();
+            var border = Mathf.Max(1, radius / 4);
+            _roundedSprite = Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f),
+                pixelsPerUnit: 100, extrude: 0, meshType: SpriteMeshType.FullRect,
+                border: new Vector4(border, border, border, border));
+            return _roundedSprite;
+        }
+
+        // ── Helpers ─────────────────────────────────────────────
 
         private static RectTransform CreateRect(string name, Transform parent)
         {
@@ -299,7 +419,7 @@ namespace TD
             return go.GetComponent<RectTransform>();
         }
 
-        private static void StretchFullScreen(RectTransform rt)
+        private static void StretchFull(RectTransform rt)
         {
             rt.anchorMin = Vector2.zero;
             rt.anchorMax = Vector2.one;
