@@ -47,69 +47,95 @@ namespace TD
             _root = CreateRect("TitleScreen", parent.transform);
             StretchFull(_root);
 
-            // ── Gradient background ──
-            var bgRect = CreateRect("TitleBg", _root);
-            StretchFull(bgRect);
-            var bgImg = bgRect.gameObject.AddComponent<Image>();
-            bgImg.sprite = CreateGradientSprite();
-            bgImg.color = Color.white;
-            bgImg.raycastTarget = true;
-
-            // Try background art.
-            var bgPath = "Art/Branding/emberline_startup_background";
-            var bgTex = Resources.Load<Texture2D>(bgPath);
-            if (bgTex != null)
+            // ── Background art (full-screen, clearly visible) ──
+            var bgArtTex = Resources.Load<Texture2D>("Art/Branding/main_menu_bg");
+            if (bgArtTex != null)
             {
-                var artSprite = Sprite.Create(bgTex, new Rect(0, 0, bgTex.width, bgTex.height), new Vector2(0.5f, 0.5f));
-                var artRect = CreateRect("TitleArt", _root);
-                StretchFull(artRect);
-                var artImg = artRect.gameObject.AddComponent<Image>();
-                artImg.sprite = artSprite;
-                artImg.color = new Color(0.38f, 0.36f, 0.40f, 0.35f);
-                artImg.raycastTarget = false;
+                var bgArtRect = CreateRect("TitleBgArt", _root);
+                StretchFull(bgArtRect);
+                var bgArtImg = bgArtRect.gameObject.AddComponent<Image>();
+                bgArtImg.sprite = Sprite.Create(bgArtTex,
+                    new Rect(0, 0, bgArtTex.width, bgArtTex.height),
+                    new Vector2(0.5f, 0.5f));
+                bgArtImg.color = new Color(0.82f, 0.80f, 0.84f, 0.85f);
+                bgArtImg.preserveAspect = true;
+                bgArtImg.raycastTarget = true;
+            }
+            else
+            {
+                // Fallback: gradient background.
+                var bgRect = CreateRect("TitleBg", _root);
+                StretchFull(bgRect);
+                var bgImg = bgRect.gameObject.AddComponent<Image>();
+                bgImg.sprite = CreateGradientSprite();
+                bgImg.color = Color.white;
+                bgImg.raycastTarget = true;
             }
 
-            // ── Ember particles (subtle, behind everything) ──
+            // ── Ember particles (subtle) ──
             CreateEmbers(10);
 
-            // ── Title glow halo ──
-            var glowRect = CreateRect("TitleGlow", _root);
-            glowRect.anchorMin = new Vector2(0.5f, 0.64f);
-            glowRect.anchorMax = new Vector2(0.5f, 0.64f);
-            glowRect.sizeDelta = new Vector2(800f, 200f);
-            _titleGlow = glowRect.gameObject.AddComponent<Image>();
-            _titleGlow.sprite = CreateRadialGradientSprite(400, 100);
-            _titleGlow.color = AccentEmberDim;
-            _titleGlow.raycastTarget = false;
+            // ── Game logo (image badge, replaces text title) ──
+            var logoTex = Resources.Load<Texture2D>("Art/Branding/game_logo");
+            if (logoTex != null)
+            {
+                var logoRect = CreateRect("TitleLogo", _root);
+                logoRect.anchorMin = new Vector2(0.5f, 0.68f);
+                logoRect.anchorMax = new Vector2(0.5f, 0.68f);
+                // Logo is portrait (1792x2400) — size to ~28% of screen height.
+                var logoH = 260f;
+                var logoW = logoH * (1792f / 2400f);
+                logoRect.sizeDelta = new Vector2(logoW, logoH);
+                var logoImg = logoRect.gameObject.AddComponent<Image>();
+                logoImg.sprite = Sprite.Create(logoTex,
+                    new Rect(0, 0, logoTex.width, logoTex.height),
+                    new Vector2(0.5f, 0.5f));
+                logoImg.color = Color.white;
+                logoImg.preserveAspect = true;
+                logoImg.raycastTarget = false;
+                _titleText = null; // no text title when logo exists
+                _titleGlow = null; // no glow when logo exists
+            }
+            else
+            {
+                // Fallback: text title with glow.
+                var glowRect = CreateRect("TitleGlow", _root);
+                glowRect.anchorMin = new Vector2(0.5f, 0.64f);
+                glowRect.anchorMax = new Vector2(0.5f, 0.64f);
+                glowRect.sizeDelta = new Vector2(800f, 200f);
+                _titleGlow = glowRect.gameObject.AddComponent<Image>();
+                _titleGlow.sprite = CreateRadialGradientSprite(400, 100);
+                _titleGlow.color = AccentEmberDim;
+                _titleGlow.raycastTarget = false;
 
-            // ── Title text ──
-            var titleShadowRect = CreateRect("TitleShadow", _root);
-            titleShadowRect.anchorMin = new Vector2(0.5f, 0.64f);
-            titleShadowRect.anchorMax = new Vector2(0.5f, 0.64f);
-            titleShadowRect.sizeDelta = new Vector2(750f, 90f);
-            titleShadowRect.anchoredPosition = new Vector2(4f, -4f);
-            var shadowTxt = CreateText(titleShadowRect, "EMBERLINE DEFENSE", 46, FontStyle.Bold, new Color(0f, 0f, 0f, 0.50f));
-            shadowTxt.alignment = TextAnchor.MiddleCenter;
+                var titleShadowRect = CreateRect("TitleShadow", _root);
+                titleShadowRect.anchorMin = new Vector2(0.5f, 0.64f);
+                titleShadowRect.anchorMax = new Vector2(0.5f, 0.64f);
+                titleShadowRect.sizeDelta = new Vector2(750f, 90f);
+                titleShadowRect.anchoredPosition = new Vector2(4f, -4f);
+                var shadowTxt = CreateText(titleShadowRect, "EMBERLINE DEFENSE", 46, FontStyle.Bold, new Color(0f, 0f, 0f, 0.50f));
+                shadowTxt.alignment = TextAnchor.MiddleCenter;
 
-            var titleRect = CreateRect("TitleLabel", _root);
-            titleRect.anchorMin = new Vector2(0.5f, 0.64f);
-            titleRect.anchorMax = new Vector2(0.5f, 0.64f);
-            titleRect.sizeDelta = new Vector2(750f, 90f);
-            _titleText = CreateText(titleRect, "EMBERLINE DEFENSE", 46, FontStyle.Bold, AccentEmber);
-            _titleText.alignment = TextAnchor.MiddleCenter;
+                var titleRect = CreateRect("TitleLabel", _root);
+                titleRect.anchorMin = new Vector2(0.5f, 0.64f);
+                titleRect.anchorMax = new Vector2(0.5f, 0.64f);
+                titleRect.sizeDelta = new Vector2(750f, 90f);
+                _titleText = CreateText(titleRect, "EMBERLINE DEFENSE", 46, FontStyle.Bold, AccentEmber);
+                _titleText.alignment = TextAnchor.MiddleCenter;
+            }
 
             // ── Subtitle ──
             var subRect = CreateRect("TitleSubtitle", _root);
-            subRect.anchorMin = new Vector2(0.5f, 0.555f);
-            subRect.anchorMax = new Vector2(0.5f, 0.555f);
+            subRect.anchorMin = new Vector2(0.5f, 0.545f);
+            subRect.anchorMax = new Vector2(0.5f, 0.545f);
             subRect.sizeDelta = new Vector2(400f, 24f);
-            var subTxt = CreateText(subRect, "余 烬 铁 道", 16, FontStyle.Italic, new Color(0.72f, 0.64f, 0.52f, 0.80f));
+            var subTxt = CreateText(subRect, "余 烬 铁 道", 16, FontStyle.Italic, new Color(0.72f, 0.64f, 0.52f, 0.85f));
             subTxt.alignment = TextAnchor.MiddleCenter;
 
             // ── Tagline ──
             var tagRect = CreateRect("TitleTagline", _root);
-            tagRect.anchorMin = new Vector2(0.5f, 0.515f);
-            tagRect.anchorMax = new Vector2(0.5f, 0.515f);
+            tagRect.anchorMin = new Vector2(0.5f, 0.505f);
+            tagRect.anchorMax = new Vector2(0.5f, 0.505f);
             tagRect.sizeDelta = new Vector2(500f, 18f);
             var tagTxt = CreateText(tagRect, "Hold the line. Tend the ember.", 11, FontStyle.Italic, TextDim);
             tagTxt.alignment = TextAnchor.MiddleCenter;
