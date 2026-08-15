@@ -194,7 +194,7 @@ namespace TD
             buttonList.Add(("CREDITS", "credits"));
             buttonList.Add(("QUIT", "quit"));
 
-            var stepY = 0.085f;
+            var stepY = 0.070f;
             var startY = 0.42f;
             for (var i = 0; i < buttonList.Count; i++)
             {
@@ -202,7 +202,7 @@ namespace TD
                 var btnRect = CreateRect($"TitleBtn_{tag}", _root);
                 btnRect.anchorMin = new Vector2(0.5f, startY - i * stepY);
                 btnRect.anchorMax = new Vector2(0.5f, startY - i * stepY);
-                btnRect.sizeDelta = new Vector2(420f, 110f);
+                btnRect.sizeDelta = new Vector2(380f, 80f);
                 CreateStyledButton(btnRect, label, tag);
             }
 
