@@ -223,8 +223,9 @@ namespace TD
 
         public static void EnsureInitialized(int selectedLevel, int totalLevels)
         {
+            // NOTE: selectedLevel is deliberately ignored — honoring it would
+            // let an externally edited saved-level key raise the unlock frontier.
             var safeTotal = Mathf.Max(1, totalLevels);
-            var safeSelected = Mathf.Clamp(selectedLevel, 1, safeTotal);
             var changed = false;
 
             EnsureSlotMigration(safeTotal);
@@ -255,7 +256,12 @@ namespace TD
             if (!PlayerPrefs.HasKey(VersionKey))
             {
                 PlayerPrefs.SetInt(VersionKey, SaveVersion);
-                PlayerPrefs.SetInt(HighestUnlockedKey, safeSelected);
+                // Preserve whatever the slot migration wrote (old saves carry
+                // their real frontier); fresh saves start at level 1. The
+                // routed/selected level must NEVER raise the frontier here —
+                // that key is externally editable and used to grant the
+                // campaign's actual progression.
+                PlayerPrefs.SetInt(HighestUnlockedKey, Mathf.Max(1, PlayerPrefs.GetInt(HighestUnlockedKey, 1)));
                 TouchActiveSlot();
                 changed = true;
             }
@@ -265,15 +271,6 @@ namespace TD
                 if (version != SaveVersion)
                 {
                     PlayerPrefs.SetInt(VersionKey, SaveVersion);
-                    TouchActiveSlot();
-                    changed = true;
-                }
-
-                // Preserve existing developer/test routes when P8 is first introduced.
-                var highest = GetHighestUnlockedLevel(safeTotal);
-                if (safeSelected > highest)
-                {
-                    PlayerPrefs.SetInt(HighestUnlockedKey, safeSelected);
                     TouchActiveSlot();
                     changed = true;
                 }
@@ -602,11 +599,11 @@ namespace TD
         /// </summary>
         public static void SetDifficultyPreference(int levelIndex, TDCampaignDifficultyTier difficulty)
         {
-            var safeLevel = Mathf.Max(1, levelIndex);
-            PlayerPrefs.SetInt(
-                GetLevelKey(safeLevel, "difficulty_preference"),
-                Mathf.Clamp((int)difficulty, (int)TDCampaignDifficultyTier.Standard, (int)TDCampaignDifficultyTier.EmberTrial));
-            PlayerPrefs.Save();
+            // Route through SaveDifficultyPreference so the slot checksum and
+            // recovery snapshot stay in sync — writing the key directly trips
+            // the integrity check on the next EnsureInitialized, which silently
+            // rolls the preference back to the stale snapshot.
+            SaveDifficultyPreference(levelIndex, difficulty);
         }
 
         public static TDCampaignLevelProgress GetLevelProgress(int levelIndex)
@@ -966,6 +963,20 @@ namespace TD
                 EnsureInitialized(1, safeTotal);
             }
 
+            // Locked levels never record progress — otherwise a tampered
+            // selected-level key would let a single victory unlock the rest
+            // of the campaign (and auto-claim chapter rewards). Automation
+            // probes that deploy locked levels unlock explicitly first via
+            // DebugUnlockThroughLevelForTest.
+            if (victory && safeLevel > GetHighestUnlockedLevel(safeTotal))
+            {
+                return new TDCampaignProgressUpdate
+                {
+                    levelIndex = safeLevel,
+                    victory = false
+                };
+            }
+
             var previous = GetLevelProgress(safeLevel);
             var previousHighest = GetHighestUnlockedLevel(safeTotal);
             var safeStars = victory ? Mathf.Clamp(earnedStars, 1, 3) : 0;
@@ -1019,6 +1030,26 @@ namespace TD
                 highestUnlockedLevel = currentHighest,
                 highestDifficultyCleared = current.highestDifficultyCleared
             };
+        }
+
+        /// <summary>
+        /// Test/automation hook: explicitly raise the unlock frontier. The
+        /// standalone probes reset progress and then deploy high levels
+        /// (e.g. soak on the final mission) — they need results to record,
+        /// which RecordResult refuses for locked levels.
+        /// </summary>
+        public static void DebugUnlockThroughLevelForTest(int levelIndex, int totalLevels)
+        {
+            var safeTotal = Mathf.Max(1, totalLevels);
+            var safeLevel = Mathf.Clamp(levelIndex, 1, safeTotal);
+            if (safeLevel <= GetHighestUnlockedLevel(safeTotal))
+            {
+                return;
+            }
+
+            PlayerPrefs.SetInt(HighestUnlockedKey, safeLevel);
+            TouchActiveSlot();
+            PlayerPrefs.Save();
         }
 
         public static string ExportSnapshot(int totalLevels)

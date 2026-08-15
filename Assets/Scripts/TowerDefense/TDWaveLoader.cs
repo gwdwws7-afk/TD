@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -34,7 +35,19 @@ namespace TD
                 return false;
             }
 
-            waveSet = JsonUtility.FromJson<TDWaveSet>(textAsset.text);
+            try
+            {
+                waveSet = JsonUtility.FromJson<TDWaveSet>(textAsset.text);
+            }
+            catch (Exception ex)
+            {
+                // Malformed/empty JSON throws from FromJson — route it through
+                // the error channel so the fallback wave loop can take over.
+                error = $"Failed to parse wave config JSON: {ex.Message}";
+                waveSet = null;
+                return false;
+            }
+
             if (waveSet == null)
             {
                 error = "Failed to parse wave config JSON.";

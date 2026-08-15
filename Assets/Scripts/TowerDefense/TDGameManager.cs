@@ -636,6 +636,10 @@ namespace TD
         }
 
         private readonly List<TDEnemy> _activeEnemies = new();
+        private readonly List<TDEnemy> _enemiesInRangeBuffer = new(32);
+        private readonly List<float> _enemiesInRangeDistances = new(32);
+        private readonly List<TDEnemy> _supportEnemiesCache = new();
+        private float _supportEnemiesCacheRefreshTime = -1f;
         private readonly Dictionary<string, TDEnemyCatalogEntry> _enemyCatalog = new();
         private readonly Dictionary<string, TDEnemyCatalogEntry> _globalEnemyCatalog = new();
         private readonly Dictionary<int, TDWaveRuntimeStat> _waveStats = new();
@@ -1064,10 +1068,13 @@ namespace TD
 
         private void EnsureObjectPool()
         {
-            if (GetComponent<TDObjectPool>() == null)
+            var pool = GetComponent<TDObjectPool>();
+            if (pool == null)
             {
-                gameObject.AddComponent<TDObjectPool>();
+                pool = gameObject.AddComponent<TDObjectPool>();
             }
+
+            pool.Prewarm();
         }
 
         private void Start()
@@ -2738,6 +2745,14 @@ namespace TD
             _worldMap.OnNodeClicked = HandleWorldMapNodeClick;
             _worldMap.DeployButton?.onClick.AddListener(() => HandleWorldMapDeploy());
             _worldMap.BackButton?.onClick.AddListener(() => HandleWorldMapBack());
+
+            // The map's node buttons ARE the level buttons now — keep the
+            // legacy list populated so selection focus and the p8 UI audit
+            // (p8.ui.levelButtons) keep working.
+            for (var nodeIndex = 0; nodeIndex < _worldMap.NodeButtons.Count; nodeIndex++)
+            {
+                _uiMissionLevelButtons.Add(_worldMap.NodeButtons[nodeIndex]);
+            }
 
             // Chapter tabs remain as quick-jump buttons above the map.
             for (var chapterIndex = 0; chapterIndex < 4; chapterIndex++)
@@ -10672,8 +10687,17 @@ namespace TD
 
         public List<TDEnemy> GetEnemiesInRange(Vector3 origin, float radius, int maxTargets)
         {
+            // Shared buffers: this query sits on the damage hot path (AoE,
+            // chains, pulses fire it per hit) and used to allocate a List plus
+            // a sorting closure per call. All callers consume the returned
+            // list synchronously — nothing stores it across frames.
+            var buffer = _enemiesInRangeBuffer;
+            var distances = _enemiesInRangeDistances;
+            buffer.Clear();
+            distances.Clear();
+
             var radiusSqr = radius * radius;
-            var candidates = new List<TDEnemy>();
+            var cap = Mathf.Max(1, maxTargets);
 
             for (var i = _activeEnemies.Count - 1; i >= 0; i--)
             {
@@ -10685,25 +10709,35 @@ namespace TD
                 }
 
                 var sqrDistance = (enemy.transform.position - origin).sqrMagnitude;
-                if (sqrDistance <= radiusSqr)
+                if (sqrDistance > radiusSqr)
                 {
-                    candidates.Add(enemy);
+                    continue;
+                }
+
+                // Bounded insertion keeps the nearest `cap` candidates in
+                // ascending distance order — same result as the old full
+                // List.Sort + RemoveRange, with zero allocations.
+                if (buffer.Count == cap && sqrDistance >= distances[cap - 1])
+                {
+                    continue;
+                }
+
+                var insert = buffer.Count;
+                while (insert > 0 && distances[insert - 1] > sqrDistance)
+                {
+                    insert--;
+                }
+
+                buffer.Insert(insert, enemy);
+                distances.Insert(insert, sqrDistance);
+                if (buffer.Count > cap)
+                {
+                    buffer.RemoveAt(cap);
+                    distances.RemoveAt(cap);
                 }
             }
 
-            candidates.Sort((a, b) =>
-            {
-                var aDist = (a.transform.position - origin).sqrMagnitude;
-                var bDist = (b.transform.position - origin).sqrMagnitude;
-                return aDist.CompareTo(bDist);
-            });
-
-            if (candidates.Count > maxTargets)
-            {
-                candidates.RemoveRange(maxTargets, candidates.Count - maxTargets);
-            }
-
-            return candidates;
+            return buffer;
         }
 
         private bool HasSupportAuraNearby(TDEnemy target, float radius)
@@ -10713,18 +10747,18 @@ namespace TD
                 return false;
             }
 
+            // This runs per damage event on armored/boss targets; scanning all
+            // active enemies there is O(hits × enemies). Instead keep a cached
+            // list of support-tagged enemies (refreshed every 0.2s — one full
+            // scan per interval) and distance-check only those.
+            RefreshSupportEnemiesCache();
+
             var radiusSqr = radius * radius;
             var origin = target.transform.position;
-            for (var i = _activeEnemies.Count - 1; i >= 0; i--)
+            for (var i = 0; i < _supportEnemiesCache.Count; i++)
             {
-                var other = _activeEnemies[i];
-                if (other == null)
-                {
-                    _activeEnemies.RemoveAt(i);
-                    continue;
-                }
-
-                if (ReferenceEquals(other, target) || !other.HasTag("support"))
+                var other = _supportEnemiesCache[i];
+                if (other == null || ReferenceEquals(other, target))
                 {
                     continue;
                 }
@@ -10736,6 +10770,25 @@ namespace TD
             }
 
             return false;
+        }
+
+        private void RefreshSupportEnemiesCache()
+        {
+            if (Time.time - _supportEnemiesCacheRefreshTime < 0.2f)
+            {
+                return;
+            }
+
+            _supportEnemiesCacheRefreshTime = Time.time;
+            _supportEnemiesCache.Clear();
+            for (var i = _activeEnemies.Count - 1; i >= 0; i--)
+            {
+                var enemy = _activeEnemies[i];
+                if (enemy != null && enemy.HasTag("support"))
+                {
+                    _supportEnemiesCache.Add(enemy);
+                }
+            }
         }
 
         public float GetTowerDamageMultiplier(TDTowerKind towerKind)
@@ -13639,6 +13692,8 @@ namespace TD
                 TryUpgradeSelectedTowerFromUi(_selectedUpgradeBranch);
             }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            // Debug-only level stepping cheats — never compiled into release players.
             if (TDInputCompat.GetKeyDown(KeyCode.F5))
             {
                 TryStepCampaignLevel(-1);
@@ -13647,6 +13702,7 @@ namespace TD
             {
                 TryStepCampaignLevel(1);
             }
+#endif
 
             if (TDInputBindings.GetKeyDown(TDInputAction.StartWave) ||
                 TDInputCompat.GetGamepadButtonDown(TDGamepadButton.North))
@@ -15566,6 +15622,12 @@ namespace TD
             _missionBoardOpen = false;
             _campaignDeploymentConfirmed = true;
             _missionBoardNeedsRefresh = true;
+            // Automation may deploy locked levels (soak runs on the final
+            // mission after a fresh reset); unlock explicitly so RecordResult
+            // accepts the run. Normal gameplay never routes through here.
+            TDCampaignProgression.DebugUnlockThroughLevelForTest(
+                _campaignRoute.level.levelIndex,
+                _campaignRoute.totalLevels);
             return $"deployed level={_campaignRoute.level.levelIndex} boardOpen={_missionBoardOpen}";
         }
 

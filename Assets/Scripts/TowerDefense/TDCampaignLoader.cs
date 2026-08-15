@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -49,7 +50,19 @@ namespace TD
                 return false;
             }
 
-            campaign = JsonUtility.FromJson<TDCampaignDefinition>(textAsset.text);
+            try
+            {
+                campaign = JsonUtility.FromJson<TDCampaignDefinition>(textAsset.text);
+            }
+            catch (Exception ex)
+            {
+                // Malformed/empty JSON throws from FromJson — route it through
+                // the error channel instead of crashing the boot path.
+                error = $"Failed to parse campaign config JSON: {ex.Message}";
+                campaign = null;
+                return false;
+            }
+
             if (campaign == null)
             {
                 error = "Failed to parse campaign config JSON.";

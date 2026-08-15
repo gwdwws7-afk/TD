@@ -18,6 +18,7 @@ namespace TD
         private readonly List<RectTransform> _nodes = new();
         private readonly List<Image> _nodeImages = new();
         private readonly List<Text> _nodeLabels = new();
+        private readonly List<Button> _nodeButtons = new();
         private readonly List<Image> _pathImages = new();
         private readonly List<RectTransform> _chapterZones = new();
 
@@ -62,6 +63,12 @@ namespace TD
 
         public RectTransform Root => _root;
         public bool IsVisible => _root != null && _root.gameObject.activeSelf;
+
+        /// <summary>
+        /// Node buttons in level order (index 0 = L01). Consumed by the game
+        /// manager's mission-board selection focus and the p8 UI audit probe.
+        /// </summary>
+        public IReadOnlyList<Button> NodeButtons => _nodeButtons;
 
         /// <summary>Build the world map as a full-screen overlay.</summary>
         public void BuildFullScreen(Canvas parent)
@@ -220,7 +227,7 @@ namespace TD
         }
 
         public void Show() { if (_root != null) _root.gameObject.SetActive(true); }
-        public new void Hide() { if (_root != null) _root.gameObject.SetActive(false); }
+        public void Hide() { if (_root != null) _root.gameObject.SetActive(false); }
 
         public Button DeployButton => _deployButton;
         public Button BackButton => _root?.Find("MapBackBtn")?.GetComponent<Button>();
@@ -397,6 +404,7 @@ namespace TD
             _nodes.Add(nodeRect);
             _nodeImages.Add(img);
             _nodeLabels.Add(label);
+            _nodeButtons.Add(btn);
         }
 
         private void DrawPathSegment(Transform parent, Vector2 from, Vector2 to)

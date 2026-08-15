@@ -21,6 +21,9 @@ namespace TD
         private SpriteRenderer _renderer;
         private float _trailTimer;
         private float _trailInterval;
+        private Vector3 _lastTargetPosition;
+        private bool _hasLastTargetPosition;
+        private float _lifetime;
         private Color _projectileTint;
         private Color _trailStartColor;
         private Color _trailEndColor;
@@ -38,6 +41,7 @@ namespace TD
         private bool _orientToVelocity;
         private float _impactScale;
         private float _impactDuration;
+        private const float MaxLifetimeSeconds = 5f;
         private const float ArcChainSearchRadiusMin = 1.15f;
         private const float ArcChainSearchRadiusScale = 1.22f;
         private const int ArcChainCandidateBonus = 3;
@@ -143,6 +147,9 @@ namespace TD
             _damageSpecialist = damageSpecialist;
             _utilitySpecialist = utilitySpecialist;
             _renderer = GetComponent<SpriteRenderer>();
+            _lastTargetPosition = target != null ? target.transform.position : transform.position;
+            _hasLastTargetPosition = target != null;
+            _lifetime = 0f;
 
             ConfigureVisualProfile(_sourceTowerKind);
             if (_renderer != null)
@@ -184,6 +191,9 @@ namespace TD
             _damageSpecialist = false;
             _utilitySpecialist = false;
             _trailTimer = 0f;
+            _lastTargetPosition = Vector3.zero;
+            _hasLastTargetPosition = false;
+            _lifetime = 0f;
             transform.localPosition = Vector3.zero;
             transform.localRotation = Quaternion.identity;
             if (_renderer != null)
@@ -211,17 +221,36 @@ namespace TD
 
         private void Update()
         {
-            if (_target == null)
+            // Lifetime cap: a bad speed config must never leave projectiles
+            // flying forever.
+            _lifetime += Time.deltaTime;
+            if (_lifetime >= MaxLifetimeSeconds)
+            {
+                ResolveHit(transform.position);
+                ReturnToPool();
+                return;
+            }
+
+            // Keep flying to the last known position when the target dies or
+            // escapes mid-flight — otherwise AoE/splash projectiles would be
+            // consumed without ever resolving their area damage.
+            var hasTarget = _target != null;
+            if (hasTarget)
+            {
+                _lastTargetPosition = _target.transform.position;
+                _hasLastTargetPosition = true;
+            }
+            else if (!_hasLastTargetPosition)
             {
                 ReturnToPool();
                 return;
             }
 
-            var toTarget = _target.transform.position - transform.position;
+            var toTarget = _lastTargetPosition - transform.position;
             var step = _speed * Time.deltaTime;
             if (toTarget.sqrMagnitude <= step * step)
             {
-                ResolveHit(_target.transform.position);
+                ResolveHit(transform.position);
                 ReturnToPool();
                 return;
             }

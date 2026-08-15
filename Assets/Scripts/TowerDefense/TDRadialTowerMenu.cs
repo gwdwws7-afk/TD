@@ -12,6 +12,7 @@ namespace TD
     public sealed class TDRadialTowerMenu : MonoBehaviour
     {
         private RectTransform _root;
+        private RectTransform _canvasRect;
         private CanvasGroup _fader;
         private readonly List<RectTransform> _slots = new();
         private readonly List<Button> _buttons = new();
@@ -54,6 +55,7 @@ namespace TD
 
         public void Build(Canvas parent)
         {
+            _canvasRect = parent != null ? (RectTransform)parent.transform : null;
             _root = CreateRect("RadialMenu", parent.transform);
             _root.anchorMin = new Vector2(0.5f, 0.5f);
             _root.anchorMax = new Vector2(0.5f, 0.5f);
@@ -118,9 +120,14 @@ namespace TD
             _targetCell = cell;
             _targetWorld = worldPos;
 
-            // Position root at the screen point.
-            _root.anchoredPosition = screenPos -
-                new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+            // Position root at the screen point, converted into canvas units —
+            // the battle canvas is ScaleWithScreenSize, so raw screen pixels
+            // would offset the menu from the cursor at any scale ≠ 1.
+            if (_canvasRect != null &&
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(_canvasRect, screenPos, null, out var localPoint))
+            {
+                _root.localPosition = localPoint;
+            }
 
             // Configure slots.
             for (var i = 0; i < _slots.Count; i++)

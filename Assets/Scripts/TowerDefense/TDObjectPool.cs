@@ -24,6 +24,11 @@ namespace TD
         private IObjectPool<TDProjectile> _projectilePool;
         private IObjectPool<TDTransientSpriteFx> _fxPool;
 
+        // Prewarm counts — without them the first dense wave pays the full
+        // instantiate cost mid-combat instead of during load.
+        private const int ProjectilePrewarmCount = 16;
+        private const int FxPrewarmCount = 32;
+
         // Track whether Initialize has been called (domain reload resets static Instance)
         private bool _initialized;
 
@@ -57,9 +62,28 @@ namespace TD
                 collectionCheck: false,
                 _fxDefaultCapacity,
                 _fxMaxSize);
+
+            for (var i = 0; i < ProjectilePrewarmCount; i++)
+            {
+                _projectilePool.Release(CreatePooledProjectile());
+            }
+
+            for (var i = 0; i < FxPrewarmCount; i++)
+            {
+                _fxPool.Release(CreatePooledFx());
+            }
         }
 
         // ─── Public API ───────────────────────────────────────────────
+
+        /// <summary>
+        /// Force pool creation + prewarm now (called from the game manager's
+        /// Awake) so the first dense wave doesn't pay instantiation mid-combat.
+        /// </summary>
+        public void Prewarm()
+        {
+            EnsureInitialized();
+        }
 
         /// <summary>
         /// Get a projectile from the pool. The returned GameObject is active,
@@ -80,6 +104,10 @@ namespace TD
                 return;
             }
 
+            // Fallback-created projectiles (spawned while the pool object had
+            // not awoken yet) can outlive the pool's first Get — the pools
+            // must exist before any Release call.
+            EnsureInitialized();
             _projectilePool.Release(projectile);
         }
 
@@ -101,6 +129,10 @@ namespace TD
                 return;
             }
 
+            // FX created via the fallback path (pool instance not awake yet)
+            // return later, when Instance is alive but the pools may still be
+            // uninitialized — releasing into a null pool threw every frame.
+            EnsureInitialized();
             _fxPool.Release(fx);
         }
 
@@ -145,6 +177,11 @@ namespace TD
             var go = new GameObject("Pooled_Fx");
             go.transform.SetParent(transform, false);
             go.AddComponent<SpriteRenderer>();
+            // Frame-sequence FX (enemy hit/death/warning) need the animator;
+            // it sits disabled until Configure() runs, so static FX (trails,
+            // impact sparks) never pay its Update cost.
+            var animator = go.AddComponent<TDSpriteAnimator>();
+            animator.enabled = false;
             var fx = go.AddComponent<TDTransientSpriteFx>();
             return fx;
         }
@@ -198,6 +235,7 @@ namespace TD
             obj.transform.SetParent(parent, true);
             obj.transform.position = worldPosition;
             var rend = obj.AddComponent<SpriteRenderer>();
+            obj.AddComponent<TDSpriteAnimator>();
             var transientFx = obj.AddComponent<TDTransientSpriteFx>();
             return (obj, transientFx, rend);
         }

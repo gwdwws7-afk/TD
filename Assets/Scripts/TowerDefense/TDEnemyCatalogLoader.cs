@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace TD
@@ -16,7 +17,19 @@ namespace TD
                 return false;
             }
 
-            catalog = JsonUtility.FromJson<TDEnemyCatalogSet>(textAsset.text);
+            try
+            {
+                catalog = JsonUtility.FromJson<TDEnemyCatalogSet>(textAsset.text);
+            }
+            catch (Exception ex)
+            {
+                // Malformed/empty JSON throws from FromJson — route it through
+                // the error channel instead of crashing the boot path.
+                error = $"Failed to parse enemy catalog JSON: {ex.Message}";
+                catalog = null;
+                return false;
+            }
+
             if (catalog == null)
             {
                 error = "Failed to parse enemy catalog JSON.";

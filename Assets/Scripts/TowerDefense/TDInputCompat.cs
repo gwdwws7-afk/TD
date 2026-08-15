@@ -233,6 +233,16 @@ namespace TD
                 KeyCode.RightArrow => Key.RightArrow,
                 KeyCode.F5 => Key.F5,
                 KeyCode.F6 => Key.F6,
+                KeyCode.F1 => Key.F1,
+                KeyCode.F2 => Key.F2,
+                KeyCode.F3 => Key.F3,
+                KeyCode.F4 => Key.F4,
+                KeyCode.F7 => Key.F7,
+                KeyCode.F8 => Key.F8,
+                KeyCode.F9 => Key.F9,
+                KeyCode.F10 => Key.F10,
+                KeyCode.F11 => Key.F11,
+                KeyCode.F12 => Key.F12,
                 KeyCode.Alpha1 => Key.Digit1,
                 KeyCode.Alpha2 => Key.Digit2,
                 KeyCode.Alpha3 => Key.Digit3,
@@ -241,10 +251,30 @@ namespace TD
                 KeyCode.Alpha6 => Key.Digit6,
                 KeyCode.Alpha7 => Key.Digit7,
                 KeyCode.Alpha8 => Key.Digit8,
+                KeyCode.Alpha9 => Key.Digit9,
+                KeyCode.Alpha0 => Key.Digit0,
+                KeyCode.Keypad0 => Key.Numpad0,
+                KeyCode.Keypad1 => Key.Numpad1,
+                KeyCode.Keypad2 => Key.Numpad2,
+                KeyCode.Keypad3 => Key.Numpad3,
+                KeyCode.Keypad4 => Key.Numpad4,
+                KeyCode.Keypad5 => Key.Numpad5,
+                KeyCode.Keypad6 => Key.Numpad6,
+                KeyCode.Keypad7 => Key.Numpad7,
+                KeyCode.Keypad8 => Key.Numpad8,
+                KeyCode.Keypad9 => Key.Numpad9,
                 _ => Key.None
             };
 
-            return key != Key.None;
+            if (key != Key.None)
+            {
+                return true;
+            }
+
+            // Name-match fallback, mirroring TryMapInputKey's fallback so every
+            // key the capture side can produce is detectable here — without it,
+            // a rebound key (e.g. F9) would pass capture but never register.
+            return System.Enum.TryParse(keyCode.ToString(), true, out key) && key != Key.None;
         }
 
         private static bool TryMapInputKey(Key key, out KeyCode keyCode)

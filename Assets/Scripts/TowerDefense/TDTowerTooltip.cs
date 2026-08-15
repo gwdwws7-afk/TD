@@ -11,6 +11,7 @@ namespace TD
     public sealed class TDTowerTooltip : MonoBehaviour
     {
         private RectTransform _rect;
+        private RectTransform _canvasRect;
         private Text _nameText;
         private Text _statsText;
         private Text _counterText;
@@ -31,6 +32,8 @@ namespace TD
         private void Initialize()
         {
             _rect = GetComponent<RectTransform>();
+            var parentCanvas = GetComponentInParent<Canvas>();
+            _canvasRect = parentCanvas != null ? (RectTransform)parentCanvas.transform : null;
             _rect.anchorMin = new Vector2(0f, 0f);
             _rect.anchorMax = new Vector2(0f, 0f);
             _rect.sizeDelta = new Vector2(220f, 90f);
@@ -106,22 +109,30 @@ namespace TD
                 RefreshContent();
             }
 
-            // Position near cursor, offset to the right and up
-            var mouse = Input.mousePosition;
-            var screenPos = new Vector2(mouse.x + 16f, mouse.y + 16f);
-
-            // Flip if near right edge
-            if (screenPos.x + _rect.rect.width > Screen.width)
+            // Position near cursor (offset right/up), converted into canvas
+            // units — the battle canvas is ScaleWithScreenSize, so raw screen
+            // pixels would drift away from the cursor at any scale ≠ 1.
+            var mouse = TDInputCompat.MousePosition;
+            if (_canvasRect != null &&
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(_canvasRect, mouse, null, out var localPoint))
             {
-                screenPos.x = mouse.x - _rect.rect.width - 16f;
-            }
+                var halfWidth = _canvasRect.rect.width * 0.5f;
+                var halfHeight = _canvasRect.rect.height * 0.5f;
+                var offset = new Vector2(16f, 16f);
 
-            if (screenPos.y + _rect.rect.height > Screen.height)
-            {
-                screenPos.y = mouse.y - _rect.rect.height - 16f;
-            }
+                // Flip if the tooltip would cross the right/top edges.
+                if (localPoint.x + offset.x + _rect.rect.width > halfWidth)
+                {
+                    offset.x = -offset.x - _rect.rect.width;
+                }
 
-            _rect.anchoredPosition = screenPos;
+                if (localPoint.y + offset.y + _rect.rect.height > halfHeight)
+                {
+                    offset.y = -offset.y - _rect.rect.height;
+                }
+
+                _rect.localPosition = localPoint + offset;
+            }
         }
 
         private void RefreshContent()
