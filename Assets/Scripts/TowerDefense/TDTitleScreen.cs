@@ -78,8 +78,8 @@ namespace TD
 
             // ── Logo glow halo: soft light behind the badge ──
             var logoGlowRect = CreateRect("LogoGlow", _root);
-            logoGlowRect.anchorMin = new Vector2(0.5f, 0.68f);
-            logoGlowRect.anchorMax = new Vector2(0.5f, 0.68f);
+            logoGlowRect.anchorMin = new Vector2(0.5f, 0.73f);
+            logoGlowRect.anchorMax = new Vector2(0.5f, 0.73f);
             logoGlowRect.sizeDelta = new Vector2(500f, 380f);
             var logoGlowImg = logoGlowRect.gameObject.AddComponent<Image>();
             logoGlowImg.sprite = CreateRadialGradientSprite(256, 192);
@@ -95,8 +95,8 @@ namespace TD
             {
                 var chainClean = RemoveBlackBackground(chainTex);
                 var chainRect = CreateRect("LogoChain", _root);
-                chainRect.anchorMin = new Vector2(0.5f, 0.82f);
-                chainRect.anchorMax = new Vector2(0.5f, 0.82f);
+                chainRect.anchorMin = new Vector2(0.5f, 0.86f);
+                chainRect.anchorMax = new Vector2(0.5f, 0.86f);
                 var chainH = 180f;
                 var chainW = chainH * ((float)chainClean.width / chainClean.height);
                 chainRect.sizeDelta = new Vector2(chainW, chainH);
@@ -117,8 +117,8 @@ namespace TD
                 var cleanLogo = RemoveBlackBackground(logoTex);
 
                 var logoRect = CreateRect("TitleLogo", _root);
-                logoRect.anchorMin = new Vector2(0.5f, 0.68f);
-                logoRect.anchorMax = new Vector2(0.5f, 0.68f);
+                logoRect.anchorMin = new Vector2(0.5f, 0.73f);
+                logoRect.anchorMax = new Vector2(0.5f, 0.73f);
                 var logoH = 260f;
                 var logoW = logoH * ((float)cleanLogo.width / cleanLogo.height);
                 logoRect.sizeDelta = new Vector2(logoW, logoH);
@@ -162,24 +162,24 @@ namespace TD
 
             // ── Subtitle ──
             var subRect = CreateRect("TitleSubtitle", _root);
-            subRect.anchorMin = new Vector2(0.5f, 0.545f);
-            subRect.anchorMax = new Vector2(0.5f, 0.545f);
+            subRect.anchorMin = new Vector2(0.5f, 0.595f);
+            subRect.anchorMax = new Vector2(0.5f, 0.595f);
             subRect.sizeDelta = new Vector2(400f, 24f);
             var subTxt = CreateText(subRect, "余 烬 铁 道", 16, FontStyle.Italic, new Color(0.72f, 0.64f, 0.52f, 0.85f));
             subTxt.alignment = TextAnchor.MiddleCenter;
 
             // ── Tagline ──
             var tagRect = CreateRect("TitleTagline", _root);
-            tagRect.anchorMin = new Vector2(0.5f, 0.505f);
-            tagRect.anchorMax = new Vector2(0.5f, 0.505f);
+            tagRect.anchorMin = new Vector2(0.5f, 0.555f);
+            tagRect.anchorMax = new Vector2(0.5f, 0.555f);
             tagRect.sizeDelta = new Vector2(500f, 18f);
             var tagTxt = CreateText(tagRect, "Hold the line. Tend the ember.", 11, FontStyle.Italic, TextDim);
             tagTxt.alignment = TextAnchor.MiddleCenter;
 
             // ── Divider ──
             var divRect = CreateRect("TitleDivider", _root);
-            divRect.anchorMin = new Vector2(0.5f, 0.48f);
-            divRect.anchorMax = new Vector2(0.5f, 0.48f);
+            divRect.anchorMin = new Vector2(0.5f, 0.53f);
+            divRect.anchorMax = new Vector2(0.5f, 0.53f);
             divRect.sizeDelta = new Vector2(320f, 2f);
             var divImg = divRect.gameObject.AddComponent<Image>();
             divImg.color = DividerColor;
@@ -195,14 +195,14 @@ namespace TD
             buttonList.Add(("QUIT", "quit"));
 
             var stepY = 0.070f;
-            var startY = 0.42f;
+            var startY = 0.45f;
             for (var i = 0; i < buttonList.Count; i++)
             {
                 var (label, tag) = buttonList[i];
                 var btnRect = CreateRect($"TitleBtn_{tag}", _root);
                 btnRect.anchorMin = new Vector2(0.5f, startY - i * stepY);
                 btnRect.anchorMax = new Vector2(0.5f, startY - i * stepY);
-                btnRect.sizeDelta = new Vector2(380f, 80f);
+                btnRect.sizeDelta = new Vector2(440f, 76f);
                 CreateStyledButton(btnRect, label, tag);
             }
 
@@ -366,8 +366,8 @@ namespace TD
             _creditsOverlay.gameObject.SetActive(false);
 
             var titleRect = CreateRect("CreditsTitle", _creditsOverlay);
-            titleRect.anchorMin = new Vector2(0.5f, 0.82f);
-            titleRect.anchorMax = new Vector2(0.5f, 0.82f);
+            titleRect.anchorMin = new Vector2(0.5f, 0.86f);
+            titleRect.anchorMax = new Vector2(0.5f, 0.86f);
             titleRect.sizeDelta = new Vector2(400f, 44f);
             var ct = CreateText(titleRect, "CREDITS", 24, FontStyle.Bold, AccentEmber);
             ct.alignment = TextAnchor.MiddleCenter;
