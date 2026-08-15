@@ -19,6 +19,132 @@ namespace TD.Editor
             var importer = (TextureImporter)assetImporter;
             TDReleaseTextureSettings.Configure(importer, assetPath);
         }
+
+        private void OnPostprocessTexture(Texture2D texture)
+        {
+            var normalized = assetPath.Replace('\\', '/');
+            if (!normalized.StartsWith("Assets/Resources/Art/anim/", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            var fileName = System.IO.Path.GetFileNameWithoutExtension(normalized);
+            if (!fileName.StartsWith("enemy_", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            TDFootAnchorBaking.Bake(texture, fileName);
+        }
+    }
+
+    /// <summary>
+    /// Keeps Resources/Art/anim/foot_anchors.json in sync with enemy art.
+    /// Runtime sprites use FullRect meshes and non-readable textures, so the
+    /// opaque-pixel bottom padding must be baked at import time for the
+    /// feet-on-route anchoring (see TDArtLibrary.ResolveFootAnchorLocalY).
+    /// </summary>
+    public static class TDFootAnchorBaking
+    {
+        private const string JsonPath = "Assets/Resources/Art/anim/foot_anchors.json";
+        private const byte AlphaThreshold = 12;
+
+        public static void Bake(Texture2D texture, string spriteName)
+        {
+            try
+            {
+                var width = texture.width;
+                var height = texture.height;
+                if (width <= 0 || height <= 0)
+                {
+                    return;
+                }
+
+                var pixels = texture.GetPixels32();
+                var bottomPadding = 1f;
+                for (var y = 0; y < height; y++)
+                {
+                    if (!RowHasOpaquePixel(pixels, width, y))
+                    {
+                        continue;
+                    }
+
+                    bottomPadding = y / (float)height;
+                    break;
+                }
+
+                var topPadding = 1f;
+                for (var y = height - 1; y >= 0; y--)
+                {
+                    if (!RowHasOpaquePixel(pixels, width, y))
+                    {
+                        continue;
+                    }
+
+                    topPadding = (height - 1 - y) / (float)height;
+                    break;
+                }
+
+                WriteEntry(spriteName, bottomPadding, topPadding);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[TD][TDArtImporter] foot anchor baking failed for {spriteName}: {ex.Message}");
+            }
+        }
+
+        private static bool RowHasOpaquePixel(Color32[] pixels, int width, int y)
+        {
+            var rowOffset = y * width;
+            for (var x = 0; x < width; x++)
+            {
+                if (pixels[rowOffset + x].a >= AlphaThreshold)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static void WriteEntry(string spriteName, float bottom, float top)
+        {
+            var entries = new System.Collections.Generic.SortedDictionary<string, (float b, float t)>();
+            if (System.IO.File.Exists(JsonPath))
+            {
+                var existing = System.IO.File.ReadAllText(JsonPath);
+                var pattern = new System.Text.RegularExpressions.Regex(
+                    "\"([^\"]+)\"\\s*:\\s*\\{\\s*\"b\"\\s*:\\s*([-0-9.eE+]+)\\s*,\\s*\"t\"\\s*:\\s*([-0-9.eE+]+)\\s*\\}");
+                foreach (System.Text.RegularExpressions.Match match in pattern.Matches(existing))
+                {
+                    entries[match.Groups[1].Value] = (
+                        float.Parse(match.Groups[2].Value, System.Globalization.CultureInfo.InvariantCulture),
+                        float.Parse(match.Groups[3].Value, System.Globalization.CultureInfo.InvariantCulture));
+                }
+            }
+
+            entries[spriteName] = ((float)Math.Round(bottom, 4), (float)Math.Round(top, 4));
+
+            var builder = new System.Text.StringBuilder("{\"schemaVersion\":1,\"anchors\":{");
+            var first = true;
+            foreach (var pair in entries)
+            {
+                if (!first)
+                {
+                    builder.Append(',');
+                }
+
+                first = false;
+                builder.Append('"').Append(pair.Key).Append("\":{\"b\":")
+                    .Append(pair.Value.b.ToString("0.####", System.Globalization.CultureInfo.InvariantCulture))
+                    .Append(",\"t\":")
+                    .Append(pair.Value.t.ToString("0.####", System.Globalization.CultureInfo.InvariantCulture))
+                    .Append('}');
+            }
+
+            builder.Append("}}");
+            System.IO.File.WriteAllText(JsonPath, builder.ToString());
+        }
     }
 
     public static class TDReleaseTextureSettings

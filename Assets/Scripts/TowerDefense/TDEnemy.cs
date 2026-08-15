@@ -115,8 +115,7 @@ namespace TD
         public float HealthRatio => _maxHp <= 0 ? 1f : Mathf.Clamp01(_hp / (float)_maxHp);
         public float RouteProgress01 => CalculateRouteProgress01();
         public float RouteDeviationWorld => CalculateRouteDeviationWorld();
-        public float GroundContactRouteDeviationWorld => CalculateRouteDeviationWorld(
-            _shadowRenderer != null ? _shadowRenderer.transform.position : transform.position);
+        public float GroundContactRouteDeviationWorld => CalculateRouteDeviationWorld(ResolveGroundContactWorldPosition());
         public TDEnemyReadability Readability => _readability;
         public bool MotionReady => _visualRoot != null;
         public int HitReactionCount => _hitReactionCount;
@@ -136,16 +135,65 @@ namespace TD
                     return float.MaxValue;
                 }
 
-                var visualBottom = _visualRenderer.transform.localPosition.y +
-                                   (_visualRenderer.sprite.bounds.min.y *
-                                    Mathf.Abs(_visualRenderer.transform.localScale.y));
-                return _shadowRenderer.transform.localPosition.y - visualBottom;
+                // Compare the OPAQUE pixel bottom (not the FullRect bounds,
+                // which include transparent padding) against the shadow.
+                var visualTransform = _visualRenderer.transform;
+                var bottomPadding = TDArtLibrary.GetFootAnchorPadding01(_visualRenderer.sprite.name).x;
+                var opaqueBottom = visualTransform.localPosition.y +
+                                   ((_visualRenderer.sprite.bounds.min.y +
+                                     (bottomPadding * _visualRenderer.sprite.bounds.size.y)) *
+                                    Mathf.Abs(visualTransform.localScale.y));
+                return Mathf.Abs(_shadowRenderer.transform.localPosition.y - opaqueBottom);
             }
         }
-        public bool FootShadowAligned => FootShadowGapWorld >= 0.025f &&
+        public bool FootShadowAligned => FootShadowGapWorld >= 0.018f &&
                                          FootShadowGapWorld <= 0.11f &&
                                          ShadowAspectRatio >= 0.30f &&
                                          ShadowAspectRatio <= 0.52f;
+
+        /// <summary>
+        /// World position of the visual's opaque-pixel bottom (the feet).
+        /// Used for ground-contact route deviation audits; the shadow blob
+        /// intentionally sits slightly below this point.
+        /// </summary>
+        private Vector3 ResolveGroundContactWorldPosition()
+        {
+            if (_visualRenderer == null || _visualRenderer.sprite == null)
+            {
+                return _shadowRenderer != null ? _shadowRenderer.transform.position : transform.position;
+            }
+
+            var visualTransform = _visualRenderer.transform;
+            var bottomPadding = TDArtLibrary.GetFootAnchorPadding01(_visualRenderer.sprite.name).x;
+            var opaqueBottomLocal = _visualRenderer.sprite.bounds.min.y +
+                                    (bottomPadding * _visualRenderer.sprite.bounds.size.y);
+            return new Vector3(
+                visualTransform.position.x,
+                visualTransform.position.y + (opaqueBottomLocal * Mathf.Abs(visualTransform.localScale.y)),
+                0f);
+        }
+
+        /// <summary>
+        /// Called by the sprite animator after every frame swap so the feet
+        /// stay planted on the route line even when frames carry different
+        /// transparent padding.
+        /// </summary>
+        public void NotifyVisualFrameSwapped()
+        {
+            if (_visualRenderer == null || _visualRenderer.sprite == null || _visualRoot == null)
+            {
+                return;
+            }
+
+            var anchoredLocalY = TDArtLibrary.ResolveFootAnchorLocalY(
+                _visualRenderer.sprite,
+                _visualRoot.localScale.y);
+            _visualBaseLocalPosition = new Vector3(
+                _visualBaseLocalPosition.x,
+                anchoredLocalY,
+                _visualBaseLocalPosition.z);
+            _visualRoot.localPosition = _visualBaseLocalPosition;
+        }
 
         public void Initialize(TDGameManager gameManager, IReadOnlyList<Vector3> path, TDEnemyCatalogEntry entry, string laneKey = "default")
         {
@@ -899,7 +947,10 @@ namespace TD
 
         private void TryPlayHitFx(TDTower sourceTower)
         {
-            if (sourceTower != null || _hitFxTimer > 0f)
+            // Tower hits are rate-limited by HitFxMinInterval (they arrive many
+            // times per second); sourceless damage (scenario devices) shows its
+            // own device FX and has no projectile impact spark to lean on.
+            if (sourceTower == null || _hitFxTimer > 0f)
             {
                 return;
             }

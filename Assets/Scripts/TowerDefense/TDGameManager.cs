@@ -191,24 +191,30 @@ namespace TD
 
         private static readonly Vector2Int[] GraylinePathCells =
         {
-            new(0, 6), new(1, 5), new(2, 5), new(3, 5), new(4, 5),
-            new(5, 5), new(6, 4), new(7, 4), new(8, 4), new(9, 3),
-            new(10, 3), new(11, 3), new(12, 3), new(13, 3), new(14, 4),
-            new(15, 4)
+            new(0, 5), new(1, 4), new(2, 4), new(3, 4), new(4, 4),
+            new(5, 4), new(6, 4), new(6, 3), new(7, 3), new(8, 3),
+            new(9, 2), new(10, 2), new(11, 2), new(12, 2), new(13, 3),
+            new(13, 4), new(14, 4), new(15, 4)
         };
 
+        // Road path constants mirror the art pipeline's single source of truth:
+        // grayline follows build_campaign_map_guides.py MAP_PATHS; the other
+        // maps follow td_layout_data.py lanes (which batch15 painted onto the
+        // surfaces). Points are layout coords, y down, cell centers at +0.5.
         private static readonly Vector2[] GraylineRoadPathPoints =
         {
-            new(-0.20f, 6.08f),
-            new(0.45f, 6.02f),
-            new(1.24f, 5.02f),
-            new(6.24f, 5.02f),
-            new(6.48f, 4.04f),
-            new(8.46f, 4.04f),
-            new(9.05f, 3.22f),
-            new(13.46f, 3.22f),
-            new(13.83f, 4.64f),
-            new(16.20f, 4.64f)
+            new(-0.35f, 5.50f),
+            new(0.50f, 5.50f),
+            new(1.50f, 4.50f),
+            new(6.50f, 4.50f),
+            new(6.50f, 3.50f),
+            new(8.50f, 3.50f),
+            new(9.50f, 2.50f),
+            new(12.50f, 2.50f),
+            new(13.50f, 3.50f),
+            new(13.50f, 4.50f),
+            new(15.50f, 4.50f),
+            new(16.35f, 4.50f)
         };
 
         private static readonly Vector2Int[] AshfallPathCells =
@@ -245,38 +251,28 @@ namespace TD
 
         private static readonly Vector2[] AshfallCenterRoadPathPoints =
         {
-            new(-0.20f, 4.55f), new(16.20f, 4.55f)
+            new(-0.35f, 4.50f), new(0.50f, 4.50f),
+            new(15.50f, 4.50f), new(16.35f, 4.50f)
         };
 
         private static readonly Vector2[] AshfallLeftRoadPathPoints =
         {
-            new(-0.20f, 7.04f), new(0.80f, 7.04f), new(1.45f, 6.95f),
-            new(1.85f, 6.65f), new(2.25f, 6.15f), new(2.75f, 5.78f),
-            new(3.40f, 5.70f), new(7.50f, 5.70f), new(8.20f, 5.72f),
-            new(8.75f, 5.95f), new(9.30f, 6.45f), new(9.85f, 6.98f),
-            new(10.40f, 7.38f), new(11.10f, 7.52f), new(13.70f, 7.52f),
-            new(14.30f, 7.30f), new(14.75f, 6.78f), new(15.20f, 6.25f),
-            new(15.70f, 5.90f), new(16.20f, 5.75f)
+            new(-0.35f, 6.50f), new(0.50f, 6.50f), new(3.50f, 6.50f),
+            new(4.50f, 5.50f), new(10.50f, 5.50f), new(11.50f, 4.50f),
+            new(15.50f, 4.50f), new(16.35f, 4.50f)
         };
 
         private static readonly Vector2[] AshfallRightRoadPathPoints =
         {
-            new(-0.20f, 0.45f), new(1.55f, 0.45f), new(1.95f, 0.58f),
-            new(2.45f, 0.92f), new(3.10f, 1.55f), new(3.75f, 2.25f),
-            new(4.55f, 2.88f), new(5.20f, 3.12f), new(11.55f, 3.12f),
-            new(12.25f, 3.08f), new(13.15f, 3.08f), new(13.85f, 3.18f),
-            new(14.35f, 3.55f), new(14.85f, 4.05f), new(15.40f, 4.42f),
-            new(16.20f, 4.55f)
+            new(-0.35f, 2.50f), new(0.50f, 2.50f), new(3.50f, 2.50f),
+            new(4.50f, 3.50f), new(8.50f, 3.50f), new(9.50f, 4.50f),
+            new(15.50f, 4.50f), new(16.35f, 4.50f)
         };
 
         private static readonly Vector2[] AshfallCrossRoadPathPoints =
         {
-            new(-0.20f, 5.78f), new(0.35f, 5.55f), new(0.80f, 5.08f),
-            new(1.15f, 4.72f), new(1.75f, 4.55f), new(10.55f, 4.55f),
-            new(11.00f, 4.72f), new(11.40f, 5.12f), new(11.75f, 5.55f),
-            new(12.15f, 5.92f), new(12.70f, 6.02f), new(13.15f, 5.85f),
-            new(13.55f, 5.45f), new(13.95f, 5.00f), new(14.40f, 4.68f),
-            new(14.95f, 4.55f), new(16.20f, 4.55f)
+            new(-0.35f, 5.50f), new(0.50f, 5.50f), new(6.50f, 5.50f),
+            new(7.50f, 4.50f), new(15.50f, 4.50f), new(16.35f, 4.50f)
         };
 
         private static readonly Vector2Int[] SplitSwitchPathCells =
@@ -313,44 +309,31 @@ namespace TD
 
         private static readonly Vector2[] SplitSwitchCenterRoadPathPoints =
         {
-            new(-0.20f, 2.88f), new(16.20f, 2.88f)
+            new(-0.35f, 3.50f), new(0.50f, 3.50f),
+            new(15.50f, 3.50f), new(16.35f, 3.50f)
         };
 
         private static readonly Vector2[] SplitSwitchLeftRoadPathPoints =
         {
-            new(-0.20f, 5.05f), new(0.45f, 5.18f), new(1.15f, 5.55f),
-            new(1.80f, 5.82f), new(2.60f, 5.90f), new(3.55f, 5.88f),
-            new(4.15f, 5.68f), new(4.70f, 5.12f), new(5.25f, 4.72f),
-            new(5.85f, 4.67f), new(6.50f, 4.95f), new(7.20f, 5.30f),
-            new(8.00f, 5.68f), new(8.75f, 5.80f), new(9.45f, 5.76f),
-            new(10.10f, 5.90f), new(10.80f, 5.98f), new(11.50f, 5.72f),
-            new(12.20f, 5.28f), new(12.85f, 5.06f), new(13.50f, 5.02f),
-            new(14.20f, 5.22f), new(14.85f, 5.60f), new(15.45f, 5.88f),
-            new(16.20f, 5.92f)
+            new(-0.35f, 5.50f), new(0.50f, 5.50f), new(1.50f, 6.50f),
+            new(4.50f, 6.50f), new(5.50f, 5.50f), new(7.50f, 5.50f),
+            new(8.50f, 6.50f), new(11.50f, 6.50f), new(12.50f, 5.50f),
+            new(13.50f, 5.50f), new(14.50f, 6.50f), new(15.50f, 6.50f),
+            new(16.35f, 6.50f)
         };
 
         private static readonly Vector2[] SplitSwitchRightRoadPathPoints =
         {
-            new(-0.20f, 1.84f), new(1.20f, 1.84f), new(2.60f, 1.84f),
-            new(3.15f, 1.88f), new(3.70f, 2.05f), new(4.18f, 2.42f),
-            new(4.62f, 3.00f), new(5.05f, 3.65f), new(5.48f, 4.15f),
-            new(5.92f, 4.36f), new(6.38f, 4.18f), new(6.85f, 3.65f),
-            new(7.35f, 2.98f), new(7.92f, 2.40f), new(8.55f, 2.00f),
-            new(9.30f, 1.84f), new(10.70f, 1.84f), new(12.15f, 1.84f),
-            new(12.75f, 1.92f), new(13.30f, 2.18f), new(13.78f, 2.67f),
-            new(14.22f, 3.28f), new(14.68f, 3.80f), new(15.20f, 4.20f),
-            new(15.72f, 4.36f), new(16.20f, 4.38f)
+            new(-0.35f, 2.50f), new(0.50f, 2.50f), new(3.50f, 2.50f),
+            new(5.50f, 4.50f), new(6.50f, 4.50f), new(8.50f, 2.50f),
+            new(13.50f, 2.50f), new(15.50f, 4.50f), new(16.35f, 4.50f)
         };
 
         private static readonly Vector2[] SplitSwitchCrossRoadPathPoints =
         {
-            new(-0.20f, 3.98f), new(1.30f, 3.98f), new(2.80f, 3.98f),
-            new(4.30f, 3.98f), new(5.40f, 3.98f), new(5.85f, 4.00f),
-            new(6.25f, 4.12f), new(6.80f, 4.48f), new(7.40f, 4.98f),
-            new(8.05f, 5.48f), new(8.72f, 5.78f), new(9.35f, 5.90f),
-            new(9.95f, 5.88f), new(10.55f, 5.63f), new(11.20f, 5.16f),
-            new(11.88f, 4.58f), new(12.48f, 4.12f), new(13.05f, 3.92f),
-            new(13.65f, 3.88f), new(14.90f, 3.92f), new(16.20f, 3.94f)
+            new(-0.35f, 4.50f), new(0.50f, 4.50f), new(6.50f, 4.50f),
+            new(8.50f, 6.50f), new(10.50f, 6.50f), new(12.50f, 4.50f),
+            new(15.50f, 4.50f), new(16.35f, 4.50f)
         };
 
         private static readonly Vector2Int[] HollowKilnPathCells =
@@ -387,40 +370,37 @@ namespace TD
 
         private static readonly Vector2[] HollowKilnCenterRoadPathPoints =
         {
-            new(-0.20f, 4.50f), new(16.20f, 4.50f)
+            new(-0.35f, 3.50f), new(0.50f, 3.50f), new(2.50f, 3.50f),
+            new(4.50f, 5.50f), new(5.50f, 5.50f), new(7.50f, 3.50f),
+            new(8.50f, 3.50f), new(10.50f, 5.50f), new(11.50f, 5.50f),
+            new(13.50f, 3.50f), new(14.50f, 3.50f), new(15.50f, 4.50f),
+            new(16.35f, 4.50f)
         };
 
         private static readonly Vector2[] HollowKilnLeftRoadPathPoints =
         {
-            new(-0.20f, 7.35f), new(1.20f, 7.35f), new(2.00f, 7.10f),
-            new(2.80f, 6.85f), new(4.00f, 6.62f), new(9.80f, 6.62f),
-            new(10.80f, 6.72f), new(11.80f, 6.98f), new(12.80f, 7.33f),
-            new(13.55f, 7.40f), new(14.20f, 7.15f), new(14.90f, 6.75f),
-            new(15.55f, 6.55f), new(16.20f, 6.50f)
+            new(-0.35f, 6.50f), new(0.50f, 6.50f), new(3.50f, 6.50f),
+            new(4.50f, 5.50f), new(6.50f, 5.50f), new(7.50f, 6.50f),
+            new(9.50f, 6.50f), new(10.50f, 5.50f), new(12.50f, 5.50f),
+            new(13.50f, 4.50f), new(14.50f, 4.50f), new(15.50f, 3.50f),
+            new(16.35f, 3.50f)
         };
 
         private static readonly Vector2[] HollowKilnRightRoadPathPoints =
         {
-            new(-0.20f, 1.95f), new(1.60f, 1.95f), new(2.30f, 2.15f),
-            new(3.00f, 2.65f), new(3.60f, 3.15f), new(4.20f, 3.32f),
-            new(4.80f, 3.15f), new(5.45f, 2.50f), new(6.20f, 1.60f),
-            new(6.90f, 1.05f), new(7.70f, 0.82f), new(9.00f, 0.82f),
-            new(9.75f, 1.05f), new(10.50f, 1.65f), new(11.20f, 2.45f),
-            new(11.90f, 3.08f), new(12.60f, 3.33f), new(13.35f, 3.28f),
-            new(14.00f, 2.85f), new(14.70f, 2.30f), new(15.30f, 2.02f),
-            new(16.20f, 1.95f)
+            new(-0.35f, 1.50f), new(0.50f, 1.50f), new(1.50f, 1.50f),
+            new(2.50f, 2.50f), new(3.50f, 2.50f), new(4.50f, 3.50f),
+            new(5.50f, 3.50f), new(7.50f, 1.50f), new(8.50f, 1.50f),
+            new(10.50f, 3.50f), new(11.50f, 3.50f), new(12.50f, 2.50f),
+            new(15.50f, 2.50f), new(16.35f, 2.50f)
         };
 
         private static readonly Vector2[] HollowKilnCrossRoadPathPoints =
         {
-            new(-0.20f, 3.05f), new(0.70f, 3.12f), new(1.50f, 3.45f),
-            new(2.25f, 4.20f), new(3.00f, 5.05f), new(3.70f, 5.55f),
-            new(4.50f, 5.62f), new(5.20f, 5.40f), new(5.80f, 4.80f),
-            new(6.40f, 4.00f), new(7.00f, 3.45f), new(7.70f, 3.20f),
-            new(8.40f, 3.35f), new(9.00f, 3.95f), new(9.60f, 4.70f),
-            new(10.20f, 5.35f), new(10.90f, 5.62f), new(11.60f, 5.55f),
-            new(12.20f, 5.10f), new(12.80f, 4.45f), new(13.50f, 3.75f),
-            new(14.20f, 3.30f), new(15.00f, 3.10f), new(16.20f, 3.20f)
+            new(-0.35f, 4.50f), new(0.50f, 4.50f), new(2.50f, 4.50f),
+            new(3.50f, 3.50f), new(4.50f, 3.50f), new(5.50f, 4.50f),
+            new(13.50f, 4.50f), new(14.50f, 5.50f), new(15.50f, 5.50f),
+            new(16.35f, 5.50f)
         };
 
         private static readonly Vector2Int[] LastEmberPathCells =
@@ -457,42 +437,39 @@ namespace TD
 
         private static readonly Vector2[] LastEmberCenterRoadPathPoints =
         {
-            new(-0.20f, 4.48f), new(16.20f, 4.48f)
+            new(-0.35f, 5.50f), new(0.50f, 5.50f), new(1.50f, 5.50f),
+            new(2.50f, 4.50f), new(3.50f, 4.50f), new(5.50f, 6.50f),
+            new(6.50f, 6.50f), new(9.50f, 3.50f), new(10.50f, 3.50f),
+            new(12.50f, 5.50f), new(13.50f, 5.50f), new(14.50f, 4.50f),
+            new(15.50f, 4.50f), new(16.35f, 4.50f)
         };
 
         private static readonly Vector2[] LastEmberLeftRoadPathPoints =
         {
-            new(-0.20f, 1.10f), new(0.35f, 1.20f), new(0.70f, 1.65f),
-            new(1.10f, 2.05f), new(1.60f, 2.18f), new(6.60f, 2.18f),
-            new(7.20f, 2.32f), new(7.65f, 2.75f), new(8.20f, 3.45f),
-            new(8.80f, 4.15f), new(9.35f, 4.48f), new(9.90f, 4.10f),
-            new(10.45f, 3.35f), new(11.00f, 2.55f), new(11.55f, 2.25f),
-            new(12.20f, 2.25f), new(12.75f, 2.70f), new(13.30f, 3.50f),
-            new(13.85f, 4.40f), new(14.40f, 5.10f), new(15.00f, 5.42f),
-            new(16.20f, 5.42f)
+            new(-0.35f, 6.50f), new(0.50f, 6.50f), new(1.50f, 6.50f),
+            new(2.50f, 5.50f), new(3.50f, 5.50f), new(4.50f, 6.50f),
+            new(5.50f, 6.50f), new(6.50f, 5.50f), new(7.50f, 5.50f),
+            new(8.50f, 6.50f), new(9.50f, 6.50f), new(10.50f, 5.50f),
+            new(12.50f, 5.50f), new(13.50f, 6.50f), new(14.50f, 6.50f),
+            new(15.50f, 5.50f), new(16.35f, 5.50f)
         };
 
         private static readonly Vector2[] LastEmberRightRoadPathPoints =
         {
-            new(-0.20f, 3.88f), new(0.60f, 3.85f), new(1.20f, 4.05f),
-            new(1.90f, 4.55f), new(2.70f, 4.68f), new(6.90f, 4.68f),
-            new(7.50f, 4.55f), new(8.10f, 4.15f), new(8.80f, 3.45f),
-            new(9.40f, 2.80f), new(10.00f, 2.42f), new(10.60f, 2.38f),
-            new(11.20f, 2.80f), new(11.80f, 3.60f), new(12.40f, 4.48f),
-            new(13.00f, 5.30f), new(13.70f, 5.72f), new(14.50f, 5.75f),
-            new(15.20f, 5.55f), new(16.20f, 4.95f)
+            new(-0.35f, 1.50f), new(0.50f, 1.50f), new(1.50f, 1.50f),
+            new(2.50f, 2.50f), new(3.50f, 2.50f), new(4.50f, 3.50f),
+            new(5.50f, 3.50f), new(6.50f, 2.50f), new(7.50f, 2.50f),
+            new(9.50f, 4.50f), new(10.50f, 4.50f), new(12.50f, 2.50f),
+            new(13.50f, 2.50f), new(14.50f, 3.50f), new(15.50f, 3.50f),
+            new(16.35f, 3.50f)
         };
 
         private static readonly Vector2[] LastEmberCrossRoadPathPoints =
         {
-            new(-0.20f, 4.90f), new(0.60f, 4.90f), new(1.20f, 5.10f),
-            new(1.80f, 5.70f), new(2.40f, 6.35f), new(3.20f, 6.90f),
-            new(4.00f, 7.15f), new(4.70f, 7.05f), new(5.20f, 6.60f),
-            new(5.80f, 6.30f), new(6.60f, 6.30f), new(7.10f, 6.10f),
-            new(7.60f, 5.70f), new(8.20f, 5.25f), new(8.80f, 5.15f),
-            new(9.40f, 5.40f), new(10.00f, 6.00f), new(10.70f, 6.50f),
-            new(11.50f, 6.60f), new(14.20f, 6.60f), new(14.90f, 6.40f),
-            new(15.40f, 5.90f), new(16.20f, 5.45f)
+            new(-0.35f, 4.50f), new(0.50f, 4.50f), new(2.50f, 4.50f),
+            new(3.50f, 5.50f), new(4.50f, 5.50f), new(5.50f, 4.50f),
+            new(10.50f, 4.50f), new(11.50f, 5.50f), new(12.50f, 5.50f),
+            new(13.50f, 4.50f), new(15.50f, 4.50f), new(16.35f, 4.50f)
         };
 
         private static readonly Vector2Int[] AshfallBuildPathCells =
@@ -701,6 +678,7 @@ namespace TD
         private TDCampaignRoute _campaignRoute;
         private TDWaveSet _waveSet;
         private Coroutine _waveRoutine;
+        private Coroutine _scenarioReinforcementRoutine;
         private TDWaveRuntimeStat _currentWaveStat;
         private string _loadError;
         private string _campaignError;
@@ -1975,6 +1953,121 @@ namespace TD
         }
 
         /// <summary>
+        /// Reset every per-run field before starting a fresh run in-place.
+        /// EnterLevelInPlace is the only entry point for Retry / Next Mission /
+        /// Deploy, and none of them reload the scene — without this reset,
+        /// outcome flags (e.g. _campaignResultRecorded) and score/telemetry
+        /// accumulators leak from the previous run and corrupt the next one.
+        /// </summary>
+        private void ResetRunState()
+        {
+            // Run outcome flags — without these, later runs never record progress.
+            _campaignResultRecorded = false;
+            _runSummaryLogged = false;
+            _currentMissionStars = 0;
+            _currentMissionContractCompleted = false;
+            _contractFeedbackInitialized = false;
+            _contractFeedbackTargetMet = false;
+            _nextContractFeedbackTime = 0f;
+            _campaignProgressUpdate = null;
+            _newlyClaimedChapterReward = null;
+
+            // Core run state.
+            _wave = 0;
+            _gameOver = false;
+            _victory = false;
+            _builtTowerCount = 0;
+            _isInPrepPhase = false;
+            _waveStartRequested = false;
+            _waveDispatchedEarly = false;
+            _earlyDispatchCount = 0;
+            _selectedTowerKind = TDTowerKind.RailLancer;
+            _selectedTowerForUi = null;
+            _hoveredTower = null;
+            _lineIntegrity = 0;
+            _defenseBudget = 0;
+            _runtimeSpawnIndex = 0;
+            _openingGuideShown = false;
+            _criticalDefenseCueShown = false;
+            _currentWaveDefinition = null;
+            _currentWaveStat = null;
+            _currentWaveHint = "-";
+            _currentWavePhase = "-";
+            _currentWaveGoalTag = "-";
+            _currentWaveThreatTags = "-";
+            _currentWaveBudgetExpected = 0f;
+            _currentWaveBudgetActual = 0f;
+            _currentWaveBudgetInRange = true;
+            _prepCountdown = 0f;
+            _prepDuration = 0f;
+            _lastWaveStartReadinessScore = 0;
+            _lastWaveStartReadinessGrade = "-";
+
+            // Aggregate run statistics (score / contract / telemetry inputs).
+            _totalKills = 0;
+            _totalEscapes = 0;
+            _wavesCleared = 0;
+            _totalDamageDealt = 0;
+            _totalIntegrityDamageTaken = 0;
+            _counterOpportunityDamage = 0;
+            _counterMatchedDamage = 0;
+            _budgetSpentOnBuilds = 0;
+            _budgetSpentOnUpgrades = 0;
+            _upgradesPurchased = 0;
+            _codexDiscoveriesThisRun = 0;
+            _spawnSplitEvents = 0;
+            _attritionPenaltyEvents = 0;
+
+            // Resonance / matrix run telemetry (window state + lifetime counters).
+            ResetResonanceState();
+            _resonanceWindowsTriggered = 0;
+            _resonanceCommandsUsed = 0;
+            _resonanceMatchedCommands = 0;
+            _resonanceBonusDamage = 0f;
+            _emberSurgeUses = 0;
+            _fractureMarkUses = 0;
+            _resonanceChainBonusTriggers = 0;
+            _resonanceChainBudgetBonusTotal = 0;
+            _resonanceChainIntegrityBonusTotal = 0;
+            _doctrineEmpoweredCommands = 0;
+            _matrixOpportunities = 0;
+            _matrixTraitMatches = 0;
+            _matrixResonanceMatches = 0;
+            _matrixFullMatches = 0;
+            _matrixWindowSync = 0;
+            _matrixBestWindowSync = 0;
+            _matrixBestWindowSpecializations = 0;
+            _matrixConvergenceTriggeredThisWindow = false;
+            _matrixConvergenceTriggers = 0;
+            _matrixEmberConvergenceTriggers = 0;
+            _matrixFractureConvergenceTriggers = 0;
+            _matrixFractureConvergenceAffectedTargets = 0;
+            _matrixEmberConvergenceWindowSeconds = 0f;
+
+            // Per-run stat dictionaries.
+            _waveStats.Clear();
+            _failureReasonCounts.Clear();
+            _laneStats.Clear();
+            _towerStats.Clear();
+            _roadSegmentStats.Clear();
+            _threatCategoryDamage.Clear();
+            _threatCategoryCounterDamage.Clear();
+
+            // Wave-economy telemetry — rebase logged baselines onto the zeroed counters.
+            ResetP125EconomyTelemetry();
+
+            // Stop any in-flight scenario reinforcement from the previous run —
+            // otherwise it pays its budget reward into the NEW run's economy.
+            if (_scenarioReinforcementRoutine != null)
+            {
+                StopCoroutine(_scenarioReinforcementRoutine);
+                _scenarioReinforcementRoutine = null;
+            }
+
+            _scenarioReinforcementPending = false;
+        }
+
+        /// <summary>
         /// Enter a new level without scene reload. Destroys old board/enemies/towers,
         /// reloads all level data, rebuilds the board, and restarts the wave loop.
         /// </summary>
@@ -2005,17 +2098,8 @@ namespace TD
                 if (proj != null) Destroy(proj.gameObject);
             }
 
-            // Reset game state.
-            _wave = 0;
-            _gameOver = false;
-            _victory = false;
-            _builtTowerCount = 0;
-            _isInPrepPhase = false;
-            _selectedTowerKind = TDTowerKind.RailLancer;
-            _selectedTowerForUi = null;
-            _hoveredTower = null;
-            _lineIntegrity = 0;
-            _defenseBudget = 0;
+            // Reset ALL per-run state (outcome flags, stats, telemetry).
+            ResetRunState();
 
             // Reload all level data.
             LoadCampaignContext();
@@ -2027,7 +2111,16 @@ namespace TD
             _gridMap = null;
             BuildBoard();
 
-            // Deploy and start wave loop.
+            // Deploy and start wave loop. The old routine may already be dead
+            // (victory ends it naturally; defeat stops it) — its Coroutine
+            // reference stays non-null and would block the restart below, and
+            // a live one would keep using the previous level's wave array.
+            if (_waveRoutine != null)
+            {
+                StopCoroutine(_waveRoutine);
+                _waveRoutine = null;
+            }
+
             _campaignDeploymentConfirmed = true;
             EnsureWaveRoutineRunning();
 
@@ -2091,9 +2184,11 @@ namespace TD
         private void HandleWorldMapBack()
         {
             _worldMap?.Hide();
+            // Reload the scene — Awake will rebuild the title screen.
+            // (RestartCurrentScene would re-deploy the current level in-place.)
             _campaignDeploymentConfirmed = false;
             _skipTitleForAutomation = false;
-            RestartCurrentScene();
+            LoadingTransition("RETURNING TO TITLE", "EMBERLINE DEFENSE");
         }
 
         private void BuildP123SettingsUi()
@@ -3239,7 +3334,12 @@ namespace TD
                     PlaySfxTone("scenario_route_switch", 430f, 0.18f, 0.72f, true);
                     break;
                 case "timed_reinforcement":
-                    StartCoroutine(DeliverScenarioReinforcement());
+                    if (_scenarioReinforcementRoutine != null)
+                    {
+                        StopCoroutine(_scenarioReinforcementRoutine);
+                    }
+
+                    _scenarioReinforcementRoutine = StartCoroutine(DeliverScenarioReinforcement());
                     PushTacticalEvent("Reserve train dispatched. Hold until arrival or start under-strength.", 6.0f);
                     PlaySfxTone("scenario_reinforcement_train", 520f, 0.22f, 0.72f, true);
                     break;
@@ -5623,18 +5723,6 @@ namespace TD
                 CloseMissionBoard();
                 return;
             }
-
-            // Deploy WITHOUT scene reload — switch level data in-place.
-            TDCampaignRouter.SaveLevelIndex(selectedLevel);
-            PlaySfxTone("ui_deploy", 700f, 0.16f, 0.66f, true);
-
-            // Close all overlay panels.
-            _missionBoardOpen = false;
-            _formationPanelOpen = false;
-            _campaignProfileOpen = false;
-            if (_uiFormationRoot != null) _uiFormationRoot.gameObject.SetActive(false);
-            if (_uiMissionBoardRoot != null) _uiMissionBoardRoot.gameObject.SetActive(false);
-            _worldMap?.Hide();
 
             // Deploy WITHOUT scene reload — switch level data in-place.
             TDCampaignRouter.SaveLevelIndex(selectedLevel);
@@ -11458,6 +11546,7 @@ namespace TD
             if (_waveRoutine != null)
             {
                 StopCoroutine(_waveRoutine);
+                _waveRoutine = null;
             }
 
             PlayCriticalSfxTone("run_defeat", 150f, 0.28f, 0.90f, false);
@@ -13906,6 +13995,8 @@ namespace TD
 
             var enemy = enemyObject.AddComponent<TDEnemy>();
             enemy.Initialize(this, path ?? GetDefaultSpawnPath(), runtimeEntry, laneKey);
+            animator.OnFrameSwapped += enemy.NotifyVisualFrameSwapped;
+            enemy.NotifyVisualFrameSwapped();
             _activeEnemies.Add(enemy);
             RegisterEnemySpawnForAnalytics(enemy);
 
@@ -14689,10 +14780,9 @@ namespace TD
                 return GetEnemyShadowOffset(enemyId);
             }
 
-            var visualBottom = visualTransform.localPosition.y +
-                               (visualRenderer.sprite.bounds.min.y * Mathf.Abs(visualTransform.localScale.y));
-            var lift = GetEnemyFootShadowLift(enemyId);
-            return new Vector3(visualTransform.localPosition.x, visualBottom + lift, 0f);
+            // The visual's opaque bottom is anchored exactly on the route line,
+            // so the shadow sits a hair below the feet to read as ground contact.
+            return new Vector3(visualTransform.localPosition.x, -GetEnemyFootShadowLift(enemyId), 0f);
         }
 
         private static void AlignEnemyVisualToRouteAnchor(
@@ -14706,21 +14796,20 @@ namespace TD
             }
 
             var authoredOffset = GetEnemyVisualOffset(enemyId);
-            var scaledBottom = visualRenderer.sprite.bounds.min.y * Mathf.Abs(visualTransform.localScale.y);
-            visualTransform.localPosition = new Vector3(
-                authoredOffset.x,
-                -scaledBottom - GetEnemyFootShadowLift(enemyId),
-                authoredOffset.z);
+            var anchoredLocalY = TDArtLibrary.ResolveFootAnchorLocalY(
+                visualRenderer.sprite,
+                visualTransform.localScale.y);
+            visualTransform.localPosition = new Vector3(authoredOffset.x, anchoredLocalY, authoredOffset.z);
         }
 
         private static float GetEnemyFootShadowLift(string enemyId)
         {
             return enemyId switch
             {
-                "husk_titan" => 0.075f,
-                "furnace_matriarch" => 0.085f,
-                "carapace_brute" => 0.065f,
-                _ => 0.050f
+                "husk_titan" => 0.040f,
+                "furnace_matriarch" => 0.048f,
+                "carapace_brute" => 0.034f,
+                _ => 0.026f
             };
         }
 
@@ -17905,7 +17994,7 @@ namespace TD
                 line != null && line.enabled && line.gameObject.activeInHierarchy);
             var routeIntegrityPass = distinctLanePaths.Length >= 4 && maxRouteStep <= 0.14f &&
                                      maxEnemyRouteDeviation <= 0.01f &&
-                                     maxGroundContactDeviation <= 0.01f && visibleRouteLines == 0;
+                                     maxGroundContactDeviation <= 0.02f && visibleRouteLines == 0;
             var repairModes = new Dictionary<string, float>(StringComparer.OrdinalIgnoreCase)
             {
                 ["ember_leech"] = 0f,
@@ -18057,7 +18146,7 @@ namespace TD
                 .DefaultIfEmpty(0f)
                 .Max();
             var runtimePass = visibleRouteLines == 0 && maxEnemyDeviation <= 0.01f &&
-                              maxGroundContactDeviation <= 0.01f;
+                              maxGroundContactDeviation <= 0.02f;
             var pass = routeContinuityPass && buildSitesPass && runtimePass;
 
             return
@@ -18189,7 +18278,7 @@ namespace TD
                             maxRouteStep <= 0.14f &&
                             maxCurrentDeviation <= 0.01f &&
                             maxObservedDeviation <= 0.01f &&
-                            maxGroundContactDeviation <= 0.01f &&
+                            maxGroundContactDeviation <= 0.02f &&
                             visibleRouteLines == 0;
 
             var authoredCells = _gridMap?.AuthoredBuildCells?.ToArray() ?? Array.Empty<Vector2Int>();

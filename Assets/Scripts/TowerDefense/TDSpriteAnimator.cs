@@ -37,6 +37,9 @@ namespace TD
         public bool HasFireAnimation => _fireFrames.Count > 0;
         public bool HasDeathAnimation => _deathFrames.Count > 0;
 
+        /// <summary>Raised after every sprite swap so owners can re-anchor (e.g. feet).</summary>
+        public event System.Action OnFrameSwapped;
+
         public void Configure(string resourcePrefix, int frameCount, float fps, bool loop = true, bool randomStart = false)
         {
             _renderer = GetComponent<SpriteRenderer>();
@@ -63,7 +66,7 @@ namespace TD
                 _index = Random.Range(0, _idleFrames.Count);
             }
 
-            _renderer.sprite = _idleFrames[_index];
+            SetFrameSprite(_idleFrames[_index]);
             enabled = _idleFrames.Count > 1;
         }
 
@@ -101,7 +104,7 @@ namespace TD
             _state = TDAnimationState.Fire;
             _index = 0;
             _timer = 0f;
-            _renderer.sprite = _fireFrames[0];
+            SetFrameSprite(_fireFrames[0]);
             enabled = true;
         }
 
@@ -116,7 +119,7 @@ namespace TD
             _state = TDAnimationState.Death;
             _index = 0;
             _timer = 0f;
-            _renderer.sprite = _deathFrames[0];
+            SetFrameSprite(_deathFrames[0]);
             enabled = true;
         }
 
@@ -130,7 +133,7 @@ namespace TD
             _state = TDAnimationState.Idle;
             _index = Mathf.Clamp(frameIndex, 0, _idleFrames.Count - 1);
             _timer = 0f;
-            _renderer.sprite = _idleFrames[_index];
+            SetFrameSprite(_idleFrames[_index]);
             enabled = _idleFrames.Count > 1;
         }
 
@@ -209,7 +212,7 @@ namespace TD
             };
             if (_index < currentFrames.Count)
             {
-                _renderer.sprite = currentFrames[_index];
+                SetFrameSprite(currentFrames[_index]);
             }
         }
 
@@ -220,10 +223,21 @@ namespace TD
             _timer = 0f;
             if (_idleFrames.Count > 0)
             {
-                _renderer.sprite = _idleFrames[_index];
+                SetFrameSprite(_idleFrames[_index]);
             }
 
             enabled = _idleFrames.Count > 1;
+        }
+
+        private void SetFrameSprite(Sprite sprite)
+        {
+            if (_renderer == null || sprite == null || _renderer.sprite == sprite)
+            {
+                return;
+            }
+
+            _renderer.sprite = sprite;
+            OnFrameSwapped?.Invoke();
         }
     }
 }

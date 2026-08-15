@@ -11,6 +11,61 @@ namespace TD
         private static readonly Dictionary<string, Sprite> FallbackCache = new();
         private static Sprite _softShadowSprite;
         private static Sprite _softRingSprite;
+        private static Dictionary<string, Vector2> _footAnchorPaddings;
+
+        /// <summary>
+        /// Transparent padding around the opaque pixels of an animation frame,
+        /// as a fraction of texture size. x = bottom, y = top. Baked at import
+        /// time into Resources/Art/anim/foot_anchors.json so runtime sprites
+        /// (FullRect mesh, non-readable textures) can still anchor real feet.
+        /// </summary>
+        public static Vector2 GetFootAnchorPadding01(string spriteName)
+        {
+            if (string.IsNullOrWhiteSpace(spriteName))
+            {
+                return Vector2.zero;
+            }
+
+            EnsureFootAnchorsLoaded();
+            return _footAnchorPaddings.TryGetValue(spriteName, out var padding) ? padding : Vector2.zero;
+        }
+
+        /// <summary>Local Y that places the sprite's opaque bottom exactly at y=0.</summary>
+        public static float ResolveFootAnchorLocalY(Sprite sprite, float visualLocalScaleY)
+        {
+            if (sprite == null)
+            {
+                return 0f;
+            }
+
+            var bottomPadding = GetFootAnchorPadding01(sprite.name).x;
+            var opaqueBottomLocal = sprite.bounds.min.y + (bottomPadding * sprite.bounds.size.y);
+            return -opaqueBottomLocal * Mathf.Abs(visualLocalScaleY);
+        }
+
+        private static void EnsureFootAnchorsLoaded()
+        {
+            if (_footAnchorPaddings != null)
+            {
+                return;
+            }
+
+            _footAnchorPaddings = new Dictionary<string, Vector2>();
+            var asset = Resources.Load<TextAsset>("Art/anim/foot_anchors");
+            if (asset == null || string.IsNullOrWhiteSpace(asset.text))
+            {
+                return;
+            }
+
+            var entryPattern = new System.Text.RegularExpressions.Regex(
+                "\"([^\"]+)\"\\s*:\\s*\\{\\s*\"b\"\\s*:\\s*([-0-9.eE+]+)\\s*,\\s*\"t\"\\s*:\\s*([-0-9.eE+]+)\\s*\\}");
+            foreach (System.Text.RegularExpressions.Match match in entryPattern.Matches(asset.text))
+            {
+                _footAnchorPaddings[match.Groups[1].Value] = new Vector2(
+                    float.Parse(match.Groups[2].Value, System.Globalization.CultureInfo.InvariantCulture),
+                    float.Parse(match.Groups[3].Value, System.Globalization.CultureInfo.InvariantCulture));
+            }
+        }
 
         public static Sprite LoadSpriteOrFallback(string resourcePath, Color fallbackColor)
         {
