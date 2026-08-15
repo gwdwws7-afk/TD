@@ -319,10 +319,10 @@ namespace TD
             var plateTex = LoadFullResTexture("Art/Branding/button_art");
             if (plateTex != null && plateTex.width > 512)
             {
-                // Proper button art loaded — strip black, use as-is.
-                var cleanTex = RemoveBlackBackground(plateTex);
-                img.sprite = Sprite.Create(cleanTex,
-                    new Rect(0, 0, cleanTex.width, cleanTex.height),
+                // button_art.png already has alpha baked in from Python processing.
+                // Do NOT run RemoveBlackBackground — it would override alpha to 1.
+                img.sprite = Sprite.Create(plateTex,
+                    new Rect(0, 0, plateTex.width, plateTex.height),
                     new Vector2(0.5f, 0.5f));
                 img.type = Image.Type.Simple;
                 img.preserveAspect = true;
