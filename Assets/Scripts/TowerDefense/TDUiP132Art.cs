@@ -212,7 +212,6 @@ namespace TD
             }
 
             if (panelName == "Primary HUD" ||
-                panelName == "Tower Build Bar" ||
                 panelName == "Tactical Feed" ||
                 panelName == "Scenario Mechanic" ||
                 panelName == "Resonance Command Panel")

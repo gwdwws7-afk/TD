@@ -412,7 +412,6 @@ namespace TD
                 "Wave Intel",
                 "Scenario Mechanic",
                 "Tactical Feed",
-                "Tower Build Bar",
                 "Tower Upgrade Panel",
                 "Resonance Command Panel",
                 "Run Result",

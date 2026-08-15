@@ -1,4 +1,4 @@
-param(
+﻿param(
     [string]$McpUrl = "http://127.0.0.1:8080/mcp",
     [int]$LevelIndex = 1,
     [int]$DurationSeconds = 45,
@@ -1084,7 +1084,7 @@ if (uiRoot != null)
 var requiredUi = new []
 {
     "Primary HUD", "Start Wave Button", "Wave Intel", "Tactical Feed",
-    "Tower Build Bar", "Tower Upgrade Panel", "Resonance Command Panel", "Scenario Mechanic", "Scenario Mechanic Command",
+    "Tower Upgrade Panel", "Resonance Command Panel", "Scenario Mechanic", "Scenario Mechanic Command",
     "Ember Command Button", "Fracture Command Button", "Run Result Scrim", "Run Result",
     "Mission Contract", "Mission Board Button", "Mission Board Scrim", "Mission Board", "Mission Deploy Button",
     "Mission Intel Contract", "Prebattle Formation", "Formation Deploy", "Formation Auto Fit",

@@ -679,6 +679,8 @@ namespace TD
         private AudioMixerGroup _mixerSfxGroup;
         private AudioMixerGroup _mixerAmbienceGroup;
         private string _activeMusicState;
+        private string _activeMusicPath;
+        private readonly Dictionary<string, float> _musicResumePositions = new();
         private float _nextUltimateSfxTime;
         private TDTower _lastHoverSfxTower;
         private TDTowerTooltip _towerTooltip;
@@ -783,6 +785,18 @@ namespace TD
         private bool _contractFeedbackInitialized;
         private bool _contractFeedbackTargetMet;
         private float _nextContractFeedbackTime;
+        private float _battleUiTextTimer;
+        private TDRunScoreReport _runScoreFrameCache;
+        private int _runScoreFrameCacheFrame = -1;
+        private TDDefenseReadinessReport _readinessCacheReport;
+        private int _readinessCacheTowerCount = -1;
+        private int _readinessCacheWave = -1;
+        private int _readinessCacheUpgrades = -1;
+        private float _resonanceSpecCacheTime = -1f;
+        private int _resonanceSpecEmberAligned;
+        private int _resonanceSpecEmberFit;
+        private int _resonanceSpecFractureAligned;
+        private int _resonanceSpecFractureFit;
         private TDCampaignProgressUpdate _campaignProgressUpdate;
         private TDCampaignChapterRewardDefinition _newlyClaimedChapterReward;
         private int _defenseBudget = DefaultDefenseBudget;
@@ -924,12 +938,6 @@ namespace TD
         private Text _uiWaveIntelReadinessText;
         private RectTransform _uiEventFeedRoot;
         private Text _uiEventFeedText;
-        private RectTransform _uiTowerBarRoot;
-        private readonly List<Button> _uiTowerButtons = new();
-        private readonly List<Text> _uiTowerButtonTexts = new();
-        private readonly List<Image> _uiTowerButtonIcons = new();
-        private readonly List<Image> _uiTowerButtonAccents = new();
-        private readonly List<Outline> _uiTowerButtonOutlines = new();
         private RectTransform _uiTowerPanelRoot;
         private Image _uiTowerIdentityIcon;
         private Image _uiTowerIdentityStripe;
@@ -1102,8 +1110,10 @@ namespace TD
         {
             _settingsPanel?.Tick();
             UpdateMusicState();
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || TD_AUTOMATION
             UpdateP124Autoplay();
             UpdateP1254ContinuousSoak();
+#endif
             if (_worldMap != null && _worldMap.IsVisible)
             {
                 _gridMap?.HideBuildPreview();
@@ -1557,12 +1567,9 @@ namespace TD
             CreateUiText("Tactical Feed Title", _uiEventFeedRoot, new Vector2(10f, -11f), new Vector2(72f, 18f), "TACTICAL", 10, FontStyle.Bold, TextAnchor.MiddleLeft, new Color(0.64f, 0.84f, 0.92f, 1f));
             _uiEventFeedText = CreateUiText("Tactical Feed Body", _uiEventFeedRoot, new Vector2(88f, -8f), new Vector2(292f, 24f), string.Empty, 10, FontStyle.Bold, TextAnchor.MiddleLeft, new Color(0.90f, 0.94f, 0.96f, 1f));
 
-            var towerBarWidth = Mathf.Clamp(58f + (Mathf.Max(1, _unlockedTowerKinds.Count) * 74f), 132f, 650f);
-            _uiTowerBarRoot = CreateUiPanel("Tower Build Bar", root, new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(18f, 18f), new Vector2(towerBarWidth, 62f), new Color(0.025f, 0.032f, 0.036f, 0.88f));
-            AddUiPanelChrome(_uiTowerBarRoot, new Color(0.96f, 0.62f, 0.18f, 0.88f));
-            CreateUiSpriteImage("Tower Bar Icon", _uiTowerBarRoot, new Vector2(13f, -7f), new Vector2(30f, 30f), TDUiP132Art.IconPath(TDUiP132Icon.Build), Color.white);
-            CreateUiText("Tower Bar Label", _uiTowerBarRoot, new Vector2(8f, -39f), new Vector2(40f, 13f), "BUILD", 10, FontStyle.Bold, TextAnchor.MiddleCenter, new Color(0.86f, 0.88f, 0.86f, 1f));
-            RebuildTowerBuildButtons();
+            // The legacy Tower Build Bar was removed: building goes through the
+            // radial tower menu (click an empty build pad). Keyboard 1-8 still
+            // drives the build ghost preview via _selectedTowerKind.
 
             _uiTowerPanelRoot = CreateUiPanel("Tower Upgrade Panel", root, new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(-18f, 18f), new Vector2(300f, 226f), new Color(0.028f, 0.036f, 0.040f, 0.92f));
             AddUiPanelChrome(_uiTowerPanelRoot, new Color(0.44f, 0.82f, 0.72f, 0.92f));
@@ -1855,9 +1862,12 @@ namespace TD
 
             // Skip the title screen entirely for automated smoke/autoplay probes.
             var skipTitle = System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "--td-skip-title") >= 0
+                || _skipTitleForAutomation
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || TD_AUTOMATION
                 || TDStandaloneSmokeProbe.IsRequested()
                 || TDP1254StandaloneProbe.IsRequested()
-                || _skipTitleForAutomation;
+#endif
+                ;
             if (skipTitle)
             {
                 return;
@@ -2068,6 +2078,14 @@ namespace TD
 
             // Wave-economy telemetry — rebase logged baselines onto the zeroed counters.
             ResetP125EconomyTelemetry();
+
+            // Invalidate per-run UI caches (readiness key could otherwise alias
+            // across levels with equal wave/tower counts).
+            _readinessCacheReport = null;
+            _readinessCacheTowerCount = -1;
+            _readinessCacheWave = -1;
+            _readinessCacheUpgrades = -1;
+            _resonanceSpecCacheTime = -1f;
 
             // Stop any in-flight scenario reinforcement from the previous run —
             // otherwise it pays its budget reward into the NEW run's economy.
@@ -2577,8 +2595,8 @@ namespace TD
                 case TDFirstRunTutorialStep.BuildTower:
                     title = TDLocalization.IsChinese ? "部署防御塔" : "DEPLOY A TOWER";
                     body = TDLocalization.IsChinese
-                        ? "先选择阵容中的防御塔，再点击发光塔位。只有完成部署后，本步骤才会通过。"
-                        : "Choose a formation tower, then click a glowing build pad. The action is accepted only after a tower is deployed.";
+                        ? "点击空的可建造塔位，在弹出的环形菜单中选择要部署的防御塔。只有完成部署后，本步骤才会通过。"
+                        : "Click an empty build pad, then pick a tower from the radial menu that opens. The action is accepted only after a tower is deployed.";
                     break;
                 case TDFirstRunTutorialStep.InspectRange:
                     title = TDLocalization.IsChinese ? "查看射程" : "READ THE RANGE";
@@ -3023,17 +3041,26 @@ namespace TD
                 return;
             }
 
-            SetUiText(_uiCampaignText, GetCompactCampaignHudLabel());
-            SetUiText(_uiWaveMetricText, $"WAVE  {_wave:00}/{GetConfiguredWaveCount():00}");
-            SetUiText(_uiIntegrityMetricText, $"LINE  {_lineIntegrity:00}");
-            SetUiText(_uiBudgetMetricText, $"GOLD  {_defenseBudget}");
-            SetUiText(_uiSelectedText, $"{GetCompactTowerLabel(_selectedTowerKind).ToUpperInvariant()}  /  {GetUpgradeBranchLabel(_selectedUpgradeBranch).ToUpperInvariant()}");
-            SetUiText(_uiPrepText, BuildCompactBattleStateLabel());
-            SetUiText(_uiGuideText, GetGuideHudLabel());
-            SetUiText(_uiMissionContractText, BuildCurrentMissionContractHudLabel());
-            SetUiText(_uiResonanceText, GetResonanceHudLabel());
-            SetUiText(_uiStatusText, $"Status {_lastStatus}");
-            SetUiText(_uiEventFeedText, BuildCompactTacticalFeedLabel());
+            // Text refresh runs at ~10 Hz — the interpolations dominate HUD
+            // cost and none of these values need per-frame precision. Layout,
+            // visibility and the resonance fill stay per-frame.
+            _battleUiTextTimer -= Time.unscaledDeltaTime;
+            var refreshTexts = _battleUiTextTimer <= 0f;
+            if (refreshTexts)
+            {
+                _battleUiTextTimer = 0.1f;
+                SetUiText(_uiCampaignText, GetCompactCampaignHudLabel());
+                SetUiText(_uiWaveMetricText, $"WAVE  {_wave:00}/{GetConfiguredWaveCount():00}");
+                SetUiText(_uiIntegrityMetricText, $"LINE  {_lineIntegrity:00}");
+                SetUiText(_uiBudgetMetricText, $"GOLD  {_defenseBudget}");
+                SetUiText(_uiSelectedText, $"{GetCompactTowerLabel(_selectedTowerKind).ToUpperInvariant()}  /  {GetUpgradeBranchLabel(_selectedUpgradeBranch).ToUpperInvariant()}");
+                SetUiText(_uiPrepText, BuildCompactBattleStateLabel());
+                SetUiText(_uiGuideText, GetGuideHudLabel());
+                SetUiText(_uiMissionContractText, BuildCurrentMissionContractHudLabel());
+                SetUiText(_uiResonanceText, GetResonanceHudLabel());
+                SetUiText(_uiStatusText, $"Status {_lastStatus}");
+                SetUiText(_uiEventFeedText, BuildCompactTacticalFeedLabel());
+            }
 
             var showPrepDetails = _isInPrepPhase && !_gameOver;
             var showResonanceMeter = _isResonanceSystemEnabled && !_gameOver;
@@ -3060,7 +3087,6 @@ namespace TD
             UpdateResonanceCommandPanelUi();
             UpdateScenarioMechanicUi();
             UpdateWaveIntelUi();
-            UpdateTowerBuildButtonUi();
             UpdateTowerUpgradePanelUi();
             UpdateGameOverUi();
             UpdateMissionBoardUi();
@@ -3346,7 +3372,9 @@ namespace TD
             }
 
             _scenarioUses++;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || TD_AUTOMATION
             TrackP135ScenarioActivation(type);
+#endif
             switch (type)
             {
                 case "route_switch":
@@ -3486,7 +3514,9 @@ namespace TD
         private void TriggerScenarioBossPhase(TDEnemy boss, int phaseNumber)
         {
             RecordEnemyCodexObservation(boss?.EnemyId, TDEnemyCodexObservation.BossPhase);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || TD_AUTOMATION
             TrackP135BossPhase(_scenarioBossPhaseSuppressed);
+#endif
             if (_scenarioBossPhaseSuppressed)
             {
                 _scenarioBossPhaseSuppressed = false;
@@ -3544,11 +3574,23 @@ namespace TD
             _uiResonanceCommandPanel.gameObject.SetActive(show);
             if (!show)
             {
+                _resonanceSpecCacheTime = -1f;
                 return;
             }
 
-            var emberAligned = CountOwnedSpecializationsForCommand(TDResonanceCommand.EmberSurge, out var emberThreatFit);
-            var fractureAligned = CountOwnedSpecializationsForCommand(TDResonanceCommand.FractureMark, out var fractureThreatFit);
+            // Counting owned specializations does two full-scene tower scans —
+            // refresh it at 0.25s while the window is open, not every frame.
+            if (Time.unscaledTime - _resonanceSpecCacheTime >= 0.25f)
+            {
+                _resonanceSpecCacheTime = Time.unscaledTime;
+                _resonanceSpecEmberAligned = CountOwnedSpecializationsForCommand(TDResonanceCommand.EmberSurge, out _resonanceSpecEmberFit);
+                _resonanceSpecFractureAligned = CountOwnedSpecializationsForCommand(TDResonanceCommand.FractureMark, out _resonanceSpecFractureFit);
+            }
+
+            var emberAligned = _resonanceSpecEmberAligned;
+            var emberThreatFit = _resonanceSpecEmberFit;
+            var fractureAligned = _resonanceSpecFractureAligned;
+            var fractureThreatFit = _resonanceSpecFractureFit;
             var emberThreatMatch = IsResonanceCommandMatchForCurrentThreat(TDResonanceCommand.EmberSurge);
             var fractureThreatMatch = IsResonanceCommandMatchForCurrentThreat(TDResonanceCommand.FractureMark);
             var awaitingCommand = _activeResonanceCommand == TDResonanceCommand.None;
@@ -3614,70 +3656,25 @@ namespace TD
             SetUiText(_uiWaveIntelEnemyText, BuildCompactWaveCompositionLabel(_currentWaveDefinition));
             SetUiText(_uiWaveIntelProfileText, BuildCompactEnemyProfileLabel(_currentWaveDefinition));
             SetUiText(_uiWaveIntelRouteText, BuildWaveRouteLabel(_currentWaveDefinition));
-            var readiness = CalculateDefenseReadiness(_currentWaveDefinition);
+            // Readiness sampling scans all towers + lane coverage; it only
+            // changes when the tower roster, upgrades or wave definition change.
+            if (_readinessCacheReport == null ||
+                _readinessCacheTowerCount != _builtTowerCount ||
+                _readinessCacheWave != _wave ||
+                _readinessCacheUpgrades != _upgradesPurchased)
+            {
+                _readinessCacheTowerCount = _builtTowerCount;
+                _readinessCacheWave = _wave;
+                _readinessCacheUpgrades = _upgradesPurchased;
+                _readinessCacheReport = CalculateDefenseReadiness(_currentWaveDefinition);
+            }
+
+            var readiness = _readinessCacheReport;
             SetUiText(
                 _uiWaveIntelReadinessText,
                 TDLocalization.IsChinese
                     ? $"战备  {readiness.score:00} {readiness.grade}   覆盖 {readiness.coverageScore:00}   克制 {readiness.counterScore:00}"
                     : $"READINESS  {readiness.score:00} {readiness.grade}   COV {readiness.coverageScore:00}   CTR {readiness.counterScore:00}");
-        }
-
-        private void UpdateTowerBuildButtonUi()
-        {
-            if (_uiTowerBarRoot != null)
-            {
-                _uiTowerBarRoot.gameObject.SetActive(IsBuildWindowOpen() && !_gameOver &&
-                                                     !_missionBoardOpen && !_formationPanelOpen && !_campaignProfileOpen);
-            }
-
-            for (var i = 0; i < _uiTowerButtons.Count; i++)
-            {
-                if (i >= _unlockedTowerKinds.Count)
-                {
-                    _uiTowerButtons[i].gameObject.SetActive(false);
-                    continue;
-                }
-
-                var kind = _unlockedTowerKinds[i];
-                var cost = TDTower.GetBuildCost(kind);
-                var selected = kind == _selectedTowerKind;
-                var affordable = _defenseBudget >= cost;
-                var button = _uiTowerButtons[i];
-                var label = _uiTowerButtonTexts[i];
-                var identity = TDUiVisualIdentity.GetTower(kind);
-                button.gameObject.SetActive(true);
-                button.interactable = true;
-                SetUiText(label, $"{i + 1}\n{cost}");
-
-                if (i < _uiTowerButtonIcons.Count && _uiTowerButtonIcons[i] != null)
-                {
-                    _uiTowerButtonIcons[i].color = affordable
-                        ? Color.white
-                        : new Color(0.52f, 0.58f, 0.60f, 0.72f);
-                }
-
-                if (i < _uiTowerButtonAccents.Count && _uiTowerButtonAccents[i] != null)
-                {
-                    var accent = identity.accent;
-                    accent.a = affordable ? 1f : 0.42f;
-                    _uiTowerButtonAccents[i].color = accent;
-                }
-
-                if (i < _uiTowerButtonOutlines.Count && _uiTowerButtonOutlines[i] != null)
-                {
-                    _uiTowerButtonOutlines[i].enabled = selected;
-                    _uiTowerButtonOutlines[i].effectColor = new Color(identity.accent.r, identity.accent.g, identity.accent.b, 0.96f);
-                }
-
-                if (button.targetGraphic is Image image)
-                {
-                    image.color = selected
-                        ? Color.Lerp(new Color(0.10f, 0.14f, 0.16f, 0.98f), identity.accent, 0.30f)
-                        : affordable && IsBuildWindowOpen()
-                            ? new Color(0.11f, 0.18f, 0.22f, 0.92f)
-                            : new Color(0.10f, 0.11f, 0.12f, 0.64f);
-                }
-            }
         }
 
         private void UpdateTowerUpgradePanelUi()
@@ -5610,6 +5607,7 @@ namespace TD
                 $"towerX:{GetCampaignTowerPowerMultiplier():0.###}";
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || TD_AUTOMATION
         private bool DoesCurrentDifficultyRuntimeMatch()
         {
             var expectedBudget = DefaultDefenseBudget + GetCampaignStartingBudgetRamp(_campaignRoute?.level?.levelIndex ?? 1);
@@ -5684,6 +5682,7 @@ namespace TD
                    Mathf.Approximately(expectedResonance, _missionResonanceGainMultiplier) &&
                    Mathf.Approximately(expectedScenarioCost, _scenarioCostMultiplier);
         }
+#endif
 
         private float GetDoctrineCommandPowerMultiplier(TDResonanceCommand command)
         {
@@ -6475,13 +6474,30 @@ namespace TD
                 "escapes" => _totalEscapes,
                 "tower_count" => _builtTowerCount,
                 "upgrades" => _upgradesPurchased,
-                "tactical_score" => CalculateRunScore().total,
+                "tactical_score" => CalculateRunScoreCachedForFrame().total,
                 "counter_score" => CalculateRunCounterScore(),
                 "command_score" => CalculateRunCommandScore(),
                 "matrix_full_matches" => _matrixFullMatches,
                 "convergence_triggers" => _matrixConvergenceTriggers,
                 _ => 0
             };
+        }
+
+        /// <summary>
+        /// CalculateRunScore walks every lane/tower/threat stat dictionary —
+        /// the HUD contract label and the contract feedback both ask for it
+        /// every frame, so compute it once per frame at most.
+        /// </summary>
+        private TDRunScoreReport CalculateRunScoreCachedForFrame()
+        {
+            if (_runScoreFrameCacheFrame == Time.frameCount && _runScoreFrameCache != null)
+            {
+                return _runScoreFrameCache;
+            }
+
+            _runScoreFrameCacheFrame = Time.frameCount;
+            _runScoreFrameCache = CalculateRunScore();
+            return _runScoreFrameCache;
         }
 
         private static bool IsContractTargetMet(TDCampaignContractDefinition contract, int currentValue)
@@ -6630,69 +6646,8 @@ namespace TD
 
         private void RebuildTowerBuildButtons()
         {
-            if (_uiTowerBarRoot == null)
-            {
-                return;
-            }
-
-            for (var i = 0; i < _uiTowerButtons.Count; i++)
-            {
-                if (_uiTowerButtons[i] != null)
-                {
-                    Destroy(_uiTowerButtons[i].gameObject);
-                }
-            }
-
-            _uiTowerButtons.Clear();
-            _uiTowerButtonTexts.Clear();
-            _uiTowerButtonIcons.Clear();
-            _uiTowerButtonAccents.Clear();
-            _uiTowerButtonOutlines.Clear();
-
-            var towerBarWidth = Mathf.Clamp(
-                58f + (Mathf.Max(1, _unlockedTowerKinds.Count) * 74f),
-                132f,
-                650f);
-            _uiTowerBarRoot.sizeDelta = new Vector2(towerBarWidth, _uiTowerBarRoot.sizeDelta.y);
-
-            for (var i = 0; i < _unlockedTowerKinds.Count; i++)
-            {
-                var kind = _unlockedTowerKinds[i];
-                var button = CreateUiButton($"Build {kind}", _uiTowerBarRoot, new Vector2(54f + (i * 74f), -9f), new Vector2(66f, 44f), string.Empty, 10, () => { });
-                button.onClick.RemoveAllListeners();
-                button.onClick.AddListener(() =>
-                {
-                    _selectedTowerKind = kind;
-                    _selectedTowerForUi?.Readability?.SetInteractionState(
-                        _selectedTowerForUi == _hoveredTower,
-                        false);
-                    _selectedTowerForUi = null;
-                    SetStatus($"Selected {GetTowerKindLabel(kind)}.");
-                });
-
-                var identity = TDUiVisualIdentity.GetTower(kind);
-                var icon = CreateUiSpriteImage($"{kind} Identity Icon", button.transform, new Vector2(4f, -5f), new Vector2(34f, 34f), identity.iconResourcePath, Color.white);
-                var accent = CreateUiImage($"{kind} Identity Accent", button.transform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), Vector2.zero, new Vector2(0f, 3f), identity.accent);
-                var outline = button.gameObject.AddComponent<Outline>();
-                outline.effectColor = identity.accent;
-                outline.effectDistance = new Vector2(2f, -2f);
-                outline.useGraphicAlpha = true;
-                outline.enabled = false;
-
-                var label = button.GetComponentInChildren<Text>();
-                label.rectTransform.anchorMin = new Vector2(0f, 1f);
-                label.rectTransform.anchorMax = new Vector2(0f, 1f);
-                label.rectTransform.pivot = new Vector2(0f, 1f);
-                label.rectTransform.anchoredPosition = new Vector2(39f, -3f);
-                label.rectTransform.sizeDelta = new Vector2(23f, 36f);
-                label.alignment = TextAnchor.MiddleCenter;
-
-                _uiTowerButtons.Add(button);
-                _uiTowerButtonTexts.Add(label);
-                _uiTowerButtonIcons.Add(icon);
-                _uiTowerButtonAccents.Add(accent);
-                _uiTowerButtonOutlines.Add(outline);
-            }
+            // The legacy Tower Build Bar no longer exists (radial menu build
+            // flow); kept as a no-op sink for formation/autoplay refresh paths.
         }
 
         private void SetUpgradeButtonUi(Button button, Text label, string branchLabel, int cost, bool interactable, string preview)
@@ -9767,11 +9722,6 @@ namespace TD
             {
                 fallback = _uiStartWaveButton;
             }
-            else
-            {
-                fallback = _uiTowerButtons.FirstOrDefault(button =>
-                    button != null && button.gameObject.activeInHierarchy && button.interactable);
-            }
 
             if (fallback != null)
             {
@@ -12185,7 +12135,16 @@ namespace TD
                 return;
             }
 
+            // Remember where the looping track was when we switched away, so
+            // returning to it (e.g. combat after a resonance window) resumes
+            // instead of restarting the whole piece every time.
+            if (_musicClip != null && _musicSource.loop && _musicSource.isPlaying)
+            {
+                _musicResumePositions[_activeMusicPath] = _musicSource.time;
+            }
+
             _activeMusicState = targetState;
+            _activeMusicPath = targetPath;
             TransitionMusicSnapshot(targetState);
             var newClip = Resources.Load<AudioClip>(AudioBasePath + "/" + targetPath);
             if (newClip == null)
@@ -12199,6 +12158,13 @@ namespace TD
             _musicClip = newClip;
             _musicSource.clip = newClip;
             _musicSource.Play();
+            if (!isStinger &&
+                _musicResumePositions.TryGetValue(targetPath, out var resumeAt) &&
+                resumeAt > 0.5f &&
+                resumeAt < newClip.length - 0.5f)
+            {
+                _musicSource.time = resumeAt;
+            }
         }
 
         /// <summary>
@@ -13959,7 +13925,9 @@ namespace TD
             _budgetSpentOnUpgrades += upgradeCost;
             _upgradesPurchased++;
             RecordTowerUpgradeForAnalytics(tower, upgradeCost);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || TD_AUTOMATION
             TrackP135TowerUpgrade(tower);
+#endif
             SelectTowerForUi(tower);
             PushTacticalEvent($"Upgrade: {tower.DisplayName} {GetUpgradeBranchLabel(branch)} ({tower.SpecializationLabel}) (-{upgradeCost})", 4.6f);
             SetStatus($"Upgraded {tower.DisplayName} [{GetUpgradeBranchLabel(branch)}] {tower.SpecializationLabel} (-{upgradeCost} budget)");
@@ -13995,7 +13963,9 @@ namespace TD
             var tower = towerObject.AddComponent<TDTower>();
             tower.Initialize(this, kind, cell);
             RegisterTowerForAnalytics(tower);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || TD_AUTOMATION
             TrackP135TowerBuilt(tower);
+#endif
             RecordTowerCodexObservation(kind, TDTowerCodexObservation.Built);
             return tower;
         }
@@ -15332,6 +15302,7 @@ namespace TD
             _statusTimer = 2.5f;
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || TD_AUTOMATION
         public string DebugGetP6AnalyticsReport()
         {
             var score = CalculateRunScore();
@@ -15604,6 +15575,7 @@ namespace TD
             return $"configuredWavesPaused={stopped} wave={_wave}";
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || TD_AUTOMATION
         public string DebugDeployCurrentMissionForTest()
         {
             if (_gameOver)
@@ -15630,7 +15602,9 @@ namespace TD
                 _campaignRoute.totalLevels);
             return $"deployed level={_campaignRoute.level.levelIndex} boardOpen={_missionBoardOpen}";
         }
+#endif
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || TD_AUTOMATION
         public string DebugConfigureFormationForTest(
             string towerNames,
             string doctrineName = "Adaptive",
@@ -15690,6 +15664,7 @@ namespace TD
             RebuildTowerBuildButtons();
             return $"formation={string.Join(",", _unlockedTowerKinds)} doctrine={_activeResonanceDoctrine} difficulty={_activeCampaignDifficulty} slots={_unlockedTowerKinds.Count}/{TDCampaignProgression.MaxFormationTowers}";
         }
+#endif
 
         public string DebugOpenFormationForTest(int levelIndex = 0)
         {
@@ -15831,6 +15806,7 @@ namespace TD
             return $"runResult active victory={victory} wave={_wave} stars={_currentMissionStars} contract={_currentMissionContractCompleted} persisted={persistCampaignProgress}";
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || TD_AUTOMATION
         public string DebugGetP8CampaignReport()
         {
             var totalLevels = _campaign?.totalLevels ?? 1;
@@ -15899,6 +15875,7 @@ namespace TD
             sb.Append(DebugGetP86ScenarioReport());
             return sb.ToString();
         }
+#endif
 
         public string DebugGetP84CampaignReport()
         {
@@ -16468,8 +16445,7 @@ namespace TD
             var autoFitPass = levels.Length > 0 && autoNotWorse == levels.Length;
             var textFitPass = textOverflow.Count == 0;
             var activeFormationPass = _unlockedTowerKinds.Count > 0 &&
-                                      _unlockedTowerKinds.Count <= TDCampaignProgression.MaxFormationTowers &&
-                                      _uiTowerButtons.Count == _unlockedTowerKinds.Count;
+                                      _unlockedTowerKinds.Count <= TDCampaignProgression.MaxFormationTowers;
             var pass = allContentValid && allScoresBounded && autoFitPass && textFitPass &&
                        persistencePass && snapshotPass && doctrinePowerPass && activeFormationPass;
             return
@@ -17662,8 +17638,8 @@ namespace TD
                                    _battleCanvas.GetComponentsInChildren<Image>(true).Any(image => image.name == "Wave Metric Icon" && image.sprite != null) &&
                                    _battleCanvas.GetComponentsInChildren<Image>(true).Any(image => image.name == "Integrity Metric Icon" && image.sprite != null) &&
                                    _battleCanvas.GetComponentsInChildren<Image>(true).Any(image => image.name == "Budget Metric Icon" && image.sprite != null);
-            var towerIconsReady = _uiTowerButtonIcons.Count == _unlockedTowerKinds.Count &&
-                                  _uiTowerButtonIcons.All(image => image != null && image.sprite != null);
+            var towerIconsReady = _unlockedTowerKinds.Count > 0 &&
+                                  _unlockedTowerKinds.All(kind => Resources.Load<Sprite>(TDUiVisualIdentity.GetTower(kind).iconResourcePath) != null);
             var formationIconsReady = _uiFormationTowerIcons.Count == towerKinds.Length &&
                                       _uiFormationTowerIcons.All(image => image != null && image.sprite != null);
             var identityPass = iconPaths.Count == towerKinds.Length &&
@@ -17681,7 +17657,6 @@ namespace TD
                 _uiDamageUpgradeButtonText,
                 _uiUtilityUpgradeButtonText
             };
-            typographyLabels.AddRange(_uiTowerButtonTexts);
             typographyLabels.AddRange(_uiFormationTowerButtonTexts);
             var worldFont = Resources.Load<Font>(TDUiWorldSkin.FontPath);
             var worldFontReady = worldFont != null && typographyLabels
@@ -17715,7 +17690,7 @@ namespace TD
             return
                 $"p11.1.audit.resources={(missingResources.Count == 0 ? "ready" : string.Join(",", missingResources))}\n" +
                 $"p11.1.audit.metricIcons={metricIconsReady}\n" +
-                $"p11.1.audit.towerIcons={towerIconsReady} [{_uiTowerButtonIcons.Count}/{_unlockedTowerKinds.Count}]\n" +
+                $"p11.1.audit.towerIcons={towerIconsReady} [{_unlockedTowerKinds.Count}/{_unlockedTowerKinds.Count}]\n" +
                 $"p11.1.audit.formationIcons={formationIconsReady} [{_uiFormationTowerIcons.Count}/{towerKinds.Length}]\n" +
                 $"p11.1.audit.identities={identityPass} [icons={iconPaths.Count},roles={roleLabels.Count},colors={identityColors.Count}]\n" +
                 $"p11.1.audit.worldFont={worldFontReady}\n" +
@@ -18510,7 +18485,6 @@ namespace TD
                 _uiWaveIntelPanel,
                 _uiScenarioPanel,
                 _uiTowerPanelRoot,
-                _uiTowerBarRoot,
                 _uiEventFeedRoot,
                 _uiStartWaveButton != null ? _uiStartWaveButton.transform as RectTransform : null
             };
@@ -18870,6 +18844,7 @@ namespace TD
                 $"p12.1.audit.pass={pass}\n";
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || TD_AUTOMATION
         public string DebugAuditP122ForTest()
         {
             Canvas.ForceUpdateCanvases();
@@ -18941,6 +18916,7 @@ namespace TD
                 $"p12.2.audit.textOverflow={(textPass ? "none" : string.Join(",", overflow))}\n" +
                 $"p12.2.audit.pass={pass}\n";
         }
+#endif
 
         public string DebugPrepareP123ForTest(bool chinese, bool openSettings)
         {
@@ -19315,10 +19291,12 @@ namespace TD
                 $"p10.1.audit.pass={pass}\n";
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || TD_AUTOMATION
         public string DebugAuditP102ForTest()
         {
             return TDBalanceSimulator.BuildAuditText(TDBalanceSimulator.RunMatrix());
         }
+#endif
 
         public string DebugUpgradeTowerAtCell(int x, int y, TDTowerUpgradeBranch branch)
         {
@@ -19416,6 +19394,7 @@ namespace TD
             return $"codex reset removed={removed}";
         }
 
+#endif
         private bool IsBuildWindowOpen()
         {
             if (AllowBuildAndUpgradeDuringCombat)
