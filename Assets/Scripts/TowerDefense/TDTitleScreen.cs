@@ -316,23 +316,21 @@ namespace TD
         private void CreateStyledButton(RectTransform parent, string label, string tag)
         {
             var img = parent.gameObject.AddComponent<Image>();
-            var plateTex = LoadFullResTexture("Art/Branding/button_strip");
-            if (plateTex != null)
+            var plateTex = LoadFullResTexture("Art/Branding/button_art");
+            if (plateTex != null && plateTex.width > 512)
             {
-                var w = plateTex.width;
-                var h = plateTex.height;
-                var borderX = w * 0.04f;
-                var borderY = h * 0.10f;
-                img.sprite = Sprite.Create(plateTex,
-                    new Rect(0, 0, w, h),
-                    new Vector2(0.5f, 0.5f),
-                    100f, 0, SpriteMeshType.FullRect,
-                    new Vector4(borderX, borderY, borderX, borderY));
-                img.type = Image.Type.Sliced;
+                // Proper button art loaded — strip black, use as-is.
+                var cleanTex = RemoveBlackBackground(plateTex);
+                img.sprite = Sprite.Create(cleanTex,
+                    new Rect(0, 0, cleanTex.width, cleanTex.height),
+                    new Vector2(0.5f, 0.5f));
+                img.type = Image.Type.Simple;
+                img.preserveAspect = true;
                 img.color = Color.white;
             }
             else
             {
+                // Clean fallback: semi-transparent rounded panel.
                 img.sprite = GetRoundedSprite();
                 img.color = BtnNormal;
                 img.type = Image.Type.Sliced;
