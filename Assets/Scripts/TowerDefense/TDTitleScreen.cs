@@ -320,11 +320,16 @@ namespace TD
             if (plateTex != null)
             {
                 var plateTexAlpha = RemoveBlackBackground(plateTex);
+                // 9-slice: rivet frame stays fixed, metal center stretches to any button size.
+                var w = plateTexAlpha.width;
+                var h = plateTexAlpha.height;
+                var border = Mathf.Min(w, h) / 4; // ~25% of the smaller dimension as frame
                 img.sprite = Sprite.Create(plateTexAlpha,
-                    new Rect(0, 0, plateTexAlpha.width, plateTexAlpha.height),
-                    new Vector2(0.5f, 0.5f));
-                img.type = Image.Type.Simple;
-                img.preserveAspect = true;
+                    new Rect(0, 0, w, h),
+                    new Vector2(0.5f, 0.5f),
+                    100f, 0, SpriteMeshType.FullRect,
+                    new Vector4(border, border, border, border));
+                img.type = Image.Type.Sliced;
                 img.color = Color.white;
             }
             else
