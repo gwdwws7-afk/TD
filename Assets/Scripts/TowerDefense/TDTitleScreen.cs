@@ -194,7 +194,7 @@ namespace TD
             buttonList.Add(("CREDITS", "credits"));
             buttonList.Add(("QUIT", "quit"));
 
-            var stepY = 0.070f;
+            var stepY = 0.082f;
             var startY = 0.45f;
             for (var i = 0; i < buttonList.Count; i++)
             {
