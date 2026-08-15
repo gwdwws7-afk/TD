@@ -6,6 +6,7 @@ namespace TD
     public sealed class TDTransientSpriteFx : MonoBehaviour
     {
         private SpriteRenderer _renderer;
+        private TDSpriteAnimator _animator;
         private float _duration;
         private float _timer;
         private Vector3 _startScale = Vector3.one;
@@ -66,9 +67,25 @@ namespace TD
                 _renderer.color = Color.white;
                 _renderer.sprite = null;
             }
+
+            // Stop a frame-sequence animator so the next reuse (e.g. a static
+            // trail ghost) isn't overwritten by stale frames.
+            if (_animator == null)
+            {
+                _animator = GetComponent<TDSpriteAnimator>();
+            }
+
+            if (_animator != null)
+            {
+                _animator.enabled = false;
+            }
         }
 
-        private void ReturnToPool()
+        /// <summary>
+        /// Return this FX to the pool immediately (also used by spawners that
+        /// need to bail out after acquiring an object).
+        /// </summary>
+        public void ReturnToPool()
         {
             var pool = TDObjectPool.Instance;
             if (pool != null)

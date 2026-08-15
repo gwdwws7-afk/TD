@@ -789,8 +789,17 @@ namespace TD
             }
 
             var source = label.GetComponent<TDLocalizedTextSource>() ?? label.gameObject.AddComponent<TDLocalizedTextSource>();
-            source.sourceText = sourceText ?? string.Empty;
-            label.text = LocalizeRuntimeString(source.sourceText);
+            var nextSource = sourceText ?? string.Empty;
+            if (nextSource.Length > 0 && source.sourceText == nextSource && !string.IsNullOrEmpty(label.text))
+            {
+                // Same source text — skip the replacement scan and font
+                // resolve. HUD updates call this every frame with unchanged
+                // strings; the localize pass dominates that cost.
+                return;
+            }
+
+            source.sourceText = nextSource;
+            label.text = LocalizeRuntimeString(nextSource);
             label.font = ResolveFont(latinFallback != null ? latinFallback : label.font);
         }
 

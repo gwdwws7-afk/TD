@@ -1243,34 +1243,47 @@ namespace TD
                 return;
             }
 
-            var fxObject = new GameObject(fxName);
+            // Pooled (SpriteRenderer + animator + transient FX are pre-wired on
+            // pool objects) instead of instantiate/destroy per event — these
+            // fire on every rate-limited hit, every death and every pulse.
+            // If the host enemy is destroyed before the FX finishes, the
+            // checked-out pooled object simply isn't returned — the pool
+            // creates a fresh one on demand, so no stale references survive.
+            var parent = attachToEnemy ? transform : _gameManager.transform;
+            var (fxObject, transient, renderer) = TDObjectPool.GetFxObject(
+                parent,
+                transform.position,
+                fxName);
             if (attachToEnemy)
             {
-                fxObject.transform.SetParent(transform, false);
                 fxObject.transform.localPosition = ResolveVisualLocalPosition() + offset;
             }
             else
             {
-                fxObject.transform.SetParent(_gameManager.transform, true);
                 var anchor = _visualRoot != null ? _visualRoot.position : transform.position;
                 fxObject.transform.position = anchor + offset;
             }
 
-            var renderer = fxObject.AddComponent<SpriteRenderer>();
             renderer.sortingOrder = (_visualRenderer != null ? _visualRenderer.sortingOrder : 16) + sortingOffset;
             renderer.sprite = Resources.Load<Sprite>($"{prefix}_00");
             if (renderer.sprite == null)
             {
-                Destroy(fxObject);
+                transient.ReturnToPool();
                 return;
             }
 
-            var animator = fxObject.AddComponent<TDSpriteAnimator>();
+            var animator = fxObject.GetComponent<TDSpriteAnimator>();
+            if (animator == null)
+            {
+                // Defensive: the no-pool fallback path may hand out an object
+                // assembled before the animator was part of the FX kit.
+                animator = fxObject.AddComponent<TDSpriteAnimator>();
+            }
+
             animator.Configure(prefix, frameCount, fps, false, false);
 
             var baseScale = ResolveFxBaseScale();
             var duration = Mathf.Max(0.06f, (frameCount / Mathf.Max(1f, fps)) * 1.05f);
-            var transient = fxObject.AddComponent<TDTransientSpriteFx>();
             transient.Configure(
                 duration,
                 Vector3.one * (baseScale * Mathf.Max(0.01f, startScaleMultiplier)),

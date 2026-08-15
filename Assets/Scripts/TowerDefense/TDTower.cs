@@ -177,6 +177,8 @@ namespace TD
         private float _specializationPulse;
         private float _cooldown;
         private TDEnemy _windupTarget;
+        private TDEnemy _cachedTarget;
+        private float _targetRescanTimer;
         private float _windupTimer;
         private float _windupDuration;
 
@@ -478,14 +480,37 @@ namespace TD
                 if (chargedTarget != null)
                 {
                     FireAt(chargedTarget);
-                    var fireRateMultiplier = _gameManager.GetTowerFireRateMultiplier(Kind);
-                    var shotInterval = 1f / Mathf.Max(0.01f, _activeState.shotsPerSecond * fireRateMultiplier);
-                    _cooldown = Mathf.Max(0.03f, shotInterval - _windupDuration);
                 }
+
+                // Cooldown applies even when the target died mid-windup —
+                // otherwise target churn resets fire cadence for free.
+                var fireRateMultiplier = _gameManager.GetTowerFireRateMultiplier(Kind);
+                var shotInterval = 1f / Mathf.Max(0.01f, _activeState.shotsPerSecond * fireRateMultiplier);
+                _cooldown = Mathf.Max(0.03f, shotInterval - _windupDuration);
                 return;
             }
 
-            var target = _gameManager.GetPriorityEnemy(transform.position, _activeState.range, Kind);
+            // Full priority scans are O(all enemies) per tower; with many
+            // towers that dominates frame time exactly when waves are
+            // densest. Rescan at most every ~0.2s (staggered per tower) and
+            // keep firing at the cached target in between.
+            _targetRescanTimer -= Time.deltaTime;
+            if (_targetRescanTimer <= 0f)
+            {
+                _cachedTarget = _gameManager.GetPriorityEnemy(transform.position, _activeState.range, Kind);
+                _targetRescanTimer = ResolveTargetRescanInterval();
+            }
+
+            var target = _cachedTarget;
+            if (target != null)
+            {
+                var rangeSqr = _activeState.range * _activeState.range;
+                if ((target.transform.position - transform.position).sqrMagnitude > rangeSqr)
+                {
+                    target = _cachedTarget = null;
+                }
+            }
+
             if (target == null)
             {
                 _readability?.SetChargeState(false, 0f);
@@ -496,6 +521,13 @@ namespace TD
             _windupDuration = ResolveWindupDuration();
             _windupTimer = _windupDuration;
             _readability?.SetChargeState(true, 0f);
+        }
+
+        private float ResolveTargetRescanInterval()
+        {
+            // Deterministic per-tower jitter staggers rescans across frames.
+            var jitter = (GetInstanceID() & 0xF) * 0.0125f;
+            return 0.15f + jitter;
         }
 
         private void FireAt(TDEnemy target)
