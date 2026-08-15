@@ -75,8 +75,7 @@ namespace TD.Editor
             }
 
             // Full-quality UI art (title screen background + logo): uncompressed, 4096 max.
-            var isUiArt = path.IndexOf("/Branding/", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                          path.IndexOf("/Branding/", StringComparison.OrdinalIgnoreCase, 0) >= 0;
+            var isUiArt = path.IndexOf("/Branding/", StringComparison.OrdinalIgnoreCase) >= 0;
             var changed = false;
             var maxSize = ResolveMaxTextureSize(path);
             if (isUiArt)
