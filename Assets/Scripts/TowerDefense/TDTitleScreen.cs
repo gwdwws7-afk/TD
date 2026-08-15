@@ -35,7 +35,7 @@ namespace TD
         private static readonly Color AccentEmberDim = new(0.96f, 0.52f, 0.18f, 0.12f);
         private static readonly Color TextBright = new(0.94f, 0.96f, 0.98f, 1f);
         private static readonly Color TextDim = new(0.56f, 0.60f, 0.66f, 0.75f);
-        private static readonly Color BtnNormal = new(0.06f, 0.07f, 0.09f, 0.80f);
+        private static readonly Color BtnNormal = new(0.04f, 0.05f, 0.07f, 0.55f);
         private static readonly Color BtnHover = new(0.14f, 0.10f, 0.06f, 0.90f);
         private static readonly Color DividerColor = new(0.96f, 0.52f, 0.18f, 0.20f);
 
@@ -67,6 +67,24 @@ namespace TD
                 bgArtImg.preserveAspect = true;
                 bgArtImg.raycastTarget = true;
             }
+
+            // ── Bottom gradient scrim: darkens lower screen so buttons feel grounded ──
+            var scrimRect = CreateRect("BottomScrim", _root);
+            StretchFull(scrimRect);
+            var scrimImg = scrimRect.gameObject.AddComponent<Image>();
+            scrimImg.sprite = CreateBottomGradientSprite();
+            scrimImg.color = Color.white;
+            scrimImg.raycastTarget = false;
+
+            // ── Logo glow halo: soft light behind the badge ──
+            var logoGlowRect = CreateRect("LogoGlow", _root);
+            logoGlowRect.anchorMin = new Vector2(0.5f, 0.68f);
+            logoGlowRect.anchorMax = new Vector2(0.5f, 0.68f);
+            logoGlowRect.sizeDelta = new Vector2(500f, 380f);
+            var logoGlowImg = logoGlowRect.gameObject.AddComponent<Image>();
+            logoGlowImg.sprite = CreateRadialGradientSprite(256, 192);
+            logoGlowImg.color = new Color(0.96f, 0.55f, 0.22f, 0.14f);
+            logoGlowImg.raycastTarget = false;
 
             // ── Ember particles (subtle) ──
             CreateEmbers(10);
@@ -404,8 +422,8 @@ namespace TD
             var pixels = readable.GetPixels();
             var result = new Texture2D(w, h, TextureFormat.RGBA32, false);
 
-            const float threshold = 0.09f; // pixels darker than this become transparent
-            const float feather = 0.07f;   // soft edge band
+            const float threshold = 0.08f; // pixels darker than this become transparent
+            const float feather = 0.14f;   // soft edge band (wider = smoother blend)
 
             for (var i = 0; i < pixels.Length; i++)
             {
@@ -463,6 +481,30 @@ namespace TD
             }
 
             return tex;
+        }
+
+        /// <summary>
+        /// Create a vertical gradient that is transparent at top and dark at bottom.
+        /// Used as a scrim to ground the menu buttons visually.
+        /// </summary>
+        private static Sprite CreateBottomGradientSprite()
+        {
+            const int w = 4;
+            const int h = 128;
+            var tex = new Texture2D(w, h);
+            for (var y = 0; y < h; y++)
+            {
+                // t: 0=bottom, 1=top. Alpha: 0.55 at bottom → 0 at 55% height.
+                var t = y / (float)(h - 1);
+                var alpha = t < 0.45f ? 0f : Mathf.Lerp(0f, 0.55f, (t - 0.45f) / 0.55f);
+                var c = new Color(0.01f, 0.014f, 0.02f, alpha);
+                for (var x = 0; x < w; x++)
+                {
+                    tex.SetPixel(x, y, c);
+                }
+            }
+            tex.Apply();
+            return Sprite.Create(tex, new Rect(0, 0, w, h), new Vector2(0.5f, 0.5f));
         }
 
         // ── Sprite generation ───────────────────────────────────
