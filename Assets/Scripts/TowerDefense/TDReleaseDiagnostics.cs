@@ -27,7 +27,9 @@ namespace TD
         public string lastStackTrace;
         public long peakAllocatedMemoryBytes;
         public long peakReservedMemoryBytes;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || TD_AUTOMATION
         public TDP1253RuntimeState runtime;
+#endif
     }
 
     public sealed class TDReleaseDiagnostics : MonoBehaviour
@@ -169,8 +171,10 @@ namespace TD
             _diagnostic.peakReservedMemoryBytes = Math.Max(
                 _diagnostic.peakReservedMemoryBytes,
                 Profiler.GetTotalReservedMemoryLong());
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || TD_AUTOMATION
             var manager = GetComponent<TDGameManager>() ?? FindFirstObjectByType<TDGameManager>();
             _diagnostic.runtime = manager == null ? null : manager.DebugGetP1253RuntimeState();
+#endif
 
             try
             {

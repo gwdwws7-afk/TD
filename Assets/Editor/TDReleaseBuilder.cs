@@ -81,7 +81,8 @@ namespace TD.Editor
             bool development,
             string backend,
             string sourceRevision,
-            string resultPath)
+            string resultPath,
+            bool automation = true)
         {
             var result = BuildWindows(
                 outputPath,
@@ -90,7 +91,8 @@ namespace TD.Editor
                 development,
                 backend,
                 sourceRevision,
-                resultPath);
+                resultPath,
+                automation);
             return JsonUtility.ToJson(result);
         }
 
@@ -107,6 +109,7 @@ namespace TD.Editor
             var development = ReadBoolArgument("-tdDevelopment", false);
             var backend = ReadArgument("-tdBackend", "Mono");
             var revision = ReadArgument("-tdSourceRevision", "unknown");
+            var automation = ReadBoolArgument("-tdAutomation", true);
             var resultPath = ReadArgument("-tdResult", Path.ChangeExtension(outputPath, ".build.json"));
             var result = BuildWindows(
                 outputPath,
@@ -115,7 +118,8 @@ namespace TD.Editor
                 development,
                 backend,
                 revision,
-                resultPath);
+                resultPath,
+                automation);
             if (!result.passed)
             {
                 throw new InvalidOperationException(result.error);
@@ -129,7 +133,8 @@ namespace TD.Editor
             bool development,
             string backend,
             string sourceRevision,
-            string resultPath)
+            string resultPath,
+            bool automation = true)
         {
             var fullOutputPath = Path.GetFullPath(outputPath);
             var fullResultPath = Path.GetFullPath(resultPath);
@@ -149,6 +154,21 @@ namespace TD.Editor
                 development = development,
                 sourceRevision = string.IsNullOrWhiteSpace(sourceRevision) ? "unknown" : sourceRevision
             };
+
+            // Automation builds compile the probe/autoplay/audit code in via the
+            // TD_AUTOMATION define (CI smoke gates need it); everything else —
+            // editor, development and hand-rolled release builds — compiles it
+            // out. The symbol is applied for this build only and restored.
+            var namedTarget = UnityEditor.Build.NamedBuildTarget.Standalone;
+            var previousDefines = PlayerSettings.GetScriptingDefineSymbols(namedTarget);
+            var automationDefineApplied = automation &&
+                !(";" + previousDefines + ";").Contains(";TD_AUTOMATION;");
+            if (automationDefineApplied)
+            {
+                PlayerSettings.SetScriptingDefineSymbols(
+                    namedTarget,
+                    string.IsNullOrEmpty(previousDefines) ? "TD_AUTOMATION" : previousDefines + ";TD_AUTOMATION");
+            }
 
             try
             {
@@ -228,6 +248,13 @@ namespace TD.Editor
                 result.passed = false;
                 result.error = exception.ToString();
                 Debug.LogError($"[TD][P12.5.1] Windows build failed: {exception}");
+            }
+            finally
+            {
+                if (automationDefineApplied)
+                {
+                    PlayerSettings.SetScriptingDefineSymbols(namedTarget, previousDefines);
+                }
             }
 
             WriteResult(fullResultPath, result);

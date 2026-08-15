@@ -155,6 +155,9 @@ namespace TD
             });
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || TD_AUTOMATION
+        // Probe-only summaries — their parameter types live in the automation-
+        // gated partials, so they compile out of release players entirely.
         public static void RecordSoakSummary(
             TDP1254SoakRuntimeState runtime,
             float actualSeconds,
@@ -197,6 +200,7 @@ namespace TD
                 passed = audit != null && audit.passed
             });
         }
+#endif
 
         public static string DebugQueueRedactionProbe(string sensitiveInput)
         {

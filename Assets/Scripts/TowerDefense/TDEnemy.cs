@@ -632,15 +632,9 @@ namespace TD
             var wasSlowed = IsSlowed;
             var damageWithExposure = Mathf.RoundToInt(rawDamage * Mathf.Max(1f, _exposedMultiplier));
             var effectiveArmor = Mathf.Max(0, _armorFlat - _armorBreakFlat);
-            // Hybrid armor model: flat subtraction PLUS percentage mitigation.
-            // Each point of armor now also reduces damage by 4% (capped at 60%),
-            // so high-armor enemies (Husk Titan 9, Furnace Matriarch 12) are a real
-            // wall for low-per-hit towers like RailLancer, while SiegeDrill's
-            // armor-piercing multiplier becomes mandatory. The flat floor stays
-            // at 1 so chip damage is always possible.
-            var armorPercentReduction = Mathf.Min(0.60f, effectiveArmor * 0.04f);
-            var afterPercent = damageWithExposure * (1f - armorPercentReduction);
-            var damageTaken = Mathf.Max(1, Mathf.RoundToInt(afterPercent - effectiveArmor));
+            // Hybrid armor model — see TDCombatMath.ResolveArmoredDamage
+            // (flat + percentage mitigation, floor of 1).
+            var damageTaken = TDCombatMath.ResolveArmoredDamage(damageWithExposure, effectiveArmor);
             var appliedDamage = Mathf.Min(Mathf.Max(0, _hp), damageTaken);
             _hitFlashTimer = HitFlashDuration;
             _hitReactionTimer = HitFlashDuration;

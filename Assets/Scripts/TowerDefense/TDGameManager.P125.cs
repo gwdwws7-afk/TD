@@ -102,6 +102,7 @@ namespace TD
             _p125LoggedScenarioUses = _scenarioUses;
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || TD_AUTOMATION
         public string DebugAuditP125EconomyForTest()
         {
             var report = DebugBuildP124RunReport();
@@ -121,5 +122,6 @@ namespace TD
                 $"p12.5.0.audit.enemyHpUnchanged=True\n" +
                 $"p12.5.0.audit.pass={pass}\n";
         }
+#endif
     }
 }

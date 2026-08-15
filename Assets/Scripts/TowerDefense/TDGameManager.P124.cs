@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || TD_AUTOMATION
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -1725,3 +1726,4 @@ namespace TD
         }
     }
 }
+#endif

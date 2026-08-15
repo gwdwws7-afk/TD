@@ -622,6 +622,7 @@ namespace TD
         {
             Initialize();
             CurrentLanguage = language;
+            _localizationCache.Clear();
             if (!persist)
             {
                 return;
@@ -744,12 +745,22 @@ namespace TD
             return _chineseFont != null ? _chineseFont : latinFallback;
         }
 
+        // Memoized results for the replacement scan: the HUD calls this with a
+        // bounded set of source strings, and each scan walks the full
+        // replacement table producing intermediate strings — cache per source.
+        private static readonly System.Collections.Generic.Dictionary<string, string> _localizationCache = new();
+
         public static string LocalizeRuntimeString(string source)
         {
             Initialize();
             if (!IsChinese || string.IsNullOrEmpty(source))
             {
                 return source ?? string.Empty;
+            }
+
+            if (_localizationCache.TryGetValue(source, out var cached))
+            {
+                return cached;
             }
 
             if (string.Equals(source, "ON", StringComparison.Ordinal))
@@ -778,6 +789,7 @@ namespace TD
 
             // The HUD brand shares a label with localized mission text.
             localized = localized.Replace("EMBER防线", "EMBERLINE");
+            _localizationCache[source] = localized;
             return localized;
         }
 

@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || TD_AUTOMATION
 using UnityEngine;
 
 namespace TD
@@ -21,3 +22,4 @@ namespace TD
         }
     }
 }
+#endif

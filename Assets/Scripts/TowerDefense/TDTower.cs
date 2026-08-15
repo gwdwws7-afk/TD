@@ -207,17 +207,7 @@ namespace TD
             get
             {
                 var state = _activeState;
-                if (state == null || state.aoeRadius > 0f || state.shotsPerSecond > 1.1f)
-                {
-                    return 0f;
-                }
-
-                if (state.shotsPerSecond >= 1.0f)
-                {
-                    return 0.18f;
-                }
-
-                return Mathf.Lerp(0.18f, 0.30f, Mathf.InverseLerp(1.0f, 0.5f, state.shotsPerSecond));
+                return state == null ? 0f : TDCombatMath.FastEnemyMissChance(state.shotsPerSecond, state.aoeRadius);
             }
         }
 
