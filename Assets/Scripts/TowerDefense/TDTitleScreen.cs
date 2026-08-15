@@ -202,7 +202,7 @@ namespace TD
                 var btnRect = CreateRect($"TitleBtn_{tag}", _root);
                 btnRect.anchorMin = new Vector2(0.5f, startY - i * stepY);
                 btnRect.anchorMax = new Vector2(0.5f, startY - i * stepY);
-                btnRect.sizeDelta = new Vector2(280f, 40f);
+                btnRect.sizeDelta = new Vector2(320f, 56f);
                 CreateStyledButton(btnRect, label, tag);
             }
 
@@ -320,15 +320,16 @@ namespace TD
             if (plateTex != null)
             {
                 var plateTexAlpha = RemoveBlackBackground(plateTex);
-                // 9-slice: rivet frame stays fixed, metal center stretches to any button size.
                 var w = plateTexAlpha.width;
                 var h = plateTexAlpha.height;
-                var border = Mathf.Min(w, h) / 4; // ~25% of the smaller dimension as frame
+                // Small border: just enough to keep rivet edges fixed (8% of height).
+                var borderX = w * 0.06f;
+                var borderY = h * 0.08f;
                 img.sprite = Sprite.Create(plateTexAlpha,
                     new Rect(0, 0, w, h),
                     new Vector2(0.5f, 0.5f),
                     100f, 0, SpriteMeshType.FullRect,
-                    new Vector4(border, border, border, border));
+                    new Vector4(borderX, borderY, borderX, borderY));
                 img.type = Image.Type.Sliced;
                 img.color = Color.white;
             }
