@@ -316,15 +316,13 @@ namespace TD
         private void CreateStyledButton(RectTransform parent, string label, string tag)
         {
             var img = parent.gameObject.AddComponent<Image>();
-            var plateTex = LoadFullResTexture("Art/Branding/button_nameplate");
+            var plateTex = LoadFullResTexture("Art/Branding/button_strip");
             if (plateTex != null)
             {
-                // Use the nameplate as-is — its dark metal IS the button background.
-                // Do NOT strip black (80% of pixels are 0.08-0.22 luminance).
                 var w = plateTex.width;
                 var h = plateTex.height;
-                var borderX = w * 0.06f;
-                var borderY = h * 0.08f;
+                var borderX = w * 0.04f;
+                var borderY = h * 0.10f;
                 img.sprite = Sprite.Create(plateTex,
                     new Rect(0, 0, w, h),
                     new Vector2(0.5f, 0.5f),
