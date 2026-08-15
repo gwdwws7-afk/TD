@@ -198,9 +198,13 @@ namespace TD
         };
 
         // Road path constants mirror the art pipeline's single source of truth:
-        // grayline follows build_campaign_map_guides.py MAP_PATHS; the other
-        // maps follow td_layout_data.py lanes (which batch15 painted onto the
-        // surfaces). Points are layout coords, y down, cell centers at +0.5.
+        // grayline follows build_campaign_map_guides.py MAP_PATHS, then was
+        // pixel-corrected against the final painted surface (the AI art drifts
+        // from the guide on the right half: upper straight sits at row ~2.6,
+        // the climb starts at x~8.5, and x13-14.5 descends diagonally); the
+        // other maps follow td_layout_data.py lanes (which batch15 painted
+        // onto the surfaces). Points are layout coords, y down, cell centers
+        // at +0.5.
         private static readonly Vector2[] GraylineRoadPathPoints =
         {
             new(-0.35f, 5.50f),
@@ -209,10 +213,12 @@ namespace TD
             new(6.50f, 4.50f),
             new(6.50f, 3.50f),
             new(8.50f, 3.50f),
-            new(9.50f, 2.50f),
-            new(12.50f, 2.50f),
-            new(13.50f, 3.50f),
-            new(13.50f, 4.50f),
+            new(9.30f, 3.10f),
+            new(10.00f, 2.60f),
+            new(13.00f, 2.60f),
+            new(13.50f, 3.10f),
+            new(14.00f, 3.60f),
+            new(14.50f, 4.50f),
             new(15.50f, 4.50f),
             new(16.35f, 4.50f)
         };
