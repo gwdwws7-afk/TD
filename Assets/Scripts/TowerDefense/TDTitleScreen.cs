@@ -319,13 +319,13 @@ namespace TD
             var plateTex = LoadFullResTexture("Art/Branding/button_nameplate");
             if (plateTex != null)
             {
-                var plateTexAlpha = RemoveBlackBackground(plateTex);
-                var w = plateTexAlpha.width;
-                var h = plateTexAlpha.height;
-                // Small border: just enough to keep rivet edges fixed (8% of height).
+                // Use the nameplate as-is — its dark metal IS the button background.
+                // Do NOT strip black (80% of pixels are 0.08-0.22 luminance).
+                var w = plateTex.width;
+                var h = plateTex.height;
                 var borderX = w * 0.06f;
                 var borderY = h * 0.08f;
-                img.sprite = Sprite.Create(plateTexAlpha,
+                img.sprite = Sprite.Create(plateTex,
                     new Rect(0, 0, w, h),
                     new Vector2(0.5f, 0.5f),
                     100f, 0, SpriteMeshType.FullRect,
