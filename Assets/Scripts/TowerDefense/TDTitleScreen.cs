@@ -89,6 +89,26 @@ namespace TD
             // ── Ember particles (subtle) ──
             CreateEmbers(10);
 
+            // ── Logo chain (hangs from top, badge attached below) ──
+            var chainTex = LoadFullResTexture("Art/Branding/logo_chain");
+            if (chainTex != null)
+            {
+                var chainClean = RemoveBlackBackground(chainTex);
+                var chainRect = CreateRect("LogoChain", _root);
+                chainRect.anchorMin = new Vector2(0.5f, 0.82f);
+                chainRect.anchorMax = new Vector2(0.5f, 0.82f);
+                var chainH = 180f;
+                var chainW = chainH * ((float)chainClean.width / chainClean.height);
+                chainRect.sizeDelta = new Vector2(chainW, chainH);
+                var chainImg = chainRect.gameObject.AddComponent<Image>();
+                chainImg.sprite = Sprite.Create(chainClean,
+                    new Rect(0, 0, chainClean.width, chainClean.height),
+                    new Vector2(0.5f, 0.5f));
+                chainImg.color = new Color(0.85f, 0.80f, 0.75f, 0.90f);
+                chainImg.preserveAspect = true;
+                chainImg.raycastTarget = false;
+            }
+
             // ── Game logo (image badge, replaces text title) ──
             var logoTex = LoadFullResTexture("Art/Branding/game_logo");
             if (logoTex != null)
@@ -296,9 +316,23 @@ namespace TD
         private void CreateStyledButton(RectTransform parent, string label, string tag)
         {
             var img = parent.gameObject.AddComponent<Image>();
-            img.sprite = GetRoundedSprite();
-            img.color = BtnNormal;
-            img.type = Image.Type.Sliced;
+            var plateTex = LoadFullResTexture("Art/Branding/button_nameplate");
+            if (plateTex != null)
+            {
+                var plateTexAlpha = RemoveBlackBackground(plateTex);
+                img.sprite = Sprite.Create(plateTexAlpha,
+                    new Rect(0, 0, plateTexAlpha.width, plateTexAlpha.height),
+                    new Vector2(0.5f, 0.5f));
+                img.type = Image.Type.Simple;
+                img.preserveAspect = true;
+                img.color = Color.white;
+            }
+            else
+            {
+                img.sprite = GetRoundedSprite();
+                img.color = BtnNormal;
+                img.type = Image.Type.Sliced;
+            }
 
             var btn = parent.gameObject.AddComponent<Button>();
             var colors = btn.colors;
@@ -308,7 +342,6 @@ namespace TD
             colors.fadeDuration = 0.12f;
             btn.colors = colors;
 
-            // Label on child.
             var labelRect = CreateRect($"BtnLabel_{tag}", parent);
             labelRect.anchorMin = Vector2.zero;
             labelRect.anchorMax = Vector2.one;
