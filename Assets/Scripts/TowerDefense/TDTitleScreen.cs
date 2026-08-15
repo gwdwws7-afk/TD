@@ -194,15 +194,15 @@ namespace TD
             buttonList.Add(("CREDITS", "credits"));
             buttonList.Add(("QUIT", "quit"));
 
-            var stepY = 0.065f;
-            var startY = 0.40f;
+            var stepY = 0.085f;
+            var startY = 0.42f;
             for (var i = 0; i < buttonList.Count; i++)
             {
                 var (label, tag) = buttonList[i];
                 var btnRect = CreateRect($"TitleBtn_{tag}", _root);
                 btnRect.anchorMin = new Vector2(0.5f, startY - i * stepY);
                 btnRect.anchorMax = new Vector2(0.5f, startY - i * stepY);
-                btnRect.sizeDelta = new Vector2(320f, 56f);
+                btnRect.sizeDelta = new Vector2(420f, 110f);
                 CreateStyledButton(btnRect, label, tag);
             }
 
@@ -349,7 +349,7 @@ namespace TD
             labelRect.anchorMax = Vector2.one;
             labelRect.offsetMin = Vector2.zero;
             labelRect.offsetMax = Vector2.zero;
-            var txt = CreateText(labelRect, label, 14, FontStyle.Bold, TextBright);
+            var txt = CreateText(labelRect, label, 17, FontStyle.Bold, TextBright);
             txt.alignment = TextAnchor.MiddleCenter;
 
             btn.onClick.AddListener(() => HandleClick(tag));
