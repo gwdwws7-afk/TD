@@ -95,6 +95,9 @@ namespace TD
             RefreshChargeVisual();
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || TD_AUTOMATION
+        // Presentation-audit probes drive the charge ring / attack anims
+        // directly; all callers live in the automation-gated debug code.
         public void DebugHoldCharge(float progress)
         {
             EnsureChargeVisual();
@@ -104,6 +107,7 @@ namespace TD
             _chargeRingRenderer.enabled = _chargeRingRenderer.sprite != null;
             RefreshChargeVisual();
         }
+#endif
 
         public void RefreshTier(IReadOnlyList<TDTowerUpgradeBranch> history)
         {
@@ -178,6 +182,7 @@ namespace TD
             animator?.Restart();
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || TD_AUTOMATION
         public void DebugPlayAttack()
         {
             PlayAttack();
@@ -187,6 +192,7 @@ namespace TD
         {
             PlayUpgrade(branch, tier);
         }
+#endif
 
         private void Update()
         {

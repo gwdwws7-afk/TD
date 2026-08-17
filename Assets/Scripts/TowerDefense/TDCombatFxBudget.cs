@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace TD
@@ -17,6 +18,41 @@ namespace TD
         public const int MaxAccent = 8;
         public const int MaxTotal = 32;
 
+        // Explicit per-object-name tiers. Classification used to be pure
+        // substring matching, so renaming an FX object silently moved it to
+        // another budget tier; the registry pins every known spawner name and
+        // unknown names fall back to the heuristic WITH a one-time warning so
+        // renames/new FX surface immediately instead of re-tiering silently.
+        private static readonly Dictionary<string, TDCombatFxClass> KnownClasses =
+            new(StringComparer.OrdinalIgnoreCase)
+            {
+                // Accent — boss/critical moments and upgrade feedback.
+                ["Fx_BossWarning"] = TDCombatFxClass.Accent,
+                ["Upgrade_Ring_Fx"] = TDCombatFxClass.Accent,
+                ["Upgrade_Branch_Fx"] = TDCombatFxClass.Accent,
+                ["Upgrade_Identity_Fx"] = TDCombatFxClass.Accent,
+                // Tactical — per-hit impact and control field effects.
+                ["Fx_ImpactSpark"] = TDCombatFxClass.Tactical,
+                ["Fx_AoeIndicator"] = TDCombatFxClass.Tactical,
+                ["Fx_ArcChainLink"] = TDCombatFxClass.Tactical,
+                ["Fx_GravityBoundary"] = TDCombatFxClass.Tactical,
+                ["Fx_GravityBoundaryCore"] = TDCombatFxClass.Tactical,
+                // Routine — trails, body hits, death and ambient pulses.
+                ["Fx_ProjectileTrail"] = TDCombatFxClass.Routine,
+                ["Fx_EnemyHit"] = TDCombatFxClass.Routine,
+                ["Fx_EnemyDeath"] = TDCombatFxClass.Routine,
+                ["Fx_BurrowAmbush"] = TDCombatFxClass.Routine,
+                ["Fx_SupportLink"] = TDCombatFxClass.Routine,
+                ["Fx_AttritionSiphon"] = TDCombatFxClass.Routine,
+                ["Fx_ElitePressure"] = TDCombatFxClass.Routine,
+                ["Fx_MimicShift"] = TDCombatFxClass.Routine,
+                ["Fx_SporeSplitWarning"] = TDCombatFxClass.Routine,
+                ["Fx_DamageSpecPulse"] = TDCombatFxClass.Routine,
+                ["Fx_UtilitySpecField"] = TDCombatFxClass.Routine,
+            };
+
+        private static readonly HashSet<string> WarnedUnknownNames = new(StringComparer.OrdinalIgnoreCase);
+
         private static readonly int[] ActiveByClass = new int[3];
 
         public static int ActiveTotal { get; private set; }
@@ -25,9 +61,32 @@ namespace TD
         public static float MaximumAcceptedDuration { get; private set; }
         public static float MaximumAcceptedAlpha { get; private set; }
 
+        /// <summary>Pin (or re-pin) an FX object name to an explicit tier.</summary>
+        public static void RegisterClass(string objectName, TDCombatFxClass fxClass)
+        {
+            if (string.IsNullOrWhiteSpace(objectName))
+            {
+                return;
+            }
+
+            KnownClasses[objectName] = fxClass;
+        }
+
         public static TDCombatFxClass Classify(string objectName)
         {
             var safeName = objectName ?? string.Empty;
+            if (KnownClasses.TryGetValue(safeName, out var known))
+            {
+                return known;
+            }
+
+            if (WarnedUnknownNames.Add(safeName) && safeName.Length > 0)
+            {
+                Debug.LogWarning(
+                    $"[TD] FX budget: '{safeName}' has no registered tier — falling back to the name heuristic. " +
+                    "Register it via TDCombatFxBudget.RegisterClass so renames can't silently change its budget class.");
+            }
+
             if (Contains(safeName, "Upgrade") || Contains(safeName, "Resonance") ||
                 Contains(safeName, "Boss") || Contains(safeName, "Breach"))
             {
