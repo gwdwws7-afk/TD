@@ -939,6 +939,8 @@ namespace TD
         private RectTransform _uiEventFeedRoot;
         private Text _uiEventFeedText;
         private RectTransform _uiTowerPanelRoot;
+        private Button _uiSellTowerButton;
+        private Text _uiSellTowerButtonText;
         private Image _uiTowerIdentityIcon;
         private Image _uiTowerIdentityStripe;
         private Text _uiTowerTitleText;
@@ -1255,9 +1257,30 @@ namespace TD
             HandleHotkeys();
             UpdateResonanceState();
             UpdateScenarioBossPhases();
+            UpdateGamepadCursorInput();
 
-            var pointerOverUi = IsPointerOverBattleUi();
-            if (!pointerOverUi && TDInputCompat.GetMouseButtonDown(0))
+            // Keep an open radial menu honest: dismiss it once the build window
+            // closes (prep timeout, manual wave start) and re-evaluate slot
+            // affordability when the budget shifts while it is up.
+            if (_radialTowerMenu != null && _radialTowerMenu.IsVisible)
+            {
+                if (!IsBuildWindowOpen())
+                {
+                    _radialTowerMenu.Hide();
+                    SetStatus("Build window closed.");
+                }
+                else
+                {
+                    _radialTowerMenu.RefreshAffordability(_defenseBudget);
+                }
+            }
+
+            // In cursor mode only the virtual pointer's own UI hit matters —
+            // the idle real mouse might be parked over a HUD panel and must
+            // not block gamepad clicks aimed at the board.
+            var pointerOverUi = _gamepadCursorMode ? _gamepadVirtualPointerOverUi : IsPointerOverBattleUi();
+            var placementPressed = TDInputCompat.GetMouseButtonDown(0) || _gamepadVirtualClick;
+            if (!pointerOverUi && placementPressed)
             {
                 TryPlaceTowerAtCursor();
             }
@@ -1283,6 +1306,7 @@ namespace TD
 
         private void LateUpdate()
         {
+            UpdateGamepadCursorVisual();
             RefreshUiScaleForScreen();
             UpdateMissionContractFeedback();
             UpdateBattleUi();
@@ -1571,7 +1595,7 @@ namespace TD
             // radial tower menu (click an empty build pad). Keyboard 1-8 still
             // drives the build ghost preview via _selectedTowerKind.
 
-            _uiTowerPanelRoot = CreateUiPanel("Tower Upgrade Panel", root, new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(-18f, 18f), new Vector2(300f, 226f), new Color(0.028f, 0.036f, 0.040f, 0.92f));
+            _uiTowerPanelRoot = CreateUiPanel("Tower Upgrade Panel", root, new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(-18f, 18f), new Vector2(300f, 264f), new Color(0.028f, 0.036f, 0.040f, 0.92f));
             AddUiPanelChrome(_uiTowerPanelRoot, new Color(0.44f, 0.82f, 0.72f, 0.92f));
             _uiTowerTitleText = CreateUiText("Tower Title", _uiTowerPanelRoot, new Vector2(12f, -9f), new Vector2(222f, 22f), string.Empty, 13, FontStyle.Bold, TextAnchor.MiddleLeft, new Color(0.90f, 0.97f, 1f, 1f));
             _uiTowerIdentityIcon = CreateUiSpriteImage("Tower Identity Icon", _uiTowerPanelRoot, new Vector2(246f, -8f), new Vector2(42f, 42f), TDUiVisualIdentity.GetTower(TDTowerKind.RailLancer).iconResourcePath, Color.white);
@@ -1585,6 +1609,8 @@ namespace TD
             _uiUtilityUpgradeButton = CreateUiButton("Utility Upgrade", _uiTowerPanelRoot, new Vector2(156f, -178f), new Vector2(132f, 36f), "Utility", 10, () => TryUpgradeSelectedTowerFromUi(TDTowerUpgradeBranch.Utility));
             _uiUtilityUpgradeButtonText = _uiUtilityUpgradeButton.GetComponentInChildren<Text>();
             AddUiButtonIcon(_uiUtilityUpgradeButton, "Utility Branch Icon", TDUiP132Art.IconPath(TDUiP132Icon.Resonance), new Vector2(7f, -6f), new Vector2(24f, 24f), 29f);
+            _uiSellTowerButton = CreateUiButton("Sell Tower", _uiTowerPanelRoot, new Vector2(12f, -222f), new Vector2(276f, 30f), "SELL", 10, TrySellSelectedTowerFromUi);
+            _uiSellTowerButtonText = _uiSellTowerButton.GetComponentInChildren<Text>();
             _uiTowerPanelRoot.gameObject.SetActive(false);
 
             _uiGameOverScrim = CreateUiPanel("Run Result Scrim", root, Vector2.zero, Vector2.one, new Vector2(0.5f, 0.5f), Vector2.zero, Vector2.zero, new Color(0.005f, 0.008f, 0.012f, 0.82f));
@@ -1668,9 +1694,32 @@ namespace TD
 
         private void HandleRadialTowerSelected(Vector2Int cell, TDTowerKind kind)
         {
-            if (!IsBuildWindowOpen() || !IsTowerUnlocked(kind)) return;
+            if (!IsBuildWindowOpen())
+            {
+                DenyRadialAction("Build is disabled during combat. Wait for prep phase.");
+                return;
+            }
+
+            if (!IsTowerUnlocked(kind))
+            {
+                DenyRadialAction($"{GetTowerKindLabel(kind)} is not in the active formation.");
+                return;
+            }
+
             var cost = TDTower.GetBuildCost(kind);
-            if (_defenseBudget < cost) return;
+            if (_defenseBudget < cost)
+            {
+                DenyRadialAction($"Insufficient defense budget. {GetTowerKindLabel(kind)} needs {cost}.");
+                return;
+            }
+
+            // The site could have been taken between opening the menu and
+            // confirming (debug builds, automation probes) — never stack towers.
+            if (_gridMap == null || !_gridMap.IsBuildable(cell))
+            {
+                DenyRadialAction("Build site is no longer available.");
+                return;
+            }
 
             _defenseBudget -= cost;
             _budgetSpentOnBuilds += cost;
@@ -1683,6 +1732,12 @@ namespace TD
             SetStatus($"Built {GetTowerKindLabel(kind)} (-{cost} budget)");
             PlaySfxTone("tower_build", 420f, 0.10f, 0.55f, true);
             AdvanceTutorial(TDFirstRunTutorialStep.BuildTower);
+        }
+
+        private void DenyRadialAction(string message)
+        {
+            SetStatus(message);
+            PlaySfxTone("ui_deny", 180f, 0.08f, 0.30f, true);
         }
 
         private void BuildMissionBriefing()
@@ -3717,6 +3772,15 @@ namespace TD
             var utilityCost = tower.CanUpgrade ? tower.GetUpgradeCost(TDTowerUpgradeBranch.Utility) : 0;
             SetUpgradeButtonUi(_uiDamageUpgradeButton, _uiDamageUpgradeButtonText, "Damage", damageCost, canUpgrade && _defenseBudget >= damageCost, BuildUpgradeButtonPreview(tower, TDTowerUpgradeBranch.Damage));
             SetUpgradeButtonUi(_uiUtilityUpgradeButton, _uiUtilityUpgradeButtonText, "Utility", utilityCost, canUpgrade && _defenseBudget >= utilityCost, BuildUpgradeButtonPreview(tower, TDTowerUpgradeBranch.Utility));
+
+            if (_uiSellTowerButton != null)
+            {
+                _uiSellTowerButton.interactable = IsBuildWindowOpen() && !_gameOver;
+                SetUiText(_uiSellTowerButtonText,
+                    TDLocalization.IsChinese
+                        ? $"拆塔  +{tower.SellRefundValue}"
+                        : $"SELL  +{tower.SellRefundValue}");
+            }
         }
 
         private void UpdateGameOverUi()
@@ -9701,7 +9765,10 @@ namespace TD
 
         private void EnsureGamepadFocus()
         {
-            if (!TDInputCompat.GetGamepadNavigationDown() || EventSystem.current == null)
+            // While the gamepad virtual cursor owns the board, focus navigation
+            // must stay out of the way — a focused Selectable would turn South
+            // into an accidental submit on top of the virtual click.
+            if (_gamepadCursorMode || !TDInputCompat.GetGamepadNavigationDown() || EventSystem.current == null)
             {
                 return;
             }
@@ -13658,6 +13725,11 @@ namespace TD
                 TryUpgradeSelectedTowerFromUi(_selectedUpgradeBranch);
             }
 
+            if (TDInputCompat.GetKeyDown(KeyCode.S))
+            {
+                TrySellSelectedTowerFromUi();
+            }
+
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             // Debug-only level stepping cheats — never compiled into release players.
             if (TDInputCompat.GetKeyDown(KeyCode.F5))
@@ -13881,6 +13953,55 @@ namespace TD
 
             SelectTowerForUi(tower);
             TryUpgradeTower(tower, _selectedUpgradeBranch);
+        }
+
+        private void TrySellSelectedTowerFromUi()
+        {
+            TrySellTower(GetUiFocusedTower());
+        }
+
+        private void TrySellTower(TDTower tower)
+        {
+            if (tower == null || tower.gameObject == null)
+            {
+                SetStatus("Select a tower before selling.");
+                return;
+            }
+
+            if (!IsBuildWindowOpen())
+            {
+                SetStatus("Sell is disabled during combat. Wait for prep phase.");
+                PlaySfxTone("ui_deny", 180f, 0.08f, 0.30f, true);
+                return;
+            }
+
+            var displayName = tower.DisplayName;
+            var cell = tower.GridCell;
+            var refund = tower.SellRefundValue;
+
+            if (_selectedTowerForUi == tower)
+            {
+                _selectedTowerForUi = null;
+            }
+
+            if (_hoveredTower == tower)
+            {
+                _hoveredTower = null;
+            }
+
+            if (_lastHoverSfxTower == tower)
+            {
+                _lastHoverSfxTower = null;
+            }
+
+            UpdateTowerTooltip(null);
+            _gridMap?.SetTower(cell, false);
+            _builtTowerCount = Mathf.Max(0, _builtTowerCount - 1);
+            _defenseBudget += refund;
+            Destroy(tower.gameObject);
+            PushTacticalEvent($"Sell: {displayName} (+{refund})", 4.2f);
+            SetStatus($"Sold {displayName} (+{refund} budget)");
+            PlaySfxTone("tower_sell", 320f, 0.12f, 0.45f, false);
         }
 
         private void TryUpgradeTower(TDTower tower, TDTowerUpgradeBranch branch)
@@ -19436,6 +19557,7 @@ namespace TD
             {
                 _gridMap.HideBuildPreview();
                 HideRangePreview();
+                UpdateTowerTooltip(null);
                 return;
             }
 
@@ -19474,6 +19596,7 @@ namespace TD
             {
                 _gridMap.HideBuildPreview();
                 HideRangePreview();
+                UpdateTowerTooltip(null);
                 return;
             }
 
@@ -19484,6 +19607,7 @@ namespace TD
                     _gridMap.CellToBuildWorld(cell),
                     TDTower.GetBaseRange(_selectedTowerKind),
                     new Color(0.42f, 0.86f, 0.66f, 0.26f));
+                UpdateTowerTooltip(null);
                 return;
             }
 

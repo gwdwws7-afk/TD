@@ -369,6 +369,7 @@ namespace TD
             GridCell = gridCell;
             _baseState = CreateBaseState(kind);
             RebuildActiveState();
+            _totalInvested = _baseState.buildCost;
             _readability = GetComponent<TDTowerReadability>();
             if (_readability == null)
             {
@@ -379,6 +380,16 @@ namespace TD
             _readability.RefreshTier(_upgradeHistory);
             RefreshDepthSorting();
         }
+
+        public const float SellRefundRatio = 0.6f;
+
+        // Build cost plus every upgrade actually purchased — the base for the
+        // 60% sell refund.
+        private int _totalInvested;
+
+        public int TotalInvested => _totalInvested;
+
+        public int SellRefundValue => Mathf.FloorToInt(_totalInvested * SellRefundRatio);
 
         public int GetUpgradeCost(TDTowerUpgradeBranch branch)
         {
@@ -399,6 +410,7 @@ namespace TD
                 return false;
             }
 
+            _totalInvested += GetUpgradeCost(branch);
             _upgradeHistory.Add(branch);
             RebuildActiveState();
             RefreshVisual();

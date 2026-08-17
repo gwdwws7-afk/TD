@@ -65,7 +65,42 @@ namespace TD
 #endif
         }
 
+        // --- Virtual pointer (gamepad cursor) ---
+        // While the gamepad cursor is active, MousePosition reports the virtual
+        // cursor so every existing pointer consumer (build preview, tower hover,
+        // tooltip, radial menu placement) follows it without per-call-site changes.
+        private static Vector2 _virtualPointerPosition;
+        private static bool _virtualPointerActive;
+
+        public static bool VirtualPointerActive => _virtualPointerActive;
+
+        public static void SetVirtualPointer(Vector2 screenPosition)
+        {
+            _virtualPointerPosition = screenPosition;
+            _virtualPointerActive = true;
+        }
+
+        public static void ClearVirtualPointer()
+        {
+            _virtualPointerActive = false;
+        }
+
         public static Vector3 MousePosition
+        {
+            get
+            {
+                if (_virtualPointerActive)
+                {
+                    return new Vector3(_virtualPointerPosition.x, _virtualPointerPosition.y, 0f);
+                }
+
+                return MousePositionRaw;
+            }
+        }
+
+        // Raw OS mouse position, ignoring the virtual pointer override — callers
+        // that manage the override itself must read this, not MousePosition.
+        public static Vector3 MousePositionRaw
         {
             get
             {
@@ -141,6 +176,101 @@ namespace TD
                     gamepad.leftStick.down.wasPressedThisFrame ||
                     gamepad.leftStick.left.wasPressedThisFrame ||
                     gamepad.leftStick.right.wasPressedThisFrame);
+#else
+            return false;
+#endif
+        }
+
+        public static Vector2 GetGamepadLeftStick(float deadzone = 0.18f)
+        {
+#if ENABLE_INPUT_SYSTEM
+            var gamepad = Gamepad.current;
+            if (gamepad == null)
+            {
+                return Vector2.zero;
+            }
+
+            var value = gamepad.leftStick.ReadValue();
+            var magnitude = value.magnitude;
+            if (magnitude < deadzone)
+            {
+                return Vector2.zero;
+            }
+
+            // Rescale above the deadzone so cursor speed ramps 0→1 across the
+            // usable range instead of jumping on first contact.
+            var normalized = (magnitude - deadzone) / (1f - deadzone);
+            return value / magnitude * Mathf.Min(1f, normalized);
+#else
+            return Vector2.zero;
+#endif
+        }
+
+        // Normalized selection direction for radial-style menus: the left stick
+        // when pushed, otherwise the dpad axes.
+        public static Vector2 GetGamepadNavigationVector()
+        {
+#if ENABLE_INPUT_SYSTEM
+            var stick = GetGamepadLeftStick();
+            if (stick.sqrMagnitude > 0.04f)
+            {
+                return stick.normalized;
+            }
+
+            var gamepad = Gamepad.current;
+            if (gamepad == null)
+            {
+                return Vector2.zero;
+            }
+
+            var direction = Vector2.zero;
+            if (gamepad.dpad.left.isPressed)
+            {
+                direction.x -= 1f;
+            }
+
+            if (gamepad.dpad.right.isPressed)
+            {
+                direction.x += 1f;
+            }
+
+            if (gamepad.dpad.up.isPressed)
+            {
+                direction.y += 1f;
+            }
+
+            if (gamepad.dpad.down.isPressed)
+            {
+                direction.y -= 1f;
+            }
+
+            return direction.sqrMagnitude > 0.01f ? direction.normalized : Vector2.zero;
+#else
+            return Vector2.zero;
+#endif
+        }
+
+        public static bool GetAnyGamepadButtonDown()
+        {
+#if ENABLE_INPUT_SYSTEM
+            var gamepad = Gamepad.current;
+            if (gamepad == null)
+            {
+                return false;
+            }
+
+            return gamepad.buttonSouth.wasPressedThisFrame ||
+                   gamepad.buttonEast.wasPressedThisFrame ||
+                   gamepad.buttonWest.wasPressedThisFrame ||
+                   gamepad.buttonNorth.wasPressedThisFrame ||
+                   gamepad.startButton.wasPressedThisFrame ||
+                   gamepad.selectButton.wasPressedThisFrame ||
+                   gamepad.leftShoulder.wasPressedThisFrame ||
+                   gamepad.rightShoulder.wasPressedThisFrame ||
+                   gamepad.dpad.up.wasPressedThisFrame ||
+                   gamepad.dpad.down.wasPressedThisFrame ||
+                   gamepad.dpad.left.wasPressedThisFrame ||
+                   gamepad.dpad.right.wasPressedThisFrame;
 #else
             return false;
 #endif

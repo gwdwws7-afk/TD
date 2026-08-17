@@ -18,11 +18,17 @@ namespace TD
         private readonly List<Button> _buttons = new();
         private readonly List<Text> _labels = new();
         private readonly List<Image> _icons = new();
+        private readonly List<TDTowerKind> _slotKinds = new();
+        private readonly List<int> _slotCosts = new();
+        private readonly List<bool> _slotUnlocked = new();
+        private int _lastBudget = int.MinValue;
         private Vector2Int _targetCell;
         private Vector3 _targetWorld;
+        private int _gamepadSlotIndex = -1;
 
         public System.Action<Vector2Int, TDTowerKind> OnTowerSelected;
         public bool IsVisible => _root != null && _root.gameObject.activeSelf;
+        public bool HasGamepadSelection => _gamepadSlotIndex >= 0;
 
         private const float SlotSize = 56f;
         private const float Radius = 70f;
@@ -119,6 +125,7 @@ namespace TD
         {
             _targetCell = cell;
             _targetWorld = worldPos;
+            _gamepadSlotIndex = -1;
 
             // Position root at the screen point, converted into canvas units —
             // the battle canvas is ScaleWithScreenSize, so raw screen pixels
@@ -129,27 +136,37 @@ namespace TD
                 _root.localPosition = localPoint;
             }
 
-            // Configure slots.
+            // Configure slots. Active slots are redistributed evenly around the
+            // circle so a partial formation (4 towers) still reads as a full
+            // wheel and every compass direction owns a slot — gamepad
+            // direction-picking relies on that mapping.
+            _slotKinds.Clear();
+            _slotCosts.Clear();
+            _slotUnlocked.Clear();
+            _lastBudget = budget;
+            var activeCount = Mathf.Min(availableTowers.Length, _slots.Count);
             for (var i = 0; i < _slots.Count; i++)
             {
-                if (i >= availableTowers.Length)
+                var active = i < activeCount;
+                _slots[i].gameObject.SetActive(active);
+                if (!active)
                 {
-                    _slots[i].gameObject.SetActive(false);
                     continue;
                 }
 
                 var kind = availableTowers[i];
                 var cost = i < costs.Length ? costs[i] : 0;
                 var isUnlocked = i < unlocked.Length && unlocked[i];
-                var canAfford = budget >= cost;
-                var usable = isUnlocked && canAfford;
+                var usable = isUnlocked && budget >= cost;
 
-                _slots[i].gameObject.SetActive(true);
-                _icons[i].color = usable
-                    ? new Color(TowerColors[(int)kind].r * 0.4f, TowerColors[(int)kind].g * 0.4f, TowerColors[(int)kind].b * 0.4f, 0.95f)
-                    : SlotLocked;
+                _slotKinds.Add(kind);
+                _slotCosts.Add(cost);
+                _slotUnlocked.Add(isUnlocked);
+
+                var angle = (i / (float)activeCount) * Mathf.PI * 2f - Mathf.PI / 2f; // start from top
+                _slots[i].anchoredPosition = new Vector2(Mathf.Cos(angle) * Radius, Mathf.Sin(angle) * Radius);
+
                 _labels[i].text = $"{TowerShortNames[(int)kind]}\n{cost}";
-                _labels[i].color = usable ? TextBright : TextDim;
                 _buttons[i].interactable = usable;
 
                 var capturedKind = kind;
@@ -159,6 +176,8 @@ namespace TD
                     OnTowerSelected?.Invoke(_targetCell, capturedKind);
                     Hide();
                 });
+
+                ApplySlotVisual(i, usable, highlighted: false);
             }
 
             _fader.alpha = 1f;
@@ -168,6 +187,7 @@ namespace TD
 
         public void Hide()
         {
+            _gamepadSlotIndex = -1;
             if (_fader != null)
             {
                 _fader.alpha = 0f;
@@ -178,6 +198,123 @@ namespace TD
             {
                 _root.gameObject.SetActive(false);
             }
+        }
+
+        /// <summary>
+        /// Point the gamepad highlight at the slot matching the stick/dpad
+        /// direction. Slots start at the top and fill clockwise, so the
+        /// direction angle maps directly onto a slot index.
+        /// </summary>
+        public void HandleGamepadNavigation(Vector2 direction)
+        {
+            if (!IsVisible || _slotKinds.Count == 0 || direction.sqrMagnitude < 0.12f)
+            {
+                return;
+            }
+
+            var angleDeg = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            var step = 360f / _slotKinds.Count;
+            var index = Mathf.RoundToInt((angleDeg + 90f) / step);
+            index = ((index % _slotKinds.Count) + _slotKinds.Count) % _slotKinds.Count;
+            SetGamepadSlotIndex(index);
+        }
+
+        public void HighlightFirstGamepadSlot()
+        {
+            for (var i = 0; i < _slotKinds.Count; i++)
+            {
+                if (_buttons[i].interactable)
+                {
+                    SetGamepadSlotIndex(i);
+                    return;
+                }
+            }
+
+            if (_slotKinds.Count > 0)
+            {
+                SetGamepadSlotIndex(0);
+            }
+        }
+
+        /// <summary>
+        /// Re-evaluate slot affordability after the budget changed while the
+        /// menu is open. No-op while the budget is unchanged, so callers can
+        /// invoke it every frame the menu is visible.
+        /// </summary>
+        public void RefreshAffordability(int budget)
+        {
+            if (!IsVisible || budget == _lastBudget)
+            {
+                return;
+            }
+
+            _lastBudget = budget;
+            for (var i = 0; i < _slotKinds.Count; i++)
+            {
+                var usable = _slotUnlocked[i] && budget >= _slotCosts[i];
+                _buttons[i].interactable = usable;
+                ApplySlotVisual(i, usable, i == _gamepadSlotIndex);
+            }
+        }
+
+        /// <summary>
+        /// Confirm the highlighted slot. Returns false when nothing is
+        /// highlighted (input not consumed); the locked flag tells the caller
+        /// why nothing was built.
+        /// </summary>
+        public bool TryConfirmGamepadSelection(out bool locked)
+        {
+            locked = false;
+            if (!IsVisible || _gamepadSlotIndex < 0 || _gamepadSlotIndex >= _slotKinds.Count)
+            {
+                return false;
+            }
+
+            locked = !_buttons[_gamepadSlotIndex].interactable;
+            if (!locked)
+            {
+                _buttons[_gamepadSlotIndex].onClick.Invoke();
+            }
+
+            return true;
+        }
+
+        private void SetGamepadSlotIndex(int index)
+        {
+            if (index == _gamepadSlotIndex)
+            {
+                return;
+            }
+
+            if (_gamepadSlotIndex >= 0 && _gamepadSlotIndex < _slotKinds.Count)
+            {
+                ApplySlotVisual(_gamepadSlotIndex, _buttons[_gamepadSlotIndex].interactable, highlighted: false);
+            }
+
+            _gamepadSlotIndex = index;
+            ApplySlotVisual(index, _buttons[index].interactable, highlighted: true);
+        }
+
+        private void ApplySlotVisual(int index, bool usable, bool highlighted)
+        {
+            var baseColor = TowerColors[(int)_slotKinds[index]];
+            Color iconColor;
+            if (usable)
+            {
+                iconColor = highlighted
+                    ? Color.Lerp(baseColor, Color.white, 0.35f)
+                    : new Color(baseColor.r * 0.4f, baseColor.g * 0.4f, baseColor.b * 0.4f, 0.95f);
+            }
+            else
+            {
+                iconColor = highlighted
+                    ? Color.Lerp(SlotLocked, Color.white, 0.15f)
+                    : SlotLocked;
+            }
+
+            _icons[index].color = iconColor;
+            _labels[index].color = usable ? TextBright : TextDim;
+            _slots[index].localScale = highlighted ? Vector3.one * 1.16f : Vector3.one;
         }
 
         private static RectTransform CreateRect(string name, Transform parent)

@@ -17,6 +17,7 @@ namespace TD
         private Text _counterText;
         private TDTower _currentTower;
         private float _hoverTimer;
+        private int _lastContentTier = -1;
         private const float ShowDelay = 0.4f;
         private const float HideDistance = 80f;
 
@@ -74,8 +75,14 @@ namespace TD
 
         public void HoverTower(TDTower tower)
         {
-            _currentTower = tower;
-            _hoverTimer = 0f;
+            // Called every frame while hovering — only restart the delay when
+            // the target actually changes, otherwise the tooltip would never
+            // survive its own ShowDelay.
+            if (_currentTower != tower)
+            {
+                _hoverTimer = 0f;
+                _currentTower = tower;
+            }
         }
 
         public void ClearHover()
@@ -107,6 +114,13 @@ namespace TD
             {
                 gameObject.SetActive(true);
                 RefreshContent();
+                _lastContentTier = _currentTower.Tier;
+            }
+            else if (_currentTower.Tier != _lastContentTier)
+            {
+                // Upgrades can land while the pointer keeps resting on the tower.
+                RefreshContent();
+                _lastContentTier = _currentTower.Tier;
             }
 
             // Position near cursor (offset right/up), converted into canvas
