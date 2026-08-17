@@ -1244,8 +1244,19 @@ namespace TD
                 }
 
                 _animator.Configure(animationPrefix, animationFrames, _activeState.animationFps);
-                // Load fire animation frames if they exist (e.g. tower_rail_lancer_fire_00).
-                _animator.ConfigureFire(animationPrefix, 3, 15f);
+                // Fire reel: when a tiered idle prefix is active (T3), prefer
+                // its dedicated fire reel — the art batches ship those now. If
+                // the tiered reel is ever missing (partial asset import), fall
+                // back to the base fire frames so a maxed tower keeps its fire
+                // feedback instead of silently losing it.
+                var firePrefix = animationPrefix;
+                if (firePrefix != _activeState.animationPrefix &&
+                    Resources.Load<Sprite>($"{firePrefix}_fire_00") == null)
+                {
+                    firePrefix = _activeState.animationPrefix;
+                }
+
+                _animator.ConfigureFire(firePrefix, 3, 15f);
             }
             else if (_animator != null)
             {
