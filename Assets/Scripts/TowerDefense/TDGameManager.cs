@@ -17767,7 +17767,11 @@ namespace TD
                                roleLabels.Count == towerKinds.Length &&
                                identityColors.Count == towerKinds.Length;
 
-            var expectedBaseSizes = new HashSet<int> { 10, 11, 12, 14, 16, 20 };
+            // Canonical role sizes (GetUiRoleFontSize): Caption 11, Body 12,
+            // Metric 13, PanelTitle 15, SectionTitle 17, ScreenTitle 20. The
+            // old expectation set {10,11,12,14,16,20} predates the role system
+            // and failed every role-remapped label (14->15, 12->13).
+            var expectedBaseSizes = new HashSet<int> { 11, 12, 13, 15, 17, 20 };
             var typographyLabels = new List<Text>
             {
                 _uiTitleText,
@@ -17780,9 +17784,13 @@ namespace TD
             };
             typographyLabels.AddRange(_uiFormationTowerButtonTexts);
             var worldFont = Resources.Load<Font>(TDUiWorldSkin.FontPath);
-            var worldFontReady = worldFont != null && typographyLabels
+            // ResolveFont swaps in the CJK face in Chinese sessions — the
+            // canonical-font intent is "labels use the canonical font for the
+            // active language", not the latin face specifically.
+            var expectedFont = TDLocalization.ResolveFont(worldFont);
+            var worldFontReady = expectedFont != null && typographyLabels
                 .Where(label => label != null)
-                .All(label => label.font == worldFont);
+                .All(label => label.font == expectedFont);
             var typographyPass = true;
             var typographyIssues = new List<string>();
             var overflow = new List<string>();
@@ -17800,7 +17808,11 @@ namespace TD
                     typographyPass = false;
                     typographyIssues.Add($"{label.name}:{label.fontSize}");
                 }
-                if (label.preferredHeight > label.rectTransform.rect.height + 1.5f)
+                // Best-fit labels self-shrink to their rect — preferredHeight
+                // overflow is meaningless for them (e.g. the HUD title at the
+                // canonical 15pt CJK line height in its 20px row).
+                if (!label.resizeTextForBestFit &&
+                    label.preferredHeight > label.rectTransform.rect.height + 1.5f)
                 {
                     overflow.Add(label.name);
                 }
