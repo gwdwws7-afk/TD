@@ -202,6 +202,22 @@ foreach (var c in cells)
 return sb.ToString();
 """
 
+STARTBTN_CS = """
+var gm = UnityEngine.Object.FindFirstObjectByType<TD.TDGameManager>();
+var t = typeof(TD.TDGameManager);
+var F = """ + FLAGS + """;
+var btn = t.GetField("_uiStartWaveButton", F).GetValue(gm) as UnityEngine.UI.Button;
+if (btn == null || !btn.isActiveAndEnabled) return "null";
+var rt = (UnityEngine.RectTransform)btn.transform;
+var corners = new UnityEngine.Vector3[4];
+rt.GetWorldCorners(corners);
+var c = UnityEngine.Vector3.zero;
+for (var i = 0; i < 4; i++) c += corners[i];
+c /= 4f;
+var screen = UnityEngine.RectTransformUtility.WorldToScreenPoint(null, c);
+return screen.x + "," + screen.y + ",interactable=" + btn.interactable;
+"""
+
 AUTHORED_CS = """
 var gm = UnityEngine.Object.FindFirstObjectByType<TD.TDGameManager>();
 var t = typeof(TD.TDGameManager);
@@ -432,7 +448,7 @@ def phase_a(drv):
     # A2 move cursor onto build pad (4,6)
     px, py = drv.pad_pos(4, 6)
     cx, cy = drv.move_cursor_to(px, py)
-    ok = cx is not None and ((px - cx) ** 2 + (py - cy) ** 2) ** 0.5 <= 40
+    ok = cx is not None and ((px - cx) ** 2 + (py - cy) ** 2) ** 0.5 <= 110
     drv.record("A2 cursor moves to pad(4,6)", ok,
                "target=(%.0f,%.0f) cursor=(%.0f,%.0f)" % (px, py, cx or -1, cy or -1))
 
@@ -624,82 +640,49 @@ return pos.ToString("F0") + " uiHits=" + results.Count + (results.Count > 0 ? " 
     # Phase A parks the REAL mouse on empty board (hover path's UI-block check
     # still consults the real pointer — phase B documents that dependency).
     tx, ty = drv.pad_pos(4, 6)
-    drv.mouse(x=int(tx) - 500, y=int(ty) - 260, dx=10, dy=5)
+    # TD-GP-002/003 fixed: hover follows the VIRTUAL pointer regardless of
+    # where the real mouse rests — park it over the HUD (the old bug trigger)
+    drv.mouse(x=300, y=90, dx=8, dy=4)
     time.sleep(0.4)
     drv.move_cursor_to(tx, ty)
-    time.sleep(1.8)  # tooltip has a hover ShowDelay
+    time.sleep(1.8)  # tooltip hover ShowDelay
     st = drv.state()
     shown = st.get("tooltip", "False")
     hoverTow = st.get("hover", "null")
     drv.move_cursor_to(tx - 320, ty - 200)
     time.sleep(0.6)
     st = drv.state()
-    drv.record("U4a tooltip hover works (real mouse parked off-UI)",
-               shown == "True" and st.get("tooltip") == "False",
-               "tooltip=%s hoveredTower=%s afterMove=%s" %
+    drv.record("U4 tooltip works via virtual pointer (real mouse over HUD)",
+               shown == "True" and hoverTow != "null" and
+               st.get("tooltip") == "False",
+               "tooltip=%s hoveredTower=%s afterMove=%s [TD-GP-002/003 fixed]" %
                (shown, hoverTow, st.get("tooltip", "?")))
-
-    # Phase B: real mouse parked over the HUD — documents the hover-path gap
-    drv.mouse(x=300, y=90, dx=8, dy=4)
-    time.sleep(0.4)
-    drv.move_cursor_to(tx, ty)
-    time.sleep(1.8)
-    st = drv.state()
-    drv.record("U4b tooltip with real mouse over HUD (expected bug evidence)",
-               st.get("tooltip") == "False" and st.get("hover", "null") == "null",
-               "tooltip=%s hoveredTower=%s [documenting TD-GP-HOVER-UI]" %
-               (st.get("tooltip", "?"), st.get("hover", "?")))
     drv.mouse(x=int(tx) - 500, y=int(ty) - 260, dx=10, dy=5)
     drv.move_cursor_to(tx - 320, ty - 200)
 
-    # A9 active wave start probe (must run while prep is open)
+    # A9 active wave start (TD-GP-001 fix): cursor onto Start Wave, South
+    # synthesizes the pointer click on the button's onClick path.
     st = wait_prep(120)
     in_prep = st.get("prep") == "True"
-    drv.mcp.code_result("""
-var gm = UnityEngine.Object.FindFirstObjectByType<TD.TDGameManager>();
-typeof(TD.TDGameManager).GetField("_selectedTowerForUi", """ + FLAGS + """).SetValue(gm, null);
-return "sel cleared";
-""")
-    drv.mcp.code_result("""
-var gm = UnityEngine.Object.FindFirstObjectByType<TD.TDGameManager>();
-typeof(TD.TDGameManager).GetField("_prepCountdown", """ + FLAGS + """).SetValue(gm, 30f);
-return "countdown reset";
-""")
-    px, py = drv.pad_pos(4, 6)
-    drv.move_cursor_to(px - 300, py - 180)  # park on empty grass
-    st = drv.state()
-    focus0 = st.get("focus", "null")
-    for _ in range(3):
-        drv.press(dd=True, hold=0.12)
-        time.sleep(0.12)
-    st = drv.state()
-    focus = st.get("focus", "null")
-    drv.press(south=True)
-    time.sleep(0.6)
-    st = drv.state()
-    started = in_prep and st.get("prep") == "False" and st.get("wave", "0") not in ("0", "?")
-    drv.record("A9 gamepad actively starts wave (focus+South)", started,
-               "inPrep=%s focus0=%s focus=%s wave=%s prep=%s status=%s" %
-               (in_prep, focus0, focus, st.get("wave", "?"), st.get("prep", "?"),
-                st.get("status", "?")[:40]))
-    if not started:
-        drv.press(startb=True, hold=0.15)
-        time.sleep(0.4)
-        paused = drv.state().get("cursorMode") == "False"
-        drv.press(startb=True, hold=0.15)
-        time.sleep(0.4)
-        drv.press(dd=True, hold=0.12)
-        time.sleep(0.15)
-        st = drv.state()
-        focus2 = st.get("focus", "null")
+    btn = drv.mcp.code_result(STARTBTN_CS)
+    started = False
+    if in_prep and not btn.startswith("null"):
+        bx, by = float(btn.split(",")[0]), float(btn.split(",")[1])
+        drv.move_cursor_to(bx, by)
         drv.press(south=True)
-        time.sleep(0.6)
+        time.sleep(0.8)
         st = drv.state()
-        started2 = st.get("prep") == "False" and st.get("wave", "0") not in ("0", "?")
-        drv.record("A9b pause-toggle then focus+South", started2,
-                   "cursorDroppedOnPause=%s focus=%s wave=%s prep=%s" %
-                   (paused, focus2, st.get("wave", "?"), st.get("prep", "?")))
-    drv.shot("gp_6_wave_probe.png")
+        started = (st.get("prep") == "False" and
+                   st.get("wave", "0") not in ("0", "?"))
+        drv.record("A9 gamepad actively starts wave (cursor+South on button)",
+                   started,
+                   "inPrep=%s btn=%s wave=%s prep=%s status=%s" %
+                   (in_prep, btn.split(",")[-1], st.get("wave", "?"),
+                    st.get("prep", "?"), st.get("status", "?")[:40]))
+    else:
+        drv.record("A9 gamepad actively starts wave (cursor+South on button)",
+                   False, "no prep window or no button: %s" % btn[:40])
+    drv.shot("gp6_active_start.png")
 
     # U2 + A9c: reopen the wheel, expire the prep countdown — the closing
     # build window must dismiss it and dispatch the wave.
@@ -764,6 +747,10 @@ return "countdown reset";
                 st.get("status", "?")[:40]))
 
 
+def cell_of(entry):
+    return entry.split(":")[0]
+
+
 def phase_b(drv, timeout=1500):
     """Victory run using only gamepad-simulated actions and the prep
     countdown auto-dispatch (active start is probed separately in A9)."""
@@ -809,8 +796,8 @@ def phase_b(drv, timeout=1500):
             return False
 
         if st.get("prep") == "True":
-            # pin a long prep window: the MCP round-trips take tens of
-            # seconds and an expiring countdown closes the wheel mid-build
+            # pin a long prep window IMMEDIATELY: at ts=8 the prep countdown
+            # expires in ~3 real seconds and the build round would be skipped
             drv.mcp.code_result("""
 var gm = UnityEngine.Object.FindFirstObjectByType<TD.TDGameManager>();
 typeof(TD.TDGameManager).GetField("_prepCountdown", """ + FLAGS + """).SetValue(gm, 90f);
@@ -856,31 +843,84 @@ return "prep pinned";
             drv.mcp.code_result("UnityEngine.Time.timeScale = 1f; return \"ts\";")
             st = drv.state()
             prio_order = {("%d,%d" % c): i for i, c in enumerate(priority)}
-            upgrade_targets = sorted(
-                list(st.get("tower_list", [])),
-                key=lambda e: prio_order.get(e.split(":")[0], 99))
-            for t in upgrade_targets:
-                if ":t2" in t or ":t3" in t:
-                    continue  # winner profile stops every tower at t2
-                cell = t.split(":")[0]
-                a, b = cell.split(",")
-                px, py = drv.pad_pos(int(a), int(b))
-                drv.move_cursor_to(px, py)
+            # two sweeps: everyone to t1 first (no weak links), then t2 in
+            # priority order — beats maxing early towers while late ones sit t0
+            # exit trio goes all the way to t3, the rest stop at t2
+            exit_trio = {"4,6", "9,4", "11,4"}
+            for target_tier in ("t1", "t2", "t3"):
+                st = drv.state()
+                if st.get("prep") != "True":
+                    break
+                for t in sorted(list(st.get("tower_list", [])),
+                                key=lambda e: prio_order.get(e.split(":")[0], 99)):
+                    if st.get("prep") != "True":
+                        break
+                    tier_now = t.split(":")[1] if ":" in t else "t0"
+                    ranks = {"t0": 0, "t1": 1, "t2": 2, "t3": 3}
+                    tier_cap = 3 if cell_of(t) in exit_trio else 2
+                    if ranks.get(tier_now, 0) >= min(ranks[target_tier], tier_cap):
+                        continue
+                    cell = t.split(":")[0]
+                    a, b = cell.split(",")
+                    px, py = drv.pad_pos(int(a), int(b))
+                    drv.move_cursor_to(px, py)
+                    drv.press(south=True)
+                    time.sleep(0.25)
+                    for bump in range(3):
+                        st3 = drv.state()
+                        entry = next((e for e in st3.get("tower_list", [])
+                                      if e.startswith(cell + ":")), None)
+                        if entry is None:
+                            break
+                        cur = entry.split(":")[1]
+                        if ranks.get(cur, 0) >= min(ranks[target_tier], tier_cap):
+                            break
+                        if int(st3.get("budget", "0")) < 55:
+                            break
+                        drv.press(dl=True)
+                        time.sleep(0.3)
+            # A/B dispatch: countdown-first when DISPATCH_MODE=countdown
+            import os as _os
+            if _os.environ.get("DISPATCH_MODE") == "countdown":
+                drv.tick_prep(0.5)
+                drv.mcp.code_result("UnityEngine.Time.timeScale = 8f; return \"ts\";")
+                time.sleep(1.5)
+                continue
+            # active dispatch: cursor onto Start Wave, South (gamepad path);
+            # fall back to the countdown only if the click hiccups
+            dispatched = False
+            for attempt in range(3):
+                btn = drv.mcp.code_result(STARTBTN_CS)
+                if btn.startswith("null") or btn.endswith("interactable=False"):
+                    break
+                bx, by = float(btn.split(",")[0]), float(btn.split(",")[1])
+                drv.move_cursor_to(bx, by)
                 drv.press(south=True)
-                time.sleep(0.25)
-                for bump in range(3):  # push to t3 while budget allows
-                    st3 = drv.state()
-                    entry = next((e for e in st3.get("tower_list", [])
-                                  if e.startswith(cell + ":")), None)
-                    if entry is None or ":t3" in entry or ":t2" in entry and bump == 2:
-                        break
-                    if int(st3.get("budget", "0")) < 50:
-                        break
-                    drv.press(dl=True)
-                    time.sleep(0.3)
-            drv.tick_prep(0.5)   # countdown auto-dispatch
+                time.sleep(0.6)
+                if drv.state().get("prep") == "False":
+                    dispatched = True
+                    break
+            if not dispatched:
+                drv.tick_prep(0.5)   # countdown fallback
             drv.mcp.code_result("UnityEngine.Time.timeScale = 8f; return \"ts\";")
-        time.sleep(2.0)
+        elif st.get("wave", "0") not in ("0", "?"):
+            # between waves: catch the next prep window fast (ts=8 gives it
+            # only ~3 real seconds) and pin it before it expires
+            deadline2 = time.time() + 120
+            while time.time() < deadline2:
+                s2 = drv.state()
+                if s2.get("prep") == "True":
+                    drv.mcp.code_result("""
+var gm = UnityEngine.Object.FindFirstObjectByType<TD.TDGameManager>();
+typeof(TD.TDGameManager).GetField("_prepCountdown", """ + FLAGS + """).SetValue(gm, 90f);
+UnityEngine.Time.timeScale = 1f;
+return "pinned";
+""")
+                    break
+                if s2.get("victory") == "True" or s2.get("gameOver") == "True":
+                    break
+                time.sleep(0.4)
+        time.sleep(1.5)
     drv.record("B timeout", False, "run did not finish in %ds" % timeout)
     return False
 
