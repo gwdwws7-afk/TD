@@ -1383,30 +1383,48 @@ namespace TD
             animationPrefix = _activeState.animationPrefix;
             animationFrames = _activeState.animationFrames;
 
-            if (Tier < 3)
+            if (Tier < 2)
             {
                 return;
             }
 
-            var tier3Sprite = BuildTier3SpritePath(_activeState.spritePath);
-            if (!string.IsNullOrWhiteSpace(tier3Sprite) && Resources.Load<Sprite>(tier3Sprite) != null)
+            // Tiered skins (spec: tower-t2-visual-spec-v1): T3 wins when its
+            // art exists, then T2, then the base form — each tier falls back
+            // downward on missing art so partial batches never strip upgrade
+            // feedback. Assets land inert until the frames exist.
+            if (!TryApplyTierVisual(Tier >= 3 ? "_t3" : "_t2", ref spritePath, ref animationPrefix) &&
+                Tier >= 3)
             {
-                spritePath = tier3Sprite;
+                TryApplyTierVisual("_t2", ref spritePath, ref animationPrefix);
+            }
+        }
+
+        private bool TryApplyTierVisual(string tierSuffix, ref string spritePath, ref string animationPrefix)
+        {
+            var applied = false;
+            var tierSprite = BuildTierSpritePath(_activeState.spritePath, tierSuffix);
+            if (!string.IsNullOrWhiteSpace(tierSprite) && Resources.Load<Sprite>(tierSprite) != null)
+            {
+                spritePath = tierSprite;
+                applied = true;
             }
 
             if (!string.IsNullOrWhiteSpace(_activeState.animationPrefix))
             {
-                var tier3Prefix = _activeState.animationPrefix + "_t3";
-                if (Resources.Load<Sprite>($"{tier3Prefix}_00") != null)
+                var tierPrefix = _activeState.animationPrefix + tierSuffix;
+                if (Resources.Load<Sprite>($"{tierPrefix}_00") != null)
                 {
-                    animationPrefix = tier3Prefix;
+                    animationPrefix = tierPrefix;
+                    applied = true;
                 }
             }
+
+            return applied;
         }
 
-        private static string BuildTier3SpritePath(string baseSpritePath)
+        private static string BuildTierSpritePath(string baseSpritePath, string tierSuffix)
         {
-            if (string.IsNullOrWhiteSpace(baseSpritePath))
+            if (string.IsNullOrWhiteSpace(baseSpritePath) || string.IsNullOrEmpty(tierSuffix))
             {
                 return baseSpritePath;
             }
@@ -1423,7 +1441,7 @@ namespace TD
                 return baseSpritePath;
             }
 
-            return baseSpritePath.Insert(split, "_t3");
+            return baseSpritePath.Insert(split, tierSuffix);
         }
 
         private void ApplyGroundShadow()

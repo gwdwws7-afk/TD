@@ -87,5 +87,23 @@ namespace TD.Tests
             Assert.AreEqual(0.72f, TDCombatMath.ResolvePostWindupCooldown(1.0f, 0.28f, -0.5f), 0.0001f,
                 "negative overshoot (timer clamped) is ignored");
         }
+
+        [Test]
+        public void TierSpritePath_InsertsSuffixBeforeFrameNumber()
+        {
+            // T2/T3 skin hook (spec: tower-t2-visual-spec-v1): the tier suffix
+            // inserts right before the trailing frame index; non-framed paths
+            // pass through untouched.
+            var method = typeof(TDTower).GetMethod("BuildTierSpritePath",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+            Assert.IsNotNull(method, "BuildTierSpritePath is missing");
+            Assert.AreEqual("Art/anim/tower_rail_lancer_t2_00",
+                method.Invoke(null, new object[] { "Art/anim/tower_rail_lancer_00", "_t2" }));
+            Assert.AreEqual("Art/anim/tower_rail_lancer_t3_00",
+                method.Invoke(null, new object[] { "Art/anim/tower_rail_lancer_00", "_t3" }));
+            Assert.AreEqual("Art/anim/tower_rail_lancer_portrait",
+                method.Invoke(null, new object[] { "Art/anim/tower_rail_lancer_portrait", "_t2" }),
+                "paths without a trailing frame index must not be rewritten");
+        }
     }
 }
