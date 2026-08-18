@@ -180,6 +180,7 @@ namespace TD
         private TDEnemy _windupTarget;
         private TDEnemy _cachedTarget;
         private float _targetRescanTimer;
+        private float _cadenceCarry;
         private float _windupTimer;
         private float _windupDuration;
 
@@ -464,13 +465,24 @@ namespace TD
             {
                 _cooldown -= Time.deltaTime;
                 _readability?.SetChargeState(false, 0f);
+                if (_cooldown > 0f)
+                {
+                    return;
+                }
+
+                // TD-WINDUP-001: credit the sub-frame overshoot past the
+                // cooldown into the next windup — see the windup block below.
+                _cadenceCarry = -_cooldown;
+                _cooldown = 0f;
                 return;
             }
 
             if (_windupTarget != null)
             {
-                _windupTimer = Mathf.Max(0f, _windupTimer - Time.deltaTime);
-                var progress = _windupDuration <= 0f ? 1f : 1f - (_windupTimer / _windupDuration);
+                _windupTimer -= Time.deltaTime;
+                var progress = _windupDuration <= 0f
+                    ? 1f
+                    : Mathf.Clamp01(1f - (_windupTimer / _windupDuration));
                 _readability?.SetChargeState(true, progress);
                 if (_windupTimer > 0f)
                 {
@@ -485,11 +497,18 @@ namespace TD
                     FireAt(chargedTarget);
                 }
 
-                // Cooldown applies even when the target died mid-windup —
-                // otherwise target churn resets fire cadence for free.
+                // Time-exact cadence (TD-WINDUP-001): the frame overshoot past
+                // the windup is credited to the cooldown instead of being
+                // discarded, so a shot's full cycle lands on the designed
+                // interval no matter which frame boundary it crosses. The old
+                // frame-quantized timers silently stretched every cycle by up
+                // to one frame and let sub-frame timing noise (assembly
+                // layout, a Debug.Log line) reorder shots and swing seeded
+                // runs by whole waves.
+                var windupOvershoot = -_windupTimer;
                 var fireRateMultiplier = _gameManager.GetTowerFireRateMultiplier(Kind);
                 var shotInterval = 1f / Mathf.Max(0.01f, _activeState.shotsPerSecond * fireRateMultiplier);
-                _cooldown = Mathf.Max(0.03f, shotInterval - _windupDuration);
+                _cooldown = TDCombatMath.ResolvePostWindupCooldown(shotInterval, _windupDuration, windupOvershoot);
                 return;
             }
 
@@ -522,7 +541,10 @@ namespace TD
 
             _windupTarget = target;
             _windupDuration = ResolveWindupDuration();
-            _windupTimer = _windupDuration;
+            // Cooldown overshoot pre-pays part of this windup so the cycle
+            // stays time-exact across frame boundaries (TD-WINDUP-001).
+            _windupTimer = Mathf.Max(0f, _windupDuration - _cadenceCarry);
+            _cadenceCarry = 0f;
             _readability?.SetChargeState(true, 0f);
         }
 

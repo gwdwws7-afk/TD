@@ -71,5 +71,21 @@ namespace TD.Tests
             Assert.IsNull(typeof(TDTowerPresentationProfile).GetField("chargeDuration"),
                 "chargeDuration belongs to combat data (TowerState.windupDuration); the presentation profile must not regain it");
         }
+
+        [Test]
+        public void PostWindupCooldown_CreditsFrameOvershoot()
+        {
+            // Time-exact cadence (TD-WINDUP-001): the sub-frame overshoot past
+            // a completed windup reduces the following cooldown so the full
+            // cycle lands on the designed interval.
+            Assert.AreEqual(0.72f, TDCombatMath.ResolvePostWindupCooldown(1.0f, 0.28f, 0f), 0.0001f,
+                "no overshoot: cooldown = interval - windup");
+            Assert.AreEqual(0.70f, TDCombatMath.ResolvePostWindupCooldown(1.0f, 0.28f, 0.02f), 0.0001f,
+                "2 frames-equivalent overshoot is credited");
+            Assert.AreEqual(0.03f, TDCombatMath.ResolvePostWindupCooldown(1.0f, 0.28f, 5f), 0.0001f,
+                "heavy overshoot floors at the 0.03s minimum gap");
+            Assert.AreEqual(0.72f, TDCombatMath.ResolvePostWindupCooldown(1.0f, 0.28f, -0.5f), 0.0001f,
+                "negative overshoot (timer clamped) is ignored");
+        }
     }
 }

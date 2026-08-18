@@ -54,7 +54,7 @@ if not conn:
 
 r = call(conn, sid, "manage_build", {
     "action": "build", "development": "false",
-    "output_path": "E:/TD/output/builds/p3_gating_verify_mono/EmberlineDefense.exe",
+    "output_path": "E:/TD/output/builds/verify_run/EmberlineDefense.exe",
     "scenes": "Assets/Scenes/EmberlineBootstrap.unity",
     "target": "windows64"}, 2)
 print("kick:", text_of(r)[:300])

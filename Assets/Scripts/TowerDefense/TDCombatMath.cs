@@ -30,6 +30,19 @@ namespace TD
         }
 
         /// <summary>
+        /// Cooldown that follows a completed windup. The windup's frame
+        /// overshoot (how far past zero the timer ran on the firing frame)
+        /// is credited against the cooldown so the full cycle stays on the
+        /// designed interval regardless of frame boundaries. The 0.03s floor
+        /// keeps a minimum gap even when overshot heavily.
+        /// </summary>
+        public static float ResolvePostWindupCooldown(float shotInterval, float windupDuration, float windupOvershoot)
+        {
+            var overshoot = Mathf.Max(0f, windupOvershoot);
+            return Mathf.Max(0.03f, shotInterval - windupDuration - overshoot);
+        }
+
+        /// <summary>
         /// Miss chance of slow-firing single-target towers vs unslowed fast
         /// enemies (speed >= TDEnemy.FastEvadeSpeedThreshold). AoE and fire
         /// rates above 1.1/s never miss; at/below 1.0/s the chance scales from
