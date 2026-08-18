@@ -83,6 +83,21 @@ namespace TD
                 _hoverTimer = 0f;
                 _currentTower = tower;
             }
+
+            // TD-GP-003: an inactive component's Update can never re-enable
+            // itself, so the show-delay must elapse HERE while hidden —
+            // activation is driven externally once the delay passes (Update
+            // hides us again after hover ends).
+            if (tower != null && !gameObject.activeSelf)
+            {
+                _hoverTimer += Time.unscaledDeltaTime;
+                if (_hoverTimer >= ShowDelay)
+                {
+                    gameObject.SetActive(true);
+                    RefreshContent();
+                    _lastContentTier = tower.Tier;
+                }
+            }
         }
 
         public void ClearHover()

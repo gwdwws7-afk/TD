@@ -19565,7 +19565,11 @@ namespace TD
                 return;
             }
 
-            if (IsPointerOverBattleUi())
+            // Same pointer hit decision as the click path (TD-GP-002): while
+            // the gamepad cursor owns the pointer, the idle real mouse parked
+            // over a HUD panel must not kill hover/tooltip/build-ghost.
+            var pointerOverUi = _gamepadCursorMode ? _gamepadVirtualPointerOverUi : IsPointerOverBattleUi();
+            if (pointerOverUi)
             {
                 _gridMap.HideBuildPreview();
                 HideRangePreview();

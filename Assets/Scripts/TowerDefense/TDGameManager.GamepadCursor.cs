@@ -83,7 +83,18 @@ namespace TD
 
             if (TDInputCompat.GetGamepadButtonDown(TDGamepadButton.South))
             {
-                _gamepadVirtualClick = true;
+                // TD-GP-001: over UI, South acts as the pointer's click so
+                // buttons (Start Wave, panel actions) are reachable by gamepad
+                // — focus navigation is unavailable in cursor mode by design.
+                // Over the board it stays the build/select virtual click.
+                if (_gamepadVirtualPointerOverUi)
+                {
+                    TryClickUiAtVirtualPointer();
+                }
+                else
+                {
+                    _gamepadVirtualClick = true;
+                }
             }
 
             if (TDInputCompat.GetGamepadButtonDown(TDGamepadButton.DpadLeft))
@@ -231,6 +242,51 @@ namespace TD
             var pointerData = new PointerEventData(eventSystem) { position = screenPosition };
             eventSystem.RaycastAll(pointerData, _gamepadPointerRaycasts);
             return _gamepadPointerRaycasts.Count > 0;
+        }
+
+        /// <summary>
+        /// Synthesize a full pointer click (down/up/click) on the first
+        /// clickable handler under the virtual cursor. Buttons driven this way
+        /// fire the exact onClick path a real mouse click takes.
+        /// </summary>
+        private bool TryClickUiAtVirtualPointer()
+        {
+            var eventSystem = EventSystem.current;
+            if (eventSystem == null)
+            {
+                return false;
+            }
+
+            _gamepadPointerRaycasts.Clear();
+            var pointerData = new PointerEventData(eventSystem)
+            {
+                position = _gamepadCursorPosition,
+                button = PointerEventData.InputButton.Left
+            };
+            eventSystem.RaycastAll(pointerData, _gamepadPointerRaycasts);
+            for (var i = 0; i < _gamepadPointerRaycasts.Count; i++)
+            {
+                var hit = _gamepadPointerRaycasts[i].gameObject;
+                if (hit == null)
+                {
+                    continue;
+                }
+
+                // Raycasts often land on child graphics (labels, icons) —
+                // resolve up to the owning clickable.
+                var handler = ExecuteEvents.GetEventHandler<IPointerClickHandler>(hit);
+                if (handler == null)
+                {
+                    continue;
+                }
+
+                ExecuteEvents.Execute(handler, pointerData, ExecuteEvents.pointerDownHandler);
+                ExecuteEvents.Execute(handler, pointerData, ExecuteEvents.pointerUpHandler);
+                ExecuteEvents.Execute(handler, pointerData, ExecuteEvents.pointerClickHandler);
+                return true;
+            }
+
+            return false;
         }
 
         private bool IsBattleInteractionBlockedForGamepad()
