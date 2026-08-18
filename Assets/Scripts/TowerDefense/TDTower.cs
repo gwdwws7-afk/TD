@@ -106,6 +106,7 @@ namespace TD
             public int buildCost;
             public float range;
             public float shotsPerSecond;
+            public float windupDuration;
             public int damage;
             public float projectileSpeed;
             public float aoeRadius;
@@ -582,7 +583,9 @@ namespace TD
 
         private float ResolveWindupDuration()
         {
-            return TDTowerPresentationProfiles.Get(Kind).chargeDuration;
+            // Combat data — the presentation profile no longer owns pacing, so
+            // tuning "feel" there cannot silently shift DPS cadence.
+            return _activeState != null ? _activeState.windupDuration : 0f;
         }
 
         private float GetDamageMultiplier(TDEnemy target)
@@ -900,6 +903,7 @@ namespace TD
                     buildCost = 40,
                     range = 3.0f,
                     shotsPerSecond = 1.0f,
+                    windupDuration = 0.28f,
                     damage = 18,
                     projectileSpeed = 9f,
                     aoeRadius = 0f,
@@ -928,6 +932,7 @@ namespace TD
                     buildCost = 55,
                     range = 2.7f,
                     shotsPerSecond = 0.50f,
+                    windupDuration = 0.38f,
                     damage = 16,
                     projectileSpeed = 7.2f,
                     aoeRadius = 1.2f,
@@ -956,6 +961,7 @@ namespace TD
                     buildCost = 45,
                     range = 2.6f,
                     shotsPerSecond = 0.8f,
+                    windupDuration = 0.22f,
                     damage = 8,
                     projectileSpeed = 8.4f,
                     aoeRadius = 0f,
@@ -984,6 +990,7 @@ namespace TD
                     buildCost = 62,
                     range = 2.7f,
                     shotsPerSecond = 0.85f,
+                    windupDuration = 0.20f,
                     damage = 10,
                     projectileSpeed = 8.7f,
                     aoeRadius = 1.0f,
@@ -1012,6 +1019,7 @@ namespace TD
                     buildCost = 68,
                     range = 2.9f,
                     shotsPerSecond = 0.72f,
+                    windupDuration = 0.40f,
                     damage = 20,
                     projectileSpeed = 7.8f,
                     aoeRadius = 0f,
@@ -1040,6 +1048,7 @@ namespace TD
                     buildCost = 58,
                     range = 2.55f,
                     shotsPerSecond = 1.35f,
+                    windupDuration = 0.14f,
                     damage = 10,
                     projectileSpeed = 9.2f,
                     aoeRadius = 0.7f,
@@ -1068,6 +1077,7 @@ namespace TD
                     buildCost = 70,
                     range = 3.1f,
                     shotsPerSecond = 0.95f,
+                    windupDuration = 0.25f,
                     damage = 9,
                     projectileSpeed = 8.2f,
                     aoeRadius = 0.65f,
@@ -1096,6 +1106,7 @@ namespace TD
                     buildCost = 76,
                     range = 2.85f,
                     shotsPerSecond = 0.70f,
+                    windupDuration = 0.36f,
                     damage = 9,
                     projectileSpeed = 7.0f,
                     aoeRadius = 1.1f,
@@ -1130,6 +1141,7 @@ namespace TD
                 buildCost = source.buildCost,
                 range = source.range,
                 shotsPerSecond = source.shotsPerSecond,
+                windupDuration = source.windupDuration,
                 damage = source.damage,
                 projectileSpeed = source.projectileSpeed,
                 aoeRadius = source.aoeRadius,
