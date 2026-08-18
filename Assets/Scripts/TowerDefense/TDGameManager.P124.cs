@@ -109,6 +109,7 @@ namespace TD
         private int _p124SiteVariant;
         private int _p124HandledPrepWave = -1;
         private int _p124CommittedPrepWave = -1;
+        private readonly Dictionary<string, int> _p124TowerFirstWave = new(StringComparer.OrdinalIgnoreCase);
         private int _p124HandledScenarioWave = -1;
         private float _p124RunStartRealtime;
         private float _p124RunStartSimulationTime;
@@ -303,6 +304,7 @@ namespace TD
                 }
 
                 _p124CommittedPrepWave = _wave;
+                TrySellP124IdleTowers();
                 SpendP124PrepBudget();
                 TryRequestWaveStart();
                 return;
@@ -316,6 +318,51 @@ namespace TD
             _p124NextCombatDecisionTime = Time.unscaledTime + 0.08f;
             TryUseP124ScenarioCommand(false);
             TryUseP124ResonanceCommand();
+        }
+
+        private void TrySellP124IdleTowers()
+        {
+            // Prep-window only. Autoplay sells towers that stood through several
+            // waves without a single hit — the p13.5 zero-contribution finding
+            // (SiegeDrill 44.6%, RailLancer 30.4%) is a placement failure, and
+            // the 60% refund turns that dead investment back into decisions.
+            // One sale per prep keeps composition from thrashing.
+            var towers = FindObjectsByType<TDTower>(FindObjectsSortMode.None)
+                .Where(tower => tower != null && tower.gameObject != null)
+                .ToList();
+            if (towers.Count <= 1)
+            {
+                return;
+            }
+
+            TDTower worst = null;
+            var worstAge = 0;
+            foreach (var tower in towers)
+            {
+                var stat = GetOrCreateTowerStat(tower);
+                if (stat == null || stat.hits > 0 || stat.damageDealt > 0 || stat.controlApplications > 0)
+                {
+                    continue;
+                }
+
+                if (!_p124TowerFirstWave.TryGetValue(stat.towerId, out var firstWave))
+                {
+                    _p124TowerFirstWave[stat.towerId] = _wave;
+                    continue;
+                }
+
+                var age = _wave - firstWave;
+                if (age >= 3 && age > worstAge)
+                {
+                    worst = tower;
+                    worstAge = age;
+                }
+            }
+
+            if (worst != null)
+            {
+                TrySellTower(worst);
+            }
         }
 
         private void SpendP124PrepBudget()
@@ -482,8 +529,17 @@ namespace TD
                 if (armorPressure > 0f && armorPressure >= Mathf.Max(swarmPressure, fastPressure))
                 {
                     var railCount = towers.Count(tower => tower != null && tower.Kind == TDTowerKind.RailLancer);
+                    var siegeCount = towers.Count(tower => tower != null && tower.Kind == TDTowerKind.SiegeDrill);
                     var railLimit = Mathf.Max(2, Mathf.CeilToInt((towerCount + 1) * 0.45f));
-                    var armor = buildableKinds.FirstOrDefault(kind => kind == TDTowerKind.RailLancer || kind == TDTowerKind.SiegeDrill);
+                    // Armor pressure earns SiegeDrill a small quota of the armor
+                    // response. FirstOrDefault alone routes every armor pick to
+                    // RailLancer until its cap saturates, and under the hybrid
+                    // armor model the roster needs SiegeDrill's armor break to
+                    // stay above the damage floor on armor-dominant waves.
+                    var siegeQuota = Mathf.Clamp(Mathf.RoundToInt((towerCount + 1) * 0.2f), 1, 2);
+                    var armor = siegeCount < siegeQuota && buildableKinds.Contains(TDTowerKind.SiegeDrill)
+                        ? TDTowerKind.SiegeDrill
+                        : buildableKinds.FirstOrDefault(kind => kind == TDTowerKind.RailLancer || kind == TDTowerKind.SiegeDrill);
                     if ((armor == TDTowerKind.RailLancer && railCount < railLimit) || armor == TDTowerKind.SiegeDrill)
                     {
                         return armor;
