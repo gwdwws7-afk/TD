@@ -78,7 +78,8 @@ namespace TD.Editor
             if (path.StartsWith(ANIM_DIR, System.StringComparison.OrdinalIgnoreCase)
                 && (Path.GetFileName(path).StartsWith("fx_", System.StringComparison.Ordinal)
                     || (Path.GetFileName(path).StartsWith("tower_", System.StringComparison.Ordinal)
-                        && Path.GetFileName(path).Contains("_fire_"))))
+                        && (Path.GetFileName(path).Contains("_fire_")
+                            || Path.GetFileName(path).Contains("_t2_")))))
                 return true;
             // Decal/prop decals at Assets/Resources/Art/ root
             if (path.StartsWith(ART_ROOT, System.StringComparison.OrdinalIgnoreCase))
@@ -123,6 +124,7 @@ namespace TD.Editor
             var paths = Directory.GetFiles(EXAM_P12_DIR, "*.png", SearchOption.TopDirectoryOnly)
                 .Concat(Directory.GetFiles(ANIM_DIR, "fx_*.png", SearchOption.TopDirectoryOnly))
                 .Concat(Directory.GetFiles(ANIM_DIR, "tower_*_fire_*.png", SearchOption.TopDirectoryOnly))
+                .Concat(Directory.GetFiles(ANIM_DIR, "tower_*_t2_*.png", SearchOption.TopDirectoryOnly))
                 .Concat(Directory.GetFiles(ART_ROOT, "decal_*.png", SearchOption.TopDirectoryOnly))
                 .Concat(Directory.GetFiles(ART_ROOT, "prop_*.png", SearchOption.TopDirectoryOnly))
                 .Where(p => p.Replace('\\', '/').StartsWith("Assets/"))
