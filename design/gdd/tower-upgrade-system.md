@@ -50,11 +50,11 @@ Tower Upgrade 系统定义玩家如何在波次间用防卫预算强化既有塔
 - 与 `UI/HUD`：展示升级收益预览与本波建议升级方向。
 
 ## Formulas
-### Upgrade Cost
-`upgrade_cost_tier_n = base_cost * tier_multiplier_n * branch_factor`
+### Upgrade Cost（2026-08-18 按实现回写；经济权威版本见 p12.5.0-economy-loop.md）
+`upgrade_cost_tier_n = ceil(base_cost * tier_multiplier_n * branch_factor)`
 
-建议：
-- `tier_multiplier`: T1=1.0, T2=1.6, T3=2.4
+实现值：
+- `tier_multiplier`: T1=0.8, T2=1.4, T3=4.6（开局两档便宜铺专精，第三档是终极投入）
 - `branch_factor`: 伤害向=1.0, 功能向=1.05（功能略贵）
 
 ### Stat Scaling
@@ -76,7 +76,7 @@ Tower Upgrade 系统定义玩家如何在波次间用防卫预算强化既有塔
 ## Edge Cases
 1. **预算误点**：预算不足时禁用按钮并显示缺口金额。
 2. **升级后无感**：若升级后关键指标提升 <5%，判定为无效升级并需重调。
-3. **分支锁死**：同塔分支一旦选择即锁定（MVP），后续可扩“重构券”。
+3. **分支混搭**（2026-08-18 按实现回写）：分支不锁定，允许 D-D-U 混线；同分支 ≥2 级激活专精，混线塔 UI 标记 "Balanced/Damage leaning"。纠错职责由拆塔返还 60%（已实现，见 p12.5.0）承担，重构券不再需要。
 4. **过度滚雪球**：连续升级同一塔导致通吃时，触发效率告警。
 5. **批量升级卡顿**：同帧多塔升级时采用队列结算，避免 UI 卡顿。
 

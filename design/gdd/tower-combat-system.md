@@ -34,12 +34,12 @@
   - `Moving` -> `Dead`
   - `Moving` -> `Escaped`
 
-### Targeting Protocol (Unified)
-1. **Acquire**：默认按最近目标选择（可被塔类型覆盖为“最接近终点”或“最高威胁”）。
-2. **Lock Window**：锁定后最短持续 `0.2s`，避免边界抖动造成目标频繁切换。
-3. **Switch Threshold**：新目标必须满足 `new_distance < current_distance * 0.8` 才允许中途切换（锁定窗口结束后）。
-4. **Lose Target**：若目标死亡、脱离射程或不可选，立即重选，不额外罚冷却。
-5. **Policy Consistency**：同类型塔必须使用同一协议参数，防止行为不一致。
+### Targeting Protocol (Unified)（2026-08-18 按实现回写）
+1. **Acquire**：加权评分制——`score = 路径进度×100 + 塔类型克制加分（最高 +24）+ (1−血量比)×5 − 距离惩罚（≤2）`，效果≈最接近终点优先；克制倾向按塔专属（控制塔偏 fast/flank、点杀塔偏 armored/heavy/boss、范围塔偏虫群）。
+2. **重扫节流**：每塔 `0.15s + 实例 ID 错峰抖动（≤0.19s）` 全量重评分；两次重扫之间沿用缓存目标。
+3. **Lock Window**：无显式锁定窗——蓄力期（0.14~0.40s，战斗数据 `TowerState.windupDuration`）目标硬锁定，等效防抖。
+4. **Lose Target**：目标超出射程即置空缓存；目标死于蓄力期则该发落空但不返还冷却（防目标 churn 白嫖攻速）。
+5. **Policy Consistency**：协议集中于 `TDGameManager.GetPriorityEnemy`，全部塔共用同一实现。
 
 ### Combat Pipeline (Per Attack)
 1. 选择目标（锁敌协议）。
