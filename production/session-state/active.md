@@ -1,5 +1,7 @@
 # Active Session State
 
+> **归档声明（2026-08-19）**：本文件快照停留在 2026-05-19，其 38 条完成记录仍是 5 月落地情况的最佳清单，但"Current Sprint"等信息已严重过时（实际进度已至 P13.5 后的满分打磨期）。**现行状态以 `design/spec/session-plan-*.md` 系列与 `design/reviews/` 为准**；本文件保留作历史参考，不再更新。里程碑权威状态见 `production/milestones/`（已回填 Complete）。
+
 Date: 2026-05-19
 Project: Emberline Defense
 Detected Stage: Pre-Production -> Production (transition)

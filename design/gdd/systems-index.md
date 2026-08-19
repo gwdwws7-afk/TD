@@ -63,10 +63,10 @@
 | Resonance Combat | Implemented (MVP) | 共振充能/窗口/命令2选1已接入，待平衡迭代 | design/gdd/full-project-plan-emberline-defense-v2.0.md |
 | Economy | Implemented | 基础预算与奖励可用 | Pending |
 | Tower Upgrade | Implemented (M2 Baseline) | 8 塔均支持 3 阶升级与 2 分支 | design/gdd/tower-upgrade-system.md |
-| Status Effects | Partial | 减速已接入，灼烧/破甲未接入 | design/gdd/tower-combat-system.md |
+| Status Effects | Implemented | 减速/破甲/暴露/标记/压制/硬直全接入（2026-08-19 更正：原"破甲未接入"记录过时，P11-P13 已落地） | design/gdd/tower-combat-system.md |
 | Wave Grammar | Implemented (Baseline) | 20-wave 教学节奏已配置，20关语法待展开 | design/gdd/wave-grammar-system.md |
 | UI/HUD | Implemented (Baseline) | 基础HUD与结算摘要已接入 | Pending |
-| VFX/SFX | Partial | VFX 基础可用，SFX 待系统化 | Pending |
+| VFX/SFX | Implemented | 62 条 WAV + 程序化合成兜底 + FX 预算 32 上限（P13.4 落地，2026-08-19 更正） | design/gdd/p13.4-audio-visual-input-feel.md |
 | Analytics/Telemetry | Implemented (Baseline) | 失败标签与 run summary 已接入 | design/gdd/tower-combat-system.md |
 | Content Matrix & Pipeline | Partial | 8塔/12敌/5图数据骨架已接入运行时，资产生产与精修待推进 | design/gdd/content-matrix-20-level-v1.md |
-| Meta Progression | Not Started | 不在当前里程碑范围 | Pending |
+| Meta Progression | Partial | P10.1 战术协议 + 图鉴奖励已上线；长期成长线未启动（2026-08-19 更正） | design/gdd/p10-campaign-meta-loop.md |

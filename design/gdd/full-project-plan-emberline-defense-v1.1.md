@@ -251,7 +251,7 @@
 
 ## 11. 技术企划
 ### 11.1 技术栈
-- Engine：Unity 6 (6000.3.15f1)
+- Engine：Unity 6 (6000.3.15f1)（**勘误 2026-08-19**：实际工程为 Unity 2022.3.12f1，见 ProjectSettings/ProjectVersion.txt；本文档整体已标 Superseded）
 - Render：URP 2D
 - Data：ScriptableObject + JSON（波次）
 

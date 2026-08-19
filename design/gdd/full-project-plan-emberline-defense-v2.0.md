@@ -77,7 +77,7 @@
 
 ## 5.2 升级成本公式
 `upgrade_cost_tier_n = base_cost * tier_multiplier_n * branch_factor`
-- `tier_multiplier`: T1=1.0, T2=1.6, T3=2.4
+- `tier_multiplier`: T1=1.0, T2=1.6, T3=2.4（**已废止**——经济参数以 `p12.5.0-economy-loop.md` 为权威：T1=0.8, T2=1.4, T3=4.6，2026-08-18 回写确认）
 - `branch_factor`: Damage=1.0, Utility=1.05
 
 ## 5.3 塔内容规模（20关版本）

@@ -1,6 +1,6 @@
 # Milestone: M1 Vertical Slice
 
-> **Status**: Active  
+> **Status**: Complete（2026-08-19 回填：核心闭环/波次/美术管线于 2026 年 5-7 月交付，证据见 P8-P11 阶段文档；本清单此前长期滞后于实况，属对账表 📄6 清理项）  
 > **Target Date**: 2026-06-06  
 > **Owner**: user + codex  
 
@@ -37,7 +37,7 @@
 | 美术风格不统一 | Medium | 固定 prompt 模板，分批评审后再扩产 |
 
 ## Exit Checklist
-- [ ] Core loop 稳定
-- [ ] 波次可跑完且难度曲线合理
-- [ ] 美术资源可替换与回退
-- [ ] 无 S1/S2 阻断问题
+- [x] Core loop 稳定
+- [x] 波次可跑完且难度曲线合理
+- [x] 美术资源可替换与回退
+- [x] 无 S1/S2 阻断问题

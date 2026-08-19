@@ -11,7 +11,7 @@ Cooldown is derived from base `shotsPerSecond` in `TDTower.cs`:
 
 | Tower | Base Shots/s | Cooldown (s) | Core Durations (s) | Core Coefficients |
 |---|---:|---:|---|---|
-| Arc Welder | 0.85 | 1.18 | Chain expose: 1.00 | Chain radius: `max(1.15, aoeRadius * 1.22)`; chain count: `clamp(aoeMaxTargets, 2..5)`; chain damage: `baseDamage * (0.70 * 0.83^(hop-1))`; expose multiplier: `x1.07` |
+| Arc Welder | 0.85 | 1.18 | Chain expose: 1.00 | Chain radius: `max(1.15, aoeRadius * 1.22)`; chain count: `clamp(aoeMaxTargets, 2..5)`（**Pass 2 实况 2026-08-19**：实现上限为 7 跳、伤害专精 +2，见 `TDProjectile.TriggerArcChain`）； chain damage: `baseDamage * (0.70 * 0.83^(hop-1))`; expose multiplier: `x1.07` |
 | Siege Drill | 0.72 | 1.39 | Armor-break duration: 3.00 (heavy) / 2.20 (default) | Armor-break flat: `+5` (armored), `+1` (default) |
 | Ember Flak | 1.35 | 0.74 | Primary suppress: 0.30; Splash suppress: 0.18 | Primary min speed multiplier: `0.12`; splash radius: `max(0.88, aoeRadius * 1.30)`; splash damage: `0.30 * baseDamage`; splash min speed multiplier: `0.16` |
 | Resonance Beacon | 0.95 | 1.05 | Primary mark: 1.60; primary expose: 1.70; pulse mark: 1.05; pulse expose: 1.05 | Primary expose multiplier: `x1.12`; pulse radius: `max(1.18, aoeRadius * 1.50)`; pulse expose multiplier: `x1.05`; pulse cap: 6 |

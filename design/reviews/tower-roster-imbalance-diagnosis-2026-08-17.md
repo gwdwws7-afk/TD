@@ -119,3 +119,42 @@ QA 上报（v4 计划转述）：RailLancer 回归套件胜率 25/25 → 14/25�
 1. RailLancer 回归 25 局：胜率应回 22+/25，L13/L20 各 ≥3/5（难度档目标）
 2. p135 平衡矩阵复跑：SiegeDrill 出场率 20%→35%+、零贡献率 44.6%→30% 以下；GravSnare 指标不应恶化
 3. 观察 autoplay 出售行为：日志应出现 `Sold ...` 战术事件且不出现同格反复建拆（每备战窗 1 座上限 + 零命中条件应自然抑制振荡）
+
+---
+
+# 附录 2（2026-08-19）：装甲配额零生效定位（v6 任务 1，三问三答）
+
+## B.1 现象
+
+v5 QA 复跑（`output/playtest/balance_regression/`，25 局）：L01/L05/L09 全回档 5/5，**L13 0/5、L20 0/5**；SiegeDrill 在 L13/L20 全部 10 局零出场。
+
+## B.2 三问三答
+
+**Q1：这些局的 autoplay 路径经过配额代码吗？**
+配额只存在于 `ResolveP124BuildKind` 的 `_p124StrategyId == "adaptive_network"` 装甲子分支。回归配置每关 5 局（adaptive×2 / focused×2 / control×1）：
+
+- **adaptive×2**：经过该分支，但配额的前提 `buildableKinds.Contains(SiegeDrill)` 恒为 **false**——`buildableKinds = 优先表 ∩ _unlockedTowerKinds(4 塔编队) ∩ 预算`（`TryBuildP124Tower` :419-421），而 `ConfigureP124Formation` 从静态优先表取前 4 填编队，adaptive 表中 SiegeDrill 排第 7，**根本进不了编队**。实锤：10 局 JSON 的 towers 数组显示 adaptive 编成恒为 {RailLancer, CinderMortar, FrostCoil, ArcWelder}。
+- **focused×2**：不经过（配额在 adaptive 分支内）。focused 编队含 SiegeDrill（优先表第 2），但见 B.4 停滞异常，轮转没轮到它。
+- **control×1**：不经过，且 SiegeDrill 是其优先表第 8。
+
+**结论：10 局中 0 局存在"配额代码 + SiegeDrill 在集合内"的组合。**
+
+**Q2：装甲压力谓词在这些局成立吗？**
+成立，谓词不是瓶颈。threatCost 加权核算（与 `CalculateP124WaveTagPressure` 同式）：L13 全局压力 armor=302 / swarm=198 / fast=154（装甲主导），逐波 9/20 装甲主导；L20 armor=322 / swarm=248 / fast=191（主导），逐波 7/20。装甲子分支被进入且条件满足——它忠实地返回了 RailLancer（SiegeDrill 不在集合，FirstOrDefault 兜底）。
+
+**Q3：定性结论 = 条件缺陷（挂对了分支，但分支的输入集合在上游被编队截断清空）。**
+非实现 bug（配额逻辑本身正确，给它含 SiegeDrill 的集合即可开火）；非机制不足（从未获得开火机会，无从谈不足）。
+
+## B.3 修复（随本附录同批，待代码评审）
+
+**装甲感知编队**（`ConfigureP124Formation` + 新增 `IsP124ArmorDominantLevel`/`CalculateP124LevelTagPressure`）：编队填充完成后，若本关波次全集装甲压力主导（与逐波谓词同权重）且 SiegeDrill 已解锁但不在编队 → 替换编队末位。效果：L13 adaptive 编队 {Rail,Cinder,Frost,Arc} → {Rail,Cinder,Frost,**Siege**}；control 末位 Cinder → Siege（其"最少持有优先"逻辑会尽早建它）。L01-05 装甲压力为 0，自动不触发，教学关不受影响。护甲加帽按导演指令**继续封存**。
+
+## B.4 次级异常（独立于配额，需一次插桩局定位）：建塔循环停滞
+
+全部 L13/L20 局在仅建 3-5 塔后停止扩张，死亡时未花预算 348-1254：focused L13 三塔（Rail×1+Flak×2）即停滞，coverage 40-52 远低于 72 阈值、`shouldBuild` 恒真——即 `TryBuildP124Tower` 在预算充足时持续返回 false。静态排查已排除：编队过滤（集合非空）、预算过滤（余量远超塔价）、`strategyBuildLimit`（=12）、选址硬禁令（x≤4 禁后仍有 5-9 个合法格）、P135 覆盖（policy 为空）、fix-2 出售（towersBuilt=存活数，零出售）。**修复编队后此异常可能仍压制 focused 局**——建议 QA 复跑时若 focused 仍失守，下一步给 `TryBuildP124Tower` 的每个 early-return 加计数器插桩定位。另注：run_22 赛后分析自己给出"补充轨枪/钻机"建议，与诊断方向互证。
+
+## B.5 QA 复跑判据补充（对应 A.4，追加）
+
+- L13/L20 adaptive/control 局编队应出现 SiegeDrill（p124.json towers 数组）
+- focused 局若仍 3-4 塔停滞 → 触发 B.4 插桩流程，勿直接归因配额
+- 建议多种子取样（≥3 种子）——帧计时下单种子判定天然脆弱（代码会话交接提醒）

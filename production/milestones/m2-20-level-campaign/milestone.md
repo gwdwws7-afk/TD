@@ -1,6 +1,6 @@
 # Milestone: M2 20-Level Campaign
 
-> **Status**: Planned  
+> **Status**: Complete（2026-08-19 回填：P13.5 全战役 190 局矩阵 2026-08-03 全门通过，证据见 design/gdd/p13.5-campaign-experience-calibration.md；此后进入满分打磨期）  
 > **Target Window**: 2026-06-07 ~ 2026-08-29  
 > **Owner**: user + codex  
 > **Source Plan**: `design/gdd/full-project-plan-emberline-defense-v2.0.md`
@@ -28,8 +28,8 @@
 - 大体量剧情演出
 
 ## Exit Checklist
-- [ ] 20关内容冻结
-- [ ] 全塔升级完成并验证
-- [ ] 共振系统完成并通过体验验收
-- [ ] 关键平衡指标达标
-- [ ] 无 S1/S2 阻断问题
+- [x] 20关内容冻结
+- [x] 全塔升级完成并验证
+- [x] 共振系统完成并通过体验验收
+- [x] 关键平衡指标达标
+- [x] 无 S1/S2 阻断问题
