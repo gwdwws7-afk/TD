@@ -386,6 +386,13 @@ return "countdown set";
 
 
 def setup_battle(drv):
+    # the acceptance is L01-specific: pin the campaign level regardless of
+    # what other sessions last selected
+    drv.mcp.code("""
+UnityEngine.PlayerPrefs.SetInt("td_campaign_selected_level", 1);
+UnityEngine.PlayerPrefs.Save();
+return "L01 pinned";
+""")
     drv.mcp.call("manage_editor", {"action": "stop"})
     time.sleep(1.0)
     drv.mcp.call("manage_editor", {"action": "play"})
@@ -666,7 +673,7 @@ return pos.ToString("F0") + " uiHits=" + results.Count + (results.Count > 0 ? " 
     in_prep = st.get("prep") == "True"
     btn = drv.mcp.code_result(STARTBTN_CS)
     started = False
-    if in_prep and not btn.startswith("null"):
+    if in_prep and btn and not btn.startswith("null") and len(btn.split(",")) >= 3:
         bx, by = float(btn.split(",")[0]), float(btn.split(",")[1])
         drv.move_cursor_to(bx, by)
         drv.press(south=True)
@@ -765,11 +772,46 @@ def phase_b(drv, timeout=1500):
     # (4,6),(9,4),(11,4); entry-only rows leak late waves
     # winning L01 profile from the balance suite (run_01, 20/20 waves):
     # all 11 valid pads, every tower at exactly t2, row-2 pads carry the game
-    priority = [(5, 2), (1, 2), (3, 2), (4, 6), (9, 4), (6, 6), (2, 6),
-                (8, 6), (11, 4), (10, 2), (8, 1)]
+    # build order extracted from the post-fix autoplay's flawless L01 run
+    # (v5_autoplay_real_L1.json analytics order): (8,1) IS part of the win
+    priority = [(6, 6), (4, 6), (3, 2), (1, 2), (5, 2), (8, 6),
+                (9, 4), (11, 4), (10, 2), (8, 1), (2, 6)]
     cells = sorted(cells, key=lambda c: (priority.index(c) if c in priority else 99, cells.index(c)))
     drv.record("B0 authored pads", len(cells) > 0, "pads=" + str(cells))
     last_logged_wave = None
+    # skip the first-run tutorial with a gamepad click: its panel covers the
+    # (8,1) pad and would block that build for ANY pointer input
+    engage = drv.mcp.code_result("""
+var canvases = UnityEngine.Object.FindObjectsByType<UnityEngine.Canvas>(UnityEngine.FindObjectsSortMode.None);
+foreach (var c in canvases)
+{
+    var btns = c.GetComponentsInChildren<UnityEngine.UI.Button>(true);
+    foreach (var b in btns)
+        if (b.gameObject.name.Contains("Tutorial_Skip") || b.gameObject.name == "Tutorial Skip")
+        {
+            var rt = (UnityEngine.RectTransform)b.transform;
+            var corners = new UnityEngine.Vector3[4];
+            rt.GetWorldCorners(corners);
+            var ctr = (corners[0] + corners[2]) * 0.5f;
+            var scr = UnityEngine.RectTransformUtility.WorldToScreenPoint(null, ctr);
+            return scr.x + "," + scr.y;
+        }
+}
+return "null";
+""")
+    if not engage.startswith("null"):
+        try:
+            ex, ey = float(engage.split(",")[0]), float(engage.split(",")[1])
+            drv.gp(sx=0.7)
+            time.sleep(0.6)
+            drv.gp()
+            drv.move_cursor_to(ex, ey)
+            drv.press(south=True)
+            time.sleep(0.4)
+            drv.gp()
+        except ValueError:
+            pass
+
     # QA timing: run the wave phases at 6x so 20 waves fit the session budget;
     # input simulation uses unscaled time and is unaffected.
     drv.mcp.code_result("UnityEngine.Time.timeScale = 6f; return \"ts=6\";")
@@ -839,6 +881,16 @@ return "prep pinned";
                     print("  [B] build gave up at %s (blocked): %s" %
                           (pad, drv.state().get("_raw", "")[:200]), flush=True)
                     continue  # skip this pad for the rest of the run
+                # interleave: fresh towers go straight to t1 so early waves
+                # face no t0 weak links (winner profile upgrades as it builds)
+                st4 = drv.state()
+                if int(st4.get("budget", "0")) >= 60:
+                    drv.press(south=True)   # select the new tower
+                    time.sleep(0.3)
+                    s5 = drv.state()
+                    if s5.get("sel", "null").startswith("Tower_%d_%d" % pad):
+                        drv.press(dl=True)
+                        time.sleep(0.3)
             # upgrade pass: select each tower, D-pad Left (Damage) once
             drv.mcp.code_result("UnityEngine.Time.timeScale = 1f; return \"ts\";")
             st = drv.state()
@@ -846,7 +898,7 @@ return "prep pinned";
             # two sweeps: everyone to t1 first (no weak links), then t2 in
             # priority order — beats maxing early towers while late ones sit t0
             # exit trio goes all the way to t3, the rest stop at t2
-            exit_trio = {"4,6", "9,4", "11,4"}
+            exit_trio = set()  # winner profile: every tower caps at t2
             for target_tier in ("t1", "t2", "t3"):
                 st = drv.state()
                 if st.get("prep") != "True":
@@ -864,8 +916,19 @@ return "prep pinned";
                     a, b = cell.split(",")
                     px, py = drv.pad_pos(int(a), int(b))
                     drv.move_cursor_to(px, py)
-                    drv.press(south=True)
-                    time.sleep(0.25)
+                    selected = False
+                    for sel_attempt in range(3):
+                        drv.press(south=True)
+                        time.sleep(0.3)
+                        s3 = drv.state()
+                        if s3.get("sel", "null").startswith("Tower_" + a + "_" + b):
+                            selected = True
+                            break
+                        if s3.get("radial") == "True":
+                            drv.press(east=True)  # drift opened the wheel
+                            time.sleep(0.2)
+                    if not selected:
+                        continue
                     for bump in range(3):
                         st3 = drv.state()
                         entry = next((e for e in st3.get("tower_list", [])
@@ -889,11 +952,18 @@ return "prep pinned";
             # active dispatch: cursor onto Start Wave, South (gamepad path);
             # fall back to the countdown only if the click hiccups
             dispatched = False
-            for attempt in range(3):
+            for attempt in range(4):
                 btn = drv.mcp.code_result(STARTBTN_CS)
-                if btn.startswith("null") or btn.endswith("interactable=False"):
-                    break
-                bx, by = float(btn.split(",")[0]), float(btn.split(",")[1])
+                if (not btn or btn.startswith("null") or
+                        btn.endswith("interactable=False") or
+                        len(btn.split(",")) < 3):
+                    time.sleep(0.4)
+                    continue
+                try:
+                    bx, by = float(btn.split(",")[0]), float(btn.split(",")[1])
+                except ValueError:
+                    time.sleep(0.4)
+                    continue
                 drv.move_cursor_to(bx, by)
                 drv.press(south=True)
                 time.sleep(0.6)
