@@ -484,6 +484,19 @@ namespace TD
             _tutorialConfirmButton = CreateButton("Tutorial Confirm", _tutorialRoot, new Vector2(336f, -40f), new Vector2(90f, 30f), "CONFIRM", 10, () => _tutorialConfirmCallback?.Invoke());
             _tutorialConfirmLabel = _tutorialConfirmButton.GetComponentInChildren<Text>();
             _tutorialSkipButton = CreateButton("Tutorial Skip", _tutorialRoot, new Vector2(336f, -78f), new Vector2(90f, 30f), "SKIP", 10, () => _tutorialSkipCallback?.Invoke());
+
+            // TD-GP-004: the tutorial panel is informational — its background
+            // and text must not swallow board clicks (build pad (8,1) sits
+            // under it on the grayline maps, blocking every pointer build for
+            // the whole tutorial). Confirm/Skip keep their own raycast targets.
+            foreach (var graphic in _tutorialRoot.GetComponentsInChildren<Graphic>(true))
+            {
+                if (graphic.GetComponent<Button>() == null)
+                {
+                    graphic.raycastTarget = false;
+                }
+            }
+
             _tutorialRoot.gameObject.SetActive(false);
         }
 
