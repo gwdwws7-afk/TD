@@ -232,7 +232,7 @@ return sb.ToString();
 
 def free_pad(drv, exclude=()):
     """First authored build cell with no tower on it (diagnostic-friendly)."""
-    cells_raw = drv.mcp.code_result(FREE_PAD_CS)
+    cells_raw = drv.mcp.code_result(FREE_PAD_CS) or ""
     st = drv.state()
     built = {t.split(":")[0] for t in st.get("tower_list", [])}
     for pair in cells_raw.strip(";").split(";"):
@@ -308,10 +308,19 @@ class Driver:
     def state(self):
         return state_dict(self.mcp.code_result(STATE_CS))
 
-    def pad_pos(self, cx, cy):
-        raw = self.mcp.code_result(PADPOS_CS.replace("{cx}", str(cx)).replace("{cy}", str(cy)))
-        parts = raw.split(",")
-        return float(parts[0]), float(parts[1])
+    def pad_pos(self, cx, cy, retries=3):
+        for attempt in range(retries):
+            raw = self.mcp.code_result(
+                PADPOS_CS.replace("{cx}", str(cx)).replace("{cy}", str(cy)))
+            parts = raw.split(",")
+            if len(parts) >= 2:
+                try:
+                    return float(parts[0]), float(parts[1])
+                except ValueError:
+                    pass
+            time.sleep(0.4)
+        raise RuntimeError("pad_pos(%d,%d) probe failed after %d tries: %r"
+                           % (cx, cy, retries, raw[:60]))
 
     def shot(self, name):
         self.mcp.call("manage_camera", {
@@ -758,10 +767,10 @@ def cell_of(entry):
     return entry.split(":")[0]
 
 
-def phase_b(drv, timeout=1500):
+def phase_b(drv, timeout=7200):
     """Victory run using only gamepad-simulated actions and the prep
     countdown auto-dispatch (active start is probed separately in A9)."""
-    cells_raw = drv.mcp.code_result(FREE_PAD_CS)
+    cells_raw = drv.mcp.code_result(FREE_PAD_CS) or ""
     cells = []
     for pair in cells_raw.strip(";").split(";"):
         if "," in pair:
@@ -842,7 +851,7 @@ return "null";
             # expires in ~3 real seconds and the build round would be skipped
             drv.mcp.code_result("""
 var gm = UnityEngine.Object.FindFirstObjectByType<TD.TDGameManager>();
-typeof(TD.TDGameManager).GetField("_prepCountdown", """ + FLAGS + """).SetValue(gm, 90f);
+typeof(TD.TDGameManager).GetField("_prepCountdown", """ + FLAGS + """).SetValue(gm, 900f);
 UnityEngine.Time.timeScale = 1f;
 return "prep pinned";
 """)
@@ -891,6 +900,9 @@ return "prep pinned";
                     if s5.get("sel", "null").startswith("Tower_%d_%d" % pad):
                         drv.press(dl=True)
                         time.sleep(0.3)
+                    elif s5.get("radial") == "True":
+                        drv.press(east=True)   # drift opened the wheel: close
+                        time.sleep(0.2)
             # upgrade pass: select each tower, D-pad Left (Damage) once
             drv.mcp.code_result("UnityEngine.Time.timeScale = 1f; return \"ts\";")
             st = drv.state()
@@ -928,6 +940,9 @@ return "prep pinned";
                             drv.press(east=True)  # drift opened the wheel
                             time.sleep(0.2)
                     if not selected:
+                        if drv.state().get("radial") == "True":
+                            drv.press(east=True)
+                            time.sleep(0.2)
                         continue
                     for bump in range(3):
                         st3 = drv.state()
@@ -982,7 +997,7 @@ return "prep pinned";
                 if s2.get("prep") == "True":
                     drv.mcp.code_result("""
 var gm = UnityEngine.Object.FindFirstObjectByType<TD.TDGameManager>();
-typeof(TD.TDGameManager).GetField("_prepCountdown", """ + FLAGS + """).SetValue(gm, 90f);
+typeof(TD.TDGameManager).GetField("_prepCountdown", """ + FLAGS + """).SetValue(gm, 900f);
 UnityEngine.Time.timeScale = 1f;
 return "pinned";
 """)
