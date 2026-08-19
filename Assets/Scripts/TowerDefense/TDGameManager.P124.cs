@@ -249,6 +249,19 @@ namespace TD
                 }
             }
 
+            // Armor-aware formation: buildableKinds draws from this four-slot
+            // formation, and SiegeDrill sits 7th in the adaptive priority —
+            // without this swap the armor quota in ResolveP124BuildKind can
+            // never see it on armor-dominant maps (L13/L20 evidence, 2026-08-19:
+            // quota live but formation membership zero).
+            if (_availableTowerKinds.Contains(TDTowerKind.SiegeDrill) &&
+                !_unlockedTowerKinds.Contains(TDTowerKind.SiegeDrill) &&
+                _unlockedTowerKinds.Count > 0 &&
+                IsP124ArmorDominantLevel())
+            {
+                _unlockedTowerKinds[_unlockedTowerKinds.Count - 1] = TDTowerKind.SiegeDrill;
+            }
+
             if (_unlockedTowerKinds.Count == 0)
             {
                 _unlockedTowerKinds.Add(TDTowerKind.RailLancer);
@@ -622,6 +635,55 @@ namespace TD
             }
 
             return buildableKinds[towerCount % buildableKinds.Count];
+        }
+
+        private bool IsP124ArmorDominantLevel()
+        {
+            if (_waveSet?.waves == null || _waveSet.waves.Length == 0)
+            {
+                return false;
+            }
+
+            var armor = CalculateP124LevelTagPressure("armored", "heavy", "boss");
+            var swarm = CalculateP124LevelTagPressure("swarm", "spawn", "split");
+            var fast = CalculateP124LevelTagPressure("fast", "flank");
+            return armor > 0f && armor >= Mathf.Max(swarm, fast);
+        }
+
+        // Same weighting as CalculateP124WaveTagPressure, aggregated over the
+        // whole wave set — used at formation time, before any wave is active.
+        private float CalculateP124LevelTagPressure(params string[] tags)
+        {
+            if (_waveSet?.waves == null || tags == null || tags.Length == 0)
+            {
+                return 0f;
+            }
+
+            var requested = new HashSet<string>(tags, StringComparer.OrdinalIgnoreCase);
+            var pressure = 0f;
+            for (var w = 0; w < _waveSet.waves.Length; w++)
+            {
+                var groups = _waveSet.waves[w]?.groups;
+                if (groups == null)
+                {
+                    continue;
+                }
+
+                for (var i = 0; i < groups.Length; i++)
+                {
+                    var group = groups[i];
+                    if (group == null || group.count <= 0 ||
+                        !_enemyCatalog.TryGetValue(group.enemyId, out var enemy) ||
+                        enemy.tags == null || !enemy.tags.Any(requested.Contains))
+                    {
+                        continue;
+                    }
+
+                    pressure += group.count * Mathf.Max(0.1f, enemy.threatCost);
+                }
+            }
+
+            return pressure;
         }
 
         private float CalculateP124WaveTagPressure(params string[] tags)
