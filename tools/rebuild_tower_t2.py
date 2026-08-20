@@ -23,6 +23,7 @@ import sys
 from pathlib import Path
 import numpy as np
 from PIL import Image, ImageFilter
+from scipy import ndimage
 
 SRC_DIR = Path("E:/TD/Assets/Resources/Art/anim")
 DST_DIR = SRC_DIR  # overwrite in place
@@ -59,6 +60,18 @@ def extract_and_composite(ai_path: Path, idle_path: Path, out_path: Path,
     # add-ons like hydraulic legs are body-colored but protrude.
     idle_empty = idle[..., 3] <= 30
     raw_mask = ai_content & ((diff > threshold) | idle_empty)
+
+    # Dirt guard: AI content over transparent idle is treated as a module,
+    # but painted background remnants (gray film / checkerboard squares)
+    # land in exactly that zone. Reject mask components that don't touch
+    # the idle silhouette's neighborhood — real modules are bolted onto
+    # the body, leftovers float at the canvas edge.
+    if raw_mask.any():
+        labels, n = ndimage.label(raw_mask)
+        idle_zone = ndimage.binary_dilation(idle[..., 3] > 30, iterations=48)
+        touching = np.unique(labels[idle_zone & (labels > 0)])
+        keep = np.isin(labels, touching)
+        raw_mask = raw_mask & keep
 
     # Morphological cleanup via PIL: open (remove speckle), close (heal
     # pinholes inside modules)
