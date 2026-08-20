@@ -158,3 +158,45 @@ v5 QA 复跑（`output/playtest/balance_regression/`，25 局）：L01/L05/L09 �
 - L13/L20 adaptive/control 局编队应出现 SiegeDrill（p124.json towers 数组）
 - focused 局若仍 3-4 塔停滞 → 触发 B.4 插桩流程，勿直接归因配额
 - 建议多种子取样（≥3 种子）——帧计时下单种子判定天然脆弱（代码会话交接提醒）
+
+---
+
+# 附录 3（2026-08-20）：多种子复跑结论与护甲帽解封（v7 任务 2 终态记录）
+
+## C.1 复跑结论（QA `86381fb`，3 种子 × L13/L20 × 5 变体 + 25 局门禁）
+
+**配额修复在其目标处验证通过**：
+- L20 全部 adaptive/control 局（3/3 每种子）SiegeDrill **进编队且被建造**（附录 2 定位的"编队截断"根因消除）
+- GravSnare 被 control 在 L20 拾取——原诊断"零自适应拾取"在该点位解决
+- L20 adaptive 稳定推进到 17-18 波（修复前 10-16）
+- 底线门禁保持：单塔种 RailLancer 通关 = 0
+
+**仍低于难度档**：L13 0/15（死于 5-9 波）、L20 0/15。两个残留机制：
+1. **L13 adaptive 盲区**：编队换入已生效（control 局实证），但 L13 早期波次非装甲主导（9/20 装甲主导波分布靠后），配额的逐波谓词在 5-9 波死亡前未触发——**死在装甲波到来之前**，属波次编排与互锁时序问题
+2. **B.4 建塔停滞**（focused 全局 3-4 塔 + 闲置预算）——QA 按判据分流为独立插桩项，未归因配额
+
+## C.2 护甲帽解封实施（按 v7 判据树"不达标"分支）
+
+QA 复核裁决"below difficulty tier → 护甲帽解封评审"，v7 已预授权实施。公式与实测：
+
+```
+effectiveFlat = min(effectiveArmor, ceil(postPercent × 0.5))
+```
+
+| 塔基础每发 | 对手 | 帽前 | 帽后 |
+|---|---|---:|---:|
+| RailLancer 18 | Boss 12 甲 | 1 | **4** |
+| FrostCoil 8 | husk_titan 9 甲 | 1 | **2** |
+| CinderMortar 16 | plated_spore 8 甲 | 3 | **5** |
+| RailLancer 18 | carapace 4 甲（轻甲） | 11 | 11（不变） |
+
+轻甲带完全不受影响；反甲身份（SiegeDrill 破甲 + 倍率）保留且依然更优。`TDArmorTests` 已更新（重甲/Boss 期望值、单调性替代严格排序、新增 FlatShareCap 用例、常量钉 0.5）。**护甲"必须反制"的教学价值保留**：无破甲时重甲目标仍削 50%+。
+
+## C.3 状态：待 QA 复跑后关账
+
+关账判据不变（L13/L20 回难度档 + Siege/Grav 度量改善）。若帽后 L13 adaptive 仍死于早期波，下一侦查项为"装甲主导波次的前置编排"（波次数据侧，非代码）；focused 停滞走 B.4 插桩线。
+
+## C.4 附：FrostCoil 教学文案（任务 4，待代码批——文案在 TDGameManager 内）
+
+- 教程（L03 首见快速敌步骤后追加）："注意：高速目标会闪避慢速单发弹——先用范围伤害或多次命中压制它们，或让减速先生效。"（英文源串："Fast targets evade slow single shots — soften them with splash or repeated hits, or slow them first."）
+- 图鉴 FrostCoil 条目补："首发射击对未减速的快速目标有失手可能；命中后减速生效，全队即恢复必中。"
