@@ -30,27 +30,40 @@ namespace TD.Tests
         [Test]
         public void HeavyArmor_SignificantReduction()
         {
-            // 9 armor (Husk Titan): 36% + 9 flat
-            // 18 * 0.64 = 11.52 → round = 12 → 12 - 9 = 3
-            Assert.AreEqual(3, TDCombatMath.ResolveArmoredDamage(18, 9));
+            // 9 armor (Husk Titan): 36% percent + flat capped at half
+            // 18 * 0.64 = 11.52 → flat cap ceil(5.76)=6 → round(5.52) = 6
+            Assert.AreEqual(6, TDCombatMath.ResolveArmoredDamage(18, 9));
         }
 
         [Test]
         public void BossArmor_ExtremeReduction()
         {
-            // 12 armor (Furnace Matriarch): 48% + 12 flat
-            // 18 * 0.52 = 9.36 → round = 9 → 9 - 12 = -3 → floored at 1
-            Assert.AreEqual(1, TDCombatMath.ResolveArmoredDamage(18, 12));
+            // 12 armor (Furnace Matriarch): 48% + flat capped at half
+            // 18 * 0.52 = 9.36 → flat cap ceil(4.68)=5 → round(4.36) = 4
+            // (was the 1-damage floor before the flat-share cap; L13/L20 fix)
+            Assert.AreEqual(4, TDCombatMath.ResolveArmoredDamage(18, 12));
         }
 
         [Test]
-        public void HighDamageBypassesArmorBetter()
+        public void FlatShareCap_KeepsMidTierTowersAboveFloor()
         {
-            // SiegeDrill at 20 dmg vs 9 armor: 20 * 0.64 = 12.8 → 13 → 13-9 = 4,
-            // vs RailLancer 18 dmg → 3. Armor-piercing profile does 33% more.
-            var railLancerDmg = TDCombatMath.ResolveArmoredDamage(18, 9);
-            var siegeDrillDmg = TDCombatMath.ResolveArmoredDamage(20, 9);
-            Assert.Greater(siegeDrillDmg, railLancerDmg);
+            // The 08-19 collapse profile: FrostCoil 8 vs 5 armor floored at 1;
+            // with the cap it deals half its mitigated damage.
+            Assert.AreEqual(2, TDCombatMath.ResolveArmoredDamage(8, 5));
+            // CinderMortar 16 vs 8 armor: 10.88 → flat 6 → 5 (was 3)
+            Assert.AreEqual(5, TDCombatMath.ResolveArmoredDamage(16, 8));
+        }
+
+        [Test]
+        public void HigherDamage_NeverWorseUnderArmorCap()
+        {
+            // The cap compresses raw-damage differences at high armor — the
+            // anti-armor edge now lives in multipliers and armor break, so
+            // pin monotonicity instead of a strict ordering.
+            var baseDmg = TDCombatMath.ResolveArmoredDamage(18, 9);
+            var higherDmg = TDCombatMath.ResolveArmoredDamage(22, 9);
+            Assert.GreaterOrEqual(higherDmg, baseDmg);
+            Assert.Greater(TDCombatMath.ResolveArmoredDamage(40, 9), baseDmg);
         }
 
         [Test]
@@ -76,6 +89,7 @@ namespace TD.Tests
             // balance edit can never slip in unnoticed.
             Assert.AreEqual(0.04f, TDCombatMath.ArmorPercentPerPoint);
             Assert.AreEqual(0.60f, TDCombatMath.ArmorPercentCap);
+            Assert.AreEqual(0.5f, TDCombatMath.ArmorFlatShareCap);
             Assert.AreEqual(1, TDCombatMath.DamageFloor);
         }
     }

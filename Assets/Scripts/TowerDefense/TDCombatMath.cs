@@ -12,21 +12,30 @@ namespace TD
     {
         public const float ArmorPercentPerPoint = 0.04f;
         public const float ArmorPercentCap = 0.60f;
+        public const float ArmorFlatShareCap = 0.5f;
         public const int DamageFloor = 1;
 
         /// <summary>
         /// Hybrid armor model: flat subtraction PLUS percentage mitigation.
         /// Each point of effective armor also reduces damage by 4% (capped at
         /// 60%), so high-armor enemies are a real wall for low-per-hit towers
-        /// while armor-piercing becomes mandatory. The flat floor stays at 1
-        /// so chip damage is always possible. Callers apply exposure and
-        /// armor-break modifiers to the inputs before calling.
+        /// while armor-piercing becomes mandatory. The flat subtraction may
+        /// remove at most half of the post-percent damage: without that cap the
+        /// 08-10 model floored nearly the whole roster at 1 vs 9+ armor
+        /// (L13/L20 collapse, diagnosis appendix 2) and only SiegeDrill's
+        /// break could lift it — with the cap the wall stays real but a
+        /// mid per-hit tower deals half its mitigated damage instead of the
+        /// floor. The flat floor stays at 1 so chip damage is always possible.
+        /// Callers apply exposure and armor-break modifiers to the inputs
+        /// before calling.
         /// </summary>
         public static int ResolveArmoredDamage(int damage, int effectiveArmor)
         {
             var armorPercentReduction = Mathf.Min(ArmorPercentCap, effectiveArmor * ArmorPercentPerPoint);
             var afterPercent = damage * (1f - armorPercentReduction);
-            return Mathf.Max(DamageFloor, Mathf.RoundToInt(afterPercent - effectiveArmor));
+            var flatCap = Mathf.CeilToInt(afterPercent * ArmorFlatShareCap);
+            var effectiveFlat = Mathf.Min(effectiveArmor, flatCap);
+            return Mathf.Max(DamageFloor, Mathf.RoundToInt(afterPercent - effectiveFlat));
         }
 
         /// <summary>
