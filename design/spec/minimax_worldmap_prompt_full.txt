@@ -1,0 +1,191 @@
+我要为一个 2D 塔防游戏《Emberline Defense》(余烬铁道)重做关卡选择界面,批量生成"手绘世界地图"美术。请你先通读世界观、调色板和技术约束,然后严格按 第一部分(世界图,1 张)→ 第二部分(其余 33 张)的顺序逐个生成。每张严格按对应文件名命名。第一部分是世界观基调,做完这一张先停下等验收,不要直接做第二部分。
+
+# 一、世界观(所有图必须服从)
+
+人类文明的余烬铁道在衰败。玩家是最后一位线务司令。关卡选择界面是一张手绘的战役世界地图:五个自然地貌区沿一条主铁路蜿蜒铺开,20 个关卡各自锚定在自己的地貌区里,每个关卡有专属地标构筑物、状态徽章和三枚难度印章,右下角有局外升级入口。视觉基调"温暖的衰败"——夕阳下老机器还在轰鸣的忧郁工业浪漫。
+
+五个地貌区(自上而下旅程顺序)与调色板:
+- 灰线编组平原(L1-L4,冷灰钢构+青色信号灯):cold-grey weathered steel, slate concrete, thin teal signal lights
+- 灰烬仓库区(L5-L8,暖灰+漂浮余烬+锈橙塔吊):warm ash-greys, drifting ember motes, rust-orange cranes
+- 裂谷道岔区(L9-L12,赭石红岩层+暗色木栈桥):ochre and rust-red rock strata, dark timber trestles
+- 窑炉盆地区(L13-L16,火山玄武岩+窑红熔渣):dark volcanic basalt, glowing kiln-red slag, soot-stained iron
+- 最后余烬终点站(L17-L20,近黑废墟+一盏暖琥珀信号灯):near-black derelict structures, one warm amber signal glow
+
+# 二、全局技术约束
+
+- 手绘数字绘画质感(hand-painted),与上述五区调色板同语言
+- 透明背景 PNG(仅 world_map_bg 不透明),单主体居中占画布 60-80%
+- 边缘干净:严禁残留底、灰雾薄膜、棋盘格(之前批次踩过的坑,硬性红线)
+- 严禁文字、水印、UI 外框、多余场景、3D 渲染感
+
+# 三、第一部分:世界地图底图(1 张,验收门禁——上传参考图)
+
+参考图上传:design/spec/assets/world_map_reference.png(五地貌蛇形拼图,给配色与材质定调)
+保存文件名:world_map_bg.png(任意 16:9 横图)
+```text
+top-down hand-painted fantasy-industrial world map, five natural terrain regions connected by one winding main railway line: cold-grey rail junction plains with signal towers, ash-desert with depot cranes, ochre slot canyon with trestle bridges, dark-red volcanic kiln basin with slag flows, near-black derelict terminus with one last signal lamp; natural region transitions via river valleys and ridges, mid-low contrast center, warm light on the journey corridor, corner vignette, each region keeps breathing room for four level anchors, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark
+- transform the uploaded reference collage of the five region terrains into one continuous painted world map, keeping each region's palette and material language
+```
+
+# 四、第二部分:关卡地标(20 张,每张带所在区的调色板)
+
+同区 4 个地标造型互异、共享地貌材质;远看剪影可辨。
+
+## 灰线编组平原(L1-L4,冷灰钢构+青色信号灯)
+- L01 保存文件名:landmark_L01.png(目标 384×384)
+  ```text
+  small landmark vignette for a tower-defense level set in grayline junction plains (cold-grey weathered steel, slate concrete, thin teal signal lights): a distinct  signal tower, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+  ```
+- L02 保存文件名:landmark_L02.png(目标 384×384)
+  ```text
+  small landmark vignette for a tower-defense level set in grayline junction plains (cold-grey weathered steel, slate concrete, thin teal signal lights): a distinct  locomotive shed, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+  ```
+- L03 保存文件名:landmark_L03.png(目标 384×384)
+  ```text
+  small landmark vignette for a tower-defense level set in grayline junction plains (cold-grey weathered steel, slate concrete, thin teal signal lights): a distinct  water tower, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+  ```
+- L04 保存文件名:landmark_L04.png(目标 384×384)
+  ```text
+  small landmark vignette for a tower-defense level set in grayline junction plains (cold-grey weathered steel, slate concrete, thin teal signal lights): a distinct  inspection pit, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+  ```
+
+## 灰烬仓库区(L5-L8,暖灰+漂浮余烬+锈橙塔吊)
+- L05 保存文件名:landmark_L05.png(目标 384×384)
+  ```text
+  small landmark vignette for a tower-defense level set in ashfall depot (warm ash-greys, drifting ember motes, rust-orange cranes): a distinct  loading crane, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+  ```
+- L06 保存文件名:landmark_L06.png(目标 384×384)
+  ```text
+  small landmark vignette for a tower-defense level set in ashfall depot (warm ash-greys, drifting ember motes, rust-orange cranes): a distinct  ore silo, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+  ```
+- L07 保存文件名:landmark_L07.png(目标 384×384)
+  ```text
+  small landmark vignette for a tower-defense level set in ashfall depot (warm ash-greys, drifting ember motes, rust-orange cranes): a distinct  garage hall, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+  ```
+- L08 保存文件名:landmark_L08.png(目标 384×384)
+  ```text
+  small landmark vignette for a tower-defense level set in ashfall depot (warm ash-greys, drifting ember motes, rust-orange cranes): a distinct  watch silo, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+  ```
+
+## 裂谷道岔区(L9-L12,赭石红岩层+暗色木栈桥)
+- L09 保存文件名:landmark_L09.png(目标 384×384)
+  ```text
+  small landmark vignette for a tower-defense level set in split switch canyon (ochre and rust-red rock strata, dark timber trestles): a distinct  trestle bridge, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+  ```
+- L10 保存文件名:landmark_L10.png(目标 384×384)
+  ```text
+  small landmark vignette for a tower-defense level set in split switch canyon (ochre and rust-red rock strata, dark timber trestles): a distinct  suspension bridge, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+  ```
+- L11 保存文件名:landmark_L11.png(目标 384×384)
+  ```text
+  small landmark vignette for a tower-defense level set in split switch canyon (ochre and rust-red rock strata, dark timber trestles): a distinct  sentry tower, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+  ```
+- L12 保存文件名:landmark_L12.png(目标 384×384)
+  ```text
+  small landmark vignette for a tower-defense level set in split switch canyon (ochre and rust-red rock strata, dark timber trestles): a distinct  tunnel mouth, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+  ```
+
+## 窑炉盆地区(L13-L16,火山玄武岩+窑红熔渣)
+- L13 保存文件名:landmark_L13.png(目标 384×384)
+  ```text
+  small landmark vignette for a tower-defense level set in hollow kiln basin (dark volcanic basalt, glowing kiln-red slag, soot-stained iron): a distinct  blast furnace, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+  ```
+- L14 保存文件名:landmark_L14.png(目标 384×384)
+  ```text
+  small landmark vignette for a tower-defense level set in hollow kiln basin (dark volcanic basalt, glowing kiln-red slag, soot-stained iron): a distinct  pipe bridge, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+  ```
+- L15 保存文件名:landmark_L15.png(目标 384×384)
+  ```text
+  small landmark vignette for a tower-defense level set in hollow kiln basin (dark volcanic basalt, glowing kiln-red slag, soot-stained iron): a distinct  ore cart tipper, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+  ```
+- L16 保存文件名:landmark_L16.png(目标 384×384)
+  ```text
+  small landmark vignette for a tower-defense level set in hollow kiln basin (dark volcanic basalt, glowing kiln-red slag, soot-stained iron): a distinct  chimney cluster, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+  ```
+
+## 最后余烬终点站(L17-L20,近黑废墟+一盏暖琥珀信号灯)
+- L17 保存文件名:landmark_L17.png(目标 384×384)
+  ```text
+  small landmark vignette for a tower-defense level set in last ember terminus (near-black derelict structures, one warm amber signal glow): a distinct  terminus hall, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+  ```
+- L18 保存文件名:landmark_L18.png(目标 384×384)
+  ```text
+  small landmark vignette for a tower-defense level set in last ember terminus (near-black derelict structures, one warm amber signal glow): a distinct  great lamp tower, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+  ```
+- L19 保存文件名:landmark_L19.png(目标 384×384)
+  ```text
+  small landmark vignette for a tower-defense level set in last ember terminus (near-black derelict structures, one warm amber signal glow): a distinct  carriage depot, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+  ```
+- L20 保存文件名:landmark_L20.png(目标 384×384)
+  ```text
+  small landmark vignette for a tower-defense level set in last ember terminus (near-black derelict structures, one warm amber signal glow): a distinct  memorial monument, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+  ```
+
+# 五、第二部分:节点徽章与印章(7 张)
+
+- 关卡节点-可挑战(琥珀信号灯徽章,中心留发光凹槽给编号叠加) 保存文件名:node_available.png(目标 512×512)
+  ```text
+  round heavy metal badge with riveted rim and an amber glowing railway-signal core, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, transparent background
+  ```
+- 关卡节点-已通关(绿色盖章徽章) 保存文件名:node_cleared.png(目标 512×512)
+  ```text
+  round heavy metal badge with riveted rim and a green sealed-stamp glowing core, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, transparent background
+  ```
+- 关卡节点-锁定(铁板+挂锁铁链) 保存文件名:node_locked.png(目标 512×512)
+  ```text
+  round heavy metal badge with riveted rim, dark unlit core with a small padlock and chain, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, transparent background
+  ```
+- 关卡节点-Boss(危险条纹+兽首徽章,份量最重) 保存文件名:node_boss.png(目标 640×640)
+  ```text
+  oversized round heavy metal badge with hazard stripes and a red glowing beast-skull core, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, transparent background
+  ```
+- 选中高亮环(金色细环,中心镂空不遮节点) 保存文件名:node_selected.png(目标 512×512)
+  ```text
+  thin gold highlight ring, hollow center, subtle ember sparks on the rim, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, transparent background
+  ```
+- 难度印章-中性(金属小徽章,未点亮,供代码染色) 保存文件名:seal_pip.png(目标 128×128)
+  ```text
+  small neutral metal seal medallion, unlit, ready for tinting, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, transparent background
+  ```
+- 难度印章-空槽(深色凹槽) 保存文件名:seal_pip_empty.png(目标 128×128)
+  ```text
+  small dark empty seal socket groove, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, transparent background
+  ```
+
+# 六、第二部分:名牌、升级入口与轨道(6 张)
+
+- 地貌区名牌横幅(锻铁+琥珀描边+铆钉,九宫格拉伸) 保存文件名:region_plate.png(目标 1024×192)
+  ```text
+  wide horizontal forged-iron nameplate strip with amber trim and rivets, gently weathered, nine-slice friendly, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, transparent background
+  ```
+- 局外升级入口按钮(锻铁+琥珀'残渣水晶嵌齿轮'徽记) 保存文件名:meta_entry_button.png(目标 384×384)
+  ```text
+  square forged-iron button with an amber ember-residue emblem (crystal shard in a cog), 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, transparent background
+  ```
+- 局外升级面板框(锻铁边框:顶部货币条/中部四行升级线/底部关闭区,内容留白) 保存文件名:meta_panel_frame.png(目标 1536×1024)
+  ```text
+  large UI panel frame, forged-iron border with amber trim, top currency strip zone, four horizontal upgrade-line rows inside, bottom bar, blank content areas, nine-slice friendly, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, transparent background
+  ```
+- 升级节点槽(六边形金属槽,中性色供三态染色) 保存文件名:meta_node_slot.png(目标 192×192)
+  ```text
+  small hexagonal upgrade node slot, neutral metal, unlit, ready for tinting, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, transparent background
+  ```
+- 标题铭牌(锻铁+琥珀描边,中心留白给文字叠加) 保存文件名:campaign_title_plate.png(目标 1536×180)
+  ```text
+  wide horizontal title nameplate, forged iron with amber trim, blank center for overlaid text, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, transparent background
+  ```
+- 发光轨道条(双轨+发光槽,中性亮度供亮暗两态染色,左右可平铺) 保存文件名:path_rail_strip.png(目标 1024×128)
+  ```text
+  horizontal luminous rail track strip, twin rails with a faintly glowing groove between them, medium brightness ready for tinting, tileable left-right, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, transparent background
+  ```
+
+# 七、产出落地与导入
+
+原图统一放 output/imagegen/_worldmap_raw/(按上面各文件名),然后在仓库根目录:
+```bash
+python tools/generate_worldmap.py --wave 1 --import-only   # 先导世界图
+python tools/generate_worldmap.py --wave 2 --import-only   # 验收通过后导其余 33 张
+# 单张重导示例
+python tools/generate_worldmap.py --only landmark_L07 node_boss --import-only
+```
+导入命令自动完成:抠透明背景 → 按目标尺寸/形态后处理(世界图 16:9 裁切放大、宽幅铭牌内容裁切、小件降采样) → 落位 Assets/Resources/Art/UI/Campaign/。

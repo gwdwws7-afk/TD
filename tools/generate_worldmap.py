@@ -54,6 +54,14 @@ BG_PROMPT = (
     "each region keeps breathing room for four level anchors, " + STYLE
 )
 
+REGION_PALETTES = {
+    "grayline junction plains": "cold-grey weathered steel, slate concrete, thin teal signal lights",
+    "ashfall depot": "warm ash-greys, drifting ember motes, rust-orange cranes",
+    "split switch canyon": "ochre and rust-red rock strata, dark timber trestles",
+    "hollow kiln basin": "dark volcanic basalt, glowing kiln-red slag, soot-stained iron",
+    "last ember terminus": "near-black derelict structures, one warm amber signal glow",
+}
+
 REGIONS = {
     "L01": "grayline junction plains: signal tower", "L02": "grayline junction plains: locomotive shed",
     "L03": "grayline junction plains: water tower",   "L04": "grayline junction plains: inspection pit",
@@ -71,7 +79,8 @@ WAVE1 = {"world_map_bg": BG_PROMPT}
 
 WAVE2 = {
     **{f"landmark_{lid}":
-       f"small landmark vignette for a tower-defense level set in {theme.split(':')[0]}: "
+       f"small landmark vignette for a tower-defense level set in {theme.split(':')[0]} "
+       f"({REGION_PALETTES[theme.split(':')[0]]}): "
        f"a distinct {theme.split(':')[1]}, silhouette-readable at small size, "
        + STYLE + ", fully transparent background"
        for lid, theme in REGIONS.items()},
