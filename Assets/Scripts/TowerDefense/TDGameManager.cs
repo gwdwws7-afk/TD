@@ -14193,6 +14193,18 @@ namespace TD
             var tagSummary = BuildEnemyTagSummary(entry, 3);
             var suffix = string.IsNullOrWhiteSpace(tagSummary) ? string.Empty : $" [{tagSummary}]";
             PushTacticalEvent($"Codex +1: First sighting {label}{suffix}", 6.0f);
+
+            // Teaching copy (imbalance diagnosis appendix C.4): fast enemies
+            // debut on L03 — surface the evasion counter-tip once, on the
+            // same first-sighting moment the codex unlock fires.
+            if (entry.tags != null && entry.tags.Any(tag => string.Equals(tag, "fast", StringComparison.OrdinalIgnoreCase)))
+            {
+                var evasionTip = TDLocalization.IsChinese
+                    ? "注意：高速目标会闪避慢速单发弹——先用范围伤害或多次命中压制它们，或让减速先生效。"
+                    : "Fast targets evade slow single shots — soften them with splash or repeated hits, or slow them first.";
+                SetStatus(evasionTip);
+                PushTacticalEvent(evasionTip, 7.0f);
+            }
         }
 
         private IEnumerator SpawnSplitChildren(string enemyId, int count, float interval, string laneKey)

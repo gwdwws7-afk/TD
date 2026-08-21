@@ -178,6 +178,15 @@ namespace TD
             _counterText.text = spec != null
                 ? $"Spec: {spec.displayName}\nCounters: {spec.counterTags}"
                 : "No specialization\nUpgrade 2x in one branch";
+
+            // Codex note (imbalance diagnosis appendix C.4): teach the
+            // first-shot miss rule where players read the tower's numbers.
+            if (_currentTower.Kind == TDTowerKind.FrostCoil)
+            {
+                _counterText.text += "\n" + (TDLocalization.IsChinese
+                    ? "首发射击对未减速的快速目标有失手可能；命中后减速生效，全队即恢复必中。"
+                    : "First shots may miss unslowed fast targets; once a hit lands the slow applies and the whole roster is guaranteed to hit.");
+            }
         }
     }
 }
