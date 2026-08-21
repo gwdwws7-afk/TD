@@ -11,6 +11,11 @@ namespace TD
         private static readonly Color ResonanceMarkTint = new(1f, 0.66f, 0.24f, 1f);
         private const float HitFlashDuration = 0.10f;
         private const float DeathFadeDuration = 0.22f;
+        // Per-enemy death reel (spec: enemy-death-frames-spec-v1): 4 frames
+        // standard, bosses may ship 6; the animator collects whatever exists.
+        private const int DeathReelMaxFrames = 6;
+        private const float DeathReelFps = 12f;
+        private const float DeathReelHoldMaxSeconds = 0.75f;
         private const float HitFxMinInterval = 0.06f;
         private const float FastEvadeSpeedThreshold = 2.2f;
         private const string HitFxPrefix = "Art/anim/fx_enemy_hit";
@@ -83,6 +88,9 @@ namespace TD
         private SpriteRenderer _visualRenderer;
         private SpriteRenderer _shadowRenderer;
         private Transform _visualRoot;
+        private TDSpriteAnimator _bodyAnimator;
+        private bool _bodyDeathReelPlaying;
+        private float _deathReelHoldTimer;
         private TDEnemyReadability _readability;
         private float _hitFxTimer;
         private bool _bossWarningFxPlayed;
@@ -214,6 +222,7 @@ namespace TD
             var shadow = transform.Find("Shadow");
             _shadowRenderer = shadow != null ? shadow.GetComponent<SpriteRenderer>() : null;
             _visualRoot = _visualRenderer != null ? _visualRenderer.transform : transform;
+            _bodyAnimator = _visualRoot.GetComponent<TDSpriteAnimator>();
             _visualBaseLocalPosition = _visualRoot.localPosition;
             _visualBaseLocalScale = _visualRoot.localScale;
             _motionPhase = UnityEngine.Random.Range(0f, Mathf.PI * 2f);
@@ -226,6 +235,8 @@ namespace TD
             _hitFlashTimer = 0f;
             _deathFadeTimer = 0f;
             _dying = false;
+            _bodyDeathReelPlaying = false;
+            _deathReelHoldTimer = 0f;
             _specialSpeedMultiplier = 1f;
             _specialBurstTimer = 0f;
             _scenarioSpeedMultiplier = 1f;
@@ -748,7 +759,37 @@ namespace TD
                 _bodyCollider.enabled = false;
             }
 
+            PlayBodyDeathReel();
             TryPlayDeathFx();
+        }
+
+        /// <summary>
+        /// Per-enemy death reel (spec: enemy-death-frames-spec-v1). Probed,
+        /// not assumed: without frames for this enemy the body keeps today's
+        /// fade-only death, so art can land in batches with zero code
+        /// follow-up. The shared fx_enemy_death burst stays on top either way.
+        /// </summary>
+        private void PlayBodyDeathReel()
+        {
+            if (_bodyAnimator == null || string.IsNullOrWhiteSpace(_enemyId))
+            {
+                return;
+            }
+
+            var idlePrefix = $"Art/anim/enemy_{_enemyId}";
+            if (!IsFxSequenceAvailable($"{idlePrefix}_death"))
+            {
+                return;
+            }
+
+            // ConfigureDeath appends the _death segment itself; extra frame
+            // slots simply stay empty for 4-frame enemies.
+            _bodyAnimator.ConfigureDeath(idlePrefix, DeathReelMaxFrames, DeathReelFps);
+            _bodyAnimator.PlayDeath();
+            if (_bodyAnimator.CurrentState == TDAnimationState.Death)
+            {
+                _bodyDeathReelPlaying = true;
+            }
         }
 
         private void ResolveEscape()
@@ -804,6 +845,25 @@ namespace TD
 
         private void UpdateDeathFade()
         {
+            // While the per-enemy death reel is playing the body stays fully
+            // visible; the animator holds its last frame and disables itself
+            // at the end, which releases the fade. The timer bounds the wait
+            // against animator edge cases.
+            if (_bodyDeathReelPlaying)
+            {
+                _deathReelHoldTimer += Time.deltaTime;
+                var reelDone = _bodyAnimator == null ||
+                               !_bodyAnimator.enabled ||
+                               _bodyAnimator.CurrentState != TDAnimationState.Death ||
+                               _deathReelHoldTimer >= DeathReelHoldMaxSeconds;
+                if (!reelDone)
+                {
+                    return;
+                }
+
+                _bodyDeathReelPlaying = false;
+            }
+
             _deathFadeTimer += Time.deltaTime;
             var t = Mathf.Clamp01(_deathFadeTimer / DeathFadeDuration);
 
