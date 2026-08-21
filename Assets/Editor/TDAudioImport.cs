@@ -79,39 +79,36 @@ namespace TD.Editor
 
         private static bool MatchesProfile(AudioImporter importer, AudioKind kind)
         {
-            var settings = importer.defaultClipSettings;
+            var settings = importer.defaultSampleSettings;
             if (kind == AudioKind.Sfx)
             {
-                return importer.loadType == AudioClipLoadType.DecompressOnLoad
-                    && settings.format == AudioCompressionFormat.PCM
-                    && settings.loadInBackground == false;
+                return settings.loadType == AudioClipLoadType.DecompressOnLoad
+                    && settings.compressionFormat == AudioCompressionFormat.PCM;
             }
-            return importer.loadType == AudioClipLoadType.Streaming
-                && settings.format == AudioCompressionFormat.Vorbis;
+            return settings.loadType == AudioClipLoadType.Streaming
+                && settings.compressionFormat == AudioCompressionFormat.Vorbis;
         }
 
         private static void ApplySettings(AudioImporter importer, AudioKind kind)
         {
-            var settings = importer.defaultClipSettings;
+            var settings = importer.defaultSampleSettings;
             if (kind == AudioKind.Sfx)
             {
-                importer.loadType = AudioClipLoadType.DecompressOnLoad;
+                settings.loadType = AudioClipLoadType.DecompressOnLoad;
                 importer.forceToMono = true;   // spec: mono; guard stray stereo sources
-                importer.preloadAudioData = true;
-                settings.format = AudioCompressionFormat.PCM;
-                settings.loadInBackground = false;
+                settings.preloadAudioData = true;
+                settings.compressionFormat = AudioCompressionFormat.PCM;
                 settings.quality = 1f;
             }
             else
             {
-                importer.loadType = AudioClipLoadType.Streaming;
+                settings.loadType = AudioClipLoadType.Streaming;
                 importer.forceToMono = false;  // keep stereo beds/themes
-                importer.preloadAudioData = false;
-                settings.format = AudioCompressionFormat.Vorbis;
+                settings.preloadAudioData = false;
+                settings.compressionFormat = AudioCompressionFormat.Vorbis;
                 settings.quality = 0.5f;       // ~q5 per spec
-                settings.loadInBackground = true;
             }
-            importer.defaultClipSettings = settings;
+            importer.defaultSampleSettings = settings;
         }
 
         [MenuItem("TD/Audio/Reimport Audio (Sfx PCM / Music+Ambience Vorbis)")]
