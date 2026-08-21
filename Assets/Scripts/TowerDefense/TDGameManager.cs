@@ -3776,10 +3776,14 @@ namespace TD
             if (_uiSellTowerButton != null)
             {
                 _uiSellTowerButton.interactable = IsBuildWindowOpen() && !_gameOver;
+                // Mirror TrySellTower's meta-aware refund so the label never
+                // promises a different number than the payout.
+                var refundPreview = Mathf.FloorToInt(
+                    tower.TotalInvested * TDMetaUpgradeSystem.GetSellRefundRatio(GetMetaRank(TDMetaUpgradeSystem.UpgradeLine.B)));
                 SetUiText(_uiSellTowerButtonText,
                     TDLocalization.IsChinese
-                        ? $"拆塔  +{tower.SellRefundValue}"
-                        : $"SELL  +{tower.SellRefundValue}");
+                        ? $"拆塔  +{refundPreview}"
+                        : $"SELL  +{refundPreview}");
             }
         }
 
@@ -8710,6 +8714,7 @@ namespace TD
             _newlyClaimedChapterReward = TryAutoClaimCompletedChapterReward();
             RefreshMetaProgressionRewards(true);
             _missionBoardNeedsRefresh = true;
+            SettleMetaResidue();
             var summary = GetCampaignProgressSummary();
             Debug.Log(
                 $"[TD][CampaignProgress] level={_campaignRoute.level.levelIndex} victory={_victory} stars={_currentMissionStars} " +
@@ -8720,6 +8725,50 @@ namespace TD
                 $"contracts={summary.completedContracts}/{summary.availableContracts} frontier={summary.highestUnlockedLevel} " +
                 $"difficulty={_activeCampaignDifficulty} bestDifficulty={_campaignProgressUpdate.highestDifficultyCleared} " +
                 $"chapterReward={_newlyClaimedChapterReward?.rewardId ?? "none"}");
+        }
+
+        /// <summary>
+        /// Meta residue settlement (spec: meta-upgrade-system-spec-v1,
+        /// guardrail 2). Runs AFTER the campaign result is recorded so the
+        /// first-capture flag can be derived from the recorded update, and
+        /// never touches the in-run economy.
+        /// </summary>
+        private void SettleMetaResidue()
+        {
+            if (_campaignRoute?.level == null || _campaignProgressUpdate == null)
+            {
+                return;
+            }
+
+            // First capture at this difficulty = the recorded run raised the
+            // level's highestDifficultyCleared (the update reports the new
+            // best, and RecordResult only raises it on victory).
+            var firstCapture = _victory &&
+                               _campaignProgressUpdate.highestDifficultyCleared <= (int)_activeCampaignDifficulty;
+            var residue = TDMetaUpgradeSystem.SettleRunResidue(
+                _currentMissionStars,
+                _activeCampaignDifficulty,
+                firstCapture,
+                _victory,
+                _wave,
+                GetConfiguredWaveCount());
+            if (residue <= 0)
+            {
+                return;
+            }
+
+            TDCampaignProgression.AddEmberResidue(residue);
+            var label = TDLocalization.IsChinese ? $"余烬残渣 +{residue}" : $"Ember Residue +{residue}";
+            SetStatus(label);
+            PushTacticalEvent(label, 6.0f);
+        }
+
+        /// <summary>Meta line rank for the active slot (tiny string parsed
+        /// per query; call sites are level-load / sell / wave-clear).</summary>
+        private int GetMetaRank(TDMetaUpgradeSystem.UpgradeLine line)
+        {
+            var ranks = TDMetaUpgradeSystem.ParseRanks(TDCampaignProgression.GetMetaUpgradeRanks());
+            return ranks.TryGetValue(line, out var rank) ? rank : 0;
         }
 
         private TDCampaignChapterRewardDefinition TryAutoClaimCompletedChapterReward()
@@ -13187,7 +13236,11 @@ namespace TD
 
         private void ResetMissionRuntimeRules()
         {
-            _startingDefenseBudget = DefaultDefenseBudget;
+            // Meta line A (Logistics Reserve) rides the default baseline so
+            // the flat bonus dilutes naturally against level costs; mission
+            // and chapter rules keep applying on top unchanged.
+            _startingDefenseBudget = DefaultDefenseBudget +
+                                     TDMetaUpgradeSystem.GetStartingBudgetBonus(GetMetaRank(TDMetaUpgradeSystem.UpgradeLine.A));
             _startingLineIntegrity = DefaultLineIntegrity;
             _defenseBudget = _startingDefenseBudget;
             _lineIntegrity = _startingLineIntegrity;
@@ -13977,7 +14030,10 @@ namespace TD
 
             var displayName = tower.DisplayName;
             var cell = tower.GridCell;
-            var refund = tower.SellRefundValue;
+            // Meta line B (Field Salvage) raises the refund ratio above the
+            // 60% base without touching TDTower's constant.
+            var refund = Mathf.FloorToInt(
+                tower.TotalInvested * TDMetaUpgradeSystem.GetSellRefundRatio(GetMetaRank(TDMetaUpgradeSystem.UpgradeLine.B)));
 
             if (_selectedTowerForUi == tower)
             {
@@ -14310,6 +14366,15 @@ namespace TD
                     ScaleMissionReward(baseReward),
                     _wave,
                     GetConfiguredWaveCount());
+                // Meta line C (Wave Subsidy): a percent on top of the decayed
+                // tail value — additive to the p12.5.0 curve, never replacing it.
+                var subsidyPercent = TDMetaUpgradeSystem.GetWaveClearIncomeBonusPercent(
+                    GetMetaRank(TDMetaUpgradeSystem.UpgradeLine.C));
+                if (subsidyPercent > 0f)
+                {
+                    reward = Mathf.Max(reward + Mathf.FloorToInt(reward * subsidyPercent * 0.01f), reward);
+                }
+
                 _defenseBudget += reward;
                 TrackP125ClearIncome(reward);
                 SetStatus($"Wave {_wave} cleared, reward +{reward} budget");

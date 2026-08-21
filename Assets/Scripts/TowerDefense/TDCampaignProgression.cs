@@ -173,6 +173,12 @@ namespace TD
         public TDCampaignObservationRecord[] towerObservations;
         public TDCampaignProtocolSelectionRecord[] protocolSelections;
         public TDCampaignLevelProgress[] levels;
+        // Meta upgrade fields (additive, spec meta-upgrade-system-spec-v1):
+        // JsonUtility tolerates their absence in older snapshots, so legacy
+        // saves deserialize to natural meta-0 without a version flip.
+        public int emberResidue;
+        public string metaUpgradeRanks;
+        public int metaResidueLifetime;
     }
 
     [Serializable]
@@ -214,6 +220,9 @@ namespace TD
         private static string TotalLevelsKey => GetSlotKey("campaign_total_levels");
         private static string SnapshotChecksumKey => GetSlotKey("snapshot_checksum");
         private static string RecoveryCacheKey => GetSlotKey("recovery_snapshot");
+        private static string EmberResidueKey => GetSlotKey("ember_residue");
+        private static string MetaUpgradeRanksKey => GetSlotKey("meta_upgrade_ranks");
+        private static string MetaResidueLifetimeKey => GetSlotKey("meta_residue_lifetime");
         private const int MaxSnapshotLevels = 64;
         private const int MaxClaimedChapterRewards = 32;
         private const int MaxMetaRecords = 128;
@@ -1057,6 +1066,71 @@ namespace TD
             return JsonUtility.ToJson(BuildSnapshotForSlot(ActiveSaveSlot, totalLevels));
         }
 
+        // ── Meta upgrade persistence (spec: meta-upgrade-system-spec-v1) ──
+        // Slot-scoped, covered by the snapshot checksum automatically since
+        // the fields ride the snapshot JSON. Additive fields: legacy saves
+        // deserialize to natural meta-0 (no version flip needed — keeps
+        // portable-save codes mutually compatible in both directions).
+
+        public static int GetEmberResidue()
+        {
+            return Mathf.Max(0, PlayerPrefs.GetInt(EmberResidueKey, 0));
+        }
+
+        public static int GetMetaResidueLifetime()
+        {
+            return Mathf.Max(0, PlayerPrefs.GetInt(MetaResidueLifetimeKey, 0));
+        }
+
+        public static string GetMetaUpgradeRanks()
+        {
+            return PlayerPrefs.GetString(MetaUpgradeRanksKey, string.Empty);
+        }
+
+        public static void SetMetaUpgradeRanks(string encodedRanks)
+        {
+            PlayerPrefs.SetString(MetaUpgradeRanksKey, encodedRanks ?? string.Empty);
+            TouchActiveSlot();
+            PlayerPrefs.Save();
+        }
+
+        /// <summary>Grant settled residue into the active slot. Negative
+        /// amounts are ignored; lifetime only grows, preserving the
+        /// tamper-audit invariant (balance ≤ lifetime).</summary>
+        public static void AddEmberResidue(int amount)
+        {
+            if (amount <= 0)
+            {
+                return;
+            }
+
+            PlayerPrefs.SetInt(EmberResidueKey, GetEmberResidue() + amount);
+            PlayerPrefs.SetInt(MetaResidueLifetimeKey, GetMetaResidueLifetime() + amount);
+            TouchActiveSlot();
+            PlayerPrefs.Save();
+        }
+
+        /// <summary>Spend residue (meta purchases). Returns false without
+        /// mutation when the balance is insufficient.</summary>
+        public static bool TrySpendEmberResidue(int amount)
+        {
+            if (amount <= 0)
+            {
+                return true;
+            }
+
+            var balance = GetEmberResidue();
+            if (balance < amount)
+            {
+                return false;
+            }
+
+            PlayerPrefs.SetInt(EmberResidueKey, balance - amount);
+            TouchActiveSlot();
+            PlayerPrefs.Save();
+            return true;
+        }
+
         public static string ExportPortableSave(int totalLevels)
         {
             var bytes = System.Text.Encoding.UTF8.GetBytes(ExportSnapshot(totalLevels));
@@ -1143,6 +1217,9 @@ namespace TD
             WriteObservationRecords(EnemyObservationsKey, snapshot.enemyObservations);
             WriteObservationRecords(TowerObservationsKey, snapshot.towerObservations);
             WriteProtocolSelections(ProtocolSelectionsKey, snapshot.protocolSelections);
+            PlayerPrefs.SetInt(EmberResidueKey, Mathf.Max(0, snapshot.emberResidue));
+            PlayerPrefs.SetString(MetaUpgradeRanksKey, snapshot.metaUpgradeRanks ?? string.Empty);
+            PlayerPrefs.SetInt(MetaResidueLifetimeKey, Mathf.Max(0, snapshot.metaResidueLifetime));
             var levels = snapshot.levels ?? Array.Empty<TDCampaignLevelProgress>();
             for (var i = 0; i < levels.Length && i < safeTotal; i++)
             {
@@ -1218,6 +1295,9 @@ namespace TD
             PlayerPrefs.DeleteKey(TotalLevelsKey);
             PlayerPrefs.DeleteKey(SnapshotChecksumKey);
             PlayerPrefs.DeleteKey(RecoveryCacheKey);
+            PlayerPrefs.DeleteKey(EmberResidueKey);
+            PlayerPrefs.DeleteKey(MetaUpgradeRanksKey);
+            PlayerPrefs.DeleteKey(MetaResidueLifetimeKey);
             var safeTotal = Mathf.Clamp(Mathf.Max(totalLevels, MaxSnapshotLevels), 1, MaxSnapshotLevels);
             for (var level = 1; level <= safeTotal; level++)
             {
@@ -1290,6 +1370,9 @@ namespace TD
                 enemyObservations = ReadObservationRecords(prefix + "_enemy_observations"),
                 towerObservations = ReadObservationRecords(prefix + "_tower_observations"),
                 protocolSelections = ReadProtocolSelections(prefix + "_protocol_selections", safeTotal),
+                emberResidue = Mathf.Max(0, PlayerPrefs.GetInt(prefix + "_ember_residue", 0)),
+                metaUpgradeRanks = PlayerPrefs.GetString(prefix + "_meta_upgrade_ranks", string.Empty),
+                metaResidueLifetime = Mathf.Max(0, PlayerPrefs.GetInt(prefix + "_meta_residue_lifetime", 0)),
                 levels = new TDCampaignLevelProgress[safeTotal]
             };
             for (var level = 1; level <= safeTotal; level++)
@@ -1355,6 +1438,14 @@ namespace TD
                     cloudIsNewer ? cloud.protocolSelections : local.protocolSelections,
                     cloudIsNewer ? local.protocolSelections : cloud.protocolSelections,
                     safeTotal),
+                // Meta: keep the higher balance/progress on both sides and the
+                // per-line max of purchased ranks — purchases are permanent.
+                emberResidue = Mathf.Max(local.emberResidue, cloud.emberResidue),
+                metaUpgradeRanks = TDMetaUpgradeSystem.EncodeRanks(
+                    TDMetaUpgradeSystem.MergeRanksByMax(
+                        TDMetaUpgradeSystem.ParseRanks(local.metaUpgradeRanks),
+                        TDMetaUpgradeSystem.ParseRanks(cloud.metaUpgradeRanks))),
+                metaResidueLifetime = Mathf.Max(local.metaResidueLifetime, cloud.metaResidueLifetime),
                 levels = new TDCampaignLevelProgress[safeTotal]
             };
 
