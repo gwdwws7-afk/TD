@@ -57,12 +57,16 @@ seal_pip_empty.png  128×128 透明   未达成印章底槽
 通过数据标识：每关地标下方横排 3 枚印章（standard/veteran/ember_trial），
 数据源 `highestDifficultyCleared`，达成 N 枚亮 N 枚。
 
-### 4. 区域名牌与升级入口（4 张）
+### 4. 区域名牌与升级入口（5 张）
 
 ```
 region_plate.png        1024×192 透明   地貌区名牌（九宫格，代码叠区名文字）
 meta_entry_button.png   384×384 透明   局外升级入口按钮（锻铁+琥珀徽记）
-meta_panel_frame.png    1536×1024 透明  局外升级面板框（九宫格，内容区留白）
+meta_panel_frame.png    1536×1024 透明  局外升级面板框（九宫格，内容区留白：
+                                        顶部货币条/中部 4 线节点/底部关闭，
+                                        对齐 meta-upgrade-system-spec-v1 交互流）
+meta_node_slot.png      192×192 透明   升级节点槽（中性色，代码三态 tint：
+                                        已购琥珀亮/可购呼吸/不足灰）
 campaign_title_plate.png 1536×180 透明  标题铭牌
 ```
 
