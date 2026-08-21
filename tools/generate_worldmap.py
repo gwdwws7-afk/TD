@@ -169,7 +169,7 @@ def build_reference() -> Path:
     return ref
 
 
-def gen_one(name: str, prompt: str, force: bool) -> bool:
+def gen_one(name: str, prompt: str, force: bool, import_only: bool = False) -> bool:
     gen_size, target, mode = SPECS[name]
     transparent = name != "world_map_bg"
     final = DST / f"{name}.png"
@@ -177,28 +177,36 @@ def gen_one(name: str, prompt: str, force: bool) -> bool:
     if final.exists() and not force:
         print(f"  {name}: exists, skip")
         return True
-    cmd = [sys.executable, str(IMAGE_GEN), "generate",
-           "--model", "gpt-image-1.5",
-           "--prompt", prompt,
-           "--size", gen_size]
-    if name == "world_map_bg":
-        # img2img against the terrain reference (style + region anchor)
-        cmd = [sys.executable, str(IMAGE_GEN), "edit",
+    if import_only:
+        # manual route: the raw was generated elsewhere (any chat AI) and
+        # dropped into _worldmap_raw/{name}.png - only post-process it.
+        if not raw.exists():
+            print(f"  {name}: no raw in {RAW} for import-only")
+            return False
+        print(f"  {name}: importing raw -> {target[0]}x{target[1]} ({mode})")
+    else:
+        cmd = [sys.executable, str(IMAGE_GEN), "generate",
                "--model", "gpt-image-1.5",
-               "--image", str(build_reference()),
-               "--prompt", BG_PROMPT + " - transform this reference collage of "
-               "the five region terrains into one continuous painted world map, "
-               "keeping each region's palette and material language",
+               "--prompt", prompt,
                "--size", gen_size]
-    if transparent:
-        cmd += ["--background", "transparent", "--output-format", "png"]
-    cmd += ["--out", str(raw), "--force"]
-    print(f"  {name}: gen {gen_size} -> {target[0]}x{target[1]} ({mode})")
-    r = subprocess.run(cmd, capture_output=True, text=True)
-    if r.returncode != 0 or not raw.exists():
-        tail = (r.stderr or r.stdout or "").strip().splitlines()[-3:]
-        print(f"    FAILED: {' | '.join(tail)}")
-        return False
+        if name == "world_map_bg":
+            # img2img against the terrain reference (style + region anchor)
+            cmd = [sys.executable, str(IMAGE_GEN), "edit",
+                   "--model", "gpt-image-1.5",
+                   "--image", str(build_reference()),
+                   "--prompt", BG_PROMPT + " - transform this reference collage of "
+                   "the five region terrains into one continuous painted world map, "
+                   "keeping each region's palette and material language",
+                   "--size", gen_size]
+        if transparent:
+            cmd += ["--background", "transparent", "--output-format", "png"]
+        cmd += ["--out", str(raw), "--force"]
+        print(f"  {name}: gen {gen_size} -> {target[0]}x{target[1]} ({mode})")
+        r = subprocess.run(cmd, capture_output=True, text=True)
+        if r.returncode != 0 or not raw.exists():
+            tail = (r.stderr or r.stdout or "").strip().splitlines()[-3:]
+            print(f"    FAILED: {' | '.join(tail)}")
+            return False
     if transparent:
         tmp = RAW / f"{name}_t.png"
         r2 = subprocess.run([sys.executable, str(ROOT / "tools/force_transparent_bg.py"),
@@ -211,21 +219,27 @@ def gen_one(name: str, prompt: str, force: bool) -> bool:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--wave", type=int, choices=(1, 2), required=True)
+    ap.add_argument("--wave", type=int, choices=(1, 2))
     ap.add_argument("--only", nargs="*", help="re-run specific assets regardless of wave")
     ap.add_argument("--force", action="store_true")
+    ap.add_argument("--import-only", action="store_true",
+                    help="skip the API: post-process raws already placed in "
+                         "_worldmap_raw/{name}.png (manual chat-AI route)")
     args = ap.parse_args()
 
     RAW.mkdir(parents=True, exist_ok=True)
+    if args.wave is None and not args.only:
+        sys.exit("specify --wave 1|2 or --only <assets>")
     jobs = dict(WAVE1) if args.wave == 1 else dict(WAVE2)
     if args.only:
         args.force = True
         jobs = {k: v for k, v in {**WAVE1, **WAVE2}.items() if k in args.only}
 
-    ensure_key()
+    if not args.import_only:
+        ensure_key()
     failed = []
     for name, prompt in jobs.items():
-        if not gen_one(name, prompt, args.force):
+        if not gen_one(name, prompt, args.force, args.import_only):
             failed.append(name)
     if failed:
         print(f"\n{len(failed)} asset(s) failed: {', '.join(failed)} (re-run to resume)")
