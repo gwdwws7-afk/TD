@@ -1,0 +1,584 @@
+我要为一个 2D 塔防游戏《Emberline Defense》(余烬铁道)批量生成游戏美术图片。请你先通读下面的世界观、视觉调色板和技术约束,然后按 P0 → P1 → P2 的顺序逐个生成图片文件。每生成一张,严格用对应的文件名命名。
+
+# 一、世界观(所有图片必须服从)
+
+人类文明的余烬铁道在衰败。玩家是最后一位线务司令,在锈蚀的铁轨、冷却的熔炉、崩塌的终点站之间,用工业化战争机器抵御从灰烬中涌出的变异生物。视觉基调是"温暖的衰败"——夕阳下老机器还在轰鸣的忧郁工业浪漫。
+
+视觉参考坐标:现有资产库(塔=机械构造+能量核心+宝石徽章图标语言;地图=5 张手绘地表:冷灰编组站/灰烬荒漠/赭石裂谷/暗红窑炉盆地/近黑终点站)。
+
+# 二、视觉调色板(每张图都要落在这 6 类里)
+
+1. 金属呼吸:锻铁、铆钉、做旧钢板、锈蚀流痕 → 塔身、机械、UI 框架
+2. 余烬纹理:琥珀橙色发光、火舌、煤渣、暖色体积光 → 能量核心、发光标识
+3. 机械结构:齿轮、连杆、液压撑脚、铁轨枕木 → 结构细节与升级模块
+4. 生物质感:甲壳、湿滑有机形态、低饱和暗色皮膜(有机但不恶心) → 敌人
+5. 空间氛围:暗角、远处暖光源、薄雾、手绘笔触 → 背景与氛围层
+6. 点缀色:青色/蓝紫/绿色按身份色少量出现(各塔/各区身份识别)
+
+# 三、全局技术约束(每张图必须满足)
+
+- 尺寸:1024×1024(方形资产)或 1536×1024(横幅资产);世界图任意 16:9 横图
+- 格式:PNG;除 world_map_bg(不透明)外全部透明背景
+- 单主体居中,占画布 60-80%,边缘干净无残留底、无灰雾薄膜、无棋盘格
+- 手绘数字绘画质感(hand-painted),与上述参考坐标同语言
+- 严禁:文字、水印、UI 框、额外背景场景、拍照感、3D 渲染感
+
+# 四、参考图规则(img2img 类资产)
+
+- P0-A 的 4 张 T2 帧:每张必须上传对应底图(见各条目),保持塔身姿态像素级一致,只叠加升级模块
+- P0-B 世界图:必须上传五地貌蛇形参考拼图,保持各区配色与材质语言
+- P2 死亡帧:每敌上传该敌 idle 首帧作底图,第 0 帧姿态与存活态连续
+
+# 五、P0-A:塔 T2 补帧(4 张,上传对应 idle 底图)
+
+## ember_flak 第 2 帧
+底图上传:Assets/Resources/Art/anim/tower_ember_flak_02.png
+保存文件名:tower_ember_flak_t2_02.png
+```text
+using the provided tower sprite as the exact base, keep the tower body, pose, proportions and ground contact pixel-identical, upgrade it to a mid-tier version by adding an ammo-link drum and a muzzle brake: new parts rendered in orange-red #EE6933 accent color with subtle emissive glow, existing structures unchanged, modest enhancement level (this is tier 2 of 3, the final tier stays far more dramatic), 2D game sprite, hand-painted, dark industrial ember-belt style, fully transparent background, PNG alpha, no text, no watermark
+```
+
+## grav_snare 第 4 帧
+底图上传:Assets/Resources/Art/anim/tower_grav_snare_04.png
+保存文件名:tower_grav_snare_t2_04.png
+```text
+using the provided tower sprite as the exact base, keep the tower body, pose, proportions and ground contact pixel-identical, upgrade it to a mid-tier version by adding a phase ring and anchoring claws: new parts rendered in blue-violet #7384E3 accent color with subtle emissive glow, existing structures unchanged, modest enhancement level (this is tier 2 of 3, the final tier stays far more dramatic), 2D game sprite, hand-painted, dark industrial ember-belt style, fully transparent background, PNG alpha, no text, no watermark
+```
+
+## grav_snare 第 5 帧
+底图上传:Assets/Resources/Art/anim/tower_grav_snare_05.png
+保存文件名:tower_grav_snare_t2_05.png
+```text
+using the provided tower sprite as the exact base, keep the tower body, pose, proportions and ground contact pixel-identical, upgrade it to a mid-tier version by adding a phase ring and anchoring claws: new parts rendered in blue-violet #7384E3 accent color with subtle emissive glow, existing structures unchanged, modest enhancement level (this is tier 2 of 3, the final tier stays far more dramatic), 2D game sprite, hand-painted, dark industrial ember-belt style, fully transparent background, PNG alpha, no text, no watermark
+```
+
+## rail_lancer 第 3 帧
+底图上传:Assets/Resources/Art/anim/tower_rail_lancer_03.png
+保存文件名:tower_rail_lancer_t2_03.png
+```text
+using the provided tower sprite as the exact base, keep the tower body, pose, proportions and ground contact pixel-identical, upgrade it to a mid-tier version by adding an extended twin-rail barrel and a side-mounted loading ratchet: new parts rendered in steel-blue #408ADB accent color with subtle emissive glow, existing structures unchanged, modest enhancement level (this is tier 2 of 3, the final tier stays far more dramatic), 2D game sprite, hand-painted, dark industrial ember-belt style, fully transparent background, PNG alpha, no text, no watermark
+```
+
+# 六、P0-B:世界地图第一波(1 张,上传参考拼图——验收门禁,先只做这张)
+
+参考图上传:design/spec/assets/world_map_reference.png(五地貌蛇形拼图)
+保存文件名:world_map_bg.png
+```text
+top-down hand-painted fantasy-industrial world map, five natural terrain regions connected by one winding main railway line: cold-grey rail junction plains with signal towers, ash-desert with depot cranes, ochre slot canyon with trestle bridges, dark-red volcanic kiln basin with slag flows, near-black derelict terminus with one last signal lamp; natural region transitions via river valleys and ridges, mid-low contrast center, warm light on the journey corridor, corner vignette, each region keeps breathing room for four level anchors, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark
+- transform the uploaded reference collage of the five region terrains into one continuous painted world map, keeping each region's palette and material language
+```
+
+# 七、P1:世界地图第二波(33 张,纯文生图,全部透明背景)
+
+## campaign_title_plate(目标 1536×180)
+保存文件名:campaign_title_plate.png
+```text
+wide horizontal title nameplate, forged iron with amber trim, blank center for overlaid text, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, transparent background
+```
+
+## landmark_L01(目标 384×384)
+保存文件名:landmark_L01.png
+```text
+small landmark vignette for a tower-defense level set in grayline junction plains: a distinct  signal tower, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+```
+
+## landmark_L02(目标 384×384)
+保存文件名:landmark_L02.png
+```text
+small landmark vignette for a tower-defense level set in grayline junction plains: a distinct  locomotive shed, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+```
+
+## landmark_L03(目标 384×384)
+保存文件名:landmark_L03.png
+```text
+small landmark vignette for a tower-defense level set in grayline junction plains: a distinct  water tower, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+```
+
+## landmark_L04(目标 384×384)
+保存文件名:landmark_L04.png
+```text
+small landmark vignette for a tower-defense level set in grayline junction plains: a distinct  inspection pit, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+```
+
+## landmark_L05(目标 384×384)
+保存文件名:landmark_L05.png
+```text
+small landmark vignette for a tower-defense level set in ashfall depot: a distinct  loading crane, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+```
+
+## landmark_L06(目标 384×384)
+保存文件名:landmark_L06.png
+```text
+small landmark vignette for a tower-defense level set in ashfall depot: a distinct  ore silo, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+```
+
+## landmark_L07(目标 384×384)
+保存文件名:landmark_L07.png
+```text
+small landmark vignette for a tower-defense level set in ashfall depot: a distinct  garage hall, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+```
+
+## landmark_L08(目标 384×384)
+保存文件名:landmark_L08.png
+```text
+small landmark vignette for a tower-defense level set in ashfall depot: a distinct  watch silo, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+```
+
+## landmark_L09(目标 384×384)
+保存文件名:landmark_L09.png
+```text
+small landmark vignette for a tower-defense level set in split switch canyon: a distinct  trestle bridge, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+```
+
+## landmark_L10(目标 384×384)
+保存文件名:landmark_L10.png
+```text
+small landmark vignette for a tower-defense level set in split switch canyon: a distinct  suspension bridge, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+```
+
+## landmark_L11(目标 384×384)
+保存文件名:landmark_L11.png
+```text
+small landmark vignette for a tower-defense level set in split switch canyon: a distinct  sentry tower, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+```
+
+## landmark_L12(目标 384×384)
+保存文件名:landmark_L12.png
+```text
+small landmark vignette for a tower-defense level set in split switch canyon: a distinct  tunnel mouth, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+```
+
+## landmark_L13(目标 384×384)
+保存文件名:landmark_L13.png
+```text
+small landmark vignette for a tower-defense level set in hollow kiln basin: a distinct  blast furnace, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+```
+
+## landmark_L14(目标 384×384)
+保存文件名:landmark_L14.png
+```text
+small landmark vignette for a tower-defense level set in hollow kiln basin: a distinct  pipe bridge, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+```
+
+## landmark_L15(目标 384×384)
+保存文件名:landmark_L15.png
+```text
+small landmark vignette for a tower-defense level set in hollow kiln basin: a distinct  ore cart tipper, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+```
+
+## landmark_L16(目标 384×384)
+保存文件名:landmark_L16.png
+```text
+small landmark vignette for a tower-defense level set in hollow kiln basin: a distinct  chimney cluster, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+```
+
+## landmark_L17(目标 384×384)
+保存文件名:landmark_L17.png
+```text
+small landmark vignette for a tower-defense level set in last ember terminus: a distinct  terminus hall, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+```
+
+## landmark_L18(目标 384×384)
+保存文件名:landmark_L18.png
+```text
+small landmark vignette for a tower-defense level set in last ember terminus: a distinct  great lamp tower, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+```
+
+## landmark_L19(目标 384×384)
+保存文件名:landmark_L19.png
+```text
+small landmark vignette for a tower-defense level set in last ember terminus: a distinct  carriage depot, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+```
+
+## landmark_L20(目标 384×384)
+保存文件名:landmark_L20.png
+```text
+small landmark vignette for a tower-defense level set in last ember terminus: a distinct  memorial monument, silhouette-readable at small size, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, fully transparent background
+```
+
+## meta_entry_button(目标 384×384)
+保存文件名:meta_entry_button.png
+```text
+square forged-iron button with an amber ember-residue emblem (crystal shard in a cog), 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, transparent background
+```
+
+## meta_node_slot(目标 192×192)
+保存文件名:meta_node_slot.png
+```text
+small hexagonal upgrade node slot, neutral metal, unlit, ready for tinting, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, transparent background
+```
+
+## meta_panel_frame(目标 1536×1024)
+保存文件名:meta_panel_frame.png
+```text
+large UI panel frame, forged-iron border with amber trim, top currency strip zone, four horizontal upgrade-line rows inside, bottom bar, blank content areas, nine-slice friendly, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, transparent background
+```
+
+## node_available(目标 512×512)
+保存文件名:node_available.png
+```text
+round heavy metal badge with riveted rim and an amber glowing railway-signal core, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, transparent background
+```
+
+## node_boss(目标 640×640)
+保存文件名:node_boss.png
+```text
+oversized round heavy metal badge with hazard stripes and a red glowing beast-skull core, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, transparent background
+```
+
+## node_cleared(目标 512×512)
+保存文件名:node_cleared.png
+```text
+round heavy metal badge with riveted rim and a green sealed-stamp glowing core, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, transparent background
+```
+
+## node_locked(目标 512×512)
+保存文件名:node_locked.png
+```text
+round heavy metal badge with riveted rim, dark unlit core with a small padlock and chain, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, transparent background
+```
+
+## node_selected(目标 512×512)
+保存文件名:node_selected.png
+```text
+thin gold highlight ring, hollow center, subtle ember sparks on the rim, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, transparent background
+```
+
+## path_rail_strip(目标 1024×128)
+保存文件名:path_rail_strip.png
+```text
+horizontal luminous rail track strip, twin rails with a faintly glowing groove between them, medium brightness ready for tinting, tileable left-right, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, transparent background
+```
+
+## region_plate(目标 1024×192)
+保存文件名:region_plate.png
+```text
+wide horizontal forged-iron nameplate strip with amber trim and rivets, gently weathered, nine-slice friendly, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, transparent background
+```
+
+## seal_pip(目标 128×128)
+保存文件名:seal_pip.png
+```text
+small neutral metal seal medallion, unlit, ready for tinting, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, transparent background
+```
+
+## seal_pip_empty(目标 128×128)
+保存文件名:seal_pip_empty.png
+```text
+small dark empty seal socket groove, 2D game art, hand-painted, dark industrial post-apocalyptic ember-belt style, weathered charcoal and rust-brown metal with glowing amber-orange accents, subtle teal energy details, painterly texture with soft volumetric glow, no text, no watermark, transparent background
+```
+
+# 八、P2:敌人死亡帧(12 敌 × 4 帧 = 48 张,每敌上传 idle 首帧作底图)
+
+帧推进:00=死亡瞬间(姿态衔接存活态) → 01=破坏进行中 → 02=接近残骸 → 03=残骸定格。禁止大面积高亮闪烁。
+
+## 疾行爬虫(skitter_runner)第 00 帧
+底图上传:Assets/Resources/Art/anim/enemy_skitter_runner_00.png
+保存文件名:enemy_skitter_runner_death_00.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: the death moment: 步足摊开、体壳塌折 just beginning, pose still continuous with the living idle frame, first cracks and sparks appearing, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 疾行爬虫(skitter_runner)第 01 帧
+底图上传:Assets/Resources/Art/anim/enemy_skitter_runner_00.png
+保存文件名:enemy_skitter_runner_death_01.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: destruction mid-progress: 步足摊开、体壳塌折 actively happening, body breaking apart, embers scattering, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 疾行爬虫(skitter_runner)第 02 帧
+底图上传:Assets/Resources/Art/anim/enemy_skitter_runner_00.png
+保存文件名:enemy_skitter_runner_death_02.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: near-wreck: 步足摊开、体壳塌折 mostly complete, slumped geometry, dimming glow, small residual fires, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 疾行爬虫(skitter_runner)第 03 帧
+底图上传:Assets/Resources/Art/anim/enemy_skitter_runner_00.png
+保存文件名:enemy_skitter_runner_death_03.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: final wreckage freeze: collapsed remains of 步足摊开、体壳塌折, dark inert metal and shell fragments, faint dying embers only, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+
+## 灰烬虫群(ash_swarm)第 00 帧
+底图上传:Assets/Resources/Art/anim/enemy_ash_swarm_00.png
+保存文件名:enemy_ash_swarm_death_00.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: the death moment: 个体离散崩解、灰化飘散 just beginning, pose still continuous with the living idle frame, first cracks and sparks appearing, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 灰烬虫群(ash_swarm)第 01 帧
+底图上传:Assets/Resources/Art/anim/enemy_ash_swarm_00.png
+保存文件名:enemy_ash_swarm_death_01.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: destruction mid-progress: 个体离散崩解、灰化飘散 actively happening, body breaking apart, embers scattering, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 灰烬虫群(ash_swarm)第 02 帧
+底图上传:Assets/Resources/Art/anim/enemy_ash_swarm_00.png
+保存文件名:enemy_ash_swarm_death_02.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: near-wreck: 个体离散崩解、灰化飘散 mostly complete, slumped geometry, dimming glow, small residual fires, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 灰烬虫群(ash_swarm)第 03 帧
+底图上传:Assets/Resources/Art/anim/enemy_ash_swarm_00.png
+保存文件名:enemy_ash_swarm_death_03.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: final wreckage freeze: collapsed remains of 个体离散崩解、灰化飘散, dark inert metal and shell fragments, faint dying embers only, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+
+## 甲壳蛮兽(carapace_brute)第 00 帧
+底图上传:Assets/Resources/Art/anim/enemy_carapace_brute_00.png
+保存文件名:enemy_carapace_brute_death_00.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: the death moment: 甲壳开裂崩落、躯干侧倾 just beginning, pose still continuous with the living idle frame, first cracks and sparks appearing, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 甲壳蛮兽(carapace_brute)第 01 帧
+底图上传:Assets/Resources/Art/anim/enemy_carapace_brute_00.png
+保存文件名:enemy_carapace_brute_death_01.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: destruction mid-progress: 甲壳开裂崩落、躯干侧倾 actively happening, body breaking apart, embers scattering, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 甲壳蛮兽(carapace_brute)第 02 帧
+底图上传:Assets/Resources/Art/anim/enemy_carapace_brute_00.png
+保存文件名:enemy_carapace_brute_death_02.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: near-wreck: 甲壳开裂崩落、躯干侧倾 mostly complete, slumped geometry, dimming glow, small residual fires, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 甲壳蛮兽(carapace_brute)第 03 帧
+底图上传:Assets/Resources/Art/anim/enemy_carapace_brute_00.png
+保存文件名:enemy_carapace_brute_death_03.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: final wreckage freeze: collapsed remains of 甲壳开裂崩落、躯干侧倾, dark inert metal and shell fragments, faint dying embers only, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+
+## 覆甲孢子(plated_spore)第 00 帧
+底图上传:Assets/Resources/Art/anim/enemy_plated_spore_00.png
+保存文件名:enemy_plated_spore_death_00.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: the death moment: 甲片剥离、孢子液泄出 just beginning, pose still continuous with the living idle frame, first cracks and sparks appearing, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 覆甲孢子(plated_spore)第 01 帧
+底图上传:Assets/Resources/Art/anim/enemy_plated_spore_00.png
+保存文件名:enemy_plated_spore_death_01.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: destruction mid-progress: 甲片剥离、孢子液泄出 actively happening, body breaking apart, embers scattering, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 覆甲孢子(plated_spore)第 02 帧
+底图上传:Assets/Resources/Art/anim/enemy_plated_spore_00.png
+保存文件名:enemy_plated_spore_death_02.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: near-wreck: 甲片剥离、孢子液泄出 mostly complete, slumped geometry, dimming glow, small residual fires, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 覆甲孢子(plated_spore)第 03 帧
+底图上传:Assets/Resources/Art/anim/enemy_plated_spore_00.png
+保存文件名:enemy_plated_spore_death_03.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: final wreckage freeze: collapsed remains of 甲片剥离、孢子液泄出, dark inert metal and shell fragments, faint dying embers only, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+
+## 掘地工兵(burrow_sapper)第 00 帧
+底图上传:Assets/Resources/Art/anim/enemy_burrow_sapper_00.png
+保存文件名:enemy_burrow_sapper_death_00.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: the death moment: 钻头卡死、土石回填 just beginning, pose still continuous with the living idle frame, first cracks and sparks appearing, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 掘地工兵(burrow_sapper)第 01 帧
+底图上传:Assets/Resources/Art/anim/enemy_burrow_sapper_00.png
+保存文件名:enemy_burrow_sapper_death_01.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: destruction mid-progress: 钻头卡死、土石回填 actively happening, body breaking apart, embers scattering, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 掘地工兵(burrow_sapper)第 02 帧
+底图上传:Assets/Resources/Art/anim/enemy_burrow_sapper_00.png
+保存文件名:enemy_burrow_sapper_death_02.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: near-wreck: 钻头卡死、土石回填 mostly complete, slumped geometry, dimming glow, small residual fires, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 掘地工兵(burrow_sapper)第 03 帧
+底图上传:Assets/Resources/Art/anim/enemy_burrow_sapper_00.png
+保存文件名:enemy_burrow_sapper_death_03.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: final wreckage freeze: collapsed remains of 钻头卡死、土石回填, dark inert metal and shell fragments, faint dying embers only, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+
+## 余烬水蛭(ember_leech)第 00 帧
+底图上传:Assets/Resources/Art/anim/enemy_ember_leech_00.png
+保存文件名:enemy_ember_leech_death_00.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: the death moment: 躯体瘪塌、余烬熄灭 just beginning, pose still continuous with the living idle frame, first cracks and sparks appearing, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 余烬水蛭(ember_leech)第 01 帧
+底图上传:Assets/Resources/Art/anim/enemy_ember_leech_00.png
+保存文件名:enemy_ember_leech_death_01.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: destruction mid-progress: 躯体瘪塌、余烬熄灭 actively happening, body breaking apart, embers scattering, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 余烬水蛭(ember_leech)第 02 帧
+底图上传:Assets/Resources/Art/anim/enemy_ember_leech_00.png
+保存文件名:enemy_ember_leech_death_02.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: near-wreck: 躯体瘪塌、余烬熄灭 mostly complete, slumped geometry, dimming glow, small residual fires, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 余烬水蛭(ember_leech)第 03 帧
+底图上传:Assets/Resources/Art/anim/enemy_ember_leech_00.png
+保存文件名:enemy_ember_leech_death_03.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: final wreckage freeze: collapsed remains of 躯体瘪塌、余烬熄灭, dark inert metal and shell fragments, faint dying embers only, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+
+## 孢子载体(spore_carrier)第 00 帧
+底图上传:Assets/Resources/Art/anim/enemy_spore_carrier_00.png
+保存文件名:enemy_spore_carrier_death_00.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: the death moment: 囊腔破裂、孢子雾散开 just beginning, pose still continuous with the living idle frame, first cracks and sparks appearing, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 孢子载体(spore_carrier)第 01 帧
+底图上传:Assets/Resources/Art/anim/enemy_spore_carrier_00.png
+保存文件名:enemy_spore_carrier_death_01.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: destruction mid-progress: 囊腔破裂、孢子雾散开 actively happening, body breaking apart, embers scattering, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 孢子载体(spore_carrier)第 02 帧
+底图上传:Assets/Resources/Art/anim/enemy_spore_carrier_00.png
+保存文件名:enemy_spore_carrier_death_02.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: near-wreck: 囊腔破裂、孢子雾散开 mostly complete, slumped geometry, dimming glow, small residual fires, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 孢子载体(spore_carrier)第 03 帧
+底图上传:Assets/Resources/Art/anim/enemy_spore_carrier_00.png
+保存文件名:enemy_spore_carrier_death_03.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: final wreckage freeze: collapsed remains of 囊腔破裂、孢子雾散开, dark inert metal and shell fragments, faint dying embers only, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+
+## 铁轨守卫(rail_warden)第 00 帧
+底图上传:Assets/Resources/Art/anim/enemy_rail_warden_00.png
+保存文件名:enemy_rail_warden_death_00.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: the death moment: 护盾碎裂、装甲解体 just beginning, pose still continuous with the living idle frame, first cracks and sparks appearing, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 铁轨守卫(rail_warden)第 01 帧
+底图上传:Assets/Resources/Art/anim/enemy_rail_warden_00.png
+保存文件名:enemy_rail_warden_death_01.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: destruction mid-progress: 护盾碎裂、装甲解体 actively happening, body breaking apart, embers scattering, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 铁轨守卫(rail_warden)第 02 帧
+底图上传:Assets/Resources/Art/anim/enemy_rail_warden_00.png
+保存文件名:enemy_rail_warden_death_02.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: near-wreck: 护盾碎裂、装甲解体 mostly complete, slumped geometry, dimming glow, small residual fires, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 铁轨守卫(rail_warden)第 03 帧
+底图上传:Assets/Resources/Art/anim/enemy_rail_warden_00.png
+保存文件名:enemy_rail_warden_death_03.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: final wreckage freeze: collapsed remains of 护盾碎裂、装甲解体, dark inert metal and shell fragments, faint dying embers only, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+
+## 烬火滑翔者(cinder_glider)第 00 帧
+底图上传:Assets/Resources/Art/anim/enemy_cinder_glider_00.png
+保存文件名:enemy_cinder_glider_death_00.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: the death moment: 翼膜撕裂、螺旋坠地 just beginning, pose still continuous with the living idle frame, first cracks and sparks appearing, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 烬火滑翔者(cinder_glider)第 01 帧
+底图上传:Assets/Resources/Art/anim/enemy_cinder_glider_00.png
+保存文件名:enemy_cinder_glider_death_01.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: destruction mid-progress: 翼膜撕裂、螺旋坠地 actively happening, body breaking apart, embers scattering, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 烬火滑翔者(cinder_glider)第 02 帧
+底图上传:Assets/Resources/Art/anim/enemy_cinder_glider_00.png
+保存文件名:enemy_cinder_glider_death_02.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: near-wreck: 翼膜撕裂、螺旋坠地 mostly complete, slumped geometry, dimming glow, small residual fires, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 烬火滑翔者(cinder_glider)第 03 帧
+底图上传:Assets/Resources/Art/anim/enemy_cinder_glider_00.png
+保存文件名:enemy_cinder_glider_death_03.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: final wreckage freeze: collapsed remains of 翼膜撕裂、螺旋坠地, dark inert metal and shell fragments, faint dying embers only, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+
+## 空壳泰坦(husk_titan)第 00 帧
+底图上传:Assets/Resources/Art/anim/enemy_husk_titan_00.png
+保存文件名:enemy_husk_titan_death_00.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: the death moment: 大体量分段坍塌 just beginning, pose still continuous with the living idle frame, first cracks and sparks appearing, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 空壳泰坦(husk_titan)第 01 帧
+底图上传:Assets/Resources/Art/anim/enemy_husk_titan_00.png
+保存文件名:enemy_husk_titan_death_01.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: destruction mid-progress: 大体量分段坍塌 actively happening, body breaking apart, embers scattering, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 空壳泰坦(husk_titan)第 02 帧
+底图上传:Assets/Resources/Art/anim/enemy_husk_titan_00.png
+保存文件名:enemy_husk_titan_death_02.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: near-wreck: 大体量分段坍塌 mostly complete, slumped geometry, dimming glow, small residual fires, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 空壳泰坦(husk_titan)第 03 帧
+底图上传:Assets/Resources/Art/anim/enemy_husk_titan_00.png
+保存文件名:enemy_husk_titan_death_03.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: final wreckage freeze: collapsed remains of 大体量分段坍塌, dark inert metal and shell fragments, faint dying embers only, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+
+## 回声拟态体(echo_mimic)第 00 帧
+底图上传:Assets/Resources/Art/anim/enemy_echo_mimic_00.png
+保存文件名:enemy_echo_mimic_death_00.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: the death moment: 拟态形态剥离、回声残影消散 just beginning, pose still continuous with the living idle frame, first cracks and sparks appearing, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 回声拟态体(echo_mimic)第 01 帧
+底图上传:Assets/Resources/Art/anim/enemy_echo_mimic_00.png
+保存文件名:enemy_echo_mimic_death_01.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: destruction mid-progress: 拟态形态剥离、回声残影消散 actively happening, body breaking apart, embers scattering, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 回声拟态体(echo_mimic)第 02 帧
+底图上传:Assets/Resources/Art/anim/enemy_echo_mimic_00.png
+保存文件名:enemy_echo_mimic_death_02.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: near-wreck: 拟态形态剥离、回声残影消散 mostly complete, slumped geometry, dimming glow, small residual fires, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 回声拟态体(echo_mimic)第 03 帧
+底图上传:Assets/Resources/Art/anim/enemy_echo_mimic_00.png
+保存文件名:enemy_echo_mimic_death_03.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: final wreckage freeze: collapsed remains of 拟态形态剥离、回声残影消散, dark inert metal and shell fragments, faint dying embers only, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+
+## 熔炉母体(furnace_matriarch)第 00 帧
+底图上传:Assets/Resources/Art/anim/enemy_furnace_matriarch_00.png
+保存文件名:enemy_furnace_matriarch_death_00.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: the death moment: 相位爆裂、炉核熄灭 just beginning, pose still continuous with the living idle frame, first cracks and sparks appearing, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 熔炉母体(furnace_matriarch)第 01 帧
+底图上传:Assets/Resources/Art/anim/enemy_furnace_matriarch_00.png
+保存文件名:enemy_furnace_matriarch_death_01.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: destruction mid-progress: 相位爆裂、炉核熄灭 actively happening, body breaking apart, embers scattering, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 熔炉母体(furnace_matriarch)第 02 帧
+底图上传:Assets/Resources/Art/anim/enemy_furnace_matriarch_00.png
+保存文件名:enemy_furnace_matriarch_death_02.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: near-wreck: 相位爆裂、炉核熄灭 mostly complete, slumped geometry, dimming glow, small residual fires, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+## 熔炉母体(furnace_matriarch)第 03 帧
+底图上传:Assets/Resources/Art/anim/enemy_furnace_matriarch_00.png
+保存文件名:enemy_furnace_matriarch_death_03.png
+```text
+using the provided enemy sprite as the base, keep the same viewpoint and ground contact, render its death sequence: final wreckage freeze: collapsed remains of 相位爆裂、炉核熄灭, dark inert metal and shell fragments, faint dying embers only, dark industrial ember-belt style, hand-painted 2D game sprite, transparent background, no text, no watermark
+```
+
+# 九、产出落地与导入(生成完成后)
+
+将原图按下列目录放置,然后在仓库根目录运行导入命令(自动抠底/缩放/落位,无需手工):
+
+- T2 补 4 帧 → output/imagegen/_t2_raw/(对应文件名)
+  python tools/generate_tower_t2.py
+- 世界图两波 → output/imagegen/_worldmap_raw/(对应文件名)
+  python tools/generate_worldmap.py --wave 1 --import-only
+  python tools/generate_worldmap.py --wave 2 --import-only
+- 死亡帧 → Assets/Resources/Art/anim/ 直接放最终文件名(1024×1024)
