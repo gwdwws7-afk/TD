@@ -30,6 +30,7 @@ namespace TD.Editor
         private const string EXAM_P12_DIR   = "Assets/Resources/Art/Exam/P12/";
         private const string ANIM_DIR       = "Assets/Resources/Art/anim/";
         private const string ART_ROOT       = "Assets/Resources/Art/";
+        private const string UI_CAMPAIGN_DIR = "Assets/Resources/Art/UI/Campaign/";
         private const int    PPU_TARGET     = 1024;
 
         // OnPreprocessTexture fires before texture is imported (raw import).
@@ -40,7 +41,11 @@ namespace TD.Editor
                 return;
 
             var importer = (TextureImporter)assetImporter;
-            ApplyImporterSettings(importer);
+            // Campaign board art: the full-screen background needs a higher
+            // size budget than the 512 library standard.
+            var maxTex = assetPath.StartsWith(UI_CAMPAIGN_DIR, System.StringComparison.OrdinalIgnoreCase)
+                ? 2048 : 512;
+            ApplyImporterSettings(importer, maxTex);
             Debug.Log($"[TDArt103] Applied import settings: {assetPath}");
         }
 
@@ -60,7 +65,9 @@ namespace TD.Editor
                 var currentPPU = importer.spritePixelsPerUnit;
                 if (Mathf.Abs(currentPPU - PPU_TARGET) > 0.5f)
                 {
-                    ApplyImporterSettings(importer);
+                    var maxTex = path.StartsWith(UI_CAMPAIGN_DIR, System.StringComparison.OrdinalIgnoreCase)
+                        ? 2048 : 512;
+                    ApplyImporterSettings(importer, maxTex);
                     importer.SaveAndReimport();
                     Debug.Log($"[TDArt103] Reimported with corrected PPU: {path}");
                 }
@@ -74,6 +81,8 @@ namespace TD.Editor
             if (!path.EndsWith(".png", System.StringComparison.OrdinalIgnoreCase))
                 return false;
             if (path.StartsWith(EXAM_P12_DIR, System.StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (path.StartsWith(UI_CAMPAIGN_DIR, System.StringComparison.OrdinalIgnoreCase))
                 return true;
             if (path.StartsWith(ANIM_DIR, System.StringComparison.OrdinalIgnoreCase)
                 && (Path.GetFileName(path).StartsWith("fx_", System.StringComparison.Ordinal)
@@ -92,7 +101,7 @@ namespace TD.Editor
             return false;
         }
 
-        private static void ApplyImporterSettings(TextureImporter importer)
+        private static void ApplyImporterSettings(TextureImporter importer, int maxTexture = 512)
         {
             importer.textureType = TextureImporterType.Sprite;
             importer.spriteImportMode = SpriteImportMode.Single;
@@ -107,10 +116,10 @@ namespace TD.Editor
             // default platform 512 + compressed, Standalone 512 + DXT5.
             // Uncompressed RGBA32 would cost ~4MB per sprite in-editor.
             importer.textureCompression = TextureImporterCompression.Compressed;
-            importer.maxTextureSize = 512;
+            importer.maxTextureSize = maxTexture;
             var standalone = importer.GetPlatformTextureSettings("Standalone");
             standalone.overridden = true;
-            standalone.maxTextureSize = 512;
+            standalone.maxTextureSize = maxTexture;
             standalone.format = TextureImporterFormat.DXT5;
             standalone.textureCompression = TextureImporterCompression.Compressed;
             standalone.compressionQuality = 80;
@@ -122,6 +131,7 @@ namespace TD.Editor
         private static void ReimportAll()
         {
             var paths = Directory.GetFiles(EXAM_P12_DIR, "*.png", SearchOption.TopDirectoryOnly)
+                .Concat(Directory.GetFiles(UI_CAMPAIGN_DIR, "*.png", SearchOption.TopDirectoryOnly))
                 .Concat(Directory.GetFiles(ANIM_DIR, "fx_*.png", SearchOption.TopDirectoryOnly))
                 .Concat(Directory.GetFiles(ANIM_DIR, "tower_*_fire_*.png", SearchOption.TopDirectoryOnly))
                 .Concat(Directory.GetFiles(ANIM_DIR, "tower_*_t2_*.png", SearchOption.TopDirectoryOnly))
