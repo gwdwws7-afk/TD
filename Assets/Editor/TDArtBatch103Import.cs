@@ -41,11 +41,14 @@ namespace TD.Editor
                 return;
 
             var importer = (TextureImporter)assetImporter;
-            // Campaign board art: the full-screen background needs a higher
-            // size budget than the 512 library standard.
+            // Campaign board art budget per the memory-optimization pass
+            // (commit 3351e4b): 1024 max. The full-screen background is
+            // opaque and uses DXT5 elsewhere, so it alone gets DXT1.
             var maxTex = assetPath.StartsWith(UI_CAMPAIGN_DIR, System.StringComparison.OrdinalIgnoreCase)
-                ? 2048 : 512;
-            ApplyImporterSettings(importer, maxTex);
+                ? 1024 : 512;
+            var format = assetPath.EndsWith("world_map_bg.png", System.StringComparison.OrdinalIgnoreCase)
+                ? TextureImporterFormat.DXT1 : TextureImporterFormat.DXT5;
+            ApplyImporterSettings(importer, maxTex, format);
             Debug.Log($"[TDArt103] Applied import settings: {assetPath}");
         }
 
@@ -66,8 +69,10 @@ namespace TD.Editor
                 if (Mathf.Abs(currentPPU - PPU_TARGET) > 0.5f)
                 {
                     var maxTex = path.StartsWith(UI_CAMPAIGN_DIR, System.StringComparison.OrdinalIgnoreCase)
-                        ? 2048 : 512;
-                    ApplyImporterSettings(importer, maxTex);
+                        ? 1024 : 512;
+                    var format = path.EndsWith("world_map_bg.png", System.StringComparison.OrdinalIgnoreCase)
+                        ? TextureImporterFormat.DXT1 : TextureImporterFormat.DXT5;
+                    ApplyImporterSettings(importer, maxTex, format);
                     importer.SaveAndReimport();
                     Debug.Log($"[TDArt103] Reimported with corrected PPU: {path}");
                 }
@@ -101,7 +106,8 @@ namespace TD.Editor
             return false;
         }
 
-        private static void ApplyImporterSettings(TextureImporter importer, int maxTexture = 512)
+        private static void ApplyImporterSettings(TextureImporter importer, int maxTexture = 512,
+            TextureImporterFormat standaloneFormat = TextureImporterFormat.DXT5)
         {
             importer.textureType = TextureImporterType.Sprite;
             importer.spriteImportMode = SpriteImportMode.Single;
@@ -120,7 +126,7 @@ namespace TD.Editor
             var standalone = importer.GetPlatformTextureSettings("Standalone");
             standalone.overridden = true;
             standalone.maxTextureSize = maxTexture;
-            standalone.format = TextureImporterFormat.DXT5;
+            standalone.format = standaloneFormat;
             standalone.textureCompression = TextureImporterCompression.Compressed;
             standalone.compressionQuality = 80;
             importer.SetPlatformTextureSettings(standalone);
