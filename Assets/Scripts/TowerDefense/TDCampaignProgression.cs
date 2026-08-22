@@ -144,6 +144,9 @@ namespace TD
         public int bestTacticalScore;
         public int highestUnlockedLevel;
         public int highestDifficultyCleared;
+        // True when this victory captured the level at a difficulty tier it
+        // had never been captured at before (meta residue first-capture).
+        public bool raisedDifficultyCleared;
     }
 
     [Serializable]
@@ -1037,7 +1040,9 @@ namespace TD
                 bestStars = current.bestStars,
                 bestTacticalScore = current.bestTacticalScore,
                 highestUnlockedLevel = currentHighest,
-                highestDifficultyCleared = current.highestDifficultyCleared
+                highestDifficultyCleared = current.highestDifficultyCleared,
+                raisedDifficultyCleared = TDMetaUpgradeSystem.IsFirstDifficultyCapture(
+                    previous.cleared, previous.highestDifficultyCleared, safeDifficulty, victory)
             };
         }
 
@@ -1217,9 +1222,13 @@ namespace TD
             WriteObservationRecords(EnemyObservationsKey, snapshot.enemyObservations);
             WriteObservationRecords(TowerObservationsKey, snapshot.towerObservations);
             WriteProtocolSelections(ProtocolSelectionsKey, snapshot.protocolSelections);
-            PlayerPrefs.SetInt(EmberResidueKey, Mathf.Max(0, snapshot.emberResidue));
+            // Cross-clamp the tamper invariant on import: a forged code can
+            // carry balance > lifetime, and importing it would then be
+            // laundred into the checksum/recovery baseline (review P0-5).
+            var safeLifetime = Mathf.Max(0, snapshot.metaResidueLifetime);
+            PlayerPrefs.SetInt(EmberResidueKey, Mathf.Clamp(Mathf.Max(0, snapshot.emberResidue), 0, safeLifetime));
             PlayerPrefs.SetString(MetaUpgradeRanksKey, snapshot.metaUpgradeRanks ?? string.Empty);
-            PlayerPrefs.SetInt(MetaResidueLifetimeKey, Mathf.Max(0, snapshot.metaResidueLifetime));
+            PlayerPrefs.SetInt(MetaResidueLifetimeKey, safeLifetime);
             var levels = snapshot.levels ?? Array.Empty<TDCampaignLevelProgress>();
             for (var i = 0; i < levels.Length && i < safeTotal; i++)
             {
@@ -1438,17 +1447,17 @@ namespace TD
                     cloudIsNewer ? cloud.protocolSelections : local.protocolSelections,
                     cloudIsNewer ? local.protocolSelections : cloud.protocolSelections,
                     safeTotal),
-                // Meta: keep the higher balance/progress on both sides and the
-                // per-line max of purchased ranks — purchases are permanent.
-                emberResidue = Mathf.Max(local.emberResidue, cloud.emberResidue),
+                // Meta: purchases are permanent (per-line rank max), so the
+                // residue merge must not refund what either side spent —
+                // merge on SPENT, not on raw balance (review P0-5).
                 metaUpgradeRanks = TDMetaUpgradeSystem.EncodeRanks(
                     TDMetaUpgradeSystem.MergeRanksByMax(
                         TDMetaUpgradeSystem.ParseRanks(local.metaUpgradeRanks),
                         TDMetaUpgradeSystem.ParseRanks(cloud.metaUpgradeRanks))),
+                emberResidue = MergeSnapshotResidue(local, cloud),
                 metaResidueLifetime = Mathf.Max(local.metaResidueLifetime, cloud.metaResidueLifetime),
                 levels = new TDCampaignLevelProgress[safeTotal]
             };
-
             for (var i = 0; i < safeTotal; i++)
             {
                 var localLevel = local.levels[i];
@@ -1475,6 +1484,18 @@ namespace TD
             }
 
             return merged;
+        }
+
+        private static int MergeSnapshotResidue(TDCampaignProgressSnapshot local, TDCampaignProgressSnapshot cloud)
+        {
+            TDMetaUpgradeSystem.MergeResidueBalances(
+                local.metaUpgradeRanks ?? string.Empty,
+                local.metaResidueLifetime,
+                cloud.metaUpgradeRanks ?? string.Empty,
+                cloud.metaResidueLifetime,
+                out var mergedBalance,
+                out _);
+            return mergedBalance;
         }
 
         private static List<string> NormalizeTowerLoadout(IEnumerable<string> towerIds)
@@ -1901,6 +1922,15 @@ namespace TD
             if (snapshot.highestUnlockedLevel < 1 || snapshot.highestUnlockedLevel > safeTotal)
             {
                 error = "Save frontier is outside the campaign range.";
+                return false;
+            }
+
+            // Meta tamper invariant: residue balance can never exceed the
+            // lifetime earnings recorded for this slot (review P0-5).
+            if (snapshot.emberResidue < 0 || snapshot.metaResidueLifetime < 0 ||
+                snapshot.emberResidue > snapshot.metaResidueLifetime)
+            {
+                error = "Residue balance exceeds lifetime earnings.";
                 return false;
             }
 

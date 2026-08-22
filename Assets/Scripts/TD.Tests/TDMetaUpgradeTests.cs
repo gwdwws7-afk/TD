@@ -82,10 +82,64 @@ namespace TD.Tests
         [Test]
         public void Residue_DefeatIsConsolationOnly()
         {
-            // Full-progress defeat at ember trial: 3 * 2.2 * 0.15 = 0.99 -> 0.
+            // Consolation ceilings at ceil(0.99) = 1 — small by design, but
+            // any wave progress pays SOMETHING (the floored version paid zero
+            // on every difficulty; review P0-4).
             var lateDefeat = TDMetaUpgradeSystem.SettleRunResidue(
                 0, TDCampaignDifficultyTier.EmberTrial, false, false, 20, 20);
-            Assert.AreEqual(0, lateDefeat, "the consolation formula floors to zero for normal play");
+            Assert.AreEqual(1, lateDefeat);
+            var midDefeat = TDMetaUpgradeSystem.SettleRunResidue(
+                0, TDCampaignDifficultyTier.Standard, false, false, 15, 20);
+            Assert.AreEqual(1, midDefeat, "ceil keeps any positive progress >= 1");
+            var noProgress = TDMetaUpgradeSystem.SettleRunResidue(
+                0, TDCampaignDifficultyTier.EmberTrial, false, false, 0, 20);
+            Assert.AreEqual(0, noProgress, "dying on wave 0 pays nothing");
+        }
+
+        [Test]
+        public void FirstCapture_DerivationCoversRepeatAndFirstClear()
+        {
+            // Review P0-3 regression: the shipped derivation compared the
+            // POST-record value and paid full rate on every repeat capture.
+            System.Func<bool, int, int, bool, bool> f = TDMetaUpgradeSystem.IsFirstDifficultyCapture;
+            // Never cleared -> any victory is a first capture.
+            Assert.IsTrue(f(false, 0, 0, true), "first Standard clear on a fresh level");
+            // Repeat at the same tier -> NOT first.
+            Assert.IsFalse(f(true, 0, 0, true), "Standard repeat after Standard clear");
+            Assert.IsFalse(f(true, 1, 1, true), "Veteran repeat after Veteran clear");
+            Assert.IsFalse(f(true, 2, 2, true), "Ember repeat after Ember clear");
+            // Higher tier than ever cleared -> first.
+            Assert.IsTrue(f(true, 0, 1, true), "Veteran after only Standard clears");
+            Assert.IsTrue(f(true, 1, 2, true), "Ember after Veteran");
+            // Lower tier than the record -> repeat.
+            Assert.IsFalse(f(true, 2, 0, true), "Standard after Ember");
+            // Defeats never count.
+            Assert.IsFalse(f(false, 0, 2, false));
+            Assert.IsFalse(f(true, 1, 2, false));
+        }
+
+        [Test]
+        public void Merge_ResidueNeverRefundsSpent()
+        {
+            // Review P0-5 regression: A earned 130 and bought a1:2 (cost
+            // 130, bal 0); B kept the pre-purchase cloud copy (bal 130, no
+            // ranks). The merged balance derives from the rank UNION's price
+            // — the purchase is permanent, the money stays spent.
+            TDMetaUpgradeSystem.MergeResidueBalances("a1:2", 130, "", 130, out var balance, out var lifetime);
+            Assert.AreEqual(130, lifetime, "lifetime keeps the higher side");
+            Assert.AreEqual(0, balance, "union purchase cost comes out of the shared lifetime");
+
+            // Cross-purchases from two sides both consume: A bought b1:1,
+            // B bought a1:1 (40 each, both bal 90 of the same 130 lifetime)
+            // -> union a1:1+b1:1 = 80 -> 50 remains.
+            TDMetaUpgradeSystem.MergeResidueBalances("b1:1", 130, "a1:1", 130, out var bal2, out var life2);
+            Assert.AreEqual(130, life2);
+            Assert.AreEqual(50, bal2, "cross-purchases consume from the shared lifetime");
+
+            // Degenerate lifetimes clamp; empty ranks cost nothing.
+            TDMetaUpgradeSystem.MergeResidueBalances("", -3, "", 4, out var bal3, out var life3);
+            Assert.AreEqual(4, life3);
+            Assert.AreEqual(4, bal3);
         }
 
         [Test]

@@ -114,15 +114,79 @@ namespace TD
             }
             else
             {
-                // Progress consolation, not a reward: fraction of the run's
-                // nominal full-stars value at this difficulty.
+                // Progress consolation, not a reward: any wave progress pays
+                // at least 1 (ceil) so the feature is not dead math — the
+                // floor version capped at floor(0.99) == 0 on every
+                // difficulty (review P0-4). Zero progress pays nothing.
                 var safeTotal = Mathf.Max(1, totalWaves);
                 var progress = Mathf.Clamp01(wavesReached / (float)safeTotal);
-                residue = Mathf.FloorToInt(progress * DefeatReferenceStars *
-                                           DifficultyCoefficient(difficulty) * DefeatConsolationFactor);
+                residue = Mathf.CeilToInt(progress * DefeatReferenceStars *
+                                          DifficultyCoefficient(difficulty) * DefeatConsolationFactor);
             }
 
             return Mathf.Min(residue, SingleRunResidueCap);
+        }
+
+        /// <summary>
+        /// First capture of a level at a given difficulty (review P0-3). Must
+        /// be derived from the PREVIOUS progress: a repeat at the same
+        /// difficulty has previousHighest == runDifficulty, and a
+        /// never-cleared level stores highestDifficultyCleared == Standard(0)
+        /// — indistinguishable from a prior Standard clear, hence the
+        /// previousCleared flag.
+        /// </summary>
+        public static bool IsFirstDifficultyCapture(
+            bool previousCleared,
+            int previousHighestDifficultyCleared,
+            int runDifficulty,
+            bool victory)
+        {
+            return victory && (!previousCleared || runDifficulty > previousHighestDifficultyCleared);
+        }
+
+        /// <summary>
+        /// Total residue cost of the ranks encoded in a string (sum of the
+        /// per-level prices actually paid to reach each rank).
+        /// </summary>
+        public static int TotalRankCost(string encodedRanks)
+        {
+            var ranks = ParseRanks(encodedRanks);
+            var cost = 0;
+            foreach (var pair in ranks)
+            {
+                for (var r = 0; r < pair.Value; r++)
+                {
+                    cost += RankPrice(pair.Key, r);
+                }
+            }
+
+            return cost;
+        }
+
+        /// <summary>
+        /// Cloud-conflict residue arithmetic (review P0-5). Merging
+        /// max(balance) — or even min(spent) — with per-line max(ranks)
+        /// refunds residue one side already spent: the pre-purchase cloud
+        /// copy legitimately shows both the money and no purchase. The
+        /// non-refunding merge derives the balance from the merged purchase
+        /// set itself: earnings take the higher lifetime, purchases are the
+        /// rank union (permanent), and the balance is what remains after
+        /// the union's known price. Cross-purchases from two sides consume
+        /// from the shared lifetime — by design, purchases are permanent.
+        /// </summary>
+        public static void MergeResidueBalances(
+            string leftRanks,
+            int leftLifetime,
+            string rightRanks,
+            int rightLifetime,
+            out int mergedBalance,
+            out int mergedLifetime)
+        {
+            mergedLifetime = Mathf.Max(Mathf.Max(0, leftLifetime), Mathf.Max(0, rightLifetime));
+            var unionCost = TotalRankCost(EncodeRanks(MergeRanksByMax(
+                ParseRanks(leftRanks),
+                ParseRanks(rightRanks))));
+            mergedBalance = Mathf.Clamp(mergedLifetime - unionCost, 0, mergedLifetime);
         }
 
         public static float DifficultyCoefficient(TDCampaignDifficultyTier difficulty)

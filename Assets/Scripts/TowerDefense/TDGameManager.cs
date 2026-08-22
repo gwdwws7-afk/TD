@@ -2009,13 +2009,15 @@ namespace TD
             var highestUnlocked = TDCampaignProgression.GetHighestUnlockedLevel(totalLevels);
             var clearedArr = new bool[totalLevels];
             var starsArr = new int[totalLevels];
+            var difficultyArr = new int[totalLevels];
             for (var lvl = 1; lvl <= totalLevels; lvl++)
             {
                 var prog = TDCampaignProgression.GetLevelProgress(lvl);
                 clearedArr[lvl - 1] = prog.cleared;
                 starsArr[lvl - 1] = prog.bestStars;
+                difficultyArr[lvl - 1] = prog.highestDifficultyCleared;
             }
-            _worldMap.Refresh(_missionBoardSelectedLevel, highestUnlocked, clearedArr, starsArr, totalLevels, 20);
+            _worldMap.Refresh(_missionBoardSelectedLevel, highestUnlocked, clearedArr, starsArr, totalLevels, 20, difficultyArr);
         }
 
         /// <summary>
@@ -4122,11 +4124,13 @@ namespace TD
                 var highestUnlocked = TDCampaignProgression.GetHighestUnlockedLevel(totalLevels);
                 var clearedArr = new bool[totalLevels];
                 var starsArr = new int[totalLevels];
+                var difficultyArr = new int[totalLevels];
                 for (var lvl = 1; lvl <= totalLevels; lvl++)
                 {
                     var prog = TDCampaignProgression.GetLevelProgress(lvl);
                     clearedArr[lvl - 1] = prog.cleared;
                     starsArr[lvl - 1] = prog.bestStars;
+                    difficultyArr[lvl - 1] = prog.highestDifficultyCleared;
                 }
 
                 _worldMap.Refresh(
@@ -4135,7 +4139,8 @@ namespace TD
                     clearedArr,
                     starsArr,
                     totalLevels,
-                    20);
+                    20,
+                    difficultyArr);
             }
 
             var selectedLevel = GetCampaignLevel(_missionBoardSelectedLevel) ?? _campaignRoute.level;
@@ -8740,16 +8745,17 @@ namespace TD
                 return;
             }
 
-            // First capture at this difficulty = the recorded run raised the
-            // level's highestDifficultyCleared (the update reports the new
-            // best, and RecordResult only raises it on victory).
-            var firstCapture = _victory &&
-                               _campaignProgressUpdate.highestDifficultyCleared <= (int)_activeCampaignDifficulty;
+            // First capture comes from the RECORDED update: its
+            // raisedDifficultyCleared flag is derived against the previous
+            // progress, and update.victory is false when RecordResult
+            // refused a locked level — the run then pays no residue either.
+            var firstCapture = _campaignProgressUpdate.victory &&
+                               _campaignProgressUpdate.raisedDifficultyCleared;
             var residue = TDMetaUpgradeSystem.SettleRunResidue(
                 _currentMissionStars,
                 _activeCampaignDifficulty,
                 firstCapture,
-                _victory,
+                _campaignProgressUpdate.victory,
                 _wave,
                 GetConfiguredWaveCount());
             if (residue <= 0)

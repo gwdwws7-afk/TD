@@ -444,13 +444,19 @@ namespace TD
         /// <summary>
         /// Update all node visuals based on the current campaign state.
         /// </summary>
+        /// <param name="starsPerLevel">Best performance stars — legacy
+        /// layout's star display only.</param>
+        /// <param name="difficultyPerLevel">highestDifficultyCleared tier
+        /// (0=Standard/1=Veteran/2=EmberTrial) — drives the art-mode
+        /// difficulty seals (spec: campaign-worldmap-art-spec-v2).</param>
         public void Refresh(
             int selectedLevel,
             int highestUnlocked,
             bool[] clearedLevels,
             int[] starsPerLevel,
             int totalLevels,
-            int bossLevel)
+            int bossLevel,
+            int[] difficultyPerLevel = null)
         {
             for (var i = 0; i < _nodes.Count && i < totalLevels; i++)
             {
@@ -462,8 +468,12 @@ namespace TD
 
                 if (_artMode)
                 {
-                    RefreshNodeArt(i, levelIndex, isBoss, isLocked, isCleared, isSelected,
-                        i < starsPerLevel.Length ? starsPerLevel[i] : 0);
+                    // Seal count = tiers cleared THROUGH, so Standard clear
+                    // lights one seal, EmberTrial lights all three.
+                    var tierCleared = isCleared && difficultyPerLevel != null && i < difficultyPerLevel.Length
+                        ? difficultyPerLevel[i]
+                        : -1;
+                    RefreshNodeArt(i, levelIndex, isBoss, isLocked, isCleared, isSelected, tierCleared);
                 }
                 else
                 {
@@ -487,7 +497,7 @@ namespace TD
         }
 
         private void RefreshNodeArt(int i, int levelIndex, bool isBoss, bool isLocked, bool isCleared,
-            bool isSelected, int seals)
+            bool isSelected, int tierCleared)
         {
             var landmark = _nodeLandmarks[i];
             var badge = _nodeImages[i];
@@ -528,7 +538,9 @@ namespace TD
                 for (var s = 0; s < sealSet.Length; s++)
                 {
                     if (sealSet[s] == null) continue;
-                    var lit = !isLocked && s < seals;
+                    // tierCleared is the highest DIFFICULTY tier cleared
+                    // (0/1/2); seal s lights when that tier covers it.
+                    var lit = !isLocked && s <= tierCleared;
                     sealSet[s].sprite = lit ? _sealPip : _sealEmpty;
                     sealSet[s].color = lit ? ColorSealLit : Color.white;
                 }

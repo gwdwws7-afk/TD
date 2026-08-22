@@ -280,9 +280,31 @@ namespace TD
                     continue;
                 }
 
+                // Fill the fields real handlers expect: the raycast result
+                // (custom IPointerClickHandlers read pointerCurrentRaycast)
+                // and the press position (drag/press semantics).
+                pointerData.pointerCurrentRaycast = _gamepadPointerRaycasts[i];
+                pointerData.pressPosition = _gamepadCursorPosition;
+                if (pointerData.pointerEnter == null)
+                {
+                    pointerData.pointerEnter = hit;
+                }
+
                 ExecuteEvents.Execute(handler, pointerData, ExecuteEvents.pointerDownHandler);
                 ExecuteEvents.Execute(handler, pointerData, ExecuteEvents.pointerUpHandler);
                 ExecuteEvents.Execute(handler, pointerData, ExecuteEvents.pointerClickHandler);
+
+                // Selectable.OnPointerDown (with navigation) re-acquires
+                // event-system focus; the InputSystemUIInputModule's default
+                // Submit action is also bound to South, so from the second
+                // press onwards every South would fire BOTH the module's
+                // submit onClick and this synthetic click. Drop the focus the
+                // down-event just grabbed.
+                if (EventSystem.current != null)
+                {
+                    EventSystem.current.SetSelectedGameObject(null);
+                }
+
                 return true;
             }
 
