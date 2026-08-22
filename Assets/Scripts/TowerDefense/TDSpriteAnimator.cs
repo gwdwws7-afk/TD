@@ -36,6 +36,7 @@ namespace TD
         public TDAnimationState CurrentState => _state;
         public bool HasFireAnimation => _fireFrames.Count > 0;
         public bool HasDeathAnimation => _deathFrames.Count > 0;
+        public int DeathFrameCount => _deathFrames.Count;
 
         /// <summary>Raised after every sprite swap so owners can re-anchor (e.g. feet).</summary>
         public event System.Action OnFrameSwapped;
@@ -179,7 +180,9 @@ namespace TD
 
             var steps = Mathf.FloorToInt(_timer / frameDuration);
             _timer -= steps * frameDuration;
-            steps = Mathf.Clamp(steps, 1, 3);
+            // No catch-up cap: after a hitch the timer owes frames and must
+            // repay them in one jump — the old Clamp(1,3) silently slowed
+            // every animation after each long frame (review P2).
             _index += steps;
 
             if (_index >= frames.Count)

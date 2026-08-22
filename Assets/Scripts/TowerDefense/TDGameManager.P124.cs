@@ -374,6 +374,15 @@ namespace TD
 
             if (worst != null)
             {
+                // Drop the sold tower's first-wave record: the id is the
+                // "Tower_{x}_{y}" cell name, so a rebuilt tower would inherit
+                // the stale age and get prematurely sold again (review P2).
+                var soldStat = GetOrCreateTowerStat(worst);
+                if (soldStat != null)
+                {
+                    _p124TowerFirstWave.Remove(soldStat.towerId);
+                }
+
                 TrySellTower(worst);
             }
         }

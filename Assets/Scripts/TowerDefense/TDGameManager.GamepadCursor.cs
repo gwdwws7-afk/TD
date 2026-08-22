@@ -28,15 +28,11 @@ namespace TD
             _gamepadVirtualClick = false;
             _gamepadVirtualPointerOverUi = false;
 
-            if (IsBattleInteractionBlockedForGamepad())
-            {
-                SetGamepadCursorMode(false);
-                return;
-            }
-
             // Real mouse activity hands the pointer back to the OS cursor.
             // Clicks must release the override before the shared click handling
-            // runs, so the click lands where the mouse aims.
+            // runs, so the click lands where the mouse aims. Sampled even
+            // while blocked so re-entering battle doesn't misread the whole
+            // modal pause as one giant mouse delta (review P2).
             var rawMouse = TDInputCompat.MousePositionRaw;
             var mouseMoved = (rawMouse - _lastRealMousePosition).sqrMagnitude > 4f;
             _lastRealMousePosition = rawMouse;
@@ -44,6 +40,12 @@ namespace TD
             if (mouseMoved || mousePressed)
             {
                 SetGamepadCursorMode(false);
+            }
+
+            if (IsBattleInteractionBlockedForGamepad())
+            {
+                SetGamepadCursorMode(false);
+                return;
             }
 
             var stick = TDInputCompat.GetGamepadLeftStick();
@@ -218,7 +220,15 @@ namespace TD
                 return;
             }
 
-            _gamepadCursorVisual.transform.SetAsLastSibling();
+            // Only re-order when something was actually created above us —
+            // an unconditional SetAsLastSibling dirties the transform every
+            // frame (review P2).
+            if (_gamepadCursorVisual.transform.GetSiblingIndex() !=
+                _gamepadCursorVisual.transform.parent.childCount - 1)
+            {
+                _gamepadCursorVisual.transform.SetAsLastSibling();
+            }
+
             if (_battleCanvas != null &&
                 RectTransformUtility.ScreenPointToLocalPointInRectangle(
                     (RectTransform)_battleCanvas.transform, _gamepadCursorPosition, null, out var localPoint))

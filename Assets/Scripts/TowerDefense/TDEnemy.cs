@@ -756,6 +756,13 @@ namespace TD
             _dying = true;
             _deathFadeTimer = 0f;
             _deathStartScale = transform.localScale;
+            // Death freezes UpdateVisualTint — clear the combat tints so the
+            // corpse doesn't spend its whole death reel stuck white/marked
+            // from the killing blow (review P2).
+            _hitFlashTimer = 0f;
+            _hitReactionTimer = 0f;
+            _slowTimer = 0f;
+            _resonanceMarkTimer = 0f;
             ResetEnemyMotion();
             _readability?.SetPresentationVisible(false);
 
@@ -791,7 +798,12 @@ namespace TD
             // slots simply stay empty for 4-frame enemies.
             _bodyAnimator.ConfigureDeath(idlePrefix, DeathReelMaxFrames, DeathReelFps);
             _bodyAnimator.PlayDeath();
-            if (_bodyAnimator.CurrentState == TDAnimationState.Death)
+            // A single-frame reel can't advance (the animator returns early
+            // on frames<=1 and never disables itself) — the hold would ride
+            // the full 0.75s safety timer. Only hold when the reel actually
+            // plays multiple frames (review P2).
+            if (_bodyAnimator.CurrentState == TDAnimationState.Death &&
+                _bodyAnimator.DeathFrameCount > 1)
             {
                 _bodyDeathReelPlaying = true;
             }

@@ -65,8 +65,13 @@ namespace TD.Editor
 
         private static bool IsManagedAsset(string path)
         {
-            return path.EndsWith(".wav", System.StringComparison.OrdinalIgnoreCase)
-                || path.EndsWith(".ogg", System.StringComparison.OrdinalIgnoreCase);
+            // Path-scoped, not extension-scoped: third-party audio anywhere
+            // else in the project must not be force-converted to mono PCM
+            // (review P2 — AUDIO_ROOT was declared but never checked).
+            return path != null &&
+                   path.StartsWith(AUDIO_ROOT, System.StringComparison.OrdinalIgnoreCase) &&
+                   (path.EndsWith(".wav", System.StringComparison.OrdinalIgnoreCase) ||
+                    path.EndsWith(".ogg", System.StringComparison.OrdinalIgnoreCase));
         }
 
         private static AudioKind ResolveKind(string path)
@@ -79,14 +84,22 @@ namespace TD.Editor
 
         private static bool MatchesProfile(AudioImporter importer, AudioKind kind)
         {
+            // Symmetric with ApplySettings (review P2): the auto-correct path
+            // previously verified only loadType+format, so a manually toggled
+            // forceToMono or preloadAudioData slipped through uncorrected.
             var settings = importer.defaultSampleSettings;
             if (kind == AudioKind.Sfx)
             {
                 return settings.loadType == AudioClipLoadType.DecompressOnLoad
-                    && settings.compressionFormat == AudioCompressionFormat.PCM;
+                    && settings.compressionFormat == AudioCompressionFormat.PCM
+                    && importer.forceToMono
+                    && settings.preloadAudioData
+                    && settings.quality >= 0.99f;
             }
             return settings.loadType == AudioClipLoadType.Streaming
-                && settings.compressionFormat == AudioCompressionFormat.Vorbis;
+                && settings.compressionFormat == AudioCompressionFormat.Vorbis
+                && !importer.forceToMono
+                && !settings.preloadAudioData;
         }
 
         private static void ApplySettings(AudioImporter importer, AudioKind kind)
@@ -115,10 +128,23 @@ namespace TD.Editor
         private static void ReimportAll()
         {
             var roots = new[] { SFX_DIR, MUSIC_DIR, AMBIENCE_DIR };
+            // Enumeration can throw on long paths / permissions; per-asset
+            // import failures must not abort the rest of the batch (review P2).
             var paths = roots
                 .Where(Directory.Exists)
-                .SelectMany(r => Directory.GetFiles(r, "*.wav", SearchOption.AllDirectories)
-                    .Concat(Directory.GetFiles(r, "*.ogg", SearchOption.AllDirectories)))
+                .SelectMany(r =>
+                {
+                    try
+                    {
+                        return Directory.GetFiles(r, "*.wav", SearchOption.AllDirectories)
+                            .Concat(Directory.GetFiles(r, "*.ogg", SearchOption.AllDirectories));
+                    }
+                    catch (System.Exception exception)
+                    {
+                        Debug.LogWarning($"[TDAudio] Could not enumerate {r}: {exception.Message}");
+                        return System.Array.Empty<string>();
+                    }
+                })
                 .Select(p => p.Replace('\\', '/'))
                 .ToArray();
 
@@ -127,17 +153,29 @@ namespace TD.Editor
                 Debug.LogWarning("[TDAudio] No managed audio assets found.");
                 return;
             }
+
+            var failed = 0;
             AssetDatabase.StartAssetEditing();
             try
             {
                 foreach (var p in paths)
-                    AssetDatabase.ImportAsset(p, ImportAssetOptions.ForceUpdate);
+                {
+                    try
+                    {
+                        AssetDatabase.ImportAsset(p, ImportAssetOptions.ForceUpdate);
+                    }
+                    catch (System.Exception exception)
+                    {
+                        failed++;
+                        Debug.LogWarning($"[TDAudio] Import failed for {p}: {exception.Message}");
+                    }
+                }
             }
             finally
             {
                 AssetDatabase.StopAssetEditing();
             }
-            Debug.Log($"[TDAudio] Reimported {paths.Length} audio assets.");
+            Debug.Log($"[TDAudio] Reimported {paths.Length - failed}/{paths.Length} audio assets.");
         }
     }
 }

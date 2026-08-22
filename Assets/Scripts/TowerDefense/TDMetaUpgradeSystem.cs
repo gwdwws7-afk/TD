@@ -79,7 +79,7 @@ namespace TD
         /// in battle (guardrail 4 forbidden zone).</summary>
         public static int GetFormationPresetCount(int lineDRank)
         {
-            return 1 + Mathf.Clamp(Mathf.Max(0, lineDRank), 0, 2);
+            return 1 + Mathf.Clamp(Mathf.Max(0, lineDRank), 0, MaxRank(UpgradeLine.D));
         }
 
         // ── Guardrail 2: residue settlement ──

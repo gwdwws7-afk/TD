@@ -385,13 +385,13 @@ namespace TD
 
         public const float SellRefundRatio = 0.6f;
 
-        // Build cost plus every upgrade actually purchased — the base for the
-        // 60% sell refund.
+        // Build cost plus every upgrade actually purchased. The ACTUAL refund
+        // ratio is meta-line aware — always compute refunds via
+        // TDMetaUpgradeSystem.GetSellRefundRatio(manager rank); the old
+        // SellRefundValue property here silently ignored it (review P2).
         private int _totalInvested;
 
         public int TotalInvested => _totalInvested;
-
-        public int SellRefundValue => Mathf.FloorToInt(_totalInvested * SellRefundRatio);
 
         public int GetUpgradeCost(TDTowerUpgradeBranch branch)
         {
@@ -543,6 +543,10 @@ namespace TD
 
             if (target == null)
             {
+                // No target: the carry is only meaningful for back-to-back
+                // shot cycles — drop it so an idle gap can't pre-pay a stale
+                // frame into a much later windup (review P2).
+                _cadenceCarry = 0f;
                 _readability?.SetChargeState(false, 0f);
                 return;
             }

@@ -1116,12 +1116,14 @@ namespace TD
         }
 
         /// <summary>Spend residue (meta purchases). Returns false without
-        /// mutation when the balance is insufficient.</summary>
+        /// mutation when the balance is insufficient or the amount is not
+        /// positive — a zero/negative "purchase" is a bug, not a free pass
+        /// (review P2).</summary>
         public static bool TrySpendEmberResidue(int amount)
         {
             if (amount <= 0)
             {
-                return true;
+                return false;
             }
 
             var balance = GetEmberResidue();
@@ -1227,7 +1229,10 @@ namespace TD
             // laundred into the checksum/recovery baseline (review P0-5).
             var safeLifetime = Mathf.Max(0, snapshot.metaResidueLifetime);
             PlayerPrefs.SetInt(EmberResidueKey, Mathf.Clamp(Mathf.Max(0, snapshot.emberResidue), 0, safeLifetime));
-            PlayerPrefs.SetString(MetaUpgradeRanksKey, snapshot.metaUpgradeRanks ?? string.Empty);
+            // Normalize the rank string on import (Parse+Encode) so dirty
+            // tokens don't ride into the checksum/cloud chain forever.
+            PlayerPrefs.SetString(MetaUpgradeRanksKey, TDMetaUpgradeSystem.EncodeRanks(
+                TDMetaUpgradeSystem.ParseRanks(snapshot.metaUpgradeRanks ?? string.Empty)));
             PlayerPrefs.SetInt(MetaResidueLifetimeKey, safeLifetime);
             var levels = snapshot.levels ?? Array.Empty<TDCampaignLevelProgress>();
             for (var i = 0; i < levels.Length && i < safeTotal; i++)

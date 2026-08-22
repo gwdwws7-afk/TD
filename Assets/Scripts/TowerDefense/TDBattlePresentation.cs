@@ -491,7 +491,11 @@ namespace TD
             // the whole tutorial). Confirm/Skip keep their own raycast targets.
             foreach (var graphic in _tutorialRoot.GetComponentsInChildren<Graphic>(true))
             {
-                if (graphic.GetComponent<Button>() == null)
+                // Resolve up the hierarchy: a button whose background sits on
+                // a child object must keep clicking — the flat GetComponent
+                // check only worked while target and Button shared a
+                // GameObject (review P2).
+                if (graphic.GetComponentInParent<Button>() == null)
                 {
                     graphic.raycastTarget = false;
                 }

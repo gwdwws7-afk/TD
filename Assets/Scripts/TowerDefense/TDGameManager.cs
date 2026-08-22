@@ -2331,6 +2331,12 @@ namespace TD
 
         private void HandleSettingsOpenStateChanged(bool open)
         {
+            if (!open)
+            {
+                // Single flush point for the volume sliders (see Set*Volume).
+                PlayerPrefs.Save();
+            }
+
             if (open)
             {
                 _settingsPauseOwned = !_playbackPaused;
@@ -2417,8 +2423,10 @@ namespace TD
         private void SetMasterVolume(float value)
         {
             _masterVolume = Mathf.Clamp01(value);
+            // PlayerPrefs.Save() is flushed once on settings close — sliders
+            // fire this every drag frame and a per-frame disk flush stalled
+            // low-end machines (review P2).
             PlayerPrefs.SetFloat(P123MasterVolumeKey, _masterVolume);
-            PlayerPrefs.Save();
             ApplySfxVolumes();
         }
 
@@ -2426,7 +2434,6 @@ namespace TD
         {
             _musicVolume = Mathf.Clamp01(value);
             PlayerPrefs.SetFloat(P123MusicVolumeKey, _musicVolume);
-            PlayerPrefs.Save();
             ApplySfxVolumes();
         }
 
@@ -2434,7 +2441,6 @@ namespace TD
         {
             _effectsVolume = Mathf.Clamp01(value);
             PlayerPrefs.SetFloat(P123EffectsVolumeKey, _effectsVolume);
-            PlayerPrefs.Save();
             ApplySfxVolumes();
         }
 
@@ -14304,11 +14310,17 @@ namespace TD
             var waitStart = Time.realtimeSinceStartup;
             while (!_campaignDeploymentConfirmed && !_gameOver)
             {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || TD_AUTOMATION
+                // Automation escape hatch only: release players wait for the
+                // title flow exactly like FallbackWaveLoop does — a timer
+                // backdoor here force-deployed every session after 5s and
+                // logged a warning into every player's log (review P2).
                 if (Time.realtimeSinceStartup - waitStart > 5f)
                 {
                     Debug.LogWarning("[TD] WaveLoop waited >5s for deployment confirmation — forcing resume (automation/title path).");
                     _campaignDeploymentConfirmed = true;
                 }
+#endif
 
                 yield return null;
             }

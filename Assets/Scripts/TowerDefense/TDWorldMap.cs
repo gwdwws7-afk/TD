@@ -86,7 +86,7 @@ namespace TD
         // Art pack sprites (null-safe: art mode activates only when the
         // world map background resolves).
         private Sprite _worldMapBg;
-        private Sprite _landmarkFallback;
+        private Sprite[] _landmarkCache;
         private Sprite _badgeAvailable;
         private Sprite _badgeCleared;
         private Sprite _badgeLocked;
@@ -412,8 +412,12 @@ namespace TD
             _metaPanelRoot.sizeDelta = new Vector2(880f, 560f);
 
             var frame = _metaPanelRoot.gameObject.AddComponent<Image>();
+            // Missing frame art must not render an 880x560 near-white
+            // blinder — fall back to a dark translucent plate (review P2).
             frame.sprite = _metaPanel;
-            frame.color = new Color(1f, 1f, 1f, 0.98f);
+            frame.color = _metaPanel != null
+                ? new Color(1f, 1f, 1f, 0.98f)
+                : new Color(0.03f, 0.04f, 0.05f, 0.97f);
 
             var titleRect = CreateRect("MetaTitle", _metaPanelRoot);
             titleRect.anchorMin = new Vector2(0.5f, 0.93f);
@@ -551,11 +555,19 @@ namespace TD
                 ? new Color(0.42f, 0.44f, 0.48f, 0.66f)
                 : (isCleared ? new Color(0.82f, 0.87f, 0.84f, 0.96f) : Color.white);
 
-            badge.sprite = isBoss && !isCleared ? _badgeBoss
+            var badgeSprite = isBoss && !isCleared ? _badgeBoss
                 : isCleared ? _badgeCleared
                 : isLocked ? _badgeLocked
                 : _badgeAvailable;
-            badge.color = Color.white;
+            // A missing badge sprite would render the raw white quad — tint
+            // it into a readable flat dot instead (review P2).
+            badge.sprite = badgeSprite;
+            badge.color = badgeSprite != null
+                ? Color.white
+                : isLocked ? new Color(0.22f, 0.24f, 0.27f, 0.9f)
+                : isCleared ? ColorCleared
+                : isBoss && !isCleared ? ColorBoss
+                : ColorAvailable;
 
             if (_nodeRings[i] != null)
             {
@@ -642,12 +654,28 @@ namespace TD
 
         private Sprite ResolveLandmark(int levelIndex)
         {
-            var landmark = Resources.Load<Sprite>($"Art/UI/Campaign/landmark_L{levelIndex:00}");
-            return landmark != null ? landmark : _landmarkFallback;
+            // Cached per level: Refresh reloads 20 landmarks every open
+            // otherwise (review P2).
+            if (_landmarkCache == null || _landmarkCache.Length == 0)
+            {
+                _landmarkCache = new Sprite[20];
+            }
+
+            var idx = Mathf.Clamp(levelIndex - 1, 0, _landmarkCache.Length - 1);
+            if (_landmarkCache[idx] == null)
+            {
+                _landmarkCache[idx] = Resources.Load<Sprite>($"Art/UI/Campaign/landmark_L{levelIndex:00}");
+            }
+
+            return _landmarkCache[idx];
         }
 
         private void Update()
         {
+            // The root hides when the map closes — stop pulsing 20 rings in
+            // the background (review P2).
+            if (_root == null || !_root.gameObject.activeSelf) return;
+
             // Selected-ring breathing.
             if (!_artMode || _ringSelected == null) return;
             _ringPulse += Time.unscaledDeltaTime * 2.2f;

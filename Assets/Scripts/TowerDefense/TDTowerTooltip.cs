@@ -20,7 +20,6 @@ namespace TD
         private float _hoverTimer;
         private int _lastContentTier = -1;
         private const float ShowDelay = 0.4f;
-        private const float HideDistance = 80f;
 
         public static TDTowerTooltip Create(Transform parent)
         {
@@ -44,6 +43,7 @@ namespace TD
             // Background
             var bg = gameObject.AddComponent<Image>();
             bg.color = new Color(0.03f, 0.04f, 0.05f, 0.94f);
+            bg.raycastTarget = false;
 
             // Name text
             _nameText = CreateText("TooltipName", new Vector2(8f, -4f), new Vector2(204f, 18f), 11, FontStyle.Bold, new Color(0.95f, 0.97f, 1f, 1f));
