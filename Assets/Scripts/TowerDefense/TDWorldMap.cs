@@ -5,30 +5,49 @@ using UnityEngine.UI;
 namespace TD
 {
     /// <summary>
-    /// Visual campaign world map showing all 20 levels as nodes on an S-curve path.
-    /// Replaces the flat level-button grid in the mission board.
+    /// Campaign world map: 20 levels anchored to the five painted terrain
+    /// regions of Art/UI/Campaign/world_map_bg. Each node is a composition
+    /// of a per-level landmark, a state badge, three difficulty seals and a
+    /// selected highlight ring (campaign-worldmap-art-spec-v2.md).
     ///
-    /// Nodes are positioned in a zigzag layout across 4 chapter zones.
-    /// Each node shows level number + state (locked/available/cleared/boss).
-    /// Clicking a node selects that level.
+    /// Falls back to the legacy procedural layout (solid zones + ring
+    /// nodes) whenever the campaign art pack is missing.
+    /// Node buttons stay in level order (index 0 = L01) for the mission
+    /// board focus and the p8 UI audit probe.
     /// </summary>
     public sealed class TDWorldMap : MonoBehaviour
     {
         private RectTransform _root;
         private readonly List<RectTransform> _nodes = new();
-        private readonly List<Image> _nodeImages = new();
+        private readonly List<Image> _nodeImages = new();   // state badge (art mode) or node body (legacy)
         private readonly List<Text> _nodeLabels = new();
         private readonly List<Button> _nodeButtons = new();
         private readonly List<Image> _pathImages = new();
         private readonly List<RectTransform> _chapterZones = new();
+        private readonly List<Image> _nodeLandmarks = new();
+        private readonly List<Image> _nodeRings = new();
+        private readonly List<Image[]> _nodeSeals = new();
 
         public System.Action<int> OnNodeClicked;
 
-        // S-curve layout: 4 rows of 5, alternating direction.
-        // Coordinates are relative to map root (0,0 = center).
+        // Art-mode anchor table: one row per painted region, following the
+        // verified world_map_bg layout (top: junction/depot/canyon left to
+        // right, bottom: kiln basin left, terminus right). Organic zigzag
+        // inside each region box; map coords, 0,0 = center of map area.
         private static readonly Vector2[] NodePositions = GenerateNodePositions();
+        private static readonly Vector2[] ArtNodePositions = GenerateArtNodePositions();
+        private static readonly Vector2[] RegionPlatePositions =
+        {
+            new(-430f, 285f), new(55f, 290f), new(475f, 290f),
+            new(-315f, -278f), new(475f, -278f),
+        };
+        private static readonly string[] RegionNames =
+        {
+            "GRAYLINE JUNCTION", "ASHFALL DEPOT", "SPLIT SWITCH CANYON",
+            "HOLLOW KILN BASIN", "LAST EMBER TERMINUS",
+        };
 
-        // Chapter zone colors (subtle background tints).
+        // Chapter zone colors (legacy fallback tints).
         private static readonly Color[] ChapterColors =
         {
             new(0.20f, 0.30f, 0.45f, 0.15f), // A: blue-gray
@@ -37,7 +56,7 @@ namespace TD
             new(0.35f, 0.15f, 0.20f, 0.15f), // D: deep red
         };
 
-        // Node state colors.
+        // Node state colors (legacy mode + path/seal tints).
         private static readonly Color ColorLocked = new(0.15f, 0.16f, 0.18f, 0.85f);
         private static readonly Color ColorAvailable = new(0.96f, 0.58f, 0.24f, 0.95f);
         private static readonly Color ColorCleared = new(0.26f, 0.74f, 0.52f, 0.90f);
@@ -45,8 +64,9 @@ namespace TD
         private static readonly Color ColorSelected = new(0.98f, 0.88f, 0.32f, 1f);
         private static readonly Color ColorTextDark = new(0.04f, 0.05f, 0.07f, 0.95f);
         private static readonly Color ColorTextBright = new(0.95f, 0.96f, 0.98f, 1f);
-        private static readonly Color ColorPathLocked = new(0.12f, 0.13f, 0.15f, 0.40f);
-        private static readonly Color ColorPathCleared = new(0.26f, 0.60f, 0.42f, 0.60f);
+        private static readonly Color ColorPathLocked = new(0.12f, 0.13f, 0.15f, 0.55f);
+        private static readonly Color ColorPathCleared = new(1f, 0.72f, 0.30f, 0.85f);
+        private static readonly Color ColorSealLit = new(1f, 0.78f, 0.35f, 1f);
 
         private const float MapWidth = 1400f;
         private const float MapHeight = 700f;
@@ -54,12 +74,45 @@ namespace TD
         private const float BossNodeSize = 68f;
         private const float PathThickness = 6f;
 
+        // Art-mode sizes.
+        private const float LandmarkSize = 86f;
+        private const float BossLandmarkSize = 104f;
+        private const float BadgeSize = 36f;
+        private const float RingSize = 108f;
+        private const float SealSize = 13f;
+        private const float NodeHitSize = 92f;
+
+        // Art pack sprites (null-safe: art mode activates only when the
+        // world map background resolves).
+        private Sprite _worldMapBg;
+        private Sprite _landmarkFallback;
+        private Sprite _badgeAvailable;
+        private Sprite _badgeCleared;
+        private Sprite _badgeLocked;
+        private Sprite _badgeBoss;
+        private Sprite _ringSelected;
+        private Sprite _sealPip;
+        private Sprite _sealEmpty;
+        private Sprite _regionPlate;
+        private Sprite _railStrip;
+        private Sprite _metaEntry;
+        private Sprite _metaPanel;
+        private Sprite _titlePlate;
+        private bool _artMode;
+        private float _ringPulse;
+
         // Intel side panel (shown when a node is clicked).
         private RectTransform _intelPanel;
         private Text _intelTitle;
         private Text _intelBody;
         private Button _deployButton;
         private int _selectedNodeLevel;
+
+        // Meta upgrade entry + stub panel (system pending - design spec
+        // meta-upgrade-system-spec-v1.md; TDMetaUpgradePanel will replace
+        // the stub body once the system lands).
+        private RectTransform _metaPanelRoot;
+        private Button _metaEntryButton;
 
         public RectTransform Root => _root;
         public bool IsVisible => _root != null && _root.gameObject.activeSelf;
@@ -70,39 +123,111 @@ namespace TD
         /// </summary>
         public IReadOnlyList<Button> NodeButtons => _nodeButtons;
 
+        public Button MetaEntryButton => _metaEntryButton;
+
         /// <summary>Build the world map as a full-screen overlay.</summary>
         public void BuildFullScreen(Canvas parent)
         {
+            LoadCampaignArt();
+
             _root = CreateRect("WorldMap", parent.transform);
             StretchFullScreen(_root);
 
-            // Dark gradient background.
+            // Base dark layer (keeps letterboxing consistent behind the art).
             var bgImage = _root.gameObject.AddComponent<Image>();
             bgImage.color = new Color(0.025f, 0.030f, 0.038f, 0.98f);
 
-            // Try loading the startup background as map texture.
-            var bgPath = "Art/Branding/emberline_startup_background";
-            var bgTex = Resources.Load<Texture2D>(bgPath);
-            if (bgTex != null)
+            if (_artMode && _worldMapBg != null)
             {
-                var bgSprite = Sprite.Create(bgTex, new Rect(0, 0, bgTex.width, bgTex.height), new Vector2(0.5f, 0.5f));
                 var bgRect = CreateRect("MapBackground", _root);
                 StretchFullScreen(bgRect);
                 var bgArt = bgRect.gameObject.AddComponent<Image>();
-                bgArt.sprite = bgSprite;
-                bgArt.color = new Color(0.40f, 0.42f, 0.48f, 0.35f);
+                bgArt.sprite = _worldMapBg;
+                bgArt.color = new Color(1f, 1f, 1f, 0.96f);
+                bgArt.raycastTarget = false;
                 bgRect.SetAsFirstSibling();
             }
+            else
+            {
+                // Legacy: dimmed startup background.
+                var bgTex = Resources.Load<Texture2D>("Art/Branding/emberline_startup_background");
+                if (bgTex != null)
+                {
+                    var bgSprite = Sprite.Create(bgTex, new Rect(0, 0, bgTex.width, bgTex.height), new Vector2(0.5f, 0.5f));
+                    var bgRect = CreateRect("MapBackground", _root);
+                    StretchFullScreen(bgRect);
+                    var bgArt = bgRect.gameObject.AddComponent<Image>();
+                    bgArt.sprite = bgSprite;
+                    bgArt.color = new Color(0.40f, 0.42f, 0.48f, 0.35f);
+                    bgRect.SetAsFirstSibling();
+                }
+            }
 
-            // Title at top.
+            BuildTitle();
+            BuildBackButton();
+
+            // Map content area (centered).
+            var mapArea = CreateRect("MapContentArea", _root);
+            mapArea.anchorMin = new Vector2(0.5f, 0.5f);
+            mapArea.anchorMax = new Vector2(0.5f, 0.5f);
+            mapArea.pivot = new Vector2(0.5f, 0.5f);
+            mapArea.sizeDelta = new Vector2(MapWidth, MapHeight);
+
+            BuildMapContent(mapArea);
+            BuildIntelPanel();
+            BuildMetaEntry();
+
+            gameObject.SetActive(true);
+            _root.gameObject.SetActive(false);
+        }
+
+        private void LoadCampaignArt()
+        {
+            const string dir = "Art/UI/Campaign/";
+            _worldMapBg = Resources.Load<Sprite>(dir + "world_map_bg");
+            _artMode = _worldMapBg != null;
+            if (!_artMode) return;
+
+            _badgeAvailable = Resources.Load<Sprite>(dir + "node_available");
+            _badgeCleared = Resources.Load<Sprite>(dir + "node_cleared");
+            _badgeLocked = Resources.Load<Sprite>(dir + "node_locked");
+            _badgeBoss = Resources.Load<Sprite>(dir + "node_boss");
+            _ringSelected = Resources.Load<Sprite>(dir + "node_selected");
+            _sealPip = Resources.Load<Sprite>(dir + "seal_pip");
+            _sealEmpty = Resources.Load<Sprite>(dir + "seal_pip_empty");
+            _regionPlate = Resources.Load<Sprite>(dir + "region_plate");
+            _railStrip = Resources.Load<Sprite>(dir + "path_rail_strip");
+            _metaEntry = Resources.Load<Sprite>(dir + "meta_entry_button");
+            _metaPanel = Resources.Load<Sprite>(dir + "meta_panel_frame");
+            _titlePlate = Resources.Load<Sprite>(dir + "campaign_title_plate");
+        }
+
+        private void BuildTitle()
+        {
             var titleRect = CreateRect("MapTitle", _root);
             titleRect.anchorMin = new Vector2(0.5f, 0.95f);
             titleRect.anchorMax = new Vector2(0.5f, 0.95f);
             titleRect.sizeDelta = new Vector2(600f, 40f);
-            var titleText = CreateText(titleRect, "CAMPAIGN MAP", 24, FontStyle.Bold, new Color(0.96f, 0.58f, 0.24f, 0.95f));
-            titleText.alignment = TextAnchor.MiddleCenter;
 
-            // Back button (top-left).
+            if (_artMode && _titlePlate != null)
+            {
+                var plateRect = CreateRect("MapTitlePlate", titleRect);
+                plateRect.anchorMin = Vector2.zero;
+                plateRect.anchorMax = Vector2.one;
+                plateRect.offsetMin = new Vector2(-60f, -14f);
+                plateRect.offsetMax = new Vector2(60f, 14f);
+                var plate = plateRect.gameObject.AddComponent<Image>();
+                plate.sprite = _titlePlate;
+                plate.raycastTarget = false;
+            }
+
+            var titleText = CreateText(titleRect, "CAMPAIGN MAP", _artMode ? 22 : 24, FontStyle.Bold,
+                new Color(0.98f, 0.86f, 0.55f, 0.98f));
+            titleText.alignment = TextAnchor.MiddleCenter;
+        }
+
+        private void BuildBackButton()
+        {
             var backRect = CreateRect("MapBackBtn", _root);
             backRect.anchorMin = new Vector2(0.02f, 0.93f);
             backRect.anchorMax = new Vector2(0.02f, 0.93f);
@@ -115,60 +240,78 @@ namespace TD
             backLabelRect.offsetMin = Vector2.zero; backLabelRect.offsetMax = Vector2.zero;
             var backLabel = CreateText(backLabelRect, "← BACK", 11, FontStyle.Bold, new Color(0.93f, 0.96f, 0.98f, 1f));
             backLabel.alignment = TextAnchor.MiddleCenter;
-
-            // Map content area (centered, slightly larger than before).
-            var mapArea = CreateRect("MapContentArea", _root);
-            mapArea.anchorMin = new Vector2(0.5f, 0.5f);
-            mapArea.anchorMax = new Vector2(0.5f, 0.5f);
-            mapArea.pivot = new Vector2(0.5f, 0.5f);
-            mapArea.sizeDelta = new Vector2(MapWidth, MapHeight);
-
-            BuildMapContent(mapArea);
-            BuildIntelPanel();
-
-            gameObject.SetActive(true);
-            _root.gameObject.SetActive(false);
         }
 
         private void BuildMapContent(Transform parent)
         {
-            // Draw chapter zone backgrounds.
-            for (var ch = 0; ch < 4; ch++)
+            var positions = _artMode ? ArtNodePositions : NodePositions;
+
+            if (_artMode)
             {
-                var zoneRect = CreateRect($"ChapterZone_{ch}", parent);
-                zoneRect.anchorMin = new Vector2(0.5f, 0.5f);
-                zoneRect.anchorMax = new Vector2(0.5f, 0.5f);
-                zoneRect.pivot = new Vector2(0.5f, 0.5f);
+                // Region nameplates replace the solid chapter zones; the
+                // painted terrain is the zoning.
+                for (var r = 0; r < 5; r++)
+                {
+                    var plateRect = CreateRect($"RegionPlate_{r}", parent);
+                    plateRect.anchorMin = new Vector2(0.5f, 0.5f);
+                    plateRect.anchorMax = new Vector2(0.5f, 0.5f);
+                    plateRect.anchoredPosition = RegionPlatePositions[r];
+                    plateRect.sizeDelta = new Vector2(330f, 38f);
+                    if (_regionPlate != null)
+                    {
+                        var plateImg = plateRect.gameObject.AddComponent<Image>();
+                        plateImg.sprite = _regionPlate;
+                        plateImg.color = new Color(1f, 1f, 1f, 0.92f);
+                        plateImg.raycastTarget = false;
+                    }
+                    else
+                    {
+                        var zoneImg = plateRect.gameObject.AddComponent<Image>();
+                        zoneImg.color = ChapterColors[Mathf.Min(r, 3)];
+                        zoneImg.raycastTarget = false;
+                    }
+                    var plateLabelRect = CreateRect($"RegionLabel_{r}", plateRect);
+                    plateLabelRect.anchorMin = Vector2.zero; plateLabelRect.anchorMax = Vector2.one;
+                    plateLabelRect.offsetMin = Vector2.zero; plateLabelRect.offsetMax = Vector2.zero;
+                    var plateLabel = CreateText(plateLabelRect, RegionNames[r], 10, FontStyle.Bold,
+                        new Color(0.95f, 0.88f, 0.70f, 0.95f));
+                    plateLabel.alignment = TextAnchor.MiddleCenter;
+                }
+            }
+            else
+            {
+                for (var ch = 0; ch < 4; ch++)
+                {
+                    var zoneRect = CreateRect($"ChapterZone_{ch}", parent);
+                    zoneRect.anchorMin = new Vector2(0.5f, 0.5f);
+                    zoneRect.anchorMax = new Vector2(0.5f, 0.5f);
+                    zoneRect.pivot = new Vector2(0.5f, 0.5f);
+                    zoneRect.anchoredPosition = new Vector2(0f, GetRowY(ch));
+                    zoneRect.sizeDelta = new Vector2(MapWidth * 0.92f, MapHeight * 0.22f);
+                    var zoneImg = zoneRect.gameObject.AddComponent<Image>();
+                    zoneImg.color = ChapterColors[ch];
+                    zoneImg.raycastTarget = false;
+                    _chapterZones.Add(zoneRect);
 
-                var rowY = GetRowY(ch);
-                zoneRect.anchoredPosition = new Vector2(0f, rowY);
-                zoneRect.sizeDelta = new Vector2(MapWidth * 0.92f, MapHeight * 0.22f);
-
-                var zoneImg = zoneRect.gameObject.AddComponent<Image>();
-                zoneImg.color = ChapterColors[ch];
-                zoneImg.raycastTarget = false;
-                _chapterZones.Add(zoneRect);
-
-                // Chapter label.
-                var chLabelRect = CreateRect($"ChapterLabel_{ch}", zoneRect);
-                chLabelRect.anchorMin = new Vector2(0.02f, 0.5f);
-                chLabelRect.anchorMax = new Vector2(0.02f, 0.5f);
-                chLabelRect.sizeDelta = new Vector2(120f, 20f);
-                var chLabel = CreateText(chLabelRect, $"CHAPTER {(char)('A' + ch)}", 11, FontStyle.Bold,
-                    new Color(0.82f, 0.78f, 0.60f, 0.50f));
-                chLabel.alignment = TextAnchor.MiddleLeft;
+                    var chLabelRect = CreateRect($"ChapterLabel_{ch}", zoneRect);
+                    chLabelRect.anchorMin = new Vector2(0.02f, 0.5f);
+                    chLabelRect.anchorMax = new Vector2(0.02f, 0.5f);
+                    chLabelRect.sizeDelta = new Vector2(120f, 20f);
+                    var chLabel = CreateText(chLabelRect, $"CHAPTER {(char)('A' + ch)}", 11, FontStyle.Bold,
+                        new Color(0.82f, 0.78f, 0.60f, 0.50f));
+                    chLabel.alignment = TextAnchor.MiddleLeft;
+                }
             }
 
-            // Draw paths between consecutive nodes.
+            // Journey rails between consecutive levels.
             for (var i = 0; i < 19; i++)
             {
-                DrawPathSegment(parent, NodePositions[i], NodePositions[i + 1]);
+                DrawPathSegment(parent, positions[i], positions[i + 1]);
             }
 
-            // Draw nodes.
             for (var i = 0; i < 20; i++)
             {
-                CreateNode(parent, i);
+                CreateNode(parent, i, positions);
             }
         }
 
@@ -191,7 +334,6 @@ namespace TD
                 FontStyle.Normal, new Color(0.78f, 0.88f, 0.96f, 0.90f));
             _intelBody.alignment = TextAnchor.UpperLeft;
 
-            // Deploy button.
             var deployRect = CreateRect("IntelDeploy", _intelPanel);
             deployRect.anchorMin = new Vector2(0.5f, 0.05f);
             deployRect.anchorMax = new Vector2(0.5f, 0.05f);
@@ -210,6 +352,72 @@ namespace TD
             _deployButton.interactable = false;
 
             _intelPanel.gameObject.SetActive(false);
+        }
+
+        private void BuildMetaEntry()
+        {
+            // Persistent entry bottom-right (DEPLOY side). Opens a stub
+            // panel framed by meta_panel_frame; the upgrade lines and
+            // residue currency are wired by the meta upgrade system.
+            if (!_artMode || _metaEntry == null) return;
+
+            var entryRect = CreateRect("MetaEntryBtn", _root);
+            entryRect.anchorMin = new Vector2(0.965f, 0.06f);
+            entryRect.anchorMax = new Vector2(0.965f, 0.06f);
+            entryRect.sizeDelta = new Vector2(64f, 64f);
+            var entryImg = entryRect.gameObject.AddComponent<Image>();
+            entryImg.sprite = _metaEntry;
+            _metaEntryButton = entryRect.gameObject.AddComponent<Button>();
+            var entryColors = _metaEntryButton.colors;
+            entryColors.highlightedColor = new Color(1f, 0.85f, 0.4f, 0.9f);
+            entryColors.pressedColor = new Color(0.8f, 0.65f, 0.3f, 1f);
+            _metaEntryButton.colors = entryColors;
+            _metaEntryButton.onClick.AddListener(ShowMetaPanelStub);
+        }
+
+        private void ShowMetaPanelStub()
+        {
+            if (_metaPanelRoot != null) { _metaPanelRoot.gameObject.SetActive(true); return; }
+
+            _metaPanelRoot = CreateRect("MetaPanel", _root);
+            _metaPanelRoot.anchorMin = new Vector2(0.5f, 0.5f);
+            _metaPanelRoot.anchorMax = new Vector2(0.5f, 0.5f);
+            _metaPanelRoot.sizeDelta = new Vector2(880f, 560f);
+
+            var frame = _metaPanelRoot.gameObject.AddComponent<Image>();
+            frame.sprite = _metaPanel;
+            frame.color = new Color(1f, 1f, 1f, 0.98f);
+
+            var titleRect = CreateRect("MetaTitle", _metaPanelRoot);
+            titleRect.anchorMin = new Vector2(0.5f, 0.93f);
+            titleRect.anchorMax = new Vector2(0.5f, 0.93f);
+            titleRect.sizeDelta = new Vector2(420f, 34f);
+            var title = CreateText(titleRect, "EMBER RESONANCE", 16, FontStyle.Bold,
+                new Color(0.98f, 0.86f, 0.55f, 1f));
+            title.alignment = TextAnchor.MiddleCenter;
+
+            var bodyRect = CreateRect("MetaBody", _metaPanelRoot);
+            bodyRect.anchorMin = new Vector2(0.12f, 0.30f);
+            bodyRect.anchorMax = new Vector2(0.88f, 0.80f);
+            bodyRect.offsetMin = Vector2.zero;
+            bodyRect.offsetMax = Vector2.zero;
+            var body = CreateText(bodyRect, "UPGRADE LATTICE OFFLINE\n\nAwaiting the resonance engineers.",
+                12, FontStyle.Normal, new Color(0.85f, 0.88f, 0.92f, 0.95f));
+            body.alignment = TextAnchor.MiddleCenter;
+
+            var closeRect = CreateRect("MetaClose", _metaPanelRoot);
+            closeRect.anchorMin = new Vector2(0.5f, 0.08f);
+            closeRect.anchorMax = new Vector2(0.5f, 0.08f);
+            closeRect.sizeDelta = new Vector2(150f, 34f);
+            var closeBtn = closeRect.gameObject.AddComponent<Button>();
+            var closeImg = closeRect.gameObject.AddComponent<Image>();
+            closeImg.color = new Color(0.10f, 0.12f, 0.15f, 0.85f);
+            var closeLabelRect = CreateRect("MetaCloseLabel", closeRect);
+            closeLabelRect.anchorMin = Vector2.zero; closeLabelRect.anchorMax = Vector2.one;
+            closeLabelRect.offsetMin = Vector2.zero; closeLabelRect.offsetMax = Vector2.zero;
+            var closeLabel = CreateText(closeLabelRect, "CLOSE", 12, FontStyle.Bold, ColorTextBright);
+            closeLabel.alignment = TextAnchor.MiddleCenter;
+            closeBtn.onClick.AddListener(() => _metaPanelRoot.gameObject.SetActive(false));
         }
 
         public void ShowIntel(string title, string body, bool canDeploy)
@@ -252,57 +460,17 @@ namespace TD
                 var isCleared = i < clearedLevels.Length && clearedLevels[i];
                 var isSelected = levelIndex == selectedLevel;
 
-                Color nodeColor;
-                Color textColor;
-                float size;
-
-                if (isBoss)
+                if (_artMode)
                 {
-                    nodeColor = isCleared ? ColorCleared : ColorBoss;
-                    textColor = ColorTextBright;
-                    size = BossNodeSize;
-                }
-                else if (isLocked)
-                {
-                    nodeColor = ColorLocked;
-                    textColor = new Color(0.40f, 0.42f, 0.46f, 0.70f);
-                    size = NodeSize;
-                }
-                else if (isCleared)
-                {
-                    nodeColor = isSelected ? ColorSelected : ColorCleared;
-                    textColor = ColorTextDark;
-                    size = NodeSize;
+                    RefreshNodeArt(i, levelIndex, isBoss, isLocked, isCleared, isSelected,
+                        i < starsPerLevel.Length ? starsPerLevel[i] : 0);
                 }
                 else
                 {
-                    // Available (unlocked but not cleared).
-                    nodeColor = isSelected ? ColorSelected : ColorAvailable;
-                    textColor = ColorTextDark;
-                    size = NodeSize;
+                    RefreshNodeLegacy(i, levelIndex, isBoss, isLocked, isCleared, isSelected,
+                        starsPerLevel, i);
                 }
 
-                _nodeImages[i].color = nodeColor;
-                _nodes[i].sizeDelta = Vector2.one * size;
-
-                if (_nodeLabels[i] != null)
-                {
-                    var label = isLocked ? "🔒" : $"L{levelIndex:00}";
-                    if (isCleared && !isBoss && i < starsPerLevel.Length)
-                    {
-                        var stars = starsPerLevel[i];
-                        label = $"L{levelIndex:00}\n{"★".PadRight(stars + 1).Substring(0, Mathf.Max(1, stars))}";
-                    }
-                    else if (isBoss)
-                    {
-                        label = isCleared ? "L20\n★" : "L20\nBOSS";
-                    }
-                    _nodeLabels[i].text = label;
-                    _nodeLabels[i].fontSize = isBoss ? 9 : 8;
-                    _nodeLabels[i].color = textColor;
-                }
-
-                // Node is interactable only if unlocked.
                 var button = _nodes[i].GetComponent<Button>();
                 if (button != null)
                 {
@@ -310,11 +478,144 @@ namespace TD
                 }
             }
 
-            // Update path colors: cleared segments are bright, locked are dim.
+            // Journey rails: cleared segments glow warm, locked stay dim.
             for (var i = 0; i < _pathImages.Count && i < 19; i++)
             {
                 var fromCleared = i < clearedLevels.Length && clearedLevels[i];
                 _pathImages[i].color = fromCleared ? ColorPathCleared : ColorPathLocked;
+            }
+        }
+
+        private void RefreshNodeArt(int i, int levelIndex, bool isBoss, bool isLocked, bool isCleared,
+            bool isSelected, int seals)
+        {
+            var landmark = _nodeLandmarks[i];
+            var badge = _nodeImages[i];
+
+            landmark.sprite = ResolveLandmark(levelIndex);
+            if (landmark.sprite == null)
+            {
+                // Missing landmark art: fall back to the badge as the node
+                // body instead of rendering an untinted white quad.
+                landmark.gameObject.SetActive(false);
+            }
+            else
+            {
+                landmark.gameObject.SetActive(true);
+                if (landmark.transform is RectTransform landmarkRect)
+                {
+                    landmarkRect.sizeDelta = Vector2.one * (isBoss ? BossLandmarkSize : LandmarkSize);
+                }
+            }
+            landmark.color = isLocked
+                ? new Color(0.42f, 0.44f, 0.48f, 0.66f)
+                : (isCleared ? new Color(0.82f, 0.87f, 0.84f, 0.96f) : Color.white);
+
+            badge.sprite = isBoss && !isCleared ? _badgeBoss
+                : isCleared ? _badgeCleared
+                : isLocked ? _badgeLocked
+                : _badgeAvailable;
+            badge.color = Color.white;
+
+            if (_nodeRings[i] != null)
+            {
+                _nodeRings[i].gameObject.SetActive(isSelected && _ringSelected != null);
+            }
+
+            var sealSet = _nodeSeals[i];
+            if (sealSet != null)
+            {
+                for (var s = 0; s < sealSet.Length; s++)
+                {
+                    if (sealSet[s] == null) continue;
+                    var lit = !isLocked && s < seals;
+                    sealSet[s].sprite = lit ? _sealPip : _sealEmpty;
+                    sealSet[s].color = lit ? ColorSealLit : Color.white;
+                }
+            }
+
+            if (_nodeLabels[i] != null)
+            {
+                _nodeLabels[i].text = isLocked ? "?" : $"L{levelIndex:00}";
+                _nodeLabels[i].fontSize = isBoss ? 10 : 9;
+                _nodeLabels[i].color = isLocked
+                    ? new Color(0.55f, 0.57f, 0.60f, 0.9f)
+                    : ColorTextBright;
+            }
+        }
+
+        private void RefreshNodeLegacy(int i, int levelIndex, bool isBoss, bool isLocked, bool isCleared,
+            bool isSelected, int[] starsPerLevel, int idx)
+        {
+            Color nodeColor;
+            Color textColor;
+            float size;
+
+            if (isBoss)
+            {
+                nodeColor = isCleared ? ColorCleared : ColorBoss;
+                textColor = ColorTextBright;
+                size = BossNodeSize;
+            }
+            else if (isLocked)
+            {
+                nodeColor = ColorLocked;
+                textColor = new Color(0.40f, 0.42f, 0.46f, 0.70f);
+                size = NodeSize;
+            }
+            else if (isCleared)
+            {
+                nodeColor = isSelected ? ColorSelected : ColorCleared;
+                textColor = ColorTextDark;
+                size = NodeSize;
+            }
+            else
+            {
+                nodeColor = isSelected ? ColorSelected : ColorAvailable;
+                textColor = ColorTextDark;
+                size = NodeSize;
+            }
+
+            _nodeImages[i].color = nodeColor;
+            _nodes[i].sizeDelta = Vector2.one * size;
+
+            if (_nodeLabels[i] != null)
+            {
+                var label = isLocked ? "🔒" : $"L{levelIndex:00}";
+                if (isCleared && !isBoss && idx < starsPerLevel.Length)
+                {
+                    var stars = starsPerLevel[idx];
+                    label = $"L{levelIndex:00}\n{"★".PadRight(stars + 1).Substring(0, Mathf.Max(1, stars))}";
+                }
+                else if (isBoss)
+                {
+                    label = isCleared ? "L20\n★" : "L20\nBOSS";
+                }
+                _nodeLabels[i].text = label;
+                _nodeLabels[i].fontSize = isBoss ? 9 : 8;
+                _nodeLabels[i].color = textColor;
+            }
+        }
+
+        private Sprite ResolveLandmark(int levelIndex)
+        {
+            var landmark = Resources.Load<Sprite>($"Art/UI/Campaign/landmark_L{levelIndex:00}");
+            return landmark != null ? landmark : _landmarkFallback;
+        }
+
+        private void Update()
+        {
+            // Selected-ring breathing.
+            if (!_artMode || _ringSelected == null) return;
+            _ringPulse += Time.unscaledDeltaTime * 2.2f;
+            var scale = 1f + 0.045f * (0.5f + 0.5f * Mathf.Sin(_ringPulse));
+            for (var i = 0; i < _nodeRings.Count; i++)
+            {
+                var ring = _nodeRings[i];
+                if (ring != null && ring.gameObject.activeSelf)
+                {
+                    ring.transform.localScale = new Vector3(scale, scale, 1f);
+                }
             }
         }
 
@@ -325,40 +626,59 @@ namespace TD
             var positions = new Vector2[20];
             for (var i = 0; i < 20; i++)
             {
-                var chapter = i / 5;     // 0-3
-                var col = i % 5;         // 0-4
+                var chapter = i / 5;
+                var col = i % 5;
                 var rowY = GetRowY(chapter);
-
-                // Alternate direction per chapter for S-curve.
                 float x;
                 if (chapter % 2 == 0)
                 {
-                    // Left to right.
                     x = -MapWidth * 0.40f + col * (MapWidth * 0.20f);
                 }
                 else
                 {
-                    // Right to left.
                     x = MapWidth * 0.40f - col * (MapWidth * 0.20f);
                 }
-
                 positions[i] = new Vector2(x, rowY);
             }
-
             return positions;
+        }
+
+        private static Vector2[] GenerateArtNodePositions()
+        {
+            // Anchored to the painted regions of world_map_bg: top band
+            // left-to-right (junction -> depot -> canyon), bottom band
+            // kiln basin left, terminus right. Zigzag inside each region.
+            return new Vector2[]
+            {
+                // Region 1: grayline junction (top-left).
+                new(-580f, 220f), new(-470f, 140f), new(-360f, 225f), new(-265f, 135f),
+                // Region 2: ashfall depot (top-center).
+                new(-90f, 230f), new(20f, 150f), new(130f, 225f), new(225f, 140f),
+                // Region 3: split switch canyon (top-right).
+                new(330f, 235f), new(445f, 150f), new(555f, 225f), new(625f, 140f),
+                // Region 4: hollow kiln basin (bottom-left).
+                new(-480f, -125f), new(-370f, -200f), new(-260f, -120f), new(-155f, -195f),
+                // Region 5: last ember terminus (bottom-right).
+                new(330f, -130f), new(440f, -205f), new(550f, -120f), new(625f, -195f),
+            };
         }
 
         private static float GetRowY(int chapter)
         {
-            // 4 rows evenly spaced in MapHeight.
             return MapHeight * 0.35f - chapter * (MapHeight * 0.24f);
         }
 
         // ─── Node/Path creation ──────────────────────────────────────
 
-        private void CreateNode(Transform parent, int index)
+        private void CreateNode(Transform parent, int index, Vector2[] positions)
         {
-            var pos = NodePositions[index];
+            if (_artMode)
+            {
+                CreateNodeArt(parent, index, positions);
+                return;
+            }
+
+            var pos = positions[index];
             var nodeRect = CreateRect($"Node_L{index + 1:00}", parent);
             nodeRect.anchorMin = new Vector2(0.5f, 0.5f);
             nodeRect.anchorMax = new Vector2(0.5f, 0.5f);
@@ -373,11 +693,7 @@ namespace TD
             img.type = Image.Type.Simple;
 
             var btn = nodeRect.gameObject.AddComponent<Button>();
-            var colors = btn.colors;
-            colors.highlightedColor = new Color(1f, 0.85f, 0.3f, 0.30f);
-            colors.pressedColor = new Color(1f, 0.85f, 0.3f, 0.50f);
-            colors.disabledColor = new Color(0.3f, 0.3f, 0.3f, 0.5f);
-            btn.colors = colors;
+            StyleNodeButton(btn);
 
             var capturedIndex = index;
             btn.onClick.AddListener(() =>
@@ -386,25 +702,128 @@ namespace TD
                 OnNodeClicked?.Invoke(capturedIndex + 1);
             });
 
-            // Label on a child (can't share GameObject with Image).
-            var labelRect = CreateRect($"NodeLabel_L{index + 1:00}", nodeRect);
+            var label = CreateNodeLabel(nodeRect, index, $"L{index + 1:00}", 10, ColorTextBright);
+
+            _nodes.Add(nodeRect);
+            _nodeImages.Add(img);
+            _nodeLabels.Add(label);
+            _nodeButtons.Add(btn);
+            _nodeLandmarks.Add(null);
+            _nodeRings.Add(null);
+            _nodeSeals.Add(null);
+        }
+
+        private void CreateNodeArt(Transform parent, int index, Vector2[] positions)
+        {
+            var pos = positions[index];
+            var isBossSlot = index == 19; // sized pre-Refresh; Refresh corrects via sprites
+
+            var nodeRect = CreateRect($"Node_L{index + 1:00}", parent);
+            nodeRect.anchorMin = new Vector2(0.5f, 0.5f);
+            nodeRect.anchorMax = new Vector2(0.5f, 0.5f);
+            nodeRect.pivot = new Vector2(0.5f, 0.5f);
+            nodeRect.anchoredPosition = pos;
+            nodeRect.sizeDelta = Vector2.one * NodeHitSize;
+
+            // Hit target + button on the root (transparent image so the
+            // button still receives clicks over the landmark).
+            var hit = nodeRect.gameObject.AddComponent<Image>();
+            hit.color = Color.clear;
+
+            var btn = nodeRect.gameObject.AddComponent<Button>();
+            StyleNodeButton(btn);
+            var capturedIndex = index;
+            btn.onClick.AddListener(() =>
+            {
+                _selectedNodeLevel = capturedIndex + 1;
+                OnNodeClicked?.Invoke(capturedIndex + 1);
+            });
+
+            var landmarkSize = isBossSlot ? BossLandmarkSize : LandmarkSize;
+            var landmarkRect = CreateRect($"NodeLandmark_L{index + 1:00}", nodeRect);
+            landmarkRect.anchorMin = new Vector2(0.5f, 0.5f);
+            landmarkRect.anchorMax = new Vector2(0.5f, 0.5f);
+            landmarkRect.sizeDelta = Vector2.one * landmarkSize;
+            var landmark = landmarkRect.gameObject.AddComponent<Image>();
+            landmark.sprite = ResolveLandmark(index + 1);
+            landmark.raycastTarget = false;
+            _nodeLandmarks.Add(landmark);
+
+            // Selected highlight ring (drawn above the landmark).
+            Image ring = null;
+            if (_ringSelected != null)
+            {
+                var ringRect = CreateRect($"NodeRing_L{index + 1:00}", nodeRect);
+                ringRect.anchorMin = new Vector2(0.5f, 0.5f);
+                ringRect.anchorMax = new Vector2(0.5f, 0.5f);
+                ringRect.sizeDelta = Vector2.one * RingSize;
+                ring = ringRect.gameObject.AddComponent<Image>();
+                ring.sprite = _ringSelected;
+                ring.raycastTarget = false;
+                ringRect.gameObject.SetActive(false);
+            }
+            _nodeRings.Add(ring);
+
+            // State badge pinned to the landmark's lower-right.
+            var badgeRect = CreateRect($"NodeBadge_L{index + 1:00}", nodeRect);
+            badgeRect.anchorMin = new Vector2(0.5f, 0.5f);
+            badgeRect.anchorMax = new Vector2(0.5f, 0.5f);
+            badgeRect.anchoredPosition = new Vector2(26f, -24f);
+            badgeRect.sizeDelta = Vector2.one * BadgeSize;
+            var badge = badgeRect.gameObject.AddComponent<Image>();
+            badge.sprite = _badgeLocked;
+            badge.raycastTarget = false;
+            _nodeImages.Add(badge);
+
+            // Level number rides the badge center.
+            var label = CreateNodeLabel(badgeRect, index, $"L{index + 1:00}", 9, ColorTextBright);
+            _nodeLabels.Add(label);
+
+            // Three difficulty seals under the landmark.
+            var seals = new Image[3];
+            for (var s = 0; s < 3; s++)
+            {
+                var sealRect = CreateRect($"NodeSeal{s}_L{index + 1:00}", nodeRect);
+                sealRect.anchorMin = new Vector2(0.5f, 0.5f);
+                sealRect.anchorMax = new Vector2(0.5f, 0.5f);
+                sealRect.anchoredPosition = new Vector2((s - 1) * 20f, -(landmarkSize * 0.5f + 12f));
+                sealRect.sizeDelta = Vector2.one * SealSize;
+                var seal = sealRect.gameObject.AddComponent<Image>();
+                seal.sprite = _sealEmpty;
+                seal.raycastTarget = false;
+                seals[s] = seal;
+            }
+            _nodeSeals.Add(seals);
+
+            _nodes.Add(nodeRect);
+            _nodeButtons.Add(btn);
+        }
+
+        private static void StyleNodeButton(Button btn)
+        {
+            var colors = btn.colors;
+            colors.highlightedColor = new Color(1f, 0.85f, 0.3f, 0.30f);
+            colors.pressedColor = new Color(1f, 0.85f, 0.3f, 0.50f);
+            colors.disabledColor = new Color(0.3f, 0.3f, 0.3f, 0.5f);
+            btn.colors = colors;
+        }
+
+        private Text CreateNodeLabel(RectTransform parent, int index, string text, int size, Color color)
+        {
+            var labelRect = CreateRect($"NodeLabel_L{index + 1:00}", parent);
             labelRect.anchorMin = Vector2.zero;
             labelRect.anchorMax = Vector2.one;
             labelRect.offsetMin = Vector2.zero;
             labelRect.offsetMax = Vector2.zero;
             var label = labelRect.gameObject.AddComponent<Text>();
             label.font = TDLocalization.ResolveFont(null) ?? Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            label.text = $"L{index + 1:00}";
-            label.fontSize = 10;
+            label.text = text;
+            label.fontSize = size;
             label.fontStyle = FontStyle.Bold;
             label.alignment = TextAnchor.MiddleCenter;
-            label.color = ColorTextBright;
+            label.color = color;
             label.raycastTarget = false;
-
-            _nodes.Add(nodeRect);
-            _nodeImages.Add(img);
-            _nodeLabels.Add(label);
-            _nodeButtons.Add(btn);
+            return label;
         }
 
         private void DrawPathSegment(Transform parent, Vector2 from, Vector2 to)
@@ -419,10 +838,14 @@ namespace TD
             pathRect.anchorMax = new Vector2(0.5f, 0.5f);
             pathRect.pivot = new Vector2(0.5f, 0.5f);
             pathRect.anchoredPosition = mid;
-            pathRect.sizeDelta = new Vector2(distance, PathThickness);
+            pathRect.sizeDelta = new Vector2(distance, _artMode && _railStrip != null ? 18f : PathThickness);
             pathRect.localRotation = Quaternion.Euler(0, 0, angle);
 
             var img = pathRect.gameObject.AddComponent<Image>();
+            if (_artMode && _railStrip != null)
+            {
+                img.sprite = _railStrip;
+            }
             img.color = ColorPathLocked;
             img.raycastTarget = false;
 
