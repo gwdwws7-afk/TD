@@ -18,6 +18,7 @@ namespace TD
     public sealed class TDWorldMap : MonoBehaviour
     {
         private RectTransform _root;
+        private RectTransform _mapArea;
         private readonly List<RectTransform> _nodes = new();
         private readonly List<Image> _nodeImages = new();   // state badge (art mode) or node body (legacy)
         private readonly List<Text> _nodeLabels = new();
@@ -172,13 +173,39 @@ namespace TD
             mapArea.anchorMax = new Vector2(0.5f, 0.5f);
             mapArea.pivot = new Vector2(0.5f, 0.5f);
             mapArea.sizeDelta = new Vector2(MapWidth, MapHeight);
+            _mapArea = mapArea;
 
             BuildMapContent(mapArea);
             BuildIntelPanel();
             BuildMetaEntry();
+            ApplyMapScale();
 
             gameObject.SetActive(true);
             _root.gameObject.SetActive(false);
+        }
+
+        /// <summary>
+        /// The 1400x700 logical layout is authored against the reference
+        /// resolution; the UI-scale setting shrinks the logical canvas (up to
+        /// 1200x750 at 1.2x) and the edge nodes clipped ~70px on both sides
+        /// (review P1). Uniform down-scale keeps the whole journey readable
+        /// instead; re-applied on Refresh so opening after a scale change
+        /// re-fits.
+        /// </summary>
+        private void ApplyMapScale()
+        {
+            if (_mapArea == null || _root == null)
+            {
+                return;
+            }
+
+            var available = _root.rect;
+            var margin = 40f;
+            var scale = Mathf.Min(
+                1f,
+                Mathf.Max(0.5f, (available.width - margin) / MapWidth),
+                Mathf.Max(0.5f, (available.height - margin) / MapHeight));
+            _mapArea.localScale = Vector3.one * scale;
         }
 
         private void LoadCampaignArt()
@@ -424,8 +451,8 @@ namespace TD
         {
             if (_intelPanel == null) return;
             _intelPanel.gameObject.SetActive(true);
-            _intelTitle.text = title;
-            _intelBody.text = body;
+            TDLocalization.SetLabel(_intelTitle, title);
+            TDLocalization.SetLabel(_intelBody, body);
             _deployButton.interactable = canDeploy;
         }
 
@@ -494,6 +521,9 @@ namespace TD
                 var fromCleared = i < clearedLevels.Length && clearedLevels[i];
                 _pathImages[i].color = fromCleared ? ColorPathCleared : ColorPathLocked;
             }
+
+            // Re-fit after possible UI-scale changes since the last open.
+            ApplyMapScale();
         }
 
         private void RefreshNodeArt(int i, int levelIndex, bool isBoss, bool isLocked, bool isCleared,
@@ -548,7 +578,7 @@ namespace TD
 
             if (_nodeLabels[i] != null)
             {
-                _nodeLabels[i].text = isLocked ? "?" : $"L{levelIndex:00}";
+                TDLocalization.SetLabel(_nodeLabels[i], isLocked ? "?" : $"L{levelIndex:00}");
                 _nodeLabels[i].fontSize = isBoss ? 10 : 9;
                 _nodeLabels[i].color = isLocked
                     ? new Color(0.55f, 0.57f, 0.60f, 0.9f)
@@ -601,9 +631,10 @@ namespace TD
                 }
                 else if (isBoss)
                 {
-                    label = isCleared ? "L20\n★" : "L20\nBOSS";
+                    // Boss level number follows the parameter, not a literal.
+                    label = isCleared ? $"L{levelIndex:00}\n★" : $"L{levelIndex:00}\nBOSS";
                 }
-                _nodeLabels[i].text = label;
+                TDLocalization.SetLabel(_nodeLabels[i], label);
                 _nodeLabels[i].fontSize = isBoss ? 9 : 8;
                 _nodeLabels[i].color = textColor;
             }
@@ -829,7 +860,10 @@ namespace TD
             labelRect.offsetMax = Vector2.zero;
             var label = labelRect.gameObject.AddComponent<Text>();
             label.font = TDLocalization.ResolveFont(null) ?? Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            label.text = text;
+            // Route through the localization pipeline so the label registers
+            // a source string and translates / re-translates on language
+            // switches (review P1: world-map texts bypassed it entirely).
+            TDLocalization.SetLabel(label, text);
             label.fontSize = size;
             label.fontStyle = FontStyle.Bold;
             label.alignment = TextAnchor.MiddleCenter;
@@ -885,7 +919,9 @@ namespace TD
         {
             var text = parent.gameObject.AddComponent<Text>();
             text.font = TDLocalization.ResolveFont(null) ?? Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            text.text = content;
+            // Localization pipeline (review P1): registers the English source
+            // and translates/re-translates on language switches.
+            TDLocalization.SetLabel(text, content);
             text.fontSize = fontSize;
             text.fontStyle = style;
             text.color = color;

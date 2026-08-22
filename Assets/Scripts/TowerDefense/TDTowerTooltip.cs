@@ -16,6 +16,7 @@ namespace TD
         private Text _statsText;
         private Text _counterText;
         private TDTower _currentTower;
+        private TDTower _lastContentTower;
         private float _hoverTimer;
         private int _lastContentTier = -1;
         private const float ShowDelay = 0.4f;
@@ -82,6 +83,14 @@ namespace TD
             {
                 _hoverTimer = 0f;
                 _currentTower = tower;
+                // Switching targets re-runs the show-delay for the NEW tower;
+                // hiding first means the delay window never displays the old
+                // target's content (review P1: same-tier swaps kept showing
+                // the previous tower's stats forever).
+                if (gameObject.activeSelf)
+                {
+                    gameObject.SetActive(false);
+                }
             }
 
             // TD-GP-003: an inactive component's Update can never re-enable
@@ -95,6 +104,7 @@ namespace TD
                 {
                     gameObject.SetActive(true);
                     RefreshContent();
+                    _lastContentTower = tower;
                     _lastContentTier = tower.Tier;
                 }
             }
@@ -129,12 +139,15 @@ namespace TD
             {
                 gameObject.SetActive(true);
                 RefreshContent();
+                _lastContentTower = _currentTower;
                 _lastContentTier = _currentTower.Tier;
             }
-            else if (_currentTower.Tier != _lastContentTier)
+            else if (_currentTower != _lastContentTower || _currentTower.Tier != _lastContentTier)
             {
-                // Upgrades can land while the pointer keeps resting on the tower.
+                // A different tower slipped in without HoverTower's change
+                // branch, or an upgrade landed while resting on the tower.
                 RefreshContent();
+                _lastContentTower = _currentTower;
                 _lastContentTier = _currentTower.Tier;
             }
 

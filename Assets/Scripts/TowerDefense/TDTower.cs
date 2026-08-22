@@ -492,7 +492,11 @@ namespace TD
                 var chargedTarget = _windupTarget;
                 _windupTarget = null;
                 _readability?.SetChargeState(false, 0f);
-                if (chargedTarget != null)
+                // Corpses are not valid shots: a target that died mid-windup
+                // is still a live reference through its death reel + fade,
+                // but TakeHit would return zero and the projectile is wasted
+                // (review P1). Cadence still advances — no free-fire exploit.
+                if (chargedTarget != null && chargedTarget.IsTargetable)
                 {
                     FireAt(chargedTarget);
                 }
@@ -527,7 +531,11 @@ namespace TD
             if (target != null)
             {
                 var rangeSqr = _activeState.range * _activeState.range;
-                if ((target.transform.position - transform.position).sqrMagnitude > rangeSqr)
+                // Corpse filter (review P1): a dying/escaping enemy stays a
+                // non-null reference until destroyed — drop it here so new
+                // windups never start on corpses.
+                if (!target.IsTargetable ||
+                    (target.transform.position - transform.position).sqrMagnitude > rangeSqr)
                 {
                     target = _cachedTarget = null;
                 }

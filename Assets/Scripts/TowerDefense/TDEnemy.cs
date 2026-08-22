@@ -112,6 +112,11 @@ namespace TD
         private float _maximumRouteDeviationObserved;
 
         public string EnemyId => _enemyId;
+        /// <summary>Alive and attackable — false once the enemy is killed
+        /// (death reel + fade window) or escaping, before the GameObject is
+        /// actually destroyed. Towers filter cached/windup targets on this
+        /// so they stop firing at corpses (review P1).</summary>
+        public bool IsTargetable => !_resolved && !_dying;
         public string LaneKey => string.IsNullOrWhiteSpace(_laneKey) ? "default" : _laneKey;
         public int MaxHealth => _maxHp;
         public int ArmorFlat => _armorFlat;
