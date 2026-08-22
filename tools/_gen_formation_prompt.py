@@ -14,9 +14,9 @@ from generate_formation import PROMPTS, SPECS, ORDER, STYLE, STYLE_ANCHORED  # n
 OUT = Path("design/spec/minimax_formation_prompt_full.txt")
 
 ZH = {
-    "roster_card_base":      "编队塔卡片-默认态(左侧宝石图标槽+右侧两行文字区+底部状态条槽,中性未点亮)",
-    "roster_card_selected":  "编队塔卡片-选中态(边框琥珀亮+状态条琥珀发光)",
-    "roster_card_locked":    "编队塔卡片-锁定态(整体压暗无电感+右下小锁槽)",
+    "roster_card_selected":  "编队塔卡片-选中态(结构源:琥珀边亮+底部状态条发光,卡片铺满画布边到边)",
+    "roster_card_base":      "编队塔卡片-默认态(从选中态熄灯:琥珀边转暗铁、状态条转熄,构图槽位完全不变)",
+    "roster_card_locked":    "编队塔卡片-锁定态(整体压暗无电感+右下小锁槽,构图槽位完全不变)",
     "doctrine_plate_base":   "共鸣信条铭牌-默认态(左圆纹章槽+右两行文字区,拨杆感)",
     "doctrine_plate_on":     "共鸣信条铭牌-激活态(纹章槽琥珀亮+边缘辉光)",
     "difficulty_plate_base": "难度铭牌-默认态(左指示灯槽+右文字区)",
@@ -30,7 +30,7 @@ ZH = {
 def main():
     lines = []
     A = lines.append
-    A("我要为一个 2D 塔防游戏《Emberline Defense》(余烬铁道)的\"战前编队界面\"生成一套调度仪表台控件皮肤(10 张卡/牌/横幅)。请你先通读世界观和技术约束,然后按清单顺序逐个生成,每张严格按对应文件名命名。注意:清单里有 4 张是\"状态变体\"——必须以上一张基础卡的产出作为参考图(img2img),保持构图、比例、槽位完全一致,只改变点亮状态。")
+    A("我要为一个 2D 塔防游戏《Emberline Defense》(余烬铁道)的\"战前编队界面\"生成一套调度仪表台控件皮肤。本次只需要重做 roster 三态中的 base 和 locked 两张(选中态 selected 已过审作为结构源)。请先通读世界观和技术约束,严格按清单顺序生成,每张按对应文件名命名。注意依赖链:roster_card_base 必须以已过审的 roster_card_selected 原图为参考图(熄灯成中性态),roster_card_locked 再以新 base 为参考图——三态的构图、比例、槽位、铺满方式必须完全一致,只改点亮状态。")
     A("")
     A("# 一、世界观(所有图必须服从)")
     A("")
@@ -40,17 +40,17 @@ def main():
     A("")
     A("- 透明背景 PNG,横幅类按 3:2 横图出,情报卡按 2:3 竖图出")
     A("- 卡片为\"底板\":内容区(图标槽/文字槽)必须留白凹陷槽,不画内容")
-    A("- 九宫格友好(四边可拉伸),边缘干净无残留底/灰雾(硬性红线)")
-    A("- 手绘数字绘画质感,严禁文字、图标、水印、3D 渲染感")
+    A("- 卡片铺满画布边到边(与结构源一致),四周不得有半透明雾场残留(硬性红线)")
+    A("- 九宫格友好(四边可拉伸),手绘数字绘画质感,严禁文字、图标、水印、3D 渲染感")
     A("")
-    A("# 三、交付清单(10 张,按此顺序)")
+    A("# 三、交付清单(按此顺序)")
     A("")
     for name in ORDER:
         _, target, _, base = SPECS[name]
         A(f"## {name}(目标 {target[0]}×{target[1]})")
         A(f"说明:{ZH[name]}")
         if base:
-            A(f"参考图上传:上一步生成的 {base}.png 的原图(保持构图槽位完全一致)")
+            A(f"参考图上传:output/imagegen/_formation_raw/{base}.png(保持构图槽位与铺满方式完全一致)")
         elif name in STYLE_ANCHORED:
             A("参考图上传:材质锚 output/imagegen/_formation_raw/formation_style_reference.png(threat_strip 与 doctrine_plate_on 两张过审原图的拼图)——新卡片必须完全匹配参考图的锻铁材质语言:拉丝金属纹、深炭色锈蚀、边角铆钉、青色仪表勾边")
         A(f"保存文件名:{name}.png")

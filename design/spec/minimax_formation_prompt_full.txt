@@ -1,4 +1,4 @@
-我要为一个 2D 塔防游戏《Emberline Defense》(余烬铁道)的"战前编队界面"生成一套调度仪表台控件皮肤(10 张卡/牌/横幅)。请你先通读世界观和技术约束,然后按清单顺序逐个生成,每张严格按对应文件名命名。注意:清单里有 4 张是"状态变体"——必须以上一张基础卡的产出作为参考图(img2img),保持构图、比例、槽位完全一致,只改变点亮状态。
+我要为一个 2D 塔防游戏《Emberline Defense》(余烬铁道)的"战前编队界面"生成一套调度仪表台控件皮肤。本次只需要重做 roster 三态中的 base 和 locked 两张(选中态 selected 已过审作为结构源)。请先通读世界观和技术约束,严格按清单顺序生成,每张按对应文件名命名。注意依赖链:roster_card_base 必须以已过审的 roster_card_selected 原图为参考图(熄灯成中性态),roster_card_locked 再以新 base 为参考图——三态的构图、比例、槽位、铺满方式必须完全一致,只改点亮状态。
 
 # 一、世界观(所有图必须服从)
 
@@ -8,30 +8,29 @@
 
 - 透明背景 PNG,横幅类按 3:2 横图出,情报卡按 2:3 竖图出
 - 卡片为"底板":内容区(图标槽/文字槽)必须留白凹陷槽,不画内容
-- 九宫格友好(四边可拉伸),边缘干净无残留底/灰雾(硬性红线)
-- 手绘数字绘画质感,严禁文字、图标、水印、3D 渲染感
+- 卡片铺满画布边到边(与结构源一致),四周不得有半透明雾场残留(硬性红线)
+- 九宫格友好(四边可拉伸),手绘数字绘画质感,严禁文字、图标、水印、3D 渲染感
 
-# 三、交付清单(10 张,按此顺序)
-
-## roster_card_base(目标 512×288)
-说明:编队塔卡片-默认态(左侧宝石图标槽+右侧两行文字区+底部状态条槽,中性未点亮)
-参考图上传:材质锚 output/imagegen/_formation_raw/formation_style_reference.png(threat_strip 与 doctrine_plate_on 两张过审原图的拼图)——新卡片必须完全匹配参考图的锻铁材质语言:拉丝金属纹、深炭色锈蚀、边角铆钉、青色仪表勾边
-保存文件名:roster_card_base.png
-```text
-tower roster card: a square inset groove on the left sized for a gem badge, a two-line text area on the right, a horizontal status strip groove along the bottom, neutral unlit state, 2D game UI asset, flat card background, forged-iron railway dispatch console style, dark charcoal weathered steel with subtle teal instrument light and amber trim, inset slots and grooves for overlaid icons and text (content areas blank), riveted metal details, nine-slice friendly borders, hand-painted, transparent background, no text, no icons, no watermark, heavy forged-iron texture with visible brushed metal grain, dark charcoal patina with rust streaks and soot weathering, chunky rivets along the corners and edges, teal instrument rim lighting on the inner grooves, thin amber edge trim, hand-painted industrial brushwork (not vector-flat, not glossy plastic, not a modern minimal UI button), match the exact forged-iron material language of the reference
-```
+# 三、交付清单(按此顺序)
 
 ## roster_card_selected(目标 512×288)
-说明:编队塔卡片-选中态(边框琥珀亮+状态条琥珀发光)
-参考图上传:上一步生成的 roster_card_base.png 的原图(保持构图槽位完全一致)
+说明:编队塔卡片-选中态(结构源:琥珀边亮+底部状态条发光,卡片铺满画布边到边)
 保存文件名:roster_card_selected.png
 ```text
-using the provided roster card as the exact base, keep composition, proportions and slots identical, light the edge trim amber and make the bottom status groove glow warm amber, ember-lit selected state, keep the heavy forged-iron weathered material
+tower roster card, selected state: edge trim lit amber, bottom status groove glowing warm amber, ember-lit; square inset groove on the left sized for a gem badge, two-line text area on the right, card fills the canvas edge to edge, 2D game UI asset, flat card background, forged-iron railway dispatch console style, dark charcoal weathered steel with subtle teal instrument light and amber trim, inset slots and grooves for overlaid icons and text (content areas blank), riveted metal details, nine-slice friendly borders, hand-painted, transparent background, no text, no icons, no watermark, heavy forged-iron texture with visible brushed metal grain, dark charcoal patina with rust streaks and soot weathering, chunky rivets along the corners and edges, teal instrument rim lighting on the inner grooves, thin amber edge trim, hand-painted industrial brushwork (not vector-flat, not glossy plastic, not a modern minimal UI button)
+```
+
+## roster_card_base(目标 512×288)
+说明:编队塔卡片-默认态(从选中态熄灯:琥珀边转暗铁、状态条转熄,构图槽位完全不变)
+参考图上传:output/imagegen/_formation_raw/roster_card_selected.png(保持构图槽位与铺满方式完全一致)
+保存文件名:roster_card_base.png
+```text
+using the provided selected roster card as the exact base, keep composition, proportions, slots and full-bleed framing completely identical, extinguish all lights to the neutral unlit state: amber edge trim goes dark iron, the bottom status groove becomes an inert dark groove, keep the heavy forged-iron weathered material
 ```
 
 ## roster_card_locked(目标 512×288)
-说明:编队塔卡片-锁定态(整体压暗无电感+右下小锁槽)
-参考图上传:上一步生成的 roster_card_base.png 的原图(保持构图槽位完全一致)
+说明:编队塔卡片-锁定态(整体压暗无电感+右下小锁槽,构图槽位完全不变)
+参考图上传:output/imagegen/_formation_raw/roster_card_base.png(保持构图槽位与铺满方式完全一致)
 保存文件名:roster_card_locked.png
 ```text
 using the provided roster card as the exact base, keep composition, proportions and slots identical, darken the whole card to an inert unpowered look, add a small padlock-shaped socket groove at the lower-right corner, keep the heavy forged-iron weathered material
@@ -46,7 +45,7 @@ doctrine doctrine nameplate: a circular emblem socket on the left, a two-line te
 
 ## doctrine_plate_on(目标 560×170)
 说明:共鸣信条铭牌-激活态(纹章槽琥珀亮+边缘辉光)
-参考图上传:上一步生成的 doctrine_plate_base.png 的原图(保持构图槽位完全一致)
+参考图上传:output/imagegen/_formation_raw/doctrine_plate_base.png(保持构图槽位与铺满方式完全一致)
 保存文件名:doctrine_plate_on.png
 ```text
 using the provided doctrine nameplate as the exact base, keep composition identical, light the emblem socket amber and add a soft amber edge glow, engaged state
@@ -61,7 +60,7 @@ campaign difficulty nameplate: an indicator-lamp socket on the left, a single te
 
 ## difficulty_plate_on(目标 560×140)
 说明:难度铭牌-激活态(指示灯青色仪表光)
-参考图上传:上一步生成的 difficulty_plate_base.png 的原图(保持构图槽位完全一致)
+参考图上传:output/imagegen/_formation_raw/difficulty_plate_base.png(保持构图槽位与铺满方式完全一致)
 保存文件名:difficulty_plate_on.png
 ```text
 using the provided difficulty nameplate as the exact base, keep composition identical, light the indicator lamp with teal instrument light, engaged state

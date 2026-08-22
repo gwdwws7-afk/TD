@@ -61,12 +61,22 @@ HEADER = ("short horizontal forged-iron ornament bar with riveted ends and a "
 # Assets re-anchored after the wave-2 style review: these generate as edits
 # of the in-style reference (threat_strip + doctrine_plate_on raws) so the
 # material language matches the approved assets instead of drifting clean.
-STYLE_ANCHORED = ["roster_card_base", "intel_card"]
+STYLE_ANCHORED = ["intel_card"]
 
+# Roster chain reversed after the r2 review: the first anchored base came
+# back as a narrow mid-canvas card with fog sides while the variants filled
+# the canvas - a structural mismatch that would make selection snap width.
+# The approved selected-state raw (full-bleed composition) is now the
+# structural source: base = selected with lights extinguished, locked
+# chains off the new base.
 PROMPTS = {
-    "roster_card_base":     ROSTER_BASE + ", " + STYLE + ", " + STYLE_HEAVY
-                           + ", match the exact forged-iron material language of the reference",
-    "roster_card_selected": "using the provided roster card as the exact base, keep composition, proportions and slots identical, light the edge trim amber and make the bottom status groove glow warm amber, ember-lit selected state, keep the heavy forged-iron weathered material",
+    "roster_card_selected": ("tower roster card, selected state: edge trim "
+                             "lit amber, bottom status groove glowing warm "
+                             "amber, ember-lit; square inset groove on the "
+                             "left sized for a gem badge, two-line text area "
+                             "on the right, card fills the canvas edge to "
+                             "edge, " + STYLE + ", " + STYLE_HEAVY),
+    "roster_card_base":     "using the provided selected roster card as the exact base, keep composition, proportions, slots and full-bleed framing completely identical, extinguish all lights to the neutral unlit state: amber edge trim goes dark iron, the bottom status groove becomes an inert dark groove, keep the heavy forged-iron weathered material",
     "roster_card_locked":   "using the provided roster card as the exact base, keep composition, proportions and slots identical, darken the whole card to an inert unpowered look, add a small padlock-shaped socket groove at the lower-right corner, keep the heavy forged-iron weathered material",
     "doctrine_plate_base":  ("doctrine doctrine nameplate: a circular emblem "
                             "socket on the left, a two-line text area on the "
@@ -85,8 +95,8 @@ PROMPTS = {
 
 # asset -> (gen_size, target, mode, base_dependency)
 SPECS = {
-    "roster_card_base":      ("1536x1024", (512, 288), "band", None),
-    "roster_card_selected":  ("1536x1024", (512, 288), "band", "roster_card_base"),
+    "roster_card_selected":  ("1536x1024", (512, 288), "band", None),
+    "roster_card_base":      ("1536x1024", (512, 288), "band", "roster_card_selected"),
     "roster_card_locked":    ("1536x1024", (512, 288), "band", "roster_card_base"),
     "doctrine_plate_base":   ("1536x1024", (560, 170), "band", None),
     "doctrine_plate_on":     ("1536x1024", (560, 170), "band", "doctrine_plate_base"),
@@ -97,7 +107,7 @@ SPECS = {
     "header_ornament":       ("1536x1024", (512, 96), "band", None),
 }
 
-ORDER = ["roster_card_base", "roster_card_selected", "roster_card_locked",
+ORDER = ["roster_card_selected", "roster_card_base", "roster_card_locked",
          "doctrine_plate_base", "doctrine_plate_on",
          "difficulty_plate_base", "difficulty_plate_on",
          "threat_strip", "intel_card", "header_ornament"]
@@ -113,6 +123,21 @@ def ensure_key():
 def postprocess(raw: Path, out: Path, target, mode: str):
     im = Image.open(raw).convert("RGBA")
     if mode == "band":
+        arr = np.asarray(im)
+        a = arr[:, :, 3]
+        # Fog guard: anchored img2img raws can carry a translucent backdrop
+        # haze from the opaque style reference (the r2 roster_base lesson).
+        # Kill alpha outside the solid bbox + margin before cropping.
+        ys, xs = np.nonzero(a >= 160)
+        if len(xs):
+            m = np.ones(a.shape, bool)
+            y0, y1 = max(0, ys.min()-16), min(a.shape[0], ys.max()+16)
+            x0, x1 = max(0, xs.min()-16), min(a.shape[1], xs.max()+16)
+            m[y0:y1, x0:x1] = False
+            aa = arr[:, :, 3].copy()
+            aa[m & (aa > 0)] = 0
+            arr[:, :, 3] = aa
+            im = Image.fromarray(arr)
         a = np.asarray(im)[:, :, 3]
         ys, xs = np.nonzero(a > 24)
         if len(xs):
