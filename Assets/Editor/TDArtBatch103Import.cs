@@ -31,6 +31,7 @@ namespace TD.Editor
         private const string ANIM_DIR       = "Assets/Resources/Art/anim/";
         private const string ART_ROOT       = "Assets/Resources/Art/";
         private const string UI_CAMPAIGN_DIR = "Assets/Resources/Art/UI/Campaign/";
+        private const string UI_FORMATION_DIR = "Assets/Resources/Art/UI/Formation/";
         private const int    PPU_TARGET     = 1024;
 
         // OnPreprocessTexture fires before texture is imported (raw import).
@@ -89,6 +90,8 @@ namespace TD.Editor
                 return true;
             if (path.StartsWith(UI_CAMPAIGN_DIR, System.StringComparison.OrdinalIgnoreCase))
                 return true;
+            if (path.StartsWith(UI_FORMATION_DIR, System.StringComparison.OrdinalIgnoreCase))
+                return true;
             if (path.StartsWith(ANIM_DIR, System.StringComparison.OrdinalIgnoreCase)
                 && (Path.GetFileName(path).StartsWith("fx_", System.StringComparison.Ordinal)
                     || (Path.GetFileName(path).StartsWith("tower_", System.StringComparison.Ordinal)
@@ -138,6 +141,7 @@ namespace TD.Editor
         {
             var paths = Directory.GetFiles(EXAM_P12_DIR, "*.png", SearchOption.TopDirectoryOnly)
                 .Concat(Directory.GetFiles(UI_CAMPAIGN_DIR, "*.png", SearchOption.TopDirectoryOnly))
+                .Concat(Directory.GetFiles(UI_FORMATION_DIR, "*.png", SearchOption.TopDirectoryOnly))
                 .Concat(Directory.GetFiles(ANIM_DIR, "fx_*.png", SearchOption.TopDirectoryOnly))
                 .Concat(Directory.GetFiles(ANIM_DIR, "tower_*_fire_*.png", SearchOption.TopDirectoryOnly))
                 .Concat(Directory.GetFiles(ANIM_DIR, "tower_*_t2_*.png", SearchOption.TopDirectoryOnly))
