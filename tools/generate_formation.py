@@ -36,6 +36,16 @@ STYLE = ("2D game UI asset, flat card background, forged-iron railway dispatch "
          "nine-slice friendly borders, hand-painted, transparent background, "
          "no text, no icons, no watermark")
 
+# Heavier material language for assets that came back too clean/plastic on
+# the first pass (roster cards, intel card). Anchored generation + these
+# keywords per the wave-2 style review.
+STYLE_HEAVY = ("heavy forged-iron texture with visible brushed metal grain, "
+               "dark charcoal patina with rust streaks and soot weathering, "
+               "chunky rivets along the corners and edges, teal instrument "
+               "rim lighting on the inner grooves, thin amber edge trim, "
+               "hand-painted industrial brushwork (not vector-flat, not "
+               "glossy plastic, not a modern minimal UI button)")
+
 ROSTER_BASE = ("tower roster card: a square inset groove on the left sized "
                "for a gem badge, a two-line text area on the right, a "
                "horizontal status strip groove along the bottom, neutral "
@@ -48,10 +58,16 @@ INTEL = ("tall intel card: a title slot groove along the top, one large body "
 HEADER = ("short horizontal forged-iron ornament bar with riveted ends and a "
           "blank center band for overlaid text")
 
+# Assets re-anchored after the wave-2 style review: these generate as edits
+# of the in-style reference (threat_strip + doctrine_plate_on raws) so the
+# material language matches the approved assets instead of drifting clean.
+STYLE_ANCHORED = ["roster_card_base", "intel_card"]
+
 PROMPTS = {
-    "roster_card_base":     ROSTER_BASE + ", " + STYLE,
-    "roster_card_selected": "using the provided roster card as the exact base, keep composition, proportions and slots identical, light the edge trim amber and make the bottom status groove glow warm amber, ember-lit selected state",
-    "roster_card_locked":   "using the provided roster card as the exact base, keep composition, proportions and slots identical, darken the whole card to an inert unpowered look, add a small padlock-shaped socket groove at the lower-right corner",
+    "roster_card_base":     ROSTER_BASE + ", " + STYLE + ", " + STYLE_HEAVY
+                           + ", match the exact forged-iron material language of the reference",
+    "roster_card_selected": "using the provided roster card as the exact base, keep composition, proportions and slots identical, light the edge trim amber and make the bottom status groove glow warm amber, ember-lit selected state, keep the heavy forged-iron weathered material",
+    "roster_card_locked":   "using the provided roster card as the exact base, keep composition, proportions and slots identical, darken the whole card to an inert unpowered look, add a small padlock-shaped socket groove at the lower-right corner, keep the heavy forged-iron weathered material",
     "doctrine_plate_base":  ("doctrine doctrine nameplate: a circular emblem "
                             "socket on the left, a two-line text area on the "
                             "right, toggle-switch feel, neutral unlit state, "
@@ -62,7 +78,8 @@ PROMPTS = {
                              "right, neutral unlit state, " + STYLE),
     "difficulty_plate_on":  "using the provided difficulty nameplate as the exact base, keep composition identical, light the indicator lamp with teal instrument light, engaged state",
     "threat_strip":         THREAT + ", " + STYLE,
-    "intel_card":           INTEL + ", " + STYLE,
+    "intel_card":           INTEL + ", " + STYLE + ", " + STYLE_HEAVY
+                           + ", match the exact forged-iron material language of the reference",
     "header_ornament":      HEADER + ", " + STYLE,
 }
 
@@ -115,6 +132,29 @@ def postprocess(raw: Path, out: Path, target, mode: str):
     im.save(out)
 
 
+def build_style_reference() -> Path:
+    """Compose the two approved in-style raws (threat_strip + doctrine_plate_on)
+    into a material-language anchor. Assets that drifted clean on the first
+    pass generate as edits of this reference (the worldmap collage trick)."""
+    ref = RAW / "formation_style_reference.png"
+    if ref.exists():
+        return ref
+    RAW.mkdir(parents=True, exist_ok=True)
+    top_src = RAW / "threat_strip.png"
+    bot_src = RAW / "doctrine_plate_on.png"
+    if not top_src.exists() or not bot_src.exists():
+        sys.exit("style anchor needs approved raws: threat_strip.png + doctrine_plate_on.png in _formation_raw")
+    canvas = Image.new("RGB", (1536, 1024), (24, 22, 20))
+    top = Image.open(top_src).convert("RGB")
+    top.thumbnail((1400, 480), Image.LANCZOS)
+    canvas.paste(top, ((1536 - top.width) // 2, 20))
+    bot = Image.open(bot_src).convert("RGB")
+    bot.thumbnail((1100, 440), Image.LANCZOS)
+    canvas.paste(bot, ((1536 - bot.width) // 2, 540))
+    canvas.save(ref)
+    return ref
+
+
 def gen_one(name: str, force: bool, import_only: bool) -> bool:
     gen_size, target, mode, base = SPECS[name]
     final = DST / f"{name}.png"
@@ -140,6 +180,12 @@ def gen_one(name: str, force: bool, import_only: bool) -> bool:
                    "--image", str(base_raw),
                    "--prompt", PROMPTS[name],
                    "--size", gen_size]
+        elif name in STYLE_ANCHORED:
+            cmd = [sys.executable, str(IMAGE_GEN), "edit",
+                   "--model", "gpt-image-1.5",
+                   "--image", str(build_style_reference()),
+                   "--prompt", PROMPTS[name],
+                   "--size", gen_size]
         else:
             cmd = [sys.executable, str(IMAGE_GEN), "generate",
                    "--model", "gpt-image-1.5",
@@ -147,7 +193,7 @@ def gen_one(name: str, force: bool, import_only: bool) -> bool:
                    "--size", gen_size]
         cmd += ["--background", "transparent", "--output-format", "png",
                 "--out", str(raw), "--force"]
-        print(f"  {name}: {'edit of ' + base if base else 'generate'} -> {target[0]}x{target[1]}")
+        print(f"  {name}: {'edit of ' + base if base else ('style-anchored' if name in STYLE_ANCHORED else 'generate')} -> {target[0]}x{target[1]}")
         r = subprocess.run(cmd, capture_output=True, text=True)
         if r.returncode != 0 or not raw.exists():
             tail = (r.stderr or r.stdout or "").strip().splitlines()[-3:]

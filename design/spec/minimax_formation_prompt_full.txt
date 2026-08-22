@@ -15,9 +15,10 @@
 
 ## roster_card_base(目标 512×288)
 说明:编队塔卡片-默认态(左侧宝石图标槽+右侧两行文字区+底部状态条槽,中性未点亮)
+参考图上传:材质锚 output/imagegen/_formation_raw/formation_style_reference.png(threat_strip 与 doctrine_plate_on 两张过审原图的拼图)——新卡片必须完全匹配参考图的锻铁材质语言:拉丝金属纹、深炭色锈蚀、边角铆钉、青色仪表勾边
 保存文件名:roster_card_base.png
 ```text
-tower roster card: a square inset groove on the left sized for a gem badge, a two-line text area on the right, a horizontal status strip groove along the bottom, neutral unlit state, 2D game UI asset, flat card background, forged-iron railway dispatch console style, dark charcoal weathered steel with subtle teal instrument light and amber trim, inset slots and grooves for overlaid icons and text (content areas blank), riveted metal details, nine-slice friendly borders, hand-painted, transparent background, no text, no icons, no watermark
+tower roster card: a square inset groove on the left sized for a gem badge, a two-line text area on the right, a horizontal status strip groove along the bottom, neutral unlit state, 2D game UI asset, flat card background, forged-iron railway dispatch console style, dark charcoal weathered steel with subtle teal instrument light and amber trim, inset slots and grooves for overlaid icons and text (content areas blank), riveted metal details, nine-slice friendly borders, hand-painted, transparent background, no text, no icons, no watermark, heavy forged-iron texture with visible brushed metal grain, dark charcoal patina with rust streaks and soot weathering, chunky rivets along the corners and edges, teal instrument rim lighting on the inner grooves, thin amber edge trim, hand-painted industrial brushwork (not vector-flat, not glossy plastic, not a modern minimal UI button), match the exact forged-iron material language of the reference
 ```
 
 ## roster_card_selected(目标 512×288)
@@ -25,7 +26,7 @@ tower roster card: a square inset groove on the left sized for a gem badge, a tw
 参考图上传:上一步生成的 roster_card_base.png 的原图(保持构图槽位完全一致)
 保存文件名:roster_card_selected.png
 ```text
-using the provided roster card as the exact base, keep composition, proportions and slots identical, light the edge trim amber and make the bottom status groove glow warm amber, ember-lit selected state
+using the provided roster card as the exact base, keep composition, proportions and slots identical, light the edge trim amber and make the bottom status groove glow warm amber, ember-lit selected state, keep the heavy forged-iron weathered material
 ```
 
 ## roster_card_locked(目标 512×288)
@@ -33,7 +34,7 @@ using the provided roster card as the exact base, keep composition, proportions 
 参考图上传:上一步生成的 roster_card_base.png 的原图(保持构图槽位完全一致)
 保存文件名:roster_card_locked.png
 ```text
-using the provided roster card as the exact base, keep composition, proportions and slots identical, darken the whole card to an inert unpowered look, add a small padlock-shaped socket groove at the lower-right corner
+using the provided roster card as the exact base, keep composition, proportions and slots identical, darken the whole card to an inert unpowered look, add a small padlock-shaped socket groove at the lower-right corner, keep the heavy forged-iron weathered material
 ```
 
 ## doctrine_plate_base(目标 560×170)
@@ -75,9 +76,10 @@ wide threat banner strip: a circular alarm-emblem socket on the left, one long t
 
 ## intel_card(目标 768×1024)
 说明:右栏情报卡背(顶部标题槽+大正文区,表面比底框浅一档)
+参考图上传:材质锚 output/imagegen/_formation_raw/formation_style_reference.png(threat_strip 与 doctrine_plate_on 两张过审原图的拼图)——新卡片必须完全匹配参考图的锻铁材质语言:拉丝金属纹、深炭色锈蚀、边角铆钉、青色仪表勾边
 保存文件名:intel_card.png
 ```text
-tall intel card: a title slot groove along the top, one large body area below, surface one step lighter than a dark command frame, riveted corner details, 2D game UI asset, flat card background, forged-iron railway dispatch console style, dark charcoal weathered steel with subtle teal instrument light and amber trim, inset slots and grooves for overlaid icons and text (content areas blank), riveted metal details, nine-slice friendly borders, hand-painted, transparent background, no text, no icons, no watermark
+tall intel card: a title slot groove along the top, one large body area below, surface one step lighter than a dark command frame, riveted corner details, 2D game UI asset, flat card background, forged-iron railway dispatch console style, dark charcoal weathered steel with subtle teal instrument light and amber trim, inset slots and grooves for overlaid icons and text (content areas blank), riveted metal details, nine-slice friendly borders, hand-painted, transparent background, no text, no icons, no watermark, heavy forged-iron texture with visible brushed metal grain, dark charcoal patina with rust streaks and soot weathering, chunky rivets along the corners and edges, teal instrument rim lighting on the inner grooves, thin amber edge trim, hand-painted industrial brushwork (not vector-flat, not glossy plastic, not a modern minimal UI button), match the exact forged-iron material language of the reference
 ```
 
 ## header_ornament(目标 512×96)

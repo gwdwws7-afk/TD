@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from generate_formation import PROMPTS, SPECS, ORDER, STYLE  # noqa: E402
+from generate_formation import PROMPTS, SPECS, ORDER, STYLE, STYLE_ANCHORED  # noqa: E402
 
 OUT = Path("design/spec/minimax_formation_prompt_full.txt")
 
@@ -51,6 +51,8 @@ def main():
         A(f"说明:{ZH[name]}")
         if base:
             A(f"参考图上传:上一步生成的 {base}.png 的原图(保持构图槽位完全一致)")
+        elif name in STYLE_ANCHORED:
+            A("参考图上传:材质锚 output/imagegen/_formation_raw/formation_style_reference.png(threat_strip 与 doctrine_plate_on 两张过审原图的拼图)——新卡片必须完全匹配参考图的锻铁材质语言:拉丝金属纹、深炭色锈蚀、边角铆钉、青色仪表勾边")
         A(f"保存文件名:{name}.png")
         A("```text")
         A(PROMPTS[name])
