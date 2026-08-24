@@ -1,0 +1,112 @@
+我要为一个 2D 塔防游戏《Emberline Defense》(余烬铁道)的内容扩充生成Boss 立绘批（5 Boss × 立绘/全身/图标 = 15 张）。请先通读世界观和技术约束,严格按清单顺序生成,每张按对应文件名命名。立绘构图重心偏上(下方留 HUD 位);全身图战斗姿态;图标为剪影徽章。furnace_matriarch 按既有设计:宽矮重甲六足、炉核唯一高亮、两层可剥离炉壳可读出双相位。
+
+# 一、世界观
+
+余烬铁道的温暖衰败:锈蚀铁轨、冷却熔炉、崩塌终点站。塔=工业战争机械(锻铁+身份色发光核心);敌人=甲壳有机体(暗色+余烬点缀,有机但不恶心);Boss=庞然移动堡垒(炉核是唯一高亮源)。与现有塔/敌帧同手绘语言。
+
+# 二、技术约束
+
+- 1024×1024 透明背景 PNG(立绘/全身例外,见条目);单主体居中
+- 链式条目必须上传对应参考图原图,保持构图/剪影/接地位像素级一致
+- 边缘干净:严禁残留底、半透明雾场、棋盘格(硬性红线)
+- 手绘质感;严禁文字、水印、3D 渲染感
+
+# 三、交付清单
+
+## boss_containermaw_portrait
+保存文件名:boss_containermaw_portrait.png
+```text
+bust portrait of the containermaw boss: colossal container-handling beast, port-crane monster with a jaw that holds shipping containers, hydraulic limbs, hazard markings, ember core the only bright source, upper-weighted composition, 2D game sprite, single colossal boss, hand-painted, dark industrial ember-belt style, massive silhouette with glowing ember core as the only bright source, fully transparent background, centered, no text, no watermark
+```
+
+## boss_containermaw_fullbody
+保存文件名:boss_containermaw_fullbody.png
+```text
+full-body battle pose of the containermaw boss: colossal container-handling beast, port-crane monster with a jaw that holds shipping containers, hydraulic limbs, hazard markings, 2D game sprite, single colossal boss, hand-painted, dark industrial ember-belt style, massive silhouette with glowing ember core as the only bright source, fully transparent background, centered, no text, no watermark
+```
+
+## boss_containermaw_icon
+保存文件名:boss_containermaw_icon.png
+```text
+iconic silhouette emblem of the containermaw boss, readable at small size, 2D game sprite, single colossal boss, hand-painted, dark industrial ember-belt style, massive silhouette with glowing ember core as the only bright source, fully transparent background, centered, no text, no watermark
+```
+
+## boss_junction_tyrant_portrait
+保存文件名:boss_junction_tyrant_portrait.png
+```text
+bust portrait of the junction tyrant boss: switch-point warlord construct wielding a turnout-lever scepter, split-bodied silhouette hinting its division ability, ember core the only bright source, upper-weighted composition, 2D game sprite, single colossal boss, hand-painted, dark industrial ember-belt style, massive silhouette with glowing ember core as the only bright source, fully transparent background, centered, no text, no watermark
+```
+
+## boss_junction_tyrant_fullbody
+保存文件名:boss_junction_tyrant_fullbody.png
+```text
+full-body battle pose of the junction tyrant boss: switch-point warlord construct wielding a turnout-lever scepter, split-bodied silhouette hinting its division ability, 2D game sprite, single colossal boss, hand-painted, dark industrial ember-belt style, massive silhouette with glowing ember core as the only bright source, fully transparent background, centered, no text, no watermark
+```
+
+## boss_junction_tyrant_icon
+保存文件名:boss_junction_tyrant_icon.png
+```text
+iconic silhouette emblem of the junction tyrant boss, readable at small size, 2D game sprite, single colossal boss, hand-painted, dark industrial ember-belt style, massive silhouette with glowing ember core as the only bright source, fully transparent background, centered, no text, no watermark
+```
+
+## boss_kiln_custodian_portrait
+保存文件名:boss_kiln_custodian_portrait.png
+```text
+bust portrait of the kiln custodian boss: kiln golem with ever-thickening slag crust armor, furnace core visible through vents, ember core the only bright source, upper-weighted composition, 2D game sprite, single colossal boss, hand-painted, dark industrial ember-belt style, massive silhouette with glowing ember core as the only bright source, fully transparent background, centered, no text, no watermark
+```
+
+## boss_kiln_custodian_fullbody
+保存文件名:boss_kiln_custodian_fullbody.png
+```text
+full-body battle pose of the kiln custodian boss: kiln golem with ever-thickening slag crust armor, furnace core visible through vents, 2D game sprite, single colossal boss, hand-painted, dark industrial ember-belt style, massive silhouette with glowing ember core as the only bright source, fully transparent background, centered, no text, no watermark
+```
+
+## boss_kiln_custodian_icon
+保存文件名:boss_kiln_custodian_icon.png
+```text
+iconic silhouette emblem of the kiln custodian boss, readable at small size, 2D game sprite, single colossal boss, hand-painted, dark industrial ember-belt style, massive silhouette with glowing ember core as the only bright source, fully transparent background, centered, no text, no watermark
+```
+
+## boss_echo_harbinger_portrait
+保存文件名:boss_echo_harbinger_portrait.png
+```text
+bust portrait of the echo harbinger boss: amorphous herald core with floating weaponized afterimages mimicking tower armaments, ember core the only bright source, upper-weighted composition, 2D game sprite, single colossal boss, hand-painted, dark industrial ember-belt style, massive silhouette with glowing ember core as the only bright source, fully transparent background, centered, no text, no watermark
+```
+
+## boss_echo_harbinger_fullbody
+保存文件名:boss_echo_harbinger_fullbody.png
+```text
+full-body battle pose of the echo harbinger boss: amorphous herald core with floating weaponized afterimages mimicking tower armaments, 2D game sprite, single colossal boss, hand-painted, dark industrial ember-belt style, massive silhouette with glowing ember core as the only bright source, fully transparent background, centered, no text, no watermark
+```
+
+## boss_echo_harbinger_icon
+保存文件名:boss_echo_harbinger_icon.png
+```text
+iconic silhouette emblem of the echo harbinger boss, readable at small size, 2D game sprite, single colossal boss, hand-painted, dark industrial ember-belt style, massive silhouette with glowing ember core as the only bright source, fully transparent background, centered, no text, no watermark
+```
+
+## boss_furnace_matriarch_portrait
+保存文件名:boss_furnace_matriarch_portrait.png
+```text
+bust portrait of the furnace matriarch boss: moving fortress matriarch: wide squat heavy armor on six legs or tracks, furnace core the only bright source, two peelable shell layers readable as phase thresholds, ember core the only bright source, upper-weighted composition, 2D game sprite, single colossal boss, hand-painted, dark industrial ember-belt style, massive silhouette with glowing ember core as the only bright source, fully transparent background, centered, no text, no watermark
+```
+
+## boss_furnace_matriarch_fullbody
+保存文件名:boss_furnace_matriarch_fullbody.png
+```text
+full-body battle pose of the furnace matriarch boss: moving fortress matriarch: wide squat heavy armor on six legs or tracks, furnace core the only bright source, two peelable shell layers readable as phase thresholds, 2D game sprite, single colossal boss, hand-painted, dark industrial ember-belt style, massive silhouette with glowing ember core as the only bright source, fully transparent background, centered, no text, no watermark
+```
+
+## boss_furnace_matriarch_icon
+保存文件名:boss_furnace_matriarch_icon.png
+```text
+iconic silhouette emblem of the furnace matriarch boss, readable at small size, 2D game sprite, single colossal boss, hand-painted, dark industrial ember-belt style, massive silhouette with glowing ember core as the only bright source, fully transparent background, centered, no text, no watermark
+```
+
+# 四、产出落地与导入
+
+原图统一放 output/imagegen/_expansion_raw/,然后:
+```bash
+python tools/generate_expansion.py --batch portraits --import-only
+python tools/generate_expansion.py --only <资产名> --import-only  # 单张重导
+```

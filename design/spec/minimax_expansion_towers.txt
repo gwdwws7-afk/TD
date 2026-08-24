@@ -1,0 +1,756 @@
+我要为一个 2D 塔防游戏《Emberline Defense》(余烬铁道)的内容扩充生成扩充新塔批（4 塔 × 24 帧 + 弹/效/UI 徽章，共 107 张）。请先通读世界观和技术约束,严格按清单顺序生成,每张按对应文件名命名。每座塔先生成第 0 帧(全新),随后 01-05 帧以前一帧为参考图(细微待机摇摆);t2 每帧以对应 idle 帧为底(逐帧对应,不许多帧共用 00 底图);t3 以对应 t2 帧为底;fire 帧以 idle/t3 首帧为底只叠加开火特效。链式依赖见各条目。
+
+# 一、世界观
+
+余烬铁道的温暖衰败:锈蚀铁轨、冷却熔炉、崩塌终点站。塔=工业战争机械(锻铁+身份色发光核心);敌人=甲壳有机体(暗色+余烬点缀,有机但不恶心);Boss=庞然移动堡垒(炉核是唯一高亮源)。与现有塔/敌帧同手绘语言。
+
+# 二、技术约束
+
+- 1024×1024 透明背景 PNG(立绘/全身例外,见条目);单主体居中
+- 链式条目必须上传对应参考图原图,保持构图/剪影/接地位像素级一致
+- 边缘干净:严禁残留底、半透明雾场、棋盘格(硬性红线)
+- 手绘质感;严禁文字、水印、3D 渲染感
+
+# 三、交付清单
+
+## tower_slag_burner_00
+保存文件名:tower_slag_burner_00.png
+```text
+low-slung rail-mounted furnace wagon with a long spray-lance angled 30 degrees up, back-mounted furnace hump with swept-back chimney, small pilot flame always lit, accent glow in slag-red #D64545, 2D game sprite, single tower, hand-painted, dark industrial ember-belt style, weathered charcoal and rust-brown riveted metal, glowing amber energy details, fully transparent background, centered, three-quarter view, no text, no watermark
+```
+
+## tower_slag_burner_01
+参考图上传:output/imagegen/_expansion_raw/tower_slag_burner_00.png
+保存文件名:tower_slag_burner_01.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## tower_slag_burner_02
+参考图上传:output/imagegen/_expansion_raw/tower_slag_burner_01.png
+保存文件名:tower_slag_burner_02.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## tower_slag_burner_03
+参考图上传:output/imagegen/_expansion_raw/tower_slag_burner_02.png
+保存文件名:tower_slag_burner_03.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## tower_slag_burner_04
+参考图上传:output/imagegen/_expansion_raw/tower_slag_burner_03.png
+保存文件名:tower_slag_burner_04.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## tower_slag_burner_05
+参考图上传:output/imagegen/_expansion_raw/tower_slag_burner_04.png
+保存文件名:tower_slag_burner_05.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## tower_slag_burner_t2_00
+参考图上传:output/imagegen/_expansion_raw/tower_slag_burner_00.png
+保存文件名:tower_slag_burner_t2_00.png
+```text
+upgrade this exact tower to its tier-2 form: add twin spray nozzles and a side slag-tank with a glowing red-hot molten level window, modest mid-tier enhancement in slag-red #D64545
+```
+
+## tower_slag_burner_t2_01
+参考图上传:output/imagegen/_expansion_raw/tower_slag_burner_01.png
+保存文件名:tower_slag_burner_t2_01.png
+```text
+upgrade this exact tower to its tier-2 form: add twin spray nozzles and a side slag-tank with a glowing red-hot molten level window, modest mid-tier enhancement in slag-red #D64545
+```
+
+## tower_slag_burner_t2_02
+参考图上传:output/imagegen/_expansion_raw/tower_slag_burner_02.png
+保存文件名:tower_slag_burner_t2_02.png
+```text
+upgrade this exact tower to its tier-2 form: add twin spray nozzles and a side slag-tank with a glowing red-hot molten level window, modest mid-tier enhancement in slag-red #D64545
+```
+
+## tower_slag_burner_t2_03
+参考图上传:output/imagegen/_expansion_raw/tower_slag_burner_03.png
+保存文件名:tower_slag_burner_t2_03.png
+```text
+upgrade this exact tower to its tier-2 form: add twin spray nozzles and a side slag-tank with a glowing red-hot molten level window, modest mid-tier enhancement in slag-red #D64545
+```
+
+## tower_slag_burner_t2_04
+参考图上传:output/imagegen/_expansion_raw/tower_slag_burner_04.png
+保存文件名:tower_slag_burner_t2_04.png
+```text
+upgrade this exact tower to its tier-2 form: add twin spray nozzles and a side slag-tank with a glowing red-hot molten level window, modest mid-tier enhancement in slag-red #D64545
+```
+
+## tower_slag_burner_t2_05
+参考图上传:output/imagegen/_expansion_raw/tower_slag_burner_05.png
+保存文件名:tower_slag_burner_t2_05.png
+```text
+upgrade this exact tower to its tier-2 form: add twin spray nozzles and a side slag-tank with a glowing red-hot molten level window, modest mid-tier enhancement in slag-red #D64545
+```
+
+## tower_slag_burner_t3_00
+参考图上传:output/imagegen/_expansion_raw/tower_slag_burner_t2_00.png
+保存文件名:tower_slag_burner_t3_00.png
+```text
+final tier transformation: transform into a rolling smelting kiln: triple rotating lance barrels, enlarged furnace body, ground slag halo beneath, dramatic full upgrade
+```
+
+## tower_slag_burner_t3_01
+参考图上传:output/imagegen/_expansion_raw/tower_slag_burner_t2_01.png
+保存文件名:tower_slag_burner_t3_01.png
+```text
+final tier transformation: transform into a rolling smelting kiln: triple rotating lance barrels, enlarged furnace body, ground slag halo beneath, dramatic full upgrade
+```
+
+## tower_slag_burner_t3_02
+参考图上传:output/imagegen/_expansion_raw/tower_slag_burner_t2_02.png
+保存文件名:tower_slag_burner_t3_02.png
+```text
+final tier transformation: transform into a rolling smelting kiln: triple rotating lance barrels, enlarged furnace body, ground slag halo beneath, dramatic full upgrade
+```
+
+## tower_slag_burner_t3_03
+参考图上传:output/imagegen/_expansion_raw/tower_slag_burner_t2_03.png
+保存文件名:tower_slag_burner_t3_03.png
+```text
+final tier transformation: transform into a rolling smelting kiln: triple rotating lance barrels, enlarged furnace body, ground slag halo beneath, dramatic full upgrade
+```
+
+## tower_slag_burner_t3_04
+参考图上传:output/imagegen/_expansion_raw/tower_slag_burner_t2_04.png
+保存文件名:tower_slag_burner_t3_04.png
+```text
+final tier transformation: transform into a rolling smelting kiln: triple rotating lance barrels, enlarged furnace body, ground slag halo beneath, dramatic full upgrade
+```
+
+## tower_slag_burner_t3_05
+参考图上传:output/imagegen/_expansion_raw/tower_slag_burner_t2_05.png
+保存文件名:tower_slag_burner_t3_05.png
+```text
+final tier transformation: transform into a rolling smelting kiln: triple rotating lance barrels, enlarged furnace body, ground slag halo beneath, dramatic full upgrade
+```
+
+## tower_slag_burner_fire_00
+参考图上传:output/imagegen/_expansion_raw/tower_slag_burner_00.png
+保存文件名:tower_slag_burner_fire_00.png
+```text
+firing effect on this exact tower, body unchanged: firing wind-up: energy gathering at the muzzle, faint glow, effect in slag-red #D64545
+```
+
+## tower_slag_burner_fire_01
+参考图上传:output/imagegen/_expansion_raw/tower_slag_burner_00.png
+保存文件名:tower_slag_burner_fire_01.png
+```text
+firing effect on this exact tower, body unchanged: peak discharge: full muzzle flash with bright projectile leaving, slight recoil, effect in slag-red #D64545
+```
+
+## tower_slag_burner_fire_02
+参考图上传:output/imagegen/_expansion_raw/tower_slag_burner_00.png
+保存文件名:tower_slag_burner_fire_02.png
+```text
+firing effect on this exact tower, body unchanged: afterglow: smoke and fading embers settling, effect in slag-red #D64545
+```
+
+## tower_slag_burner_t3_fire_00
+参考图上传:output/imagegen/_expansion_raw/tower_slag_burner_t3_00.png
+保存文件名:tower_slag_burner_t3_fire_00.png
+```text
+firing effect on this exact tier-3 tower, body unchanged: firing wind-up: energy gathering at the muzzle, faint glow, effect in slag-red #D64545
+```
+
+## tower_slag_burner_t3_fire_01
+参考图上传:output/imagegen/_expansion_raw/tower_slag_burner_t3_00.png
+保存文件名:tower_slag_burner_t3_fire_01.png
+```text
+firing effect on this exact tier-3 tower, body unchanged: peak discharge: full muzzle flash with bright projectile leaving, slight recoil, effect in slag-red #D64545
+```
+
+## tower_slag_burner_t3_fire_02
+参考图上传:output/imagegen/_expansion_raw/tower_slag_burner_t3_00.png
+保存文件名:tower_slag_burner_t3_fire_02.png
+```text
+firing effect on this exact tier-3 tower, body unchanged: afterglow: smoke and fading embers settling, effect in slag-red #D64545
+```
+
+## projectile_slag_burner
+保存文件名:projectile_slag_burner.png
+```text
+flat molten-slag fire tongue with dripping embers, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## impact_slag_burner
+保存文件名:impact_slag_burner.png
+```text
+splashing slag pool with scorch ring, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## tower_slag_burner
+保存文件名:tower_slag_burner.png
+```text
+gem-badge UI icon for the slag burner tower, round riveted metal badge with glowing slag-red #D64545 core, blank core center for overlaid text
+```
+
+## tower_salvage_derrick_00
+保存文件名:tower_salvage_derrick_00.png
+```text
+rail-mounted lattice boom crane with a magnetic grapple claw reaching forward and a counterweight block at the rear, cables with subtle sag, accent glow in salvage-green #7FC86E, 2D game sprite, single tower, hand-painted, dark industrial ember-belt style, weathered charcoal and rust-brown riveted metal, glowing amber energy details, fully transparent background, centered, three-quarter view, no text, no watermark
+```
+
+## tower_salvage_derrick_01
+参考图上传:output/imagegen/_expansion_raw/tower_salvage_derrick_00.png
+保存文件名:tower_salvage_derrick_01.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## tower_salvage_derrick_02
+参考图上传:output/imagegen/_expansion_raw/tower_salvage_derrick_01.png
+保存文件名:tower_salvage_derrick_02.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## tower_salvage_derrick_03
+参考图上传:output/imagegen/_expansion_raw/tower_salvage_derrick_02.png
+保存文件名:tower_salvage_derrick_03.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## tower_salvage_derrick_04
+参考图上传:output/imagegen/_expansion_raw/tower_salvage_derrick_03.png
+保存文件名:tower_salvage_derrick_04.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## tower_salvage_derrick_05
+参考图上传:output/imagegen/_expansion_raw/tower_salvage_derrick_04.png
+保存文件名:tower_salvage_derrick_05.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## tower_salvage_derrick_t2_00
+参考图上传:output/imagegen/_expansion_raw/tower_salvage_derrick_00.png
+保存文件名:tower_salvage_derrick_t2_00.png
+```text
+upgrade this exact tower to its tier-2 form: add a secondary jib arm and a sorting hopper with a green glowing salvage window, modest mid-tier enhancement in salvage-green #7FC86E
+```
+
+## tower_salvage_derrick_t2_01
+参考图上传:output/imagegen/_expansion_raw/tower_salvage_derrick_01.png
+保存文件名:tower_salvage_derrick_t2_01.png
+```text
+upgrade this exact tower to its tier-2 form: add a secondary jib arm and a sorting hopper with a green glowing salvage window, modest mid-tier enhancement in salvage-green #7FC86E
+```
+
+## tower_salvage_derrick_t2_02
+参考图上传:output/imagegen/_expansion_raw/tower_salvage_derrick_02.png
+保存文件名:tower_salvage_derrick_t2_02.png
+```text
+upgrade this exact tower to its tier-2 form: add a secondary jib arm and a sorting hopper with a green glowing salvage window, modest mid-tier enhancement in salvage-green #7FC86E
+```
+
+## tower_salvage_derrick_t2_03
+参考图上传:output/imagegen/_expansion_raw/tower_salvage_derrick_03.png
+保存文件名:tower_salvage_derrick_t2_03.png
+```text
+upgrade this exact tower to its tier-2 form: add a secondary jib arm and a sorting hopper with a green glowing salvage window, modest mid-tier enhancement in salvage-green #7FC86E
+```
+
+## tower_salvage_derrick_t2_04
+参考图上传:output/imagegen/_expansion_raw/tower_salvage_derrick_04.png
+保存文件名:tower_salvage_derrick_t2_04.png
+```text
+upgrade this exact tower to its tier-2 form: add a secondary jib arm and a sorting hopper with a green glowing salvage window, modest mid-tier enhancement in salvage-green #7FC86E
+```
+
+## tower_salvage_derrick_t2_05
+参考图上传:output/imagegen/_expansion_raw/tower_salvage_derrick_05.png
+保存文件名:tower_salvage_derrick_t2_05.png
+```text
+upgrade this exact tower to its tier-2 form: add a secondary jib arm and a sorting hopper with a green glowing salvage window, modest mid-tier enhancement in salvage-green #7FC86E
+```
+
+## tower_salvage_derrick_t3_00
+参考图上传:output/imagegen/_expansion_raw/tower_salvage_derrick_t2_00.png
+保存文件名:tower_salvage_derrick_t3_00.png
+```text
+final tier transformation: transform into a gantry with dual arms, topped by a salvage beacon orb pulsing green light, dramatic full upgrade
+```
+
+## tower_salvage_derrick_t3_01
+参考图上传:output/imagegen/_expansion_raw/tower_salvage_derrick_t2_01.png
+保存文件名:tower_salvage_derrick_t3_01.png
+```text
+final tier transformation: transform into a gantry with dual arms, topped by a salvage beacon orb pulsing green light, dramatic full upgrade
+```
+
+## tower_salvage_derrick_t3_02
+参考图上传:output/imagegen/_expansion_raw/tower_salvage_derrick_t2_02.png
+保存文件名:tower_salvage_derrick_t3_02.png
+```text
+final tier transformation: transform into a gantry with dual arms, topped by a salvage beacon orb pulsing green light, dramatic full upgrade
+```
+
+## tower_salvage_derrick_t3_03
+参考图上传:output/imagegen/_expansion_raw/tower_salvage_derrick_t2_03.png
+保存文件名:tower_salvage_derrick_t3_03.png
+```text
+final tier transformation: transform into a gantry with dual arms, topped by a salvage beacon orb pulsing green light, dramatic full upgrade
+```
+
+## tower_salvage_derrick_t3_04
+参考图上传:output/imagegen/_expansion_raw/tower_salvage_derrick_t2_04.png
+保存文件名:tower_salvage_derrick_t3_04.png
+```text
+final tier transformation: transform into a gantry with dual arms, topped by a salvage beacon orb pulsing green light, dramatic full upgrade
+```
+
+## tower_salvage_derrick_t3_05
+参考图上传:output/imagegen/_expansion_raw/tower_salvage_derrick_t2_05.png
+保存文件名:tower_salvage_derrick_t3_05.png
+```text
+final tier transformation: transform into a gantry with dual arms, topped by a salvage beacon orb pulsing green light, dramatic full upgrade
+```
+
+## tower_salvage_derrick_fire_00
+参考图上传:output/imagegen/_expansion_raw/tower_salvage_derrick_00.png
+保存文件名:tower_salvage_derrick_fire_00.png
+```text
+firing effect on this exact tower, body unchanged: firing wind-up: energy gathering at the muzzle, faint glow, effect in salvage-green #7FC86E
+```
+
+## tower_salvage_derrick_fire_01
+参考图上传:output/imagegen/_expansion_raw/tower_salvage_derrick_00.png
+保存文件名:tower_salvage_derrick_fire_01.png
+```text
+firing effect on this exact tower, body unchanged: peak discharge: full muzzle flash with bright projectile leaving, slight recoil, effect in salvage-green #7FC86E
+```
+
+## tower_salvage_derrick_fire_02
+参考图上传:output/imagegen/_expansion_raw/tower_salvage_derrick_00.png
+保存文件名:tower_salvage_derrick_fire_02.png
+```text
+firing effect on this exact tower, body unchanged: afterglow: smoke and fading embers settling, effect in salvage-green #7FC86E
+```
+
+## tower_salvage_derrick_t3_fire_00
+参考图上传:output/imagegen/_expansion_raw/tower_salvage_derrick_t3_00.png
+保存文件名:tower_salvage_derrick_t3_fire_00.png
+```text
+firing effect on this exact tier-3 tower, body unchanged: firing wind-up: energy gathering at the muzzle, faint glow, effect in salvage-green #7FC86E
+```
+
+## tower_salvage_derrick_t3_fire_01
+参考图上传:output/imagegen/_expansion_raw/tower_salvage_derrick_t3_00.png
+保存文件名:tower_salvage_derrick_t3_fire_01.png
+```text
+firing effect on this exact tier-3 tower, body unchanged: peak discharge: full muzzle flash with bright projectile leaving, slight recoil, effect in salvage-green #7FC86E
+```
+
+## tower_salvage_derrick_t3_fire_02
+参考图上传:output/imagegen/_expansion_raw/tower_salvage_derrick_t3_00.png
+保存文件名:tower_salvage_derrick_t3_fire_02.png
+```text
+firing effect on this exact tier-3 tower, body unchanged: afterglow: smoke and fading embers settling, effect in salvage-green #7FC86E
+```
+
+## projectile_salvage_derrick
+保存文件名:projectile_salvage_derrick.png
+```text
+hooked claw shot on a taut cable, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## impact_salvage_derrick
+保存文件名:impact_salvage_derrick.png
+```text
+bounty vortex pulling glints of scrap inward, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## tower_salvage_derrick
+保存文件名:tower_salvage_derrick.png
+```text
+gem-badge UI icon for the salvage derrick tower, round riveted metal badge with glowing salvage-green #7FC86E core, blank core center for overlaid text
+```
+
+## tower_rail_barricade_00
+保存文件名:tower_rail_barricade_00.png
+```text
+tracked armored rail vehicle with a wedge plow blade up front and a roof searchlight, diagonal hazard stripes on the hull, accent glow in hazard steel-blue #5D8AA8 with yellow-black hazard stripes, 2D game sprite, single tower, hand-painted, dark industrial ember-belt style, weathered charcoal and rust-brown riveted metal, glowing amber energy details, fully transparent background, centered, three-quarter view, no text, no watermark
+```
+
+## tower_rail_barricade_01
+参考图上传:output/imagegen/_expansion_raw/tower_rail_barricade_00.png
+保存文件名:tower_rail_barricade_01.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## tower_rail_barricade_02
+参考图上传:output/imagegen/_expansion_raw/tower_rail_barricade_01.png
+保存文件名:tower_rail_barricade_02.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## tower_rail_barricade_03
+参考图上传:output/imagegen/_expansion_raw/tower_rail_barricade_02.png
+保存文件名:tower_rail_barricade_03.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## tower_rail_barricade_04
+参考图上传:output/imagegen/_expansion_raw/tower_rail_barricade_03.png
+保存文件名:tower_rail_barricade_04.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## tower_rail_barricade_05
+参考图上传:output/imagegen/_expansion_raw/tower_rail_barricade_04.png
+保存文件名:tower_rail_barricade_05.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## tower_rail_barricade_t2_00
+参考图上传:output/imagegen/_expansion_raw/tower_rail_barricade_00.png
+保存文件名:tower_rail_barricade_t2_00.png
+```text
+upgrade this exact tower to its tier-2 form: add side-deploying wing gates and a crumple-buffer honeycomb layer, modest mid-tier enhancement in hazard steel-blue #5D8AA8 with yellow-black hazard stripes
+```
+
+## tower_rail_barricade_t2_01
+参考图上传:output/imagegen/_expansion_raw/tower_rail_barricade_01.png
+保存文件名:tower_rail_barricade_t2_01.png
+```text
+upgrade this exact tower to its tier-2 form: add side-deploying wing gates and a crumple-buffer honeycomb layer, modest mid-tier enhancement in hazard steel-blue #5D8AA8 with yellow-black hazard stripes
+```
+
+## tower_rail_barricade_t2_02
+参考图上传:output/imagegen/_expansion_raw/tower_rail_barricade_02.png
+保存文件名:tower_rail_barricade_t2_02.png
+```text
+upgrade this exact tower to its tier-2 form: add side-deploying wing gates and a crumple-buffer honeycomb layer, modest mid-tier enhancement in hazard steel-blue #5D8AA8 with yellow-black hazard stripes
+```
+
+## tower_rail_barricade_t2_03
+参考图上传:output/imagegen/_expansion_raw/tower_rail_barricade_03.png
+保存文件名:tower_rail_barricade_t2_03.png
+```text
+upgrade this exact tower to its tier-2 form: add side-deploying wing gates and a crumple-buffer honeycomb layer, modest mid-tier enhancement in hazard steel-blue #5D8AA8 with yellow-black hazard stripes
+```
+
+## tower_rail_barricade_t2_04
+参考图上传:output/imagegen/_expansion_raw/tower_rail_barricade_04.png
+保存文件名:tower_rail_barricade_t2_04.png
+```text
+upgrade this exact tower to its tier-2 form: add side-deploying wing gates and a crumple-buffer honeycomb layer, modest mid-tier enhancement in hazard steel-blue #5D8AA8 with yellow-black hazard stripes
+```
+
+## tower_rail_barricade_t2_05
+参考图上传:output/imagegen/_expansion_raw/tower_rail_barricade_05.png
+保存文件名:tower_rail_barricade_t2_05.png
+```text
+upgrade this exact tower to its tier-2 form: add side-deploying wing gates and a crumple-buffer honeycomb layer, modest mid-tier enhancement in hazard steel-blue #5D8AA8 with yellow-black hazard stripes
+```
+
+## tower_rail_barricade_t3_00
+参考图上传:output/imagegen/_expansion_raw/tower_rail_barricade_t2_00.png
+保存文件名:tower_rail_barricade_t3_00.png
+```text
+final tier transformation: transform into a full-width double-hull barricade: two vehicles riveted side by side, detonation preheat pipes glowing dull red, dramatic full upgrade
+```
+
+## tower_rail_barricade_t3_01
+参考图上传:output/imagegen/_expansion_raw/tower_rail_barricade_t2_01.png
+保存文件名:tower_rail_barricade_t3_01.png
+```text
+final tier transformation: transform into a full-width double-hull barricade: two vehicles riveted side by side, detonation preheat pipes glowing dull red, dramatic full upgrade
+```
+
+## tower_rail_barricade_t3_02
+参考图上传:output/imagegen/_expansion_raw/tower_rail_barricade_t2_02.png
+保存文件名:tower_rail_barricade_t3_02.png
+```text
+final tier transformation: transform into a full-width double-hull barricade: two vehicles riveted side by side, detonation preheat pipes glowing dull red, dramatic full upgrade
+```
+
+## tower_rail_barricade_t3_03
+参考图上传:output/imagegen/_expansion_raw/tower_rail_barricade_t2_03.png
+保存文件名:tower_rail_barricade_t3_03.png
+```text
+final tier transformation: transform into a full-width double-hull barricade: two vehicles riveted side by side, detonation preheat pipes glowing dull red, dramatic full upgrade
+```
+
+## tower_rail_barricade_t3_04
+参考图上传:output/imagegen/_expansion_raw/tower_rail_barricade_t2_04.png
+保存文件名:tower_rail_barricade_t3_04.png
+```text
+final tier transformation: transform into a full-width double-hull barricade: two vehicles riveted side by side, detonation preheat pipes glowing dull red, dramatic full upgrade
+```
+
+## tower_rail_barricade_t3_05
+参考图上传:output/imagegen/_expansion_raw/tower_rail_barricade_t2_05.png
+保存文件名:tower_rail_barricade_t3_05.png
+```text
+final tier transformation: transform into a full-width double-hull barricade: two vehicles riveted side by side, detonation preheat pipes glowing dull red, dramatic full upgrade
+```
+
+## tower_rail_barricade_fire_00
+参考图上传:output/imagegen/_expansion_raw/tower_rail_barricade_00.png
+保存文件名:tower_rail_barricade_fire_00.png
+```text
+firing effect on this exact tower, body unchanged: firing wind-up: energy gathering at the muzzle, faint glow, effect in hazard steel-blue #5D8AA8 with yellow-black hazard stripes
+```
+
+## tower_rail_barricade_fire_01
+参考图上传:output/imagegen/_expansion_raw/tower_rail_barricade_00.png
+保存文件名:tower_rail_barricade_fire_01.png
+```text
+firing effect on this exact tower, body unchanged: peak discharge: full muzzle flash with bright projectile leaving, slight recoil, effect in hazard steel-blue #5D8AA8 with yellow-black hazard stripes
+```
+
+## tower_rail_barricade_fire_02
+参考图上传:output/imagegen/_expansion_raw/tower_rail_barricade_00.png
+保存文件名:tower_rail_barricade_fire_02.png
+```text
+firing effect on this exact tower, body unchanged: afterglow: smoke and fading embers settling, effect in hazard steel-blue #5D8AA8 with yellow-black hazard stripes
+```
+
+## tower_rail_barricade_t3_fire_00
+参考图上传:output/imagegen/_expansion_raw/tower_rail_barricade_t3_00.png
+保存文件名:tower_rail_barricade_t3_fire_00.png
+```text
+firing effect on this exact tier-3 tower, body unchanged: firing wind-up: energy gathering at the muzzle, faint glow, effect in hazard steel-blue #5D8AA8 with yellow-black hazard stripes
+```
+
+## tower_rail_barricade_t3_fire_01
+参考图上传:output/imagegen/_expansion_raw/tower_rail_barricade_t3_00.png
+保存文件名:tower_rail_barricade_t3_fire_01.png
+```text
+firing effect on this exact tier-3 tower, body unchanged: peak discharge: full muzzle flash with bright projectile leaving, slight recoil, effect in hazard steel-blue #5D8AA8 with yellow-black hazard stripes
+```
+
+## tower_rail_barricade_t3_fire_02
+参考图上传:output/imagegen/_expansion_raw/tower_rail_barricade_t3_00.png
+保存文件名:tower_rail_barricade_t3_fire_02.png
+```text
+firing effect on this exact tier-3 tower, body unchanged: afterglow: smoke and fading embers settling, effect in hazard steel-blue #5D8AA8 with yellow-black hazard stripes
+```
+
+## impact_rail_barricade
+保存文件名:impact_rail_barricade.png
+```text
+ramming dust storm with metal shards, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## tower_rail_barricade
+保存文件名:tower_rail_barricade.png
+```text
+gem-badge UI icon for the rail barricade tower, round riveted metal badge with glowing hazard steel-blue #5D8AA8 with yellow-black hazard stripes core, blank core center for overlaid text
+```
+
+## tower_long_rail_cannon_00
+保存文件名:tower_long_rail_cannon_00.png
+```text
+extra-long twin-rail cannon on a heavy anchored base, multi-stage accelerator rings along the rails, rear grounding stakes with cables, barrel angled 15 degrees up, accent glow in deep-space violet #6C5CE7, 2D game sprite, single tower, hand-painted, dark industrial ember-belt style, weathered charcoal and rust-brown riveted metal, glowing amber energy details, fully transparent background, centered, three-quarter view, no text, no watermark
+```
+
+## tower_long_rail_cannon_01
+参考图上传:output/imagegen/_expansion_raw/tower_long_rail_cannon_00.png
+保存文件名:tower_long_rail_cannon_01.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## tower_long_rail_cannon_02
+参考图上传:output/imagegen/_expansion_raw/tower_long_rail_cannon_01.png
+保存文件名:tower_long_rail_cannon_02.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## tower_long_rail_cannon_03
+参考图上传:output/imagegen/_expansion_raw/tower_long_rail_cannon_02.png
+保存文件名:tower_long_rail_cannon_03.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## tower_long_rail_cannon_04
+参考图上传:output/imagegen/_expansion_raw/tower_long_rail_cannon_03.png
+保存文件名:tower_long_rail_cannon_04.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## tower_long_rail_cannon_05
+参考图上传:output/imagegen/_expansion_raw/tower_long_rail_cannon_04.png
+保存文件名:tower_long_rail_cannon_05.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## tower_long_rail_cannon_t2_00
+参考图上传:output/imagegen/_expansion_raw/tower_long_rail_cannon_00.png
+保存文件名:tower_long_rail_cannon_t2_00.png
+```text
+upgrade this exact tower to its tier-2 form: add two more accelerator rings and a loading magazine drum, modest mid-tier enhancement in deep-space violet #6C5CE7
+```
+
+## tower_long_rail_cannon_t2_01
+参考图上传:output/imagegen/_expansion_raw/tower_long_rail_cannon_01.png
+保存文件名:tower_long_rail_cannon_t2_01.png
+```text
+upgrade this exact tower to its tier-2 form: add two more accelerator rings and a loading magazine drum, modest mid-tier enhancement in deep-space violet #6C5CE7
+```
+
+## tower_long_rail_cannon_t2_02
+参考图上传:output/imagegen/_expansion_raw/tower_long_rail_cannon_02.png
+保存文件名:tower_long_rail_cannon_t2_02.png
+```text
+upgrade this exact tower to its tier-2 form: add two more accelerator rings and a loading magazine drum, modest mid-tier enhancement in deep-space violet #6C5CE7
+```
+
+## tower_long_rail_cannon_t2_03
+参考图上传:output/imagegen/_expansion_raw/tower_long_rail_cannon_03.png
+保存文件名:tower_long_rail_cannon_t2_03.png
+```text
+upgrade this exact tower to its tier-2 form: add two more accelerator rings and a loading magazine drum, modest mid-tier enhancement in deep-space violet #6C5CE7
+```
+
+## tower_long_rail_cannon_t2_04
+参考图上传:output/imagegen/_expansion_raw/tower_long_rail_cannon_04.png
+保存文件名:tower_long_rail_cannon_t2_04.png
+```text
+upgrade this exact tower to its tier-2 form: add two more accelerator rings and a loading magazine drum, modest mid-tier enhancement in deep-space violet #6C5CE7
+```
+
+## tower_long_rail_cannon_t2_05
+参考图上传:output/imagegen/_expansion_raw/tower_long_rail_cannon_05.png
+保存文件名:tower_long_rail_cannon_t2_05.png
+```text
+upgrade this exact tower to its tier-2 form: add two more accelerator rings and a loading magazine drum, modest mid-tier enhancement in deep-space violet #6C5CE7
+```
+
+## tower_long_rail_cannon_t3_00
+参考图上传:output/imagegen/_expansion_raw/tower_long_rail_cannon_t2_00.png
+保存文件名:tower_long_rail_cannon_t3_00.png
+```text
+final tier transformation: transform with rails extending beyond frame edge, violet lightning arcing permanently along the rails, dramatic full upgrade
+```
+
+## tower_long_rail_cannon_t3_01
+参考图上传:output/imagegen/_expansion_raw/tower_long_rail_cannon_t2_01.png
+保存文件名:tower_long_rail_cannon_t3_01.png
+```text
+final tier transformation: transform with rails extending beyond frame edge, violet lightning arcing permanently along the rails, dramatic full upgrade
+```
+
+## tower_long_rail_cannon_t3_02
+参考图上传:output/imagegen/_expansion_raw/tower_long_rail_cannon_t2_02.png
+保存文件名:tower_long_rail_cannon_t3_02.png
+```text
+final tier transformation: transform with rails extending beyond frame edge, violet lightning arcing permanently along the rails, dramatic full upgrade
+```
+
+## tower_long_rail_cannon_t3_03
+参考图上传:output/imagegen/_expansion_raw/tower_long_rail_cannon_t2_03.png
+保存文件名:tower_long_rail_cannon_t3_03.png
+```text
+final tier transformation: transform with rails extending beyond frame edge, violet lightning arcing permanently along the rails, dramatic full upgrade
+```
+
+## tower_long_rail_cannon_t3_04
+参考图上传:output/imagegen/_expansion_raw/tower_long_rail_cannon_t2_04.png
+保存文件名:tower_long_rail_cannon_t3_04.png
+```text
+final tier transformation: transform with rails extending beyond frame edge, violet lightning arcing permanently along the rails, dramatic full upgrade
+```
+
+## tower_long_rail_cannon_t3_05
+参考图上传:output/imagegen/_expansion_raw/tower_long_rail_cannon_t2_05.png
+保存文件名:tower_long_rail_cannon_t3_05.png
+```text
+final tier transformation: transform with rails extending beyond frame edge, violet lightning arcing permanently along the rails, dramatic full upgrade
+```
+
+## tower_long_rail_cannon_fire_00
+参考图上传:output/imagegen/_expansion_raw/tower_long_rail_cannon_00.png
+保存文件名:tower_long_rail_cannon_fire_00.png
+```text
+firing effect on this exact tower, body unchanged: firing wind-up: energy gathering at the muzzle, faint glow, effect in deep-space violet #6C5CE7
+```
+
+## tower_long_rail_cannon_fire_01
+参考图上传:output/imagegen/_expansion_raw/tower_long_rail_cannon_00.png
+保存文件名:tower_long_rail_cannon_fire_01.png
+```text
+firing effect on this exact tower, body unchanged: peak discharge: full muzzle flash with bright projectile leaving, slight recoil, effect in deep-space violet #6C5CE7
+```
+
+## tower_long_rail_cannon_fire_02
+参考图上传:output/imagegen/_expansion_raw/tower_long_rail_cannon_00.png
+保存文件名:tower_long_rail_cannon_fire_02.png
+```text
+firing effect on this exact tower, body unchanged: afterglow: smoke and fading embers settling, effect in deep-space violet #6C5CE7
+```
+
+## tower_long_rail_cannon_t3_fire_00
+参考图上传:output/imagegen/_expansion_raw/tower_long_rail_cannon_t3_00.png
+保存文件名:tower_long_rail_cannon_t3_fire_00.png
+```text
+firing effect on this exact tier-3 tower, body unchanged: firing wind-up: energy gathering at the muzzle, faint glow, effect in deep-space violet #6C5CE7
+```
+
+## tower_long_rail_cannon_t3_fire_01
+参考图上传:output/imagegen/_expansion_raw/tower_long_rail_cannon_t3_00.png
+保存文件名:tower_long_rail_cannon_t3_fire_01.png
+```text
+firing effect on this exact tier-3 tower, body unchanged: peak discharge: full muzzle flash with bright projectile leaving, slight recoil, effect in deep-space violet #6C5CE7
+```
+
+## tower_long_rail_cannon_t3_fire_02
+参考图上传:output/imagegen/_expansion_raw/tower_long_rail_cannon_t3_00.png
+保存文件名:tower_long_rail_cannon_t3_fire_02.png
+```text
+firing effect on this exact tier-3 tower, body unchanged: afterglow: smoke and fading embers settling, effect in deep-space violet #6C5CE7
+```
+
+## projectile_long_rail_cannon
+保存文件名:projectile_long_rail_cannon.png
+```text
+piercing violet plasma spike, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## impact_long_rail_cannon
+保存文件名:impact_long_rail_cannon.png
+```text
+line-puncture ionization trail, blue-violet, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## tower_long_rail_cannon
+保存文件名:tower_long_rail_cannon.png
+```text
+gem-badge UI icon for the long rail cannon tower, round riveted metal badge with glowing deep-space violet #6C5CE7 core, blank core center for overlaid text
+```
+
+# 四、产出落地与导入
+
+原图统一放 output/imagegen/_expansion_raw/,然后:
+```bash
+python tools/generate_expansion.py --batch towers --import-only
+python tools/generate_expansion.py --only <资产名> --import-only  # 单张重导
+```

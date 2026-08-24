@@ -32,6 +32,7 @@ namespace TD.Editor
         private const string ART_ROOT       = "Assets/Resources/Art/";
         private const string UI_CAMPAIGN_DIR = "Assets/Resources/Art/UI/Campaign/";
         private const string UI_FORMATION_DIR = "Assets/Resources/Art/UI/Formation/";
+        private const string BOSS_DIR = "Assets/Resources/Art/Boss/";
         private const int    PPU_TARGET     = 1024;
 
         // OnPreprocessTexture fires before texture is imported (raw import).
@@ -46,6 +47,7 @@ namespace TD.Editor
             // (commit 3351e4b): 1024 max. The full-screen background is
             // opaque and uses DXT5 elsewhere, so it alone gets DXT1.
             var maxTex = assetPath.StartsWith(UI_CAMPAIGN_DIR, System.StringComparison.OrdinalIgnoreCase)
+                || assetPath.StartsWith(BOSS_DIR, System.StringComparison.OrdinalIgnoreCase)
                 ? 1024 : 512;
             var format = assetPath.EndsWith("world_map_bg.png", System.StringComparison.OrdinalIgnoreCase)
                 ? TextureImporterFormat.DXT1 : TextureImporterFormat.DXT5;
@@ -92,6 +94,18 @@ namespace TD.Editor
                 return true;
             if (path.StartsWith(UI_FORMATION_DIR, System.StringComparison.OrdinalIgnoreCase))
                 return true;
+            if (path.StartsWith(BOSS_DIR, System.StringComparison.OrdinalIgnoreCase))
+                return true;
+            // Expansion assets under the art root: projectiles/impacts in
+            // Combat/P11, badges in UI/P11, boss frames handled above.
+            if (path.StartsWith(ART_ROOT, System.StringComparison.OrdinalIgnoreCase))
+            {
+                var expansionName = Path.GetFileName(path);
+                if (expansionName.StartsWith("projectile_", System.StringComparison.Ordinal)
+                    || expansionName.StartsWith("impact_", System.StringComparison.Ordinal)
+                    || expansionName.StartsWith("boss_", System.StringComparison.Ordinal))
+                    return true;
+            }
             if (path.StartsWith(ANIM_DIR, System.StringComparison.OrdinalIgnoreCase)
                 && (Path.GetFileName(path).StartsWith("fx_", System.StringComparison.Ordinal)
                     || (Path.GetFileName(path).StartsWith("tower_", System.StringComparison.Ordinal)

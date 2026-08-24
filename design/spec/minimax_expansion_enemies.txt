@@ -1,0 +1,736 @@
+我要为一个 2D 塔防游戏《Emberline Defense》(余烬铁道)的内容扩充生成扩充新敌批（6 敌 × idle 8 + death 4 + 行为 FX 6，共 108 张）。请先通读世界观和技术约束,严格按清单顺序生成,每张按对应文件名命名。每敌第 0 帧全新,01-07 帧以前一帧为参考图(待机运动);death 4 帧以 idle 首帧为底按死亡四段推进;行为 FX 为独立特效序列不需要底图。
+
+# 一、世界观
+
+余烬铁道的温暖衰败:锈蚀铁轨、冷却熔炉、崩塌终点站。塔=工业战争机械(锻铁+身份色发光核心);敌人=甲壳有机体(暗色+余烬点缀,有机但不恶心);Boss=庞然移动堡垒(炉核是唯一高亮源)。与现有塔/敌帧同手绘语言。
+
+# 二、技术约束
+
+- 1024×1024 透明背景 PNG(立绘/全身例外,见条目);单主体居中
+- 链式条目必须上传对应参考图原图,保持构图/剪影/接地位像素级一致
+- 边缘干净:严禁残留底、半透明雾场、棋盘格(硬性红线)
+- 手绘质感;严禁文字、水印、3D 渲染感
+
+# 三、交付清单
+
+## enemy_cinder_husk_00
+保存文件名:enemy_cinder_husk_00.png
+```text
+shambling charred humanoid husk, ember cracks glowing at the joints, dragging gait, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## enemy_cinder_husk_01
+参考图上传:output/imagegen/_expansion_raw/enemy_cinder_husk_00.png
+保存文件名:enemy_cinder_husk_01.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_cinder_husk_02
+参考图上传:output/imagegen/_expansion_raw/enemy_cinder_husk_01.png
+保存文件名:enemy_cinder_husk_02.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_cinder_husk_03
+参考图上传:output/imagegen/_expansion_raw/enemy_cinder_husk_02.png
+保存文件名:enemy_cinder_husk_03.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_cinder_husk_04
+参考图上传:output/imagegen/_expansion_raw/enemy_cinder_husk_03.png
+保存文件名:enemy_cinder_husk_04.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_cinder_husk_05
+参考图上传:output/imagegen/_expansion_raw/enemy_cinder_husk_04.png
+保存文件名:enemy_cinder_husk_05.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_cinder_husk_06
+参考图上传:output/imagegen/_expansion_raw/enemy_cinder_husk_05.png
+保存文件名:enemy_cinder_husk_06.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_cinder_husk_07
+参考图上传:output/imagegen/_expansion_raw/enemy_cinder_husk_06.png
+保存文件名:enemy_cinder_husk_07.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_cinder_husk_death_00
+参考图上传:output/imagegen/_expansion_raw/enemy_cinder_husk_00.png
+保存文件名:enemy_cinder_husk_death_00.png
+```text
+death sequence of this exact creature, the death moment: destruction just beginning, pose continuous with the living frame, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## enemy_cinder_husk_death_01
+参考图上传:output/imagegen/_expansion_raw/enemy_cinder_husk_00.png
+保存文件名:enemy_cinder_husk_death_01.png
+```text
+death sequence of this exact creature, destruction mid-progress, body breaking apart, embers scattering, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## enemy_cinder_husk_death_02
+参考图上传:output/imagegen/_expansion_raw/enemy_cinder_husk_00.png
+保存文件名:enemy_cinder_husk_death_02.png
+```text
+death sequence of this exact creature, near-wreck, slumped geometry, dimming glow, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## enemy_cinder_husk_death_03
+参考图上传:output/imagegen/_expansion_raw/enemy_cinder_husk_00.png
+保存文件名:enemy_cinder_husk_death_03.png
+```text
+death sequence of this exact creature, final wreckage freeze, dark inert remains, faint dying embers, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## fx_ember_pile_00
+保存文件名:fx_ember_pile_00.png
+```text
+small pile of glowing embers left on the ground, warm orange glow, embers fading over time, animation stage: faint start, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_ember_pile_01
+保存文件名:fx_ember_pile_01.png
+```text
+small pile of glowing embers left on the ground, warm orange glow, embers fading over time, animation stage: building, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_ember_pile_02
+保存文件名:fx_ember_pile_02.png
+```text
+small pile of glowing embers left on the ground, warm orange glow, embers fading over time, animation stage: peak, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_ember_pile_03
+保存文件名:fx_ember_pile_03.png
+```text
+small pile of glowing embers left on the ground, warm orange glow, embers fading over time, animation stage: early fade, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_ember_pile_04
+保存文件名:fx_ember_pile_04.png
+```text
+small pile of glowing embers left on the ground, warm orange glow, embers fading over time, animation stage: late fade, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_ember_pile_05
+保存文件名:fx_ember_pile_05.png
+```text
+small pile of glowing embers left on the ground, warm orange glow, embers fading over time, animation stage: final wisp, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## enemy_rail_splitter_00
+保存文件名:enemy_rail_splitter_00.png
+```text
+flat segmented worm slithering along a rail, wedge-shaped head, segment plates catching light, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## enemy_rail_splitter_01
+参考图上传:output/imagegen/_expansion_raw/enemy_rail_splitter_00.png
+保存文件名:enemy_rail_splitter_01.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_rail_splitter_02
+参考图上传:output/imagegen/_expansion_raw/enemy_rail_splitter_01.png
+保存文件名:enemy_rail_splitter_02.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_rail_splitter_03
+参考图上传:output/imagegen/_expansion_raw/enemy_rail_splitter_02.png
+保存文件名:enemy_rail_splitter_03.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_rail_splitter_04
+参考图上传:output/imagegen/_expansion_raw/enemy_rail_splitter_03.png
+保存文件名:enemy_rail_splitter_04.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_rail_splitter_05
+参考图上传:output/imagegen/_expansion_raw/enemy_rail_splitter_04.png
+保存文件名:enemy_rail_splitter_05.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_rail_splitter_06
+参考图上传:output/imagegen/_expansion_raw/enemy_rail_splitter_05.png
+保存文件名:enemy_rail_splitter_06.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_rail_splitter_07
+参考图上传:output/imagegen/_expansion_raw/enemy_rail_splitter_06.png
+保存文件名:enemy_rail_splitter_07.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_rail_splitter_death_00
+参考图上传:output/imagegen/_expansion_raw/enemy_rail_splitter_00.png
+保存文件名:enemy_rail_splitter_death_00.png
+```text
+death sequence of this exact creature, the death moment: destruction just beginning, pose continuous with the living frame, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## enemy_rail_splitter_death_01
+参考图上传:output/imagegen/_expansion_raw/enemy_rail_splitter_00.png
+保存文件名:enemy_rail_splitter_death_01.png
+```text
+death sequence of this exact creature, destruction mid-progress, body breaking apart, embers scattering, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## enemy_rail_splitter_death_02
+参考图上传:output/imagegen/_expansion_raw/enemy_rail_splitter_00.png
+保存文件名:enemy_rail_splitter_death_02.png
+```text
+death sequence of this exact creature, near-wreck, slumped geometry, dimming glow, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## enemy_rail_splitter_death_03
+参考图上传:output/imagegen/_expansion_raw/enemy_rail_splitter_00.png
+保存文件名:enemy_rail_splitter_death_03.png
+```text
+death sequence of this exact creature, final wreckage freeze, dark inert remains, faint dying embers, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## fx_speed_streak_00
+保存文件名:fx_speed_streak_00.png
+```text
+blue-white speed streak trail behind a fast mover, straight-line dash emphasis, animation stage: faint start, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_speed_streak_01
+保存文件名:fx_speed_streak_01.png
+```text
+blue-white speed streak trail behind a fast mover, straight-line dash emphasis, animation stage: building, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_speed_streak_02
+保存文件名:fx_speed_streak_02.png
+```text
+blue-white speed streak trail behind a fast mover, straight-line dash emphasis, animation stage: peak, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_speed_streak_03
+保存文件名:fx_speed_streak_03.png
+```text
+blue-white speed streak trail behind a fast mover, straight-line dash emphasis, animation stage: early fade, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_speed_streak_04
+保存文件名:fx_speed_streak_04.png
+```text
+blue-white speed streak trail behind a fast mover, straight-line dash emphasis, animation stage: late fade, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_speed_streak_05
+保存文件名:fx_speed_streak_05.png
+```text
+blue-white speed streak trail behind a fast mover, straight-line dash emphasis, animation stage: final wisp, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## enemy_acid_blister_00
+保存文件名:enemy_acid_blister_00.png
+```text
+bloated translucent acid sac creature, yellow-green fluid with visible bubbles inside, slow crawl, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## enemy_acid_blister_01
+参考图上传:output/imagegen/_expansion_raw/enemy_acid_blister_00.png
+保存文件名:enemy_acid_blister_01.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_acid_blister_02
+参考图上传:output/imagegen/_expansion_raw/enemy_acid_blister_01.png
+保存文件名:enemy_acid_blister_02.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_acid_blister_03
+参考图上传:output/imagegen/_expansion_raw/enemy_acid_blister_02.png
+保存文件名:enemy_acid_blister_03.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_acid_blister_04
+参考图上传:output/imagegen/_expansion_raw/enemy_acid_blister_03.png
+保存文件名:enemy_acid_blister_04.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_acid_blister_05
+参考图上传:output/imagegen/_expansion_raw/enemy_acid_blister_04.png
+保存文件名:enemy_acid_blister_05.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_acid_blister_06
+参考图上传:output/imagegen/_expansion_raw/enemy_acid_blister_05.png
+保存文件名:enemy_acid_blister_06.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_acid_blister_07
+参考图上传:output/imagegen/_expansion_raw/enemy_acid_blister_06.png
+保存文件名:enemy_acid_blister_07.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_acid_blister_death_00
+参考图上传:output/imagegen/_expansion_raw/enemy_acid_blister_00.png
+保存文件名:enemy_acid_blister_death_00.png
+```text
+death sequence of this exact creature, the death moment: destruction just beginning, pose continuous with the living frame, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## enemy_acid_blister_death_01
+参考图上传:output/imagegen/_expansion_raw/enemy_acid_blister_00.png
+保存文件名:enemy_acid_blister_death_01.png
+```text
+death sequence of this exact creature, destruction mid-progress, body breaking apart, embers scattering, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## enemy_acid_blister_death_02
+参考图上传:output/imagegen/_expansion_raw/enemy_acid_blister_00.png
+保存文件名:enemy_acid_blister_death_02.png
+```text
+death sequence of this exact creature, near-wreck, slumped geometry, dimming glow, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## enemy_acid_blister_death_03
+参考图上传:output/imagegen/_expansion_raw/enemy_acid_blister_00.png
+保存文件名:enemy_acid_blister_death_03.png
+```text
+death sequence of this exact creature, final wreckage freeze, dark inert remains, faint dying embers, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## fx_acid_burst_00
+保存文件名:fx_acid_burst_00.png
+```text
+green acid splash cloud with corrosion ring spreading outward, animation stage: faint start, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_acid_burst_01
+保存文件名:fx_acid_burst_01.png
+```text
+green acid splash cloud with corrosion ring spreading outward, animation stage: building, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_acid_burst_02
+保存文件名:fx_acid_burst_02.png
+```text
+green acid splash cloud with corrosion ring spreading outward, animation stage: peak, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_acid_burst_03
+保存文件名:fx_acid_burst_03.png
+```text
+green acid splash cloud with corrosion ring spreading outward, animation stage: early fade, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_acid_burst_04
+保存文件名:fx_acid_burst_04.png
+```text
+green acid splash cloud with corrosion ring spreading outward, animation stage: late fade, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_acid_burst_05
+保存文件名:fx_acid_burst_05.png
+```text
+green acid splash cloud with corrosion ring spreading outward, animation stage: final wisp, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## enemy_forge_dragoon_00
+保存文件名:enemy_forge_dragoon_00.png
+```text
+heavy armored rider construct on stumpy legs, layered shield plates, forge-red seams between plates, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## enemy_forge_dragoon_01
+参考图上传:output/imagegen/_expansion_raw/enemy_forge_dragoon_00.png
+保存文件名:enemy_forge_dragoon_01.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_forge_dragoon_02
+参考图上传:output/imagegen/_expansion_raw/enemy_forge_dragoon_01.png
+保存文件名:enemy_forge_dragoon_02.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_forge_dragoon_03
+参考图上传:output/imagegen/_expansion_raw/enemy_forge_dragoon_02.png
+保存文件名:enemy_forge_dragoon_03.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_forge_dragoon_04
+参考图上传:output/imagegen/_expansion_raw/enemy_forge_dragoon_03.png
+保存文件名:enemy_forge_dragoon_04.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_forge_dragoon_05
+参考图上传:output/imagegen/_expansion_raw/enemy_forge_dragoon_04.png
+保存文件名:enemy_forge_dragoon_05.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_forge_dragoon_06
+参考图上传:output/imagegen/_expansion_raw/enemy_forge_dragoon_05.png
+保存文件名:enemy_forge_dragoon_06.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_forge_dragoon_07
+参考图上传:output/imagegen/_expansion_raw/enemy_forge_dragoon_06.png
+保存文件名:enemy_forge_dragoon_07.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_forge_dragoon_death_00
+参考图上传:output/imagegen/_expansion_raw/enemy_forge_dragoon_00.png
+保存文件名:enemy_forge_dragoon_death_00.png
+```text
+death sequence of this exact creature, the death moment: destruction just beginning, pose continuous with the living frame, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## enemy_forge_dragoon_death_01
+参考图上传:output/imagegen/_expansion_raw/enemy_forge_dragoon_00.png
+保存文件名:enemy_forge_dragoon_death_01.png
+```text
+death sequence of this exact creature, destruction mid-progress, body breaking apart, embers scattering, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## enemy_forge_dragoon_death_02
+参考图上传:output/imagegen/_expansion_raw/enemy_forge_dragoon_00.png
+保存文件名:enemy_forge_dragoon_death_02.png
+```text
+death sequence of this exact creature, near-wreck, slumped geometry, dimming glow, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## enemy_forge_dragoon_death_03
+参考图上传:output/imagegen/_expansion_raw/enemy_forge_dragoon_00.png
+保存文件名:enemy_forge_dragoon_death_03.png
+```text
+death sequence of this exact creature, final wreckage freeze, dark inert remains, faint dying embers, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## fx_shield_shatter_00
+保存文件名:fx_shield_shatter_00.png
+```text
+layered shield breaking apart in three sequential stages, metal shards flying, animation stage: faint start, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_shield_shatter_01
+保存文件名:fx_shield_shatter_01.png
+```text
+layered shield breaking apart in three sequential stages, metal shards flying, animation stage: building, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_shield_shatter_02
+保存文件名:fx_shield_shatter_02.png
+```text
+layered shield breaking apart in three sequential stages, metal shards flying, animation stage: peak, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_shield_shatter_03
+保存文件名:fx_shield_shatter_03.png
+```text
+layered shield breaking apart in three sequential stages, metal shards flying, animation stage: early fade, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_shield_shatter_04
+保存文件名:fx_shield_shatter_04.png
+```text
+layered shield breaking apart in three sequential stages, metal shards flying, animation stage: late fade, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_shield_shatter_05
+保存文件名:fx_shield_shatter_05.png
+```text
+layered shield breaking apart in three sequential stages, metal shards flying, animation stage: final wisp, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## enemy_ember_strider_00
+保存文件名:enemy_ember_strider_00.png
+```text
+tall thin fast bipedal strider with long legs, ember trail underfoot, faint mark-sensitive runes on the body, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## enemy_ember_strider_01
+参考图上传:output/imagegen/_expansion_raw/enemy_ember_strider_00.png
+保存文件名:enemy_ember_strider_01.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_ember_strider_02
+参考图上传:output/imagegen/_expansion_raw/enemy_ember_strider_01.png
+保存文件名:enemy_ember_strider_02.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_ember_strider_03
+参考图上传:output/imagegen/_expansion_raw/enemy_ember_strider_02.png
+保存文件名:enemy_ember_strider_03.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_ember_strider_04
+参考图上传:output/imagegen/_expansion_raw/enemy_ember_strider_03.png
+保存文件名:enemy_ember_strider_04.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_ember_strider_05
+参考图上传:output/imagegen/_expansion_raw/enemy_ember_strider_04.png
+保存文件名:enemy_ember_strider_05.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_ember_strider_06
+参考图上传:output/imagegen/_expansion_raw/enemy_ember_strider_05.png
+保存文件名:enemy_ember_strider_06.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_ember_strider_07
+参考图上传:output/imagegen/_expansion_raw/enemy_ember_strider_06.png
+保存文件名:enemy_ember_strider_07.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_ember_strider_death_00
+参考图上传:output/imagegen/_expansion_raw/enemy_ember_strider_00.png
+保存文件名:enemy_ember_strider_death_00.png
+```text
+death sequence of this exact creature, the death moment: destruction just beginning, pose continuous with the living frame, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## enemy_ember_strider_death_01
+参考图上传:output/imagegen/_expansion_raw/enemy_ember_strider_00.png
+保存文件名:enemy_ember_strider_death_01.png
+```text
+death sequence of this exact creature, destruction mid-progress, body breaking apart, embers scattering, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## enemy_ember_strider_death_02
+参考图上传:output/imagegen/_expansion_raw/enemy_ember_strider_00.png
+保存文件名:enemy_ember_strider_death_02.png
+```text
+death sequence of this exact creature, near-wreck, slumped geometry, dimming glow, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## enemy_ember_strider_death_03
+参考图上传:output/imagegen/_expansion_raw/enemy_ember_strider_00.png
+保存文件名:enemy_ember_strider_death_03.png
+```text
+death sequence of this exact creature, final wreckage freeze, dark inert remains, faint dying embers, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## fx_marked_ignite_00
+保存文件名:fx_marked_ignite_00.png
+```text
+red targeting flare igniting over a marked creature, damage-amp glow, animation stage: faint start, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_marked_ignite_01
+保存文件名:fx_marked_ignite_01.png
+```text
+red targeting flare igniting over a marked creature, damage-amp glow, animation stage: building, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_marked_ignite_02
+保存文件名:fx_marked_ignite_02.png
+```text
+red targeting flare igniting over a marked creature, damage-amp glow, animation stage: peak, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_marked_ignite_03
+保存文件名:fx_marked_ignite_03.png
+```text
+red targeting flare igniting over a marked creature, damage-amp glow, animation stage: early fade, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_marked_ignite_04
+保存文件名:fx_marked_ignite_04.png
+```text
+red targeting flare igniting over a marked creature, damage-amp glow, animation stage: late fade, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_marked_ignite_05
+保存文件名:fx_marked_ignite_05.png
+```text
+red targeting flare igniting over a marked creature, damage-amp glow, animation stage: final wisp, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## enemy_echo_brood_00
+保存文件名:enemy_echo_brood_00.png
+```text
+cluster of small insect creatures moving as one blob, ghostly afterimage duplicates trailing behind, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## enemy_echo_brood_01
+参考图上传:output/imagegen/_expansion_raw/enemy_echo_brood_00.png
+保存文件名:enemy_echo_brood_01.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_echo_brood_02
+参考图上传:output/imagegen/_expansion_raw/enemy_echo_brood_01.png
+保存文件名:enemy_echo_brood_02.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_echo_brood_03
+参考图上传:output/imagegen/_expansion_raw/enemy_echo_brood_02.png
+保存文件名:enemy_echo_brood_03.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_echo_brood_04
+参考图上传:output/imagegen/_expansion_raw/enemy_echo_brood_03.png
+保存文件名:enemy_echo_brood_04.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_echo_brood_05
+参考图上传:output/imagegen/_expansion_raw/enemy_echo_brood_04.png
+保存文件名:enemy_echo_brood_05.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_echo_brood_06
+参考图上传:output/imagegen/_expansion_raw/enemy_echo_brood_05.png
+保存文件名:enemy_echo_brood_06.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_echo_brood_07
+参考图上传:output/imagegen/_expansion_raw/enemy_echo_brood_06.png
+保存文件名:enemy_echo_brood_07.png
+```text
+next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
+```
+
+## enemy_echo_brood_death_00
+参考图上传:output/imagegen/_expansion_raw/enemy_echo_brood_00.png
+保存文件名:enemy_echo_brood_death_00.png
+```text
+death sequence of this exact creature, the death moment: destruction just beginning, pose continuous with the living frame, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## enemy_echo_brood_death_01
+参考图上传:output/imagegen/_expansion_raw/enemy_echo_brood_00.png
+保存文件名:enemy_echo_brood_death_01.png
+```text
+death sequence of this exact creature, destruction mid-progress, body breaking apart, embers scattering, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## enemy_echo_brood_death_02
+参考图上传:output/imagegen/_expansion_raw/enemy_echo_brood_00.png
+保存文件名:enemy_echo_brood_death_02.png
+```text
+death sequence of this exact creature, near-wreck, slumped geometry, dimming glow, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## enemy_echo_brood_death_03
+参考图上传:output/imagegen/_expansion_raw/enemy_echo_brood_00.png
+保存文件名:enemy_echo_brood_death_03.png
+```text
+death sequence of this exact creature, final wreckage freeze, dark inert remains, faint dying embers, 2D game sprite, single enemy creature, hand-painted, dark organic-industrial ember-belt style, muted carapace tones with ember accents, fully transparent background, centered side view, no text, no watermark
+```
+
+## fx_echo_split_00
+保存文件名:fx_echo_split_00.png
+```text
+ghostly duplicate splitting off from a dying creature, fading echo copies, animation stage: faint start, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_echo_split_01
+保存文件名:fx_echo_split_01.png
+```text
+ghostly duplicate splitting off from a dying creature, fading echo copies, animation stage: building, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_echo_split_02
+保存文件名:fx_echo_split_02.png
+```text
+ghostly duplicate splitting off from a dying creature, fading echo copies, animation stage: peak, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_echo_split_03
+保存文件名:fx_echo_split_03.png
+```text
+ghostly duplicate splitting off from a dying creature, fading echo copies, animation stage: early fade, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_echo_split_04
+保存文件名:fx_echo_split_04.png
+```text
+ghostly duplicate splitting off from a dying creature, fading echo copies, animation stage: late fade, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+## fx_echo_split_05
+保存文件名:fx_echo_split_05.png
+```text
+ghostly duplicate splitting off from a dying creature, fading echo copies, animation stage: final wisp, 2D game VFX sprite, hand-painted glowing energy effect, dark ember-belt palette with saturated core glow, transparent background, centered, no text, no watermark
+```
+
+# 四、产出落地与导入
+
+原图统一放 output/imagegen/_expansion_raw/,然后:
+```bash
+python tools/generate_expansion.py --batch enemies --import-only
+python tools/generate_expansion.py --only <资产名> --import-only  # 单张重导
+```

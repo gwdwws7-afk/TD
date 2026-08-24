@@ -74,7 +74,7 @@ def main():
     A("- P0-B 世界图:必须上传五地貌蛇形参考拼图,保持各区配色与材质语言")
     A("- P2 死亡帧:每敌上传该敌 idle 首帧作底图,第 0 帧姿态与存活态连续")
     A("")
-    A("# 五、P0-A:塔 T2 补帧(4 张,上传对应 idle 底图)")
+    A("# 五、收尾批 A：塔 T2 补帧(4 张,上传对应 idle 底图)")
     A("")
     t2_missing = [("ember_flak", 2), ("grav_snare", 4), ("grav_snare", 5), ("rail_lancer", 3)]
     for kind, i in t2_missing:
@@ -86,26 +86,8 @@ def main():
         A(PROMPT_TMPL.format(modules=m, color=c))
         A("```")
         A("")
-    A("# 六、P0-B:世界地图第一波(1 张,上传参考拼图——验收门禁,先只做这张)")
+    A("# 六、世界图两波(34 张):已完成入库,本节仅存档——勿重做")
     A("")
-    A("参考图上传:design/spec/assets/world_map_reference.png(五地貌蛇形拼图)")
-    A("保存文件名:world_map_bg.png")
-    A("```text")
-    A(BG_PROMPT)
-    A("- transform the uploaded reference collage of the five region terrains into one continuous painted world map, keeping each region's palette and material language")
-    A("```")
-    A("")
-    A("# 七、P1:世界地图第二波(33 张,纯文生图,全部透明背景)")
-    A("")
-    for name in sorted(WAVE2):
-        prompt = WAVE2[name]
-        w, h = SPECS[name][1]
-        A(f"## {name}(目标 {w}×{h})")
-        A(f"保存文件名:{name}.png")
-        A("```text")
-        A(prompt)
-        A("```")
-        A("")
     A("# 八、P2:敌人死亡帧(12 敌 × 4 帧 = 48 张,每敌上传 idle 首帧作底图)")
     A("")
     A("帧推进:00=死亡瞬间(姿态衔接存活态) → 01=破坏进行中 → 02=接近残骸 → 03=残骸定格。禁止大面积高亮闪烁。")
