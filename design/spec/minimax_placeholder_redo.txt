@@ -1,0 +1,55 @@
+我要为一个 2D 塔防游戏《Emberline Defense》(余烬铁道)重制两张地面占位贴图。它们是 7 月项目初期程序化生成的平涂圆盘/圆环，与现在的手绘美术质量断层明显（用户已在实机截图中圈出）。两张独立无链式依赖，可插入任意批次空档。
+
+# 一、世界观
+
+余烬铁道的温暖衰败：锈蚀铁轨、冷却熔炉、崩塌终点站。地面物件=锻铁+铆钉+锈蚀+煤灰沉积，发光只用琥珀余烬色。与现有塔帧/贴花同手绘语言（参考已入库的 tower_*_00 帧与 decal_* 系列）。
+
+# 二、技术约束
+
+- 1024×1024 透明背景 PNG，单主体居中，严格俯视（top-down orthographic）
+- 边缘干净：严禁残留底、半透明雾场、棋盘格（硬性红线）
+- 手绘质感；严禁文字、水印、3D 渲染感
+- 基调中性锻铁灰——游戏代码会在其上叠加各塔身份色调色，不要自带强色相
+- 落盘即同名替换（保留现有 .meta，不要删除 meta）：
+  - `Assets/Resources/Art/tower_base_plate.png`
+  - `Assets/Resources/Art/build_marker.png`
+
+# 三、交付清单（2 张）
+
+## tower_base_plate（塔基座，垫在每座塔脚下）
+保存文件名：tower_base_plate.png
+建议底图（img2img 结构源）：任意一张现有 `tower_*_00.png`（取锻铁材质语言，忽略其造型）
+```text
+flat top-down ground decal for a 2D game, octagonal riveted forged-iron
+foundation plate for a defense tower, weathered charcoal and rust-brown
+metal with an outer ring of bolts, subtle ember-orange glow from a small
+circular furnace grate in the center, scuffed scratched metal surfaces,
+coal-dust weathering at the edges, hand-painted, dark industrial
+ember-belt style, top-down orthographic view, single centered object,
+fully transparent background, no text, no watermark
+```
+验收要点：正八边形轮廓清晰可读；中央炉口光不抢塔身；整体明度中暗（垫在塔下）；
+外缘留 8-10% 透明边距（现在占位图 bbox 83..941，新图轮廓控制在相近范围）。
+
+## build_marker（可建造点标记，悬停/推荐位显示）
+保存文件名：build_marker.png
+建议底图：上面新做的 tower_base_plate（同材质语言，做成"空心环"变体）
+```text
+flat top-down ground marker decal for a 2D game, hollow circular ring
+assembled from riveted forged-iron segments with a small cross-shaped
+alignment bolt at the center, faint amber ember glow tracing the inner
+edge of the ring, weathered rust details, hand-painted, dark industrial
+ember-belt style, top-down orthographic view, single centered ring,
+fully transparent background, no text, no watermark
+```
+验收要点：环形中空（中心大部分透明，不遮挡地面）；环体窄而清晰（现在占位图
+bbox 139..884，环外径控制在相近范围）；琥珀光沿环走，不做整面发光。
+
+# 四、接入注意（美术会话已核对，落图即生效）
+
+- 代码加载路径不变：`Art/build_marker` / `Art/tower_base_plate`
+  （TDGridMap 建造点/预览、TDTower 八塔 baseSpritePath 均已接好）
+- **代码侧遗留**：TDTower.cs 八塔 `baseTint`（0.5-0.96 身份色乘色）是为旧平涂盘
+  设计的假彩。新图落地后应改 `Color.white`（或大幅提高明度）——TDTower.cs 归
+  代码会话，已在交接中注明，美术侧不要动该文件。
+- 完工后 git pull/push 纪律同其他批次。
