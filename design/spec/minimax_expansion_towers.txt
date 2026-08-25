@@ -2,14 +2,32 @@
 
 # 零、落盘纪律（生成完成后必须执行）
 
+- 【定稿保护】tower_{kind}_00 四帧小样 + 徽章 + 弹/效**已验收定稿并提交**
+  （f410901）——**禁止重新生成这些已定稿资产**。08-25 18:50 的一次盲跑重做了
+  00/徽章/弹效且身份色全面退化（钢蓝、打捞绿掉到 0%），已被回滚。续跑只生成
+  **尚未存在的帧**（idle 04-05、t2 04-05、t3 03-05、t3_fire 尾帧等缺失项）。
+- 【重做清单——已到货但构图不合格,需按原链重新生成】(08-25 美术会话审计):
+  - `tower_rail_barricade_02/03/04`（宽体右端被画布裁切,x 顶到 1023）→
+    连带 `t2_02/03`、`fire_01/02`（火焰出血到边缘）同链重做
+  - `tower_long_rail_cannon_t3_01/02`（t3 体型超出画布,四边触边 600-3500px）、
+    `t3_fire_01`、`fire_02`（炮口焰出血两边）
+  - 重做约束：**主体收缩到画布 88% 以内**（左右各留 ≥60px 透明边）,构图/剪影
+    与已定稿帧保持一致（链式底图不变）
+- 【缺口清单——尚未生成】(截至 08-25 晚):
+  slag_burner: t2_03 idle_04 t2_04 idle_05 t2_05 t3_02..05 fire_02 t3_fire_01/02
+  rail_barricade: t3_01..05 t2_04 idle_05 t2_05 t3_fire_00..02
+  salvage_derrick: t2_03 idle_04 t2_04 idle_05 t2_05 t3_02..05 fire_01 t3_fire_00..02
+  long_rail_cannon: t2_04 idle_05 t2_05 t3_03..05 t3_fire_02
+  （打捞吊机 idle_01..03 的雾场、四塔 t2 的本体保护合成已由美术会话本地修复,
+  不需要重生成）
 - 下载产物若出现 `.png.png` 双扩展名,一律去掉多余扩展名再落盘（此 bug 已多次出现）
 - 落盘目录按文件名前缀: `tower_*_NN/t2/t3/fire` → `Assets/Resources/Art/anim/`;
   `projectile_*`/`impact_*` → `Assets/Resources/Art/Combat/P11/`;
   `tower_<kind>`（无帧号,徽章）→ `Assets/Resources/Art/UI/P11/`
 - 优先用 `python tools/generate_expansion.py --import-only --batch towers`
   自动做 alpha 防雾后处理+落位,别手工复制
-- 开工前 `git pull`,完工后 `git push`（仓库当前有 143 个本地提交未推,
-  网络恢复后由美术会话先推——若 pull 冲突以远端为准重放）
+- 开工前 `git pull`,完工后 `git push`（美术会话有本地提交未推时以工作区现状为准，
+  不要凭旧认知重做资产；github 不通时看 Assets/ 目录现有文件即定稿状态）
 
 # 一、世界观
 
