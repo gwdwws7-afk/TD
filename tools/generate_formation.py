@@ -123,7 +123,8 @@ def ensure_key():
 def postprocess(raw: Path, out: Path, target, mode: str):
     im = Image.open(raw).convert("RGBA")
     if mode == "band":
-        arr = np.asarray(im)
+        # np.array (not asarray) so the result is writable under newer numpy/PIL
+        arr = np.array(im)
         a = arr[:, :, 3]
         # Fog guard: anchored img2img raws can carry a translucent backdrop
         # haze from the opaque style reference (the r2 roster_base lesson).

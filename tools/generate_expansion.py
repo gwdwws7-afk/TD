@@ -236,7 +236,7 @@ def ensure_key():
 def postprocess(raw: Path, out: Path, target, mode: str):
     im = Image.open(raw).convert("RGBA")
     # fog guard (proven in the formation r2 lesson)
-    arr = np.asarray(im)
+    arr = np.array(im)  # writable copy (np.asarray is read-only under newer numpy/PIL)
     a = arr[:, :, 3]
     ys, xs = np.nonzero(a >= 160)
     if len(xs) and im.width > 64:

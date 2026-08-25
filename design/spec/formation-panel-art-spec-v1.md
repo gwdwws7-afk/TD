@@ -60,7 +60,8 @@ header_ornament.png       512×96  透明   分区标题饰条（短铁条+两�
    - Fit/Matrix 文字套 intel_card 卡背（一张卡，两段文字分区）
    - 分区标题文字下垫 header_ornament
 3. 状态切换沿现有刷新链（选中描边保留作为额外强调）
-4. 后处理器加 `UI/Formation/` 分支（库标准 512 档，DXT5）
+4. 后处理器加 `UI/Formation/` 分支（Campaign 同档 1024，DXT5——threat_strip 1536×192
+   与 intel_card 768×1024 在 1120 宽面板内显示超过 512px，512 档会 2× 放大发虚）
 
 ## 五、提示词要点（英文基底沿用世界图批）
 

@@ -46,7 +46,11 @@ namespace TD.Editor
             // Campaign board art budget per the memory-optimization pass
             // (commit 3351e4b): 1024 max. The full-screen background is
             // opaque and uses DXT5 elsewhere, so it alone gets DXT1.
+            // Formation shares the Campaign tier: threat_strip (1536x192)
+            // and intel_card (768x1024) display above 512px inside the
+            // 1120x660 panel, so the 512 budget would blur them.
             var maxTex = assetPath.StartsWith(UI_CAMPAIGN_DIR, System.StringComparison.OrdinalIgnoreCase)
+                || assetPath.StartsWith(UI_FORMATION_DIR, System.StringComparison.OrdinalIgnoreCase)
                 || assetPath.StartsWith(BOSS_DIR, System.StringComparison.OrdinalIgnoreCase)
                 ? 1024 : 512;
             var format = assetPath.EndsWith("world_map_bg.png", System.StringComparison.OrdinalIgnoreCase)
@@ -72,6 +76,8 @@ namespace TD.Editor
                 if (Mathf.Abs(currentPPU - PPU_TARGET) > 0.5f)
                 {
                     var maxTex = path.StartsWith(UI_CAMPAIGN_DIR, System.StringComparison.OrdinalIgnoreCase)
+                        || path.StartsWith(UI_FORMATION_DIR, System.StringComparison.OrdinalIgnoreCase)
+                        || path.StartsWith(BOSS_DIR, System.StringComparison.OrdinalIgnoreCase)
                         ? 1024 : 512;
                     var format = path.EndsWith("world_map_bg.png", System.StringComparison.OrdinalIgnoreCase)
                         ? TextureImporterFormat.DXT1 : TextureImporterFormat.DXT5;
