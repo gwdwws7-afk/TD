@@ -786,6 +786,8 @@ namespace TD
         private bool _contractFeedbackTargetMet;
         private float _nextContractFeedbackTime;
         private float _battleUiTextTimer;
+        private int _subsidyEntitledHundredths;
+        private int _subsidyPaidTotal;
         private TDRunScoreReport _runScoreFrameCache;
         private int _runScoreFrameCacheFrame = -1;
         private TDDefenseReadinessReport _readinessCacheReport;
@@ -1805,6 +1807,18 @@ namespace TD
                 contractIntel = "CONTRACT\nSurvive all 20 waves.";
             }
 
+            // Teaching copy step 0 (resonance-teaching-copy-v1): the L16
+            // briefing carries the worldbuilding line for the resonance
+            // system's debut level (once per save slot).
+            if (level.levelIndex >= 16)
+            {
+                ShowResonanceTipOnce(
+                    "briefing",
+                    "The fire in your line never died. From this level on, every hit banks an ember — and when the gauge fills, you get to light it yourself.",
+                    "防线的火没有熄。从这一关起，每一次命中都会积攒余烬——攒满的那一刻，你可以亲手点燃它。",
+                    10.0f);
+            }
+
             // Pause the game while briefing is up
             SetBattlePlaybackSpeed(0f, false);
             _missionBriefing.Show(levelTitle, mapHook, scenarioIntel, threatIntel: threatLines, contractIntel);
@@ -2135,6 +2149,11 @@ namespace TD
 
             // Wave-economy telemetry — rebase logged baselines onto the zeroed counters.
             ResetP125EconomyTelemetry();
+
+            // Meta line C ledger resets with the run (ruling B2 carry-over
+            // must not leak across levels).
+            _subsidyEntitledHundredths = 0;
+            _subsidyPaidTotal = 0;
 
             // Invalidate per-run UI caches (readiness key could otherwise alias
             // across levels with equal wave/tower counts).
@@ -7029,6 +7048,13 @@ namespace TD
 
             _matrixConvergenceTriggeredThisWindow = true;
             _matrixConvergenceTriggers++;
+            // Teaching copy step 4 (L17+): convergence is the payoff for
+            // building the right towers — explain it the first time it fires.
+            ShowResonanceTipOnce(
+                "matrix_convergence",
+                "Every specialization has a resonance affinity — damage specs favor Surge, utility specs favor Mark. When the right spec hits the right enemies in the right window, Matrix Convergence triggers: Surge convergence extends the window and amplifies the whole line; Mark convergence pins every enemy in place. That is the highest reward for building the right towers.",
+                "每座塔的专精都有共鸣倾向：伤害系专精亲和涌动，功能系专精亲和标记。当专精在正确的窗口里反复命中正确的敌人，会触发矩阵收敛——涌动收敛延长窗口、全队增伤；标记收敛把全场敌人钉在原地。这是\"塔建对了\"的最高奖赏。",
+                9.0f);
             if (_activeResonanceCommand == TDResonanceCommand.EmberSurge)
             {
                 _matrixEmberConvergenceTriggers++;
@@ -11822,6 +11848,17 @@ namespace TD
             _resonanceCharge = ResonanceChargeMax;
             _activeResonanceCommand = TDResonanceCommand.None;
             _resonanceMarkPulseTimer = 0f;
+            // Teaching copy steps 2 (first window) + 1 (charge bar — shown at
+            // the same moment the full gauge becomes readable).
+            ShowResonanceTipOnce(
+                "window_open",
+                "Resonance window open: 7 seconds. All towers gain +10% damage while it lasts. Make one choice — one per window, no take-backs.",
+                "共振窗口开启，持续 7 秒——窗口内所有塔的伤害 +10%。做一个选择，一窗只此一次，选定不能反悔。",
+                8.0f);
+            ShowResonanceTipOnce(
+                "charge_bar",
+                "The orange track at the top is your Ember Charge. It rises with every hit — the harder the hit, the faster it climbs. Resonance Beacons charge fastest of all.",
+                "屏幕顶部的橙色轨道，是余烬电荷。打中敌人它就会上涨——打得越疼，涨得越快。共振信标是这套系统的引擎，它充得比谁都快。");
             SetStatus("Resonance ready: press [Z] Ember Surge or [X] Fracture Mark");
             PlaySfxTone("resonance_ready", 700f, 0.22f, 0.90f, true);
         }
@@ -11915,6 +11952,15 @@ namespace TD
                     ? $"Match {_resonanceChainMatchStreak}/{ResonanceChainRequiredMatches}"
                     : "NoMatch (streak reset)";
                 SetStatus($"Resonance command engaged: {GetResonanceCommandLabel(command)} [{chainLabel}]");
+                if (!threatMatched)
+                {
+                    // Teaching copy step 3: read the wave before pressing.
+                    ShowResonanceTipOnce(
+                        "first_nomatch",
+                        "Read the wave before you press. Armored, heavy or boss-heavy waves want Ember Surge. Fast, swarm or flanking waves want Fracture Mark.",
+                        "先看这一波是什么敌人，再选：装甲、重装、BOSS 当道 → 余烬涌动（Z）是对的；快速、虫群、侧翼突袭 → 裂痕标记（X）是对的。",
+                        8.0f);
+                }
             }
         }
 
@@ -13654,6 +13700,11 @@ namespace TD
             foreach (var reward in (meta.ratingRewards ?? Array.Empty<TDCampaignMetaRewardDefinition>())
                          .Concat(meta.codexRewards ?? Array.Empty<TDCampaignMetaRewardDefinition>()))
             {
+                // Ruling B4 (2026-08-24): stars are the SOLE unlock currency —
+                // summary.earnedStars counts each level's bestStars once (never
+                // per-difficulty), and difficulty seals are display-only on the
+                // world map. Do not add seal counting here: 20×2 seals would
+                // vault every threshold instantly.
                 var current = reward.sourceType switch
                 {
                     "campaign_stars" => summary.earnedStars,
@@ -14320,6 +14371,37 @@ namespace TD
                 SetStatus(evasionTip);
                 PushTacticalEvent(evasionTip, 7.0f);
             }
+
+            // Resonance teaching copy step 5 (resonance-teaching-copy-v1):
+            // the leech counter-teaching rides its first sighting.
+            if (string.Equals(entry.enemyId, "ember_leech", StringComparison.Ordinal))
+            {
+                var leechTip = TDLocalization.IsChinese
+                    ? "余烬水蛭活着的时候，会持续吸走你的电荷。看到它们，优先打死——你的窗口，就是它们的口粮。"
+                    : "Ember Leeches drain your charge while they live. Kill them first — your windows are their food.";
+                SetStatus(leechTip);
+                PushTacticalEvent(leechTip, 7.0f);
+            }
+        }
+
+        /// <summary>
+        /// One-time-per-save-slot teaching tips (resonance-teaching-copy-v1).
+        /// Mirrors the tutorial's PlayerPrefs key pattern; copy is verbatim
+        /// from the pack, bilingual via the established IsChinese ternary.
+        /// </summary>
+        private void ShowResonanceTipOnce(string tipKey, string english, string chinese, float duration = 7.0f)
+        {
+            var key = $"td_p16_resonance_tip_{tipKey}_{TDCampaignProgression.ActiveSaveSlot}";
+            if (PlayerPrefs.GetInt(key, 0) > 0)
+            {
+                return;
+            }
+
+            PlayerPrefs.SetInt(key, 1);
+            PlayerPrefs.Save();
+            var message = TDLocalization.IsChinese ? chinese : english;
+            SetStatus(message);
+            PushTacticalEvent(message, duration);
         }
 
         private IEnumerator SpawnSplitChildren(string enemyId, int count, float interval, string laneKey)
@@ -14432,13 +14514,21 @@ namespace TD
                     _wave,
                     GetConfiguredWaveCount());
                 // Meta line C (Wave Subsidy): a percent on top of the decayed
-                // tail value — additive to the p12.5.0 curve, never replacing it.
+                // tail value — additive to the p12.5.0 curve, never replacing
+                // it. Ruling B2: floor WITH remainder carry-over, so the
+                // cumulative payout equals floor(Σ income × pct) exactly
+                // instead of zeroing out on small tail values. Ruling B3: the
+                // ledger base is WAVE-CLEAR INCOME ONLY — combat bounty and
+                // reinforcement income never enter it (scenario ROI must not
+                // drift with meta ranks).
                 var subsidyPercent = TDMetaUpgradeSystem.GetWaveClearIncomeBonusPercent(
                     GetMetaRank(TDMetaUpgradeSystem.UpgradeLine.C));
-                if (subsidyPercent > 0f)
-                {
-                    reward = Mathf.Max(reward + Mathf.FloorToInt(reward * subsidyPercent * 0.01f), reward);
-                }
+                var subsidyPayment = TDMetaUpgradeSystem.ResolveSubsidyPayment(
+                    ref _subsidyEntitledHundredths,
+                    ref _subsidyPaidTotal,
+                    reward,
+                    subsidyPercent);
+                reward += subsidyPayment;
 
                 _defenseBudget += reward;
                 TrackP125ClearIncome(reward);

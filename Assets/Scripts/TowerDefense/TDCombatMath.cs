@@ -7,6 +7,15 @@ namespace TD
     /// test suites. Everything here must stay free of scene/instance state so
     /// the balance tests exercise the exact production formula instead of a
     /// drifting mirror of it.
+    ///
+    /// ROUNDING CANON (director decision B1, 2026-08-24 — exactly three
+    /// pinned points; a fourth rounding site is a spec violation):
+    ///   1. Final damage: RoundToInt (matches displayed values).
+    ///   2. Armor flat-share cap: CeilToInt (the cap is armor's last
+    ///      concession — floor would zero it on tiny hits).
+    ///   3. Upgrade costs: CeilToInt (buyer pays whole, no free tiers).
+    ///   4. [Reserved] Burn ticks (expansion tower 9): RoundToInt — the slot
+    ///      is on file here before TDBurnSystem lands.
     /// </summary>
     public static class TDCombatMath
     {

@@ -210,6 +210,44 @@ namespace TD.Tests
         }
 
         [Test]
+        public void Subsidy_CarryOverIsCumulativeExact()
+        {
+            // Ruling B2: integer-hundredths ledger with carry-over, so after
+            // N waves the total paid equals floor(Σ income × pct) EXACTLY.
+            // The decayed-tail regime (15-gold waves at +2% = 0.3/wave) pays
+            // nothing for three waves then settles up on the fourth — not
+            // zero forever like per-wave flooring, and no float drift (the
+            // first float draft of this ledger paid 2 after ten 0.3 waves).
+            var entitled = 0;
+            var paid = 0;
+            var totalPaid = 0;
+            for (var wave = 0; wave < 10; wave++)
+            {
+                totalPaid += TDMetaUpgradeSystem.ResolveSubsidyPayment(ref entitled, ref paid, 15, 2f);
+            }
+
+            Assert.AreEqual(3, totalPaid, "10 × 0.3 = 3.0 exactly (integer hundredths)");
+
+            // Uneven tail still exact: 7 × 17 × 4% = 4.76 → 4 cumulative.
+            entitled = 0;
+            paid = 0;
+            totalPaid = 0;
+            for (var wave = 0; wave < 7; wave++)
+            {
+                totalPaid += TDMetaUpgradeSystem.ResolveSubsidyPayment(ref entitled, ref paid, 17, 4f);
+            }
+
+            Assert.AreEqual(4, totalPaid, "floor(7 × 17 × 0.04) = floor(4.76) = 4");
+
+            // Zero income and zero percent pay nothing and don't touch the ledger.
+            entitled = 570;
+            paid = 5;
+            Assert.AreEqual(0, TDMetaUpgradeSystem.ResolveSubsidyPayment(ref entitled, ref paid, 0, 2f));
+            Assert.AreEqual(0, TDMetaUpgradeSystem.ResolveSubsidyPayment(ref entitled, ref paid, 15, 0f));
+            Assert.AreEqual(570, entitled, "ruling B3: only wave-clear income enters the ledger");
+        }
+
+        [Test]
         public void Meta0_IsExactlyNoEffect()
         {
             // Guardrail 4.1: the published balance baseline IS meta-0.

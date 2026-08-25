@@ -128,6 +128,40 @@ namespace TD
         }
 
         /// <summary>
+        /// Line C payout with remainder carry-over (ruling B2, 2026-08-24).
+        /// Per-wave payment = entitledHundredths/100 - paidTotal, tracked in
+        /// INTEGER hundredths (the ruling's "two int fields") so the
+        /// cumulative payout equals floor(Σ income × pct) EXACTLY — float
+        /// accumulation drifts (0.3f × 10 → 2.9999…8 → floor 2), per-wave
+        /// flooring would zero out the subsidy on small decayed-tail rewards,
+        /// and ceiling would systematically overpay against the meta-max
+        /// ≤2pp guardrail budget. Ledger base is wave-clear income ONLY
+        /// (ruling B3): combat bounty and reinforcement income must never be
+        /// accrued here.
+        /// </summary>
+        public static int ResolveSubsidyPayment(
+            ref int entitledHundredths,
+            ref int paidTotal,
+            int waveClearIncome,
+            float subsidyPercent)
+        {
+            if (waveClearIncome <= 0 || subsidyPercent <= 0f)
+            {
+                return 0;
+            }
+
+            entitledHundredths += Mathf.RoundToInt(waveClearIncome * subsidyPercent);
+            var payment = entitledHundredths / 100 - paidTotal;
+            if (payment <= 0)
+            {
+                return 0;
+            }
+
+            paidTotal += payment;
+            return payment;
+        }
+
+        /// <summary>
         /// First capture of a level at a given difficulty (review P0-3). Must
         /// be derived from the PREVIOUS progress: a repeat at the same
         /// difficulty has previousHighest == runDifficulty, and a
