@@ -85,6 +85,54 @@ namespace TD
             return sprite;
         }
 
+        public const string FormationArtDir = "Art/UI/Formation/";
+
+        public static Sprite LoadFormationSprite(string widgetName)
+        {
+            return LoadSprite(FormationArtDir + widgetName);
+        }
+
+        // Swaps a button/card Image to a painted formation widget. Returns
+        // false (procedural tint untouched) when the art is missing.
+        public static bool ApplyCardBackground(Image image, Sprite sprite, Color tint)
+        {
+            if (image == null || sprite == null)
+            {
+                return false;
+            }
+
+            image.sprite = sprite;
+            image.color = tint;
+            return true;
+        }
+
+        // Painted panel underlays (threat banner, intel card, header
+        // ornaments) as RawImage so each widget can show a measured uv
+        // sub-rect: the delivered textures carry transparent margins and
+        // (intel card) a near-black lower half, and the crop bands are
+        // picked to match the display rect's aspect exactly. Null when
+        // the texture is missing - callers keep the procedural layout.
+        public static RawImage CreateFormationUnderlay(string name, Transform parent, Vector2 position, Vector2 size, string widgetName, Rect uvRect)
+        {
+            var texture = Resources.Load<Texture2D>(FormationArtDir + widgetName);
+            if (texture == null)
+            {
+                return null;
+            }
+
+            var raw = new GameObject(name, typeof(RawImage)).GetComponent<RawImage>();
+            var rect = raw.rectTransform;
+            rect.SetParent(parent, false);
+            rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(0f, 1f);
+            rect.anchoredPosition = position;
+            rect.sizeDelta = size;
+            raw.texture = texture;
+            raw.uvRect = uvRect;
+            raw.raycastTarget = false;
+            rect.SetAsFirstSibling();
+            return raw;
+        }
+
         public static void ApplyPanel(RectTransform panel, Color accent, bool compact = false, bool alert = false)
         {
             if (panel == null)

@@ -2920,7 +2920,10 @@ namespace TD
 
             _uiFormationTitleText = CreateUiText("Formation Title", _uiFormationRoot, new Vector2(96f, -18f), new Vector2(648f, 30f), "PREBATTLE FORMATION", 20, FontStyle.Bold, TextAnchor.MiddleLeft, new Color(0.92f, 0.98f, 1f, 1f));
             _uiFormationThreatText = CreateUiText("Formation Threat", _uiFormationRoot, new Vector2(24f, -54f), new Vector2(1072f, 44f), string.Empty, 12, FontStyle.Bold, TextAnchor.UpperLeft, new Color(0.98f, 0.84f, 0.58f, 1f));
-            CreateUiImage("Formation Header Divider", _uiFormationRoot, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(24f, -106f), new Vector2(1072f, 1f), new Color(0.56f, 0.72f, 0.80f, 0.28f));
+            if (TDUiWorldSkin.LoadFormationSprite("threat_strip") == null)
+            {
+                CreateUiImage("Formation Header Divider", _uiFormationRoot, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(24f, -106f), new Vector2(1072f, 1f), new Color(0.56f, 0.72f, 0.80f, 0.28f));
+            }
 
             _uiFormationRosterText = CreateUiText("Formation Roster", _uiFormationRoot, new Vector2(24f, -120f), new Vector2(568f, 34f), string.Empty, 11, FontStyle.Bold, TextAnchor.UpperLeft, new Color(0.82f, 0.94f, 1f, 1f));
             _uiFormationTowerButtons.Clear();
@@ -3012,7 +3015,10 @@ namespace TD
                 _uiFormationDifficultyButtons.Add(button);
                 _uiFormationDifficultyButtonTexts.Add(button.GetComponentInChildren<Text>());
             }
-            CreateUiImage("Formation Intel Divider", _uiFormationRoot, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(620f, -120f), new Vector2(1f, 398f), new Color(0.56f, 0.72f, 0.80f, 0.28f));
+            if (TDUiWorldSkin.LoadFormationSprite("intel_card") == null)
+            {
+                CreateUiImage("Formation Intel Divider", _uiFormationRoot, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(620f, -120f), new Vector2(1f, 398f), new Color(0.56f, 0.72f, 0.80f, 0.28f));
+            }
             _uiFormationFitTitleText = CreateUiText("Formation Fit Title", _uiFormationRoot, new Vector2(650f, -120f), new Vector2(446f, 50f), string.Empty, 18, FontStyle.Bold, TextAnchor.UpperLeft, new Color(0.94f, 0.98f, 1f, 1f));
             _uiFormationFitBodyText = CreateUiText("Formation Fit Body", _uiFormationRoot, new Vector2(650f, -176f), new Vector2(446f, 132f), string.Empty, 12, FontStyle.Bold, TextAnchor.UpperLeft, new Color(0.78f, 0.93f, 0.86f, 1f));
             _uiFormationMatrixText = CreateUiText("Formation Matrix", _uiFormationRoot, new Vector2(650f, -320f), new Vector2(446f, 188f), string.Empty, 11, FontStyle.Normal, TextAnchor.UpperLeft, new Color(0.80f, 0.90f, 0.97f, 1f));
@@ -3040,6 +3046,26 @@ namespace TD
             _uiFormationBackButton = CreateUiButton("Formation Back", _uiFormationRoot, new Vector2(754f, -584f), new Vector2(154f, 44f), "Back", 13, CloseFormationPanel);
             _uiFormationDeployButton = CreateUiButton("Formation Deploy", _uiFormationRoot, new Vector2(924f, -584f), new Vector2(172f, 44f), "Save & Deploy", 14, ConfirmFormationAndDeploy);
             _uiFormationDeployButtonText = _uiFormationDeployButton.GetComponentInChildren<Text>();
+
+            if (TDUiWorldSkin.CreateFormationUnderlay(
+                    "Formation Threat Banner", _uiFormationRoot, new Vector2(24f, -58f), new Vector2(1072f, 56f), "threat_strip",
+                    new Rect(0.134f, 0.052f, 0.732f, 0.896f)) != null)
+            {
+                _uiFormationThreatText.rectTransform.anchoredPosition = new Vector2(150f, -60f);
+                _uiFormationThreatText.rectTransform.sizeDelta = new Vector2(946f, 52f);
+            }
+            TDUiWorldSkin.CreateFormationUnderlay(
+                "Formation Intel Card", _uiFormationRoot, new Vector2(620f, -118f), new Vector2(448f, 454f), "intel_card",
+                new Rect(0.145f, 0.440f, 0.711f, 0.540f));
+            TDUiWorldSkin.CreateFormationUnderlay(
+                "Roster Header Ornament", _uiFormationRoot, new Vector2(24f, -118f), new Vector2(220f, 41f), "header_ornament",
+                new Rect(0.027f, 0.042f, 0.945f, 0.906f));
+            TDUiWorldSkin.CreateFormationUnderlay(
+                "Doctrine Header Ornament", _uiFormationRoot, new Vector2(24f, -346f), new Vector2(220f, 41f), "header_ornament",
+                new Rect(0.027f, 0.042f, 0.945f, 0.906f));
+            TDUiWorldSkin.CreateFormationUnderlay(
+                "Difficulty Header Ornament", _uiFormationRoot, new Vector2(24f, -506f), new Vector2(220f, 41f), "header_ornament",
+                new Rect(0.027f, 0.042f, 0.945f, 0.906f));
             _uiFormationRoot.gameObject.SetActive(false);
         }
 
@@ -4963,11 +4989,18 @@ namespace TD
 
                 if (button.targetGraphic is Image image)
                 {
-                    image.color = !unlocked
-                        ? new Color(0.09f, 0.10f, 0.11f, 0.70f)
-                        : slot >= 0
-                            ? Color.Lerp(new Color(0.10f, 0.15f, 0.18f, 0.98f), identity.accent, 0.30f)
-                            : new Color(0.13f, 0.21f, 0.25f, 0.96f);
+                    var card = TDUiWorldSkin.LoadFormationSprite(
+                        !unlocked ? "roster_card_locked"
+                        : slot >= 0 ? "roster_card_selected"
+                        : "roster_card_base");
+                    if (!TDUiWorldSkin.ApplyCardBackground(image, card, Color.white))
+                    {
+                        image.color = !unlocked
+                            ? new Color(0.09f, 0.10f, 0.11f, 0.70f)
+                            : slot >= 0
+                                ? Color.Lerp(new Color(0.10f, 0.15f, 0.18f, 0.98f), identity.accent, 0.30f)
+                                : new Color(0.13f, 0.21f, 0.25f, 0.96f);
+                    }
                 }
             }
 
@@ -4991,11 +5024,18 @@ namespace TD
                         : $"LOCKED L{_resonanceEnabledFromLevel:00}\n{GetDoctrineShortLabel(doctrine)}");
                 if (button.targetGraphic is Image image)
                 {
-                    image.color = !doctrineAvailable
-                        ? new Color(0.09f, 0.10f, 0.11f, 0.74f)
-                        : selected
-                        ? GetDoctrineColor(doctrine, 0.98f)
-                        : new Color(0.13f, 0.20f, 0.23f, 0.96f);
+                    var plate = TDUiWorldSkin.LoadFormationSprite(
+                        selected && doctrineAvailable ? "doctrine_plate_on" : "doctrine_plate_base");
+                    if (!TDUiWorldSkin.ApplyCardBackground(
+                            image, plate,
+                            doctrineAvailable ? Color.white : new Color(0.46f, 0.50f, 0.52f, 0.85f)))
+                    {
+                        image.color = !doctrineAvailable
+                            ? new Color(0.09f, 0.10f, 0.11f, 0.74f)
+                            : selected
+                            ? GetDoctrineColor(doctrine, 0.98f)
+                            : new Color(0.13f, 0.20f, 0.23f, 0.96f);
+                    }
                 }
             }
 
@@ -5019,11 +5059,18 @@ namespace TD
                         : $"LOCKED\n{GetDifficultyShortLabel(difficulty)}");
                 if (button.targetGraphic is Image image)
                 {
-                    image.color = !availableDifficulty
-                        ? new Color(0.09f, 0.10f, 0.11f, 0.74f)
-                        : selectedDifficulty
-                            ? GetDifficultyColor(difficulty, 0.98f)
-                            : new Color(0.13f, 0.20f, 0.23f, 0.96f);
+                    var plate = TDUiWorldSkin.LoadFormationSprite(
+                        selectedDifficulty && availableDifficulty ? "difficulty_plate_on" : "difficulty_plate_base");
+                    if (!TDUiWorldSkin.ApplyCardBackground(
+                            image, plate,
+                            availableDifficulty ? Color.white : new Color(0.46f, 0.50f, 0.52f, 0.85f)))
+                    {
+                        image.color = !availableDifficulty
+                            ? new Color(0.09f, 0.10f, 0.11f, 0.74f)
+                            : selectedDifficulty
+                                ? GetDifficultyColor(difficulty, 0.98f)
+                                : new Color(0.13f, 0.20f, 0.23f, 0.96f);
+                    }
                 }
             }
 

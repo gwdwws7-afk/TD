@@ -49,19 +49,25 @@ header_ornament.png       512×96  透明   分区标题饰条（短铁条+两�
 
 复用不动：frame_command 底框、P11 塔图标、身份色 accent、Barlow 字体。
 
-## 四、接入契约（代码侧，~60-80 行，缺图回退现状）
+## 四、接入契约（已实施——`TDUiWorldSkin` + `BuildFormationUi`，缺图回退现状）
 
 1. `TDUiWorldSkin` 增加通用卡背加载（`LoadFormationSprite(path)` +
-   `ApplyCardBackground(rect, sprite, tint)`），沿用 SpriteCache 模式
+   `ApplyCardBackground(image, sprite, tint)`），沿用 SpriteCache 模式
 2. `BuildFormationUi`：
    - ROSTER 按钮底图 = roster_card 三态（选中/锁定换 sprite，未选=base）
-   - 信条/难度按钮底图 = 对应 plate 两态（选中换 _on，或 base+青 tint）
+   - 信条/难度按钮底图 = 对应 plate 两态（选中换 _on；锁定=base+压暗 tint）
    - 威胁条文字套 threat_strip 容器
    - Fit/Matrix 文字套 intel_card 卡背（一张卡，两段文字分区）
    - 分区标题文字下垫 header_ornament
 3. 状态切换沿现有刷新链（选中描边保留作为额外强调）
 4. 后处理器加 `UI/Formation/` 分支（Campaign 同档 1024，DXT5——threat_strip 1536×192
    与 intel_card 768×1024 在 1120 宽面板内显示超过 512px，512 档会 2× 放大发虚）
+5. 横幅/卡背走 `CreateFormationUnderlay`（RawImage + 实测 uvRect，裁透明边距与
+   intel_card 下半近黑区，uv 取值按内容 bbox 实测，显示纵横比与裁后内容严格一致：
+   threat_strip (0.134, 0.052, 0.732, 0.896) → 1072×56；intel_card
+   (0.145, 0.440, 0.711, 0.540) → 448×454（顶部标题框对齐 COUNTER FIT 行）；
+   header_ornament (0.027, 0.042, 0.945, 0.906) → 220×41 ×3 处）。原程序化分隔线
+   在对应部件加载成功时不再创建。
 
 ## 五、提示词要点（英文基底沿用世界图批）
 
