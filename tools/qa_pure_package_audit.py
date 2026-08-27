@@ -28,11 +28,16 @@ AUTOMATION_SYMBOLS = [
 GAMEPLAY_SYMBOLS = [
     "TDGameManager",
     "TrySellTower",
-    "SellRefundValue",
+    # SellRefundValue was removed by the meta-system review (refund is now
+    # meta-line aware); GetSellRefundRatio + SellRefundRatio are its heirs
+    "GetSellRefundRatio",
+    "SellRefundRatio",
     "GamepadCursor",
     "TDCombatMath",
     "ResolveArmoredDamage",
     "TDRadialTowerMenu",
+    "TDMetaUpgradeSystem",
+    "TDWorldMap",
 ]
 
 DEFAULT_ROOT = "builds/qa-pure-20260817"
