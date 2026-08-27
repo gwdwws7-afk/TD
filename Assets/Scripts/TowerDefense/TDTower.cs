@@ -124,6 +124,9 @@ namespace TD
             public float visualYOffset;
             public int sortingOrder;
             public string baseSpritePath;
+            // White since the rebuilt base plates ship their own forged-iron
+            // material + amber glow (spec 1e08e46) — the per-kind fake colors
+            // were placeholder camouflage. No downstream consumer reads it.
             public Color baseTint;
             public float baseScale;
             public float baseYOffset;
@@ -955,7 +958,7 @@ namespace TD
                     visualYOffset = -0.10f,
                     sortingOrder = 12,
                     baseSpritePath = "Art/tower_base_plate",
-                    baseTint = new Color(0.60f, 0.74f, 0.84f, 0.92f),
+                    baseTint = new Color(1f, 1f, 1f, 1f),
                     baseScale = 0.96f,
                     baseYOffset = -0.10f,
                     baseSortingOrder = 9
@@ -984,7 +987,7 @@ namespace TD
                     visualYOffset = -0.09f,
                     sortingOrder = 12,
                     baseSpritePath = "Art/tower_base_plate",
-                    baseTint = new Color(0.82f, 0.64f, 0.50f, 0.92f),
+                    baseTint = new Color(1f, 1f, 1f, 1f),
                     baseScale = 0.98f,
                     baseYOffset = -0.09f,
                     baseSortingOrder = 9
@@ -1013,7 +1016,7 @@ namespace TD
                     visualYOffset = -0.07f,
                     sortingOrder = 12,
                     baseSpritePath = "Art/tower_base_plate",
-                    baseTint = new Color(0.54f, 0.82f, 0.92f, 0.92f),
+                    baseTint = new Color(1f, 1f, 1f, 1f),
                     baseScale = 0.92f,
                     baseYOffset = -0.08f,
                     baseSortingOrder = 9
@@ -1042,7 +1045,7 @@ namespace TD
                     visualYOffset = -0.09f,
                     sortingOrder = 12,
                     baseSpritePath = "Art/tower_base_plate",
-                    baseTint = new Color(0.49f, 0.84f, 0.88f, 0.92f),
+                    baseTint = new Color(1f, 1f, 1f, 1f),
                     baseScale = 0.94f,
                     baseYOffset = -0.08f,
                     baseSortingOrder = 9
@@ -1071,7 +1074,7 @@ namespace TD
                     visualYOffset = -0.08f,
                     sortingOrder = 12,
                     baseSpritePath = "Art/tower_base_plate",
-                    baseTint = new Color(0.84f, 0.72f, 0.48f, 0.92f),
+                    baseTint = new Color(1f, 1f, 1f, 1f),
                     baseScale = 0.98f,
                     baseYOffset = -0.08f,
                     baseSortingOrder = 9
@@ -1100,7 +1103,7 @@ namespace TD
                     visualYOffset = -0.09f,
                     sortingOrder = 12,
                     baseSpritePath = "Art/tower_base_plate",
-                    baseTint = new Color(0.96f, 0.70f, 0.44f, 0.92f),
+                    baseTint = new Color(1f, 1f, 1f, 1f),
                     baseScale = 0.94f,
                     baseYOffset = -0.08f,
                     baseSortingOrder = 9
@@ -1129,7 +1132,7 @@ namespace TD
                     visualYOffset = -0.08f,
                     sortingOrder = 12,
                     baseSpritePath = "Art/tower_base_plate",
-                    baseTint = new Color(0.66f, 0.88f, 0.68f, 0.92f),
+                    baseTint = new Color(1f, 1f, 1f, 1f),
                     baseScale = 0.96f,
                     baseYOffset = -0.08f,
                     baseSortingOrder = 9
@@ -1158,7 +1161,7 @@ namespace TD
                     visualYOffset = -0.08f,
                     sortingOrder = 12,
                     baseSpritePath = "Art/tower_base_plate",
-                    baseTint = new Color(0.62f, 0.70f, 0.94f, 0.92f),
+                    baseTint = new Color(1f, 1f, 1f, 1f),
                     baseScale = 0.98f,
                     baseYOffset = -0.08f,
                     baseSortingOrder = 9
