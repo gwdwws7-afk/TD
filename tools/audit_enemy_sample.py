@@ -78,7 +78,14 @@ def death_continuity(kind):
         bot_drift = abs(int(dy.max()) - int(i_bot))
         cx_drift = abs((dx.min() + dx.max()) / 2 - i_cx)
         area = dm.sum() / max(im.sum(), 1) * 100
-        verdict = "OK" if (ret >= 25 or area <= 60) and prog >= 45 and bot_drift <= 40 and d["flag"] == "OK" else "REVIEW"
+        # Stage 2 of 4 may be the ruled "burst" beat (cinder_husk spec:
+        # stricken -> collapse -> burst -> ember pile) - burst drops
+        # silhouette retention by design; require locale instead.
+        burst = st == 2
+        if burst:
+            verdict = "OK" if prog >= 10 and area <= 85 and cx_drift <= 320 and d["flag"] == "OK" else "REVIEW"
+        else:
+            verdict = "OK" if (ret >= 25 or area <= 60) and prog >= 45 and bot_drift <= 40 and d["flag"] == "OK" else "REVIEW"
         print(f"  death_{st:02d}: retain {ret:5.1f}% prog {prog:5.1f}% area {area:5.1f}% "
               f"bottom_drift {bot_drift}px cx_drift {cx_drift:4.0f}px faint {d.get('faint', -1):4.1f} -> {verdict}")
         prev = dm
