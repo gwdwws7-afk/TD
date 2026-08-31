@@ -240,6 +240,10 @@ namespace TD
             _hitFlashTimer = 0f;
             _deathFadeTimer = 0f;
             _dying = false;
+            // Lifecycle flag MUST reset for pool reuse — a reused hierarchy
+            // carried _resolved=true from its previous life and froze on the
+            // track forever (untargetable, wave never cleared).
+            _resolved = false;
             _bodyDeathReelPlaying = false;
             _deathReelHoldTimer = 0f;
             _specialSpeedMultiplier = 1f;
@@ -809,12 +813,27 @@ namespace TD
             }
         }
 
+        /// <summary>Funnel every enemy-destruction path through the pool
+        /// (kill fade, escape, level switch, defeat sweep) — never Destroy
+        /// directly or the hierarchy leaks out of the reuse cycle.</summary>
+        public void ReleaseToPool()
+        {
+            if (TDEnemyPool.Instance != null)
+            {
+                TDEnemyPool.Instance.Release(gameObject);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        }
+
         private void ResolveEscape()
         {
             _resolved = true;
             _readability?.SetPresentationVisible(false);
             _gameManager.NotifyEnemyEscaped(this, _lineDamage, _enemyId);
-            Destroy(gameObject);
+            ReleaseToPool();
         }
 
         private void UpdateVisualTint()
@@ -894,7 +913,7 @@ namespace TD
             transform.localScale = Vector3.Lerp(_deathStartScale, _deathStartScale * 0.9f, t);
             if (t >= 1f)
             {
-                Destroy(gameObject);
+                ReleaseToPool();
             }
         }
 

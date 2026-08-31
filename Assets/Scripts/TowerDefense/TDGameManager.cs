@@ -974,6 +974,10 @@ namespace TD
             }
 
             pool.Prewarm();
+            if (GetComponent<TDEnemyPool>() == null)
+            {
+                gameObject.AddComponent<TDEnemyPool>();
+            }
         }
 
         private void Start()
@@ -2071,10 +2075,11 @@ namespace TD
             var oldBoard = transform.Find("Board");
             if (oldBoard != null) Destroy(oldBoard.gameObject);
 
-            // Clear all active enemies.
+            // Clear all active enemies (released to the pool — mid-death
+            // corpses included; Initialize resets them on next Get).
             for (var i = _activeEnemies.Count - 1; i >= 0; i--)
             {
-                if (_activeEnemies[i] != null) Destroy(_activeEnemies[i].gameObject);
+                if (_activeEnemies[i] != null) _activeEnemies[i].ReleaseToPool();
             }
             _activeEnemies.Clear();
 
@@ -10572,7 +10577,7 @@ namespace TD
                 {
                     RecordUnresolvedEnemyAtRunEnd(enemy);
                     enemy.gameObject.SetActive(false);
-                    Destroy(enemy.gameObject);
+                    enemy.ReleaseToPool();
                 }
             }
 
@@ -12462,8 +12467,33 @@ namespace TD
 
             var runtimeEntry = BuildMissionEnemyEntry(entry);
 
-            var enemyObject = new GameObject($"Enemy_{runtimeEntry.enemyId}_{waveNumber}_{enemyIndex}");
+            // Pool first: a released hierarchy of this kind is fully reset by
+            // TDEnemy.Initialize below — but its per-kind visuals (shadow
+            // offset/scale, visual offset, sprite, material, collider size)
+            // were built for the same enemyId, so reuse is exact.
+            var enemyObject = TDEnemyPool.Instance != null
+                ? TDEnemyPool.Instance.Get(runtimeEntry.enemyId, transform)
+                : null;
+
+            if (enemyObject != null)
+            {
+                var pooledEnemy = enemyObject.GetComponent<TDEnemy>();
+                if (pooledEnemy != null)
+                {
+                    pooledEnemy.Initialize(this, path ?? GetDefaultSpawnPath(), runtimeEntry, laneKey);
+                    _activeEnemies.Add(pooledEnemy);
+                    RegisterEnemySpawnForAnalytics(pooledEnemy);
+                    return;
+                }
+
+                // Malformed pooled instance — discard and fall through to build.
+                Destroy(enemyObject);
+                enemyObject = null;
+            }
+
+            enemyObject = new GameObject($"Enemy_{runtimeEntry.enemyId}_{waveNumber}_{enemyIndex}");
             enemyObject.transform.SetParent(transform, true);
+            TDEnemyPool.Instance?.Register(enemyObject, runtimeEntry.enemyId);
 
             var shadowObject = new GameObject("Shadow");
             shadowObject.transform.SetParent(enemyObject.transform, false);
@@ -12504,6 +12534,7 @@ namespace TD
 
             var enemy = enemyObject.AddComponent<TDEnemy>();
             enemy.Initialize(this, path ?? GetDefaultSpawnPath(), runtimeEntry, laneKey);
+            animator.OnFrameSwapped -= enemy.NotifyVisualFrameSwapped;  // idempotent guard for re-registration
             animator.OnFrameSwapped += enemy.NotifyVisualFrameSwapped;
             enemy.NotifyVisualFrameSwapped();
             _activeEnemies.Add(enemy);
