@@ -22,12 +22,12 @@ ANIM = Path("E:/TD/Assets/Resources/Art/anim")
 
 # kind -> (family band hue range, identity accent hue, fx prefixes)
 SPEC = {
-    "cinder_husk":  ((0, 40), "bright orange joints #E8842A (hue ~30)", "fx_ember_pile"),
-    "rail_splitter": ((8, 45), "steel-bright wedge head accents", "fx_speed_streak"),
-    "acid_blister": ((60, 120), "yellow-green #C8E06A", "fx_acid"),
-    "forge_dragoon": ((0, 40), "cold-steel shield #7FA8C4 accents", "fx_shield"),
-    "ember_strider": ((0, 40), "leg-joint ember orange", "fx_mark"),
-    "echo_brood": ((240, 290), "echo violet family 240-270", "fx_echo"),
+    "cinder_husk":  ((0, 40), "bright orange joints #E8842A (hue ~30)", "fx_ember_pile", "burst"),
+    "rail_splitter": ((8, 45), "steel-bright wedge head accents", "fx_speed_streak", "collapse"),
+    "acid_blister": ((60, 120), "yellow-green #C8E06A", "fx_acid", "burst"),
+    "forge_dragoon": ((0, 40), "cold-steel shield #7FA8C4 accents", "fx_shield", "collapse"),
+    "ember_strider": ((0, 40), "leg-joint ember orange", "fx_mark", "collapse"),
+    "echo_brood": ((240, 290), "echo violet family 240-270", "fx_echo", "burst"),
 }
 
 
@@ -53,7 +53,7 @@ def frame_audit(path):
                 mask=al > 100, arr=a, flag="OK" if (faint <= 12 and not touch) else "FLAG")
 
 
-def death_continuity(kind):
+def death_continuity(kind, death_style="collapse"):
     idle = frame_audit(ANIM / f"enemy_{kind}_00.png")
     if "mask" not in idle:
         print(f"  idle_00 missing/empty")
@@ -81,9 +81,15 @@ def death_continuity(kind):
         # Stage 2 of 4 may be the ruled "burst" beat (cinder_husk spec:
         # stricken -> collapse -> burst -> ember pile) - burst drops
         # silhouette retention by design; require locale instead.
-        burst = st == 2
+        burst = st == 2 and death_style == "burst"
+        pile = st == 3 and death_style == "burst"   # burst deaths end in a
+        # low ground pile: a NEW object - require locale + low profile,
+        # not silhouette continuity
         if burst:
-            verdict = "OK" if prog >= 10 and area <= 85 and cx_drift <= 320 and d["flag"] == "OK" else "REVIEW"
+            verdict = "OK" if prog >= 10 and area <= 130 and cx_drift <= 320 and d["flag"] == "OK" else "REVIEW"
+        elif pile:
+            pile_h = d["bbox"][3] - d["bbox"][2]
+            verdict = "OK" if pile_h <= 420 and cx_drift <= 320 and d["flag"] == "OK" else "REVIEW"
         else:
             verdict = "OK" if (ret >= 25 or area <= 60) and prog >= 45 and bot_drift <= 40 and d["flag"] == "OK" else "REVIEW"
         print(f"  death_{st:02d}: retain {ret:5.1f}% prog {prog:5.1f}% area {area:5.1f}% "
@@ -93,7 +99,7 @@ def death_continuity(kind):
 
 def audit(kind):
     print(f"=== enemy_{kind}")
-    band, accent, fx_pref = SPEC[kind]
+    band, accent, fx_pref, death_style = SPEC[kind]
     for i in range(8):
         p = ANIM / f"enemy_{kind}_{i:02d}.png"
         if not p.exists():
@@ -105,7 +111,7 @@ def audit(kind):
         print(f"  idle_{i:02d}: {r['flag']:4s} faint {r.get('faint', -1):4.1f}% touch {r.get('touch')} "
               f"family_band {band_share:4.0f}% vivid {hs[1] if hs else 0:4.1f}%")
     print("  death chain vs idle_00:")
-    death_continuity(kind)
+    death_continuity(kind, death_style)
     fx = sorted(p.name for p in ANIM.glob(f"{fx_pref}*.png"))
     print(f"  behavior FX ({fx_pref}*): {len(fx)} files {fx[:4]}")
 
