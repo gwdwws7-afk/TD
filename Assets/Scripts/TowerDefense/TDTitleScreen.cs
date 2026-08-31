@@ -207,7 +207,10 @@ namespace TD
                 btnRect.anchorMax = new Vector2(0.5f, startY - i * stepY);
                 // button_strip.png is the horizontal plaque cut for this ratio
                 // (0162bce); 440 wide forced preserveAspect to shrink the art.
-                btnRect.sizeDelta = new Vector2(373f, 76f);
+                // 373.486 = 76 * 1376/280 (the strip's native ratio): with
+                // preserveAspect, a rounded 373 leaves a 0.1px bottom seam and
+                // 374 would trade it for 0.5px side seams.
+                btnRect.sizeDelta = new Vector2(373.486f, 76f);
                 CreateStyledButton(btnRect, label, tag);
             }
 
