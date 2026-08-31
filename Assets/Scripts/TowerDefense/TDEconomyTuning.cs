@@ -2,26 +2,32 @@ using UnityEngine;
 
 namespace TD
 {
+    /// <summary>
+    /// Economy scaling curves (p12.5.0) — pure functions over the values in
+    /// TDBalanceConfig. Tuning lives in the config asset; the shapes of the
+    /// curves (Lerp over run progress) are code.
+    /// </summary>
     public static class TDEconomyTuning
     {
-        public const float CombatBountyShare = 0.40f;
-        public const int DecisionReserveLimit = 999;
+        public static float CombatBountyShare => TDBalanceConfig.Instance.combatBountyShare;
+        public static int DecisionReserveLimit => TDBalanceConfig.Instance.decisionReserveLimit;
 
-        private const float LateIncomeStartProgress = 0.45f;
-        private const float FinalCombatIncomeMultiplier = 0.06f;
-        private const float LateClearRewardStartProgress = 0.50f;
-        private const float FinalClearRewardMultiplier = 0.50f;
-        private const float FinalScenarioPhaseMultiplier = 1.55f;
-        private const float ScenarioRepeatStep = 0.22f;
-        private const float MaxScenarioRepeatMultiplier = 1.88f;
+        private static float LateIncomeStartProgress => TDBalanceConfig.Instance.lateIncomeStartProgress;
+        private static float FinalCombatIncomeMultiplier => TDBalanceConfig.Instance.finalCombatIncomeMultiplier;
+        private static float LateClearRewardStartProgress => TDBalanceConfig.Instance.lateClearRewardStartProgress;
+        private static float FinalClearRewardMultiplier => TDBalanceConfig.Instance.finalClearRewardMultiplier;
+        private static float FinalScenarioPhaseMultiplier => TDBalanceConfig.Instance.finalScenarioPhaseMultiplier;
+        private static float ScenarioRepeatStep => TDBalanceConfig.Instance.scenarioRepeatStep;
+        private static float MaxScenarioRepeatMultiplier => TDBalanceConfig.Instance.maxScenarioRepeatMultiplier;
 
         public static float GetUpgradeCostMultiplier(int currentTier)
         {
+            var config = TDBalanceConfig.Instance;
             return currentTier switch
             {
-                1 => 1.4f,
-                2 => 4.6f,
-                _ => 0.8f
+                1 => config.tier1UpgradeCostMultiplier,
+                2 => config.tier2UpgradeCostMultiplier,
+                _ => config.tier0UpgradeCostMultiplier
             };
         }
 

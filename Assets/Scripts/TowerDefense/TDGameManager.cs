@@ -70,8 +70,13 @@ namespace TD
         private const int DefaultMaxFailureReasonsShown = 3;
         private const int DefaultResonanceEnabledFromLevel = 1;
         private const bool DefaultAllowEarlyWaveDispatch = false;
+        // Run baselines live in TDBalanceConfig (value externalization);
+        // constants remain for field initializer defaults, but the runtime
+        // source of truth is the config asset.
         private const int DefaultDefenseBudget = 120;
         private const int DefaultLineIntegrity = 20;
+        private static int ConfigDefaultDefenseBudget => TDBalanceConfig.Instance.defaultDefenseBudget;
+        private static int ConfigDefaultLineIntegrity => TDBalanceConfig.Instance.defaultLineIntegrity;
         private const int MissionTacticalStarThreshold = 75;
         private const int GridWidth = 16;
         private const int GridHeight = 9;
@@ -11699,9 +11704,9 @@ namespace TD
             // Meta line A (Logistics Reserve) rides the default baseline so
             // the flat bonus dilutes naturally against level costs; mission
             // and chapter rules keep applying on top unchanged.
-            _startingDefenseBudget = DefaultDefenseBudget +
+            _startingDefenseBudget = ConfigDefaultDefenseBudget +
                                      TDMetaUpgradeSystem.GetStartingBudgetBonus(GetMetaRank(TDMetaUpgradeSystem.UpgradeLine.A));
-            _startingLineIntegrity = DefaultLineIntegrity;
+            _startingLineIntegrity = ConfigDefaultLineIntegrity;
             _defenseBudget = _startingDefenseBudget;
             _lineIntegrity = _startingLineIntegrity;
             _missionEnemyHpMultiplier = 1f;
