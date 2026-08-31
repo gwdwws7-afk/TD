@@ -165,8 +165,11 @@ namespace TD
             subRect.anchorMin = new Vector2(0.5f, 0.595f);
             subRect.anchorMax = new Vector2(0.5f, 0.595f);
             subRect.sizeDelta = new Vector2(400f, 24f);
-            var subTxt = CreateText(subRect, "余 烬 铁 道", 16, FontStyle.Italic, new Color(0.72f, 0.64f, 0.52f, 0.85f));
+            var subTxt = CreateText(subRect, "余 烬 铁 道", 16, FontStyle.Italic, new Color(0.97f, 0.89f, 0.70f, 1f));
             subTxt.alignment = TextAnchor.MiddleCenter;
+            var subOutline = subRect.gameObject.AddComponent<UnityEngine.UI.Outline>();
+            subOutline.effectColor = new Color(0.05f, 0.03f, 0.02f, 0.85f);
+            subOutline.effectDistance = new Vector2(1f, -1f);
 
             // ── Tagline ──
             var tagRect = CreateRect("TitleTagline", _root);
@@ -202,14 +205,16 @@ namespace TD
                 var btnRect = CreateRect($"TitleBtn_{tag}", _root);
                 btnRect.anchorMin = new Vector2(0.5f, startY - i * stepY);
                 btnRect.anchorMax = new Vector2(0.5f, startY - i * stepY);
-                btnRect.sizeDelta = new Vector2(440f, 76f);
+                // button_strip.png is the horizontal plaque cut for this ratio
+                // (0162bce); 440 wide forced preserveAspect to shrink the art.
+                btnRect.sizeDelta = new Vector2(373f, 76f);
                 CreateStyledButton(btnRect, label, tag);
             }
 
             // ── Version ──
             var verRect = CreateRect("Version", _root);
-            verRect.anchorMin = new Vector2(0.98f, 0.02f);
-            verRect.anchorMax = new Vector2(0.98f, 0.02f);
+            verRect.anchorMin = new Vector2(0.962f, 0.028f);
+            verRect.anchorMax = new Vector2(0.962f, 0.028f);
             verRect.sizeDelta = new Vector2(240f, 16f);
             var verTxt = CreateText(verRect, "v0.13.0  ·  Emberline Studios  ·  2026", 8, FontStyle.Normal, TextDim);
             verTxt.alignment = TextAnchor.LowerRight;
@@ -316,10 +321,10 @@ namespace TD
         private void CreateStyledButton(RectTransform parent, string label, string tag)
         {
             var img = parent.gameObject.AddComponent<Image>();
-            var plateTex = LoadFullResTexture("Art/Branding/button_art");
+            var plateTex = LoadFullResTexture("Art/Branding/button_strip");
             if (plateTex != null && plateTex.width > 512)
             {
-                // button_art.png already has alpha baked in from Python processing.
+                // button_strip.png already has alpha baked in from Python processing.
                 // Do NOT run RemoveBlackBackground — it would override alpha to 1.
                 img.sprite = Sprite.Create(plateTex,
                     new Rect(0, 0, plateTex.width, plateTex.height),

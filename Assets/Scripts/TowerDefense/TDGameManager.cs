@@ -1959,8 +1959,8 @@ namespace TD
                 label.rectTransform.anchorMin = new Vector2(0f, 1f);
                 label.rectTransform.anchorMax = new Vector2(0f, 1f);
                 label.rectTransform.pivot = new Vector2(0f, 1f);
-                label.rectTransform.anchoredPosition = new Vector2(62f, -6f);
-                label.rectTransform.sizeDelta = new Vector2(65f, 64f);
+                label.rectTransform.anchoredPosition = new Vector2(68f, -6f);
+                label.rectTransform.sizeDelta = new Vector2(59f, 64f);
                 label.alignment = TextAnchor.MiddleLeft;
                 _uiFormationTowerButtons.Add(button);
                 _uiFormationTowerButtonTexts.Add(label);

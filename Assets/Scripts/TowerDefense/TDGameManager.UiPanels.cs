@@ -480,11 +480,11 @@ namespace TD
             AddUiPanelChrome(_uiCampaignProfileRoot, TDUiWorldSkin.Brass);
 
             _uiCampaignProfileTitleText = CreateUiText("Campaign Profile Title", _uiCampaignProfileRoot, new Vector2(96f, -18f), new Vector2(548f, 30f), "CAMPAIGN PROFILE", 20, FontStyle.Bold, TextAnchor.MiddleLeft, new Color(0.92f, 0.98f, 1f, 1f));
-            _uiCampaignProfileSummaryText = CreateUiText("Campaign Profile Summary", _uiCampaignProfileRoot, new Vector2(24f, -54f), new Vector2(1072f, 40f), string.Empty, 11, FontStyle.Bold, TextAnchor.UpperLeft, new Color(0.98f, 0.84f, 0.58f, 1f));
+            _uiCampaignProfileSummaryText = CreateUiText("Campaign Profile Summary", _uiCampaignProfileRoot, new Vector2(24f, -54f), new Vector2(1072f, 42f), string.Empty, 12, FontStyle.Bold, TextAnchor.UpperLeft, new Color(0.99f, 0.90f, 0.66f, 1f));
             CreateUiImage("Campaign Profile Header Divider", _uiCampaignProfileRoot, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(24f, -98f), new Vector2(1072f, 1f), new Color(0.56f, 0.72f, 0.80f, 0.28f));
 
             CreateUiText("Campaign Profile Chapter Header", _uiCampaignProfileRoot, new Vector2(24f, -118f), new Vector2(520f, 24f), "CHAPTER ARCHIVE", 13, FontStyle.Bold, TextAnchor.MiddleLeft, new Color(0.80f, 0.93f, 1f, 1f));
-            _uiCampaignProfileChapterText = CreateUiText("Campaign Profile Chapters", _uiCampaignProfileRoot, new Vector2(24f, -150f), new Vector2(520f, 280f), string.Empty, 11, FontStyle.Normal, TextAnchor.UpperLeft, new Color(0.80f, 0.90f, 0.97f, 1f));
+            _uiCampaignProfileChapterText = CreateUiText("Campaign Profile Chapters", _uiCampaignProfileRoot, new Vector2(24f, -153f), new Vector2(520f, 277f), string.Empty, 11, FontStyle.Normal, TextAnchor.UpperLeft, new Color(0.80f, 0.90f, 0.97f, 1f));
             _uiCampaignProfileBonusText = CreateUiText("Campaign Profile Bonuses", _uiCampaignProfileRoot, new Vector2(24f, -446f), new Vector2(520f, 98f), string.Empty, 12, FontStyle.Bold, TextAnchor.UpperLeft, new Color(0.78f, 0.96f, 0.84f, 1f));
 
             CreateUiImage("Campaign Profile Control Divider", _uiCampaignProfileRoot, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(572f, -118f), new Vector2(1f, 424f), new Color(0.56f, 0.72f, 0.80f, 0.28f));

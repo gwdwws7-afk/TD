@@ -232,25 +232,46 @@ namespace TD
         private void BuildTitle()
         {
             var titleRect = CreateRect("MapTitle", _root);
-            titleRect.anchorMin = new Vector2(0.5f, 0.95f);
-            titleRect.anchorMax = new Vector2(0.5f, 0.95f);
-            titleRect.sizeDelta = new Vector2(600f, 40f);
-
-            if (_artMode && _titlePlate != null)
+            // Art mode: world_map_bg already paints a hanging wooden sign at the
+            // top-center (face spans roughly x 0.36-0.64, y 0.15-0.25 from the top
+            // of the art). Put the label straight onto that sign instead of
+            // stacking a second, smaller plate above it — the empty painted sign
+            // read as a missing title in the 08-31 UI fit tour.
+            var onPaintedSign = _artMode && _worldMapBg != null;
+            if (onPaintedSign)
             {
-                var plateRect = CreateRect("MapTitlePlate", titleRect);
-                plateRect.anchorMin = Vector2.zero;
-                plateRect.anchorMax = Vector2.one;
-                plateRect.offsetMin = new Vector2(-60f, -14f);
-                plateRect.offsetMax = new Vector2(60f, 14f);
-                var plate = plateRect.gameObject.AddComponent<Image>();
-                plate.sprite = _titlePlate;
-                plate.raycastTarget = false;
+                titleRect.anchorMin = new Vector2(0.5f, 0.795f);
+                titleRect.anchorMax = new Vector2(0.5f, 0.795f);
+                titleRect.sizeDelta = new Vector2(430f, 62f);
+            }
+            else
+            {
+                titleRect.anchorMin = new Vector2(0.5f, 0.95f);
+                titleRect.anchorMax = new Vector2(0.5f, 0.95f);
+                titleRect.sizeDelta = new Vector2(600f, 40f);
+
+                if (_artMode && _titlePlate != null)
+                {
+                    var plateRect = CreateRect("MapTitlePlate", titleRect);
+                    plateRect.anchorMin = Vector2.zero;
+                    plateRect.anchorMax = Vector2.one;
+                    plateRect.offsetMin = new Vector2(-60f, -14f);
+                    plateRect.offsetMax = new Vector2(60f, 14f);
+                    var plate = plateRect.gameObject.AddComponent<Image>();
+                    plate.sprite = _titlePlate;
+                    plate.raycastTarget = false;
+                }
             }
 
-            var titleText = CreateText(titleRect, "CAMPAIGN MAP", _artMode ? 22 : 24, FontStyle.Bold,
-                new Color(0.98f, 0.86f, 0.55f, 0.98f));
+            var titleText = CreateText(titleRect, "CAMPAIGN MAP", onPaintedSign ? 30 : (_artMode ? 22 : 24),
+                FontStyle.Bold, new Color(0.99f, 0.90f, 0.62f, 0.98f));
             titleText.alignment = TextAnchor.MiddleCenter;
+            if (onPaintedSign)
+            {
+                var outline = titleRect.gameObject.AddComponent<UnityEngine.UI.Outline>();
+                outline.effectColor = new Color(0.12f, 0.07f, 0.03f, 0.92f);
+                outline.effectDistance = new Vector2(1.2f, -1.2f);
+            }
         }
 
         private void BuildBackButton()
@@ -258,15 +279,18 @@ namespace TD
             var backRect = CreateRect("MapBackBtn", _root);
             backRect.anchorMin = new Vector2(0.02f, 0.93f);
             backRect.anchorMax = new Vector2(0.02f, 0.93f);
-            backRect.sizeDelta = new Vector2(120f, 36f);
+            backRect.sizeDelta = new Vector2(132f, 36f);
             var backBtn = backRect.gameObject.AddComponent<Button>();
             var backImg = backRect.gameObject.AddComponent<Image>();
-            backImg.color = new Color(0.06f, 0.08f, 0.11f, 0.80f);
+            backImg.color = new Color(0.05f, 0.07f, 0.10f, 0.92f);
             var backLabelRect = CreateRect("MapBackLabel", backRect);
             backLabelRect.anchorMin = Vector2.zero; backLabelRect.anchorMax = Vector2.one;
             backLabelRect.offsetMin = Vector2.zero; backLabelRect.offsetMax = Vector2.zero;
-            var backLabel = CreateText(backLabelRect, "← BACK", 11, FontStyle.Bold, new Color(0.93f, 0.96f, 0.98f, 1f));
+            var backLabel = CreateText(backLabelRect, "← BACK", 11, FontStyle.Bold, new Color(0.95f, 0.97f, 0.99f, 1f));
             backLabel.alignment = TextAnchor.MiddleCenter;
+            var backOutline = backLabelRect.gameObject.AddComponent<UnityEngine.UI.Outline>();
+            backOutline.effectColor = new Color(0.03f, 0.04f, 0.06f, 0.9f);
+            backOutline.effectDistance = new Vector2(1f, -1f);
         }
 
         private void BuildMapContent(Transform parent)
@@ -288,7 +312,7 @@ namespace TD
                     {
                         var plateImg = plateRect.gameObject.AddComponent<Image>();
                         plateImg.sprite = _regionPlate;
-                        plateImg.color = new Color(1f, 1f, 1f, 0.92f);
+                        plateImg.color = new Color(1f, 1f, 1f, 0.97f);
                         plateImg.raycastTarget = false;
                     }
                     else
@@ -300,9 +324,12 @@ namespace TD
                     var plateLabelRect = CreateRect($"RegionLabel_{r}", plateRect);
                     plateLabelRect.anchorMin = Vector2.zero; plateLabelRect.anchorMax = Vector2.one;
                     plateLabelRect.offsetMin = Vector2.zero; plateLabelRect.offsetMax = Vector2.zero;
-                    var plateLabel = CreateText(plateLabelRect, RegionNames[r], 10, FontStyle.Bold,
-                        new Color(0.95f, 0.88f, 0.70f, 0.95f));
+                    var plateLabel = CreateText(plateLabelRect, RegionNames[r], 11, FontStyle.Bold,
+                        new Color(0.97f, 0.91f, 0.72f, 0.97f));
                     plateLabel.alignment = TextAnchor.MiddleCenter;
+                    var plateOutline = plateLabelRect.gameObject.AddComponent<UnityEngine.UI.Outline>();
+                    plateOutline.effectColor = new Color(0.04f, 0.05f, 0.07f, 0.88f);
+                    plateOutline.effectDistance = new Vector2(1f, -1f);
                 }
             }
             else
