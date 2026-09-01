@@ -138,6 +138,8 @@ namespace TD
             public float wagonRepairPerSecond;
             public float wagonSlowFieldRadius;
             public float wagonSlowFieldPercent;
+            // Long Rail Cannon pierce block (expansion tower 12). Zero = no pierce.
+            public float pierceFalloff;
             public string spritePath;
             public Color fallbackColor;
             public string animationPrefix;
@@ -196,7 +198,9 @@ namespace TD
             new("derrick_scrap_protocol", TDTowerKind.SalvageDerrick, TDTowerUpgradeBranch.Damage, "Scrap Protocol", "Boss and elite bounties pay 1.5x inside the ring.", new[] { "boss", "elite", "heavy" }, TDResonanceAffinity.Either),
             new("derrick_supply_drop", TDTowerKind.SalvageDerrick, TDTowerUpgradeBranch.Utility, "Supply Drop", "Every wave opens with +3 budget.", new[] { "support", "mixed", "swarm" }, TDResonanceAffinity.Either),
             new("barricade_derailment", TDTowerKind.RailBarricade, TDTowerUpgradeBranch.Damage, "Derailment", "A wrecked wagon detonates: blast, armor break, stall.", new[] { "armored", "heavy" }, TDResonanceAffinity.EmberSurge),
-            new("barricade_holding_order", TDTowerKind.RailBarricade, TDTowerUpgradeBranch.Utility, "Holding Order", "Faster rebuilds and a taunt pulse holds the line.", new[] { "fast", "flank", "swarm" }, TDResonanceAffinity.FractureMark)
+            new("barricade_holding_order", TDTowerKind.RailBarricade, TDTowerUpgradeBranch.Utility, "Holding Order", "Faster rebuilds and a taunt pulse holds the line.", new[] { "fast", "flank", "swarm" }, TDResonanceAffinity.FractureMark),
+            new("cannon_full_bore", TDTowerKind.LongRailCannon, TDTowerUpgradeBranch.Damage, "Full Bore", "Zero falloff; the line's last target pays extra.", new[] { "armored", "heavy", "boss" }, TDResonanceAffinity.EmberSurge),
+            new("cannon_ballistic_lead", TDTowerKind.LongRailCannon, TDTowerUpgradeBranch.Utility, "Ballistic Lead", "Leads the shot: no fast-enemy misses, opening shots mark.", new[] { "fast", "flank" }, TDResonanceAffinity.FractureMark)
         };
 
         private readonly List<TDTowerUpgradeBranch> _upgradeHistory = new();
@@ -213,6 +217,7 @@ namespace TD
         private Color _specializationBaseColor;
         private float _specializationPulse;
         private float _cooldown;
+        private int _pierceFirstShotWave = -1;
         private TDEnemy _windupTarget;
         private TDEnemy _cachedTarget;
         private float _targetRescanTimer;
@@ -246,6 +251,12 @@ namespace TD
         public float WagonRepairPerSecond => _activeState?.wagonRepairPerSecond ?? 0f;
         public float WagonSlowFieldRadius => _activeState?.wagonSlowFieldRadius ?? 0f;
         public float WagonSlowFieldPercent => _activeState?.wagonSlowFieldPercent ?? 0f;
+        public float PierceFalloff => _activeState?.pierceFalloff ?? 0f;
+        /// <summary>
+        /// Ballistic Lead (utility spec) removes the fast-enemy evasion this
+        /// tower's own identity is built on — the one spec allowed to.
+        /// </summary>
+        public bool IgnoresFastEvade => Kind == TDTowerKind.LongRailCannon && IsUtilitySpecialist;
 
         /// <summary>
         /// Miss chance vs fast (speed >= 2.2) unslowed enemies for slow-firing
@@ -642,6 +653,15 @@ namespace TD
             _readability?.PlayAttack();
             _animator?.PlayFire();
             _gameManager?.NotifyTowerFired(Kind);
+
+            if (Kind == TDTowerKind.LongRailCannon)
+            {
+                var cannonDamage = Mathf.RoundToInt(
+                    _activeState.damage * GetDamageMultiplier(target) *
+                    (_gameManager != null ? _gameManager.GetTowerDamageMultiplier(Kind) : 1f));
+                ResolvePierceLine(target, cannonDamage);
+                return;
+            }
             var resonanceDamageMultiplier = _gameManager != null ? _gameManager.GetTowerDamageMultiplier(Kind) : 1f;
             var resonanceProjectileSpeed = _gameManager != null ? _gameManager.GetProjectileSpeedMultiplier(Kind) : 1f;
             var resonanceAoeRadius = _gameManager != null ? _gameManager.GetAoeRadiusMultiplier(Kind) : 1f;
@@ -683,6 +703,107 @@ namespace TD
                 _activeState.slowDuration + resonanceSlowDurationBonus,
                 IsDamageSpecialist,
                 IsUtilitySpecialist);
+        }
+
+        private const float PierceLineWidth = 0.45f;
+        private const int PierceMaxTargets = 12;
+
+        /// <summary>
+        /// Segment-cast pierce (expansion tower 12): every enemy within the
+        /// line's width resolves at fire time, ordered from the muzzle, each
+        /// entry taking the chain's falloff damage through the regular
+        /// TakeHit pipeline (fast-enemy evasion rolls per target — the
+        /// tower's identity weakness lives there, removed only by Ballistic
+        /// Lead via IgnoresFastEvade).
+        /// </summary>
+        private void ResolvePierceLine(TDEnemy primary, int baseDamage)
+        {
+            if (_gameManager == null || primary == null || baseDamage <= 0)
+            {
+                return;
+            }
+
+            var origin = transform.position;
+            var lineEnd = origin + (primary.transform.position - origin).normalized * _activeState.range;
+            var candidates = _gameManager.GetEnemiesInRange(origin, _activeState.range, 24);
+
+            // Shared buffer contract (P1): consume before any other query.
+            var lineTargets = new List<TDEnemy>(candidates.Count);
+            var projections = new List<float>(candidates.Count);
+            for (var i = 0; i < candidates.Count; i++)
+            {
+                var enemy = candidates[i];
+                if (enemy == null || !enemy.IsTargetable)
+                {
+                    continue;
+                }
+
+                var toEnemy = enemy.transform.position - origin;
+                var line = lineEnd - origin;
+                var lengthSqr = line.sqrMagnitude;
+                var t = lengthSqr <= 1e-6f ? 0f : Mathf.Clamp01(Vector3.Dot(toEnemy, line) / lengthSqr);
+                var distance = Vector3.Distance(enemy.transform.position, origin + line * t);
+                if (distance > PierceLineWidth)
+                {
+                    continue;
+                }
+
+                lineTargets.Add(enemy);
+                projections.Add(t);
+            }
+
+            if (lineTargets.Count == 0)
+            {
+                return;
+            }
+
+            // Muzzle-first ordering (insertion sort — the line is short).
+            for (var i = 1; i < lineTargets.Count; i++)
+            {
+                var enemy = lineTargets[i];
+                var t = projections[i];
+                var j = i - 1;
+                while (j >= 0 && projections[j] > t)
+                {
+                    lineTargets[j + 1] = lineTargets[j];
+                    projections[j + 1] = projections[j];
+                    j--;
+                }
+
+                lineTargets[j + 1] = enemy;
+                projections[j + 1] = t;
+            }
+
+            if (lineTargets.Count > PierceMaxTargets)
+            {
+                lineTargets.RemoveRange(PierceMaxTargets, lineTargets.Count - PierceMaxTargets);
+            }
+
+            var wave = _gameManager.CurrentWaveIndex;
+            var isFirstShotOfWave = _pierceFirstShotWave != wave;
+            _pierceFirstShotWave = wave;
+
+            var chain = TDCombatMath.ResolvePierceDamageChain(
+                baseDamage,
+                _activeState.pierceFalloff,
+                lineTargets.Count,
+                IsDamageSpecialist ? 1.3f : 1f);
+            for (var i = 0; i < lineTargets.Count; i++)
+            {
+                var enemy = lineTargets[i];
+                var modified = _gameManager.GetModifiedDamageForEnemy(this, enemy, chain[i]);
+                var damageTaken = enemy.TakeHit(modified, 0f, 0f, this);
+                if (damageTaken > 0)
+                {
+                    _gameManager.NotifyEnemyDamaged(this, enemy, damageTaken, 0f, 0f);
+                }
+
+                // Ballistic Lead: the wave's opening shot marks its target.
+                if (isFirstShotOfWave && IsUtilitySpecialist && i == 0)
+                {
+                    enemy.SetResonanceMark(1.5f);
+                }
+            }
         }
 
         private float ResolveWindupDuration()
@@ -967,6 +1088,12 @@ namespace TD
                     state.wagonArmor += 2;
                     state.wagonThornsPerSecond += 4;
                     break;
+                // Reload line: +22% damage (diminished), falloff -0.1 flat per
+                // level (sheet 0.7 -> 0.4).
+                case TDTowerKind.LongRailCannon:
+                    state.damage = Mathf.RoundToInt(state.damage * (1f + (0.22f * factor)));
+                    state.pierceFalloff = Mathf.Max(0.2f, state.pierceFalloff - 0.1f);
+                    break;
             }
         }
 
@@ -1023,6 +1150,11 @@ namespace TD
                 case TDTowerKind.RailBarricade:
                     state.wagonRepairPerSecond += 4f;
                     state.wagonSlowFieldPercent = Mathf.Clamp(state.wagonSlowFieldPercent + 0.05f, 0f, 0.5f);
+                    break;
+                // Fire-control line: range +8%/level, muzzle velocity +15%/level.
+                case TDTowerKind.LongRailCannon:
+                    state.range *= 1f + (0.08f * factor);
+                    state.projectileSpeed *= 1f + (0.15f * factor);
                     break;
             }
         }
@@ -1388,6 +1520,7 @@ namespace TD
                     spritePath = "Art/anim/tower_long_rail_cannon_00",
                     fallbackColor = new Color(0.42f, 0.36f, 0.91f),
                     animationPrefix = "Art/anim/tower_long_rail_cannon",
+                    pierceFalloff = 0.7f,
                     animationFrames = 6,
                     animationFps = 6.0f,
                     visualScale = 1.00f,
@@ -1434,6 +1567,7 @@ namespace TD
                 wagonRepairPerSecond = source.wagonRepairPerSecond,
                 wagonSlowFieldRadius = source.wagonSlowFieldRadius,
                 wagonSlowFieldPercent = source.wagonSlowFieldPercent,
+                pierceFalloff = source.pierceFalloff,
                 spritePath = source.spritePath,
                 fallbackColor = source.fallbackColor,
                 animationPrefix = source.animationPrefix,

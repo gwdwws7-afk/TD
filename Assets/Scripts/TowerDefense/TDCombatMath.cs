@@ -67,6 +67,41 @@ namespace TD
         /// 0.18 up to 0.30 at 0.5/s. Slowed enemies lose evasion entirely
         /// (checked by the caller).
         /// </summary>
+        /// <summary>
+        /// Long Rail Cannon pierce chain (expansion tower 12): a straight line
+        /// resolves every enemy at fire time, each taking the previous entry's
+        /// damage times the falloff — floored, never below 1. The last target
+        /// takes a bonus multiplier BEFORE the floor (Full Bore's +30% line
+        /// end). Sequential-on-integers is the pinned semantics: the sheet's
+        /// 34/23/16/11/7 chain only reproduces this way.
+        /// </summary>
+        public static int[] ResolvePierceDamageChain(int baseDamage, float falloff, int targetCount, float lastTargetBonus = 1f)
+        {
+            var count = Mathf.Max(0, targetCount);
+            if (count == 0 || baseDamage <= 0)
+            {
+                return new int[0];
+            }
+
+            var chain = new int[count];
+
+            var clampedFalloff = Mathf.Clamp(falloff, 0.05f, 1f);
+            var damage = baseDamage;
+            for (var i = 0; i < count; i++)
+            {
+                var multiplier = i == 0 ? 1f : clampedFalloff;
+                if (i == count - 1)
+                {
+                    multiplier *= Mathf.Max(1f, lastTargetBonus);
+                }
+
+                damage = Mathf.Max(1, Mathf.FloorToInt(damage * multiplier));
+                chain[i] = damage;
+            }
+
+            return chain;
+        }
+
         public static float FastEnemyMissChance(float shotsPerSecond, float aoeRadius)
         {
             if (aoeRadius > 0f || shotsPerSecond > 1.1f)

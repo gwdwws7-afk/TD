@@ -698,6 +698,9 @@ namespace TD
         private int _defenseBudget = DefaultDefenseBudget;
         private int _lineIntegrity = DefaultLineIntegrity;
         private int _wave;
+
+        /// <summary>Current wave index (Ballistic Lead's opening-shot rule reads it).</summary>
+        public int CurrentWaveIndex => _wave;
         private int _totalKills;
         private int _totalEscapes;
         private int _wavesCleared;

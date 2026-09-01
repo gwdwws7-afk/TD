@@ -691,7 +691,8 @@ namespace TD
             // making Frost Coil / Grav Snare a hard requirement for Burrow Sapper and
             // Cinder Glider. High fire-rate towers (Ember Flak 1.35/s, Arc Welder 0.85/s
             // but chain) also bypass this via their own flag on the source tower.
-            if (sourceTower != null && !IsSlowed && _baseSpeed >= FastEvadeSpeedThreshold)
+            if (sourceTower != null && !sourceTower.IgnoresFastEvade &&
+                !IsSlowed && _baseSpeed >= FastEvadeSpeedThreshold)
             {
                 var evadeChance = sourceTower.EvadeableFastEnemyMissChance;
                 if (evadeChance > 0f && UnityEngine.Random.value < evadeChance)
