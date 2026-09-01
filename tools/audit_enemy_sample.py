@@ -97,6 +97,26 @@ def death_continuity(kind, death_style="collapse"):
         prev = dm
 
 
+def pose_sheet_check(path, big_frac=0.08):
+    """Design ruling f50bee9: body frames must be a single subject.
+
+    A 2x2/1x4 pose sheet shows up as several same-scale components
+    (cinder_husk death_02 pre-fix: 4 comps of ~24-33k px each). Flag any
+    frame with >=2 components each >= big_frac of the largest one.
+    """
+    from scipy import ndimage
+    al = np.array(Image.open(path).convert("RGBA"))[:, :, 3]
+    m = al > 100
+    if m.sum() < 500:
+        return 1, 0.0
+    lab, n = ndimage.label(m)
+    sizes = np.sort(np.array([s for s in ndimage.sum(m, lab, range(1, n + 1)) if s > 50]))[::-1]
+    if len(sizes) == 0:
+        return 1, 0.0
+    majors = int((sizes >= sizes[0] * big_frac).sum())
+    return majors, (sizes[1] / sizes[0] if len(sizes) > 1 else 0.0)
+
+
 def audit(kind):
     print(f"=== enemy_{kind}")
     band, accent, fx_pref, death_style = SPEC[kind]
@@ -108,9 +128,17 @@ def audit(kind):
         r = frame_audit(p)
         hs = hue_stats(r.get("arr", np.zeros((4, 4, 4))))
         band_share = ((hs[0] >= band[0]) & (hs[0] < band[1])).mean() * 100 if hs is not None else -1
+        majors, ratio = pose_sheet_check(p)
+        sheet = " POSE-SHEET!" if majors > 1 else ""
         print(f"  idle_{i:02d}: {r['flag']:4s} faint {r.get('faint', -1):4.1f}% touch {r.get('touch')} "
-              f"family_band {band_share:4.0f}% vivid {hs[1] if hs else 0:4.1f}%")
+              f"family_band {band_share:4.0f}% vivid {hs[1] if hs else 0:4.1f}% comps {majors}{sheet}")
     print("  death chain vs idle_00:")
+    for st in range(4):
+        dp = ANIM / f"enemy_{kind}_death_{st:02d}.png"
+        if dp.exists():
+            majors, ratio = pose_sheet_check(dp)
+            if majors > 1:
+                print(f"  death_{st:02d}: POSE-SHEET! {majors} same-scale comps (2nd/1st {ratio:.2f})")
     death_continuity(kind, death_style)
     fx = sorted(p.name for p in ANIM.glob(f"{fx_pref}*.png"))
     print(f"  behavior FX ({fx_pref}*): {len(fx)} files {fx[:4]}")
