@@ -217,6 +217,8 @@ namespace TD
         private Color _specializationBaseColor;
         private float _specializationPulse;
         private float _cooldown;
+        private float _acidDebuffTimer;
+        private float _acidDebuffFactor = 1f;
         private int _pierceFirstShotWave = -1;
         private TDEnemy _windupTarget;
         private TDEnemy _cachedTarget;
@@ -592,7 +594,7 @@ namespace TD
                 // runs by whole waves.
                 var windupOvershoot = -_windupTimer;
                 var fireRateMultiplier = _gameManager.GetTowerFireRateMultiplier(Kind);
-                var shotInterval = 1f / Mathf.Max(0.01f, _activeState.shotsPerSecond * fireRateMultiplier);
+                var shotInterval = 1f / Mathf.Max(0.01f, _activeState.shotsPerSecond * fireRateMultiplier * ResolveAcidFireRateFactor());
                 _cooldown = TDCombatMath.ResolvePostWindupCooldown(shotInterval, _windupDuration, windupOvershoot);
                 return;
             }
@@ -804,6 +806,35 @@ namespace TD
                     enemy.SetResonanceMark(1.5f);
                 }
             }
+        }
+
+        /// <summary>
+        /// Acid Blister's death spray (and Echo Harbinger's mimic variant):
+        /// towers in the cloud fire slower for the window. Factor-only — the
+        /// debuff never touches damage or windup data.
+        /// </summary>
+        public void ApplyAcidDebuff(float duration, float factor)
+        {
+            if (duration <= 0f || factor <= 0f || factor >= 1f)
+            {
+                return;
+            }
+
+            _acidDebuffTimer = Mathf.Max(_acidDebuffTimer, duration);
+            // Strongest cloud wins; refreshing never dilutes.
+            _acidDebuffFactor = Mathf.Min(_acidDebuffFactor == 1f ? factor : _acidDebuffFactor, factor);
+        }
+
+        private float ResolveAcidFireRateFactor()
+        {
+            if (_acidDebuffTimer > 0f)
+            {
+                _acidDebuffTimer = Mathf.Max(0f, _acidDebuffTimer - Time.deltaTime);
+                return _acidDebuffFactor;
+            }
+
+            _acidDebuffFactor = 1f;
+            return 1f;
         }
 
         private float ResolveWindupDuration()

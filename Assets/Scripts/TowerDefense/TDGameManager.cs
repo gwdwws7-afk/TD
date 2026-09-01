@@ -1631,6 +1631,8 @@ namespace TD
             _subsidyPaidTotal = 0;
             _salvageDerricks.Clear();
             _derrickWaveCredited = 0;
+            _cinderPiles.Clear();
+            _lastDiedEnemyId = null;
             TDBlockerWagon.ClearAll();
 
             // Invalidate per-run UI caches (readiness key could otherwise alias

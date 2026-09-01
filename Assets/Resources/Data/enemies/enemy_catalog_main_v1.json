@@ -133,6 +133,116 @@
       "lineDamage": 6,
       "threatCost": 18.0,
       "tags": ["boss", "final", "heavy", "armored"]
+    },
+    {
+      "enemyId": "cinder_husk",
+      "displayName": "Cinder Husk",
+      "hp": 65,
+      "speed": 1.0,
+      "armorFlat": 2,
+      "rewardGold": 9,
+      "lineDamage": 2,
+      "threatCost": 2.2,
+      "tags": ["attrition"]
+    },
+    {
+      "enemyId": "rail_splitter",
+      "displayName": "Rail Splitter",
+      "hp": 40,
+      "speed": 1.6,
+      "armorFlat": 0,
+      "rewardGold": 8,
+      "lineDamage": 2,
+      "threatCost": 1.8,
+      "tags": ["fast"]
+    },
+    {
+      "enemyId": "acid_blister",
+      "displayName": "Acid Blister",
+      "hp": 78,
+      "speed": 0.9,
+      "armorFlat": 5,
+      "rewardGold": 10,
+      "lineDamage": 2,
+      "threatCost": 2.4,
+      "tags": ["armored"]
+    },
+    {
+      "enemyId": "forge_dragoon",
+      "displayName": "Forge Dragoon",
+      "hp": 150,
+      "speed": 0.75,
+      "armorFlat": 7,
+      "rewardGold": 14,
+      "lineDamage": 3,
+      "threatCost": 3.2,
+      "tags": ["armored", "heavy"]
+    },
+    {
+      "enemyId": "ember_strider",
+      "displayName": "Ember Strider",
+      "hp": 95,
+      "speed": 2.0,
+      "armorFlat": 0,
+      "rewardGold": 12,
+      "lineDamage": 2,
+      "threatCost": 2.6,
+      "tags": ["fast"]
+    },
+    {
+      "enemyId": "echo_brood",
+      "displayName": "Echo Brood",
+      "hp": 55,
+      "speed": 1.4,
+      "armorFlat": 0,
+      "rewardGold": 9,
+      "lineDamage": 1,
+      "threatCost": 1.7,
+      "tags": ["swarm", "spawn"]
+    },
+    {
+      "enemyId": "containermaw",
+      "displayName": "Containermaw",
+      "hp": 320,
+      "speed": 0.5,
+      "armorFlat": 10,
+      "rewardGold": 40,
+      "lineDamage": 3,
+      "threatCost": 14.0,
+      "tags": ["boss", "heavy", "armored"]
+    },
+    {
+      "enemyId": "junction_tyrant",
+      "displayName": "Junction Tyrant",
+      "hp": 380,
+      "speed": 0.7,
+      "armorFlat": 6,
+      "rewardGold": 46,
+      "lineDamage": 4,
+      "threatCost": 15.0,
+      "tags": ["boss", "armored"]
+    },
+    {
+      "enemyId": "kiln_custodian",
+      "displayName": "Kiln Custodian",
+      "hp": 420,
+      "speed": 0.6,
+      "armorFlat": 6,
+      "rewardGold": 50,
+      "lineDamage": 4,
+      "threatCost": 16.0,
+      "tags": ["boss", "armored"]
+    },
+    {
+      "enemyId": "echo_harbinger",
+      "displayName": "Echo Harbinger",
+      "hp": 460,
+      "speed": 0.65,
+      "armorFlat": 8,
+      "rewardGold": 55,
+      "lineDamage": 5,
+      "threatCost": 16.0,
+      "tags": ["boss"]
     }
   ]
 }

@@ -73,6 +73,129 @@ namespace TD
             };
         }
 
+        // ── Expansion batch-2 enemy services ──
+        private struct TDCinderPile
+        {
+            public Vector3 Position;
+            public float ExpiresAt;
+        }
+
+        private readonly List<TDCinderPile> _cinderPiles = new();
+        private string _lastDiedEnemyId;
+        public const float CinderPileRadius = 0.7f;
+        public const float CinderPileDurationSeconds = 8f;
+        public const float CinderPileSpeedBonus = 1.25f;
+        public const float AcidBurstRadius = 1.6f;
+        public const float AcidBurstDurationSeconds = 4f;
+
+        public bool IsOnCinderPile(Vector3 position)
+        {
+            var now = Time.time;
+            for (var i = _cinderPiles.Count - 1; i >= 0; i--)
+            {
+                if (_cinderPiles[i].ExpiresAt <= now)
+                {
+                    _cinderPiles.RemoveAt(i);
+                    continue;
+                }
+
+                if ((position - _cinderPiles[i].Position).sqrMagnitude <= CinderPileRadius * CinderPileRadius)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void RegisterCinderPile(Vector3 position)
+        {
+            _cinderPiles.Add(new TDCinderPile { Position = position, ExpiresAt = Time.time + CinderPileDurationSeconds });
+            // Ground prop, not a target: the husk's final death frame lies
+            // where it fell and burns out with the pile.
+            var pileObject = new GameObject("CinderPile");
+            pileObject.transform.SetParent(transform, true);
+            pileObject.transform.position = position;
+            var renderer = pileObject.AddComponent<SpriteRenderer>();
+            renderer.sprite = TDArtLibrary.LoadSpriteOrFallback(
+                "Art/anim/enemy_cinder_husk_death_03", new Color(0.95f, 0.55f, 0.20f));
+            renderer.sortingOrder = 7;
+            renderer.color = new Color(1f, 0.72f, 0.42f, 0.85f);
+            Destroy(pileObject, CinderPileDurationSeconds);
+        }
+
+        /// <summary>
+        /// Acid Blister's death spray: the first enemy that punishes tower
+        /// placement — towers in the burst lose attack speed for a window.
+        /// Echo Harbinger's mimic reuses the same debuff at -12%.
+        /// </summary>
+        public void ApplyTowerAcidBurst(Vector3 position, float radius, float duration, float factor)
+        {
+            var towers = FindObjectsByType<TDTower>(FindObjectsSortMode.None);
+            for (var i = 0; i < towers.Length; i++)
+            {
+                var tower = towers[i];
+                if (tower == null)
+                {
+                    continue;
+                }
+
+                if ((tower.transform.position - position).sqrMagnitude <= radius * radius)
+                {
+                    tower.ApplyAcidDebuff(duration, factor);
+                }
+            }
+        }
+
+        private void RegisterExpansionDeathEffects(TDEnemy enemy)
+        {
+            if (enemy == null)
+            {
+                return;
+            }
+
+            if (string.Equals(enemy.EnemyId, "cinder_husk", StringComparison.Ordinal))
+            {
+                RegisterCinderPile(enemy.transform.position);
+            }
+            else if (string.Equals(enemy.EnemyId, "acid_blister", StringComparison.Ordinal))
+            {
+                ApplyTowerAcidBurst(enemy.transform.position, AcidBurstRadius, AcidBurstDurationSeconds, 0.90f);
+            }
+            else if (string.Equals(enemy.EnemyId, "echo_brood", StringComparison.Ordinal) &&
+                     !string.IsNullOrEmpty(_lastDiedEnemyId))
+            {
+                SpawnEchoCopy(_lastDiedEnemyId, enemy);
+            }
+
+            if (!enemy.HasAnyTag("boss", "final"))
+            {
+                _lastDiedEnemyId = enemy.EnemyId;
+            }
+        }
+
+        /// <summary>
+        /// Echo Brood's copy: the most recent non-boss death returns at half
+        // health from where the brood fell — a chaos engine for late waves.
+        /// </summary>
+        private void SpawnEchoCopy(string enemyId, TDEnemy brood)
+        {
+            if (_gameOver || brood == null || !_enemyCatalog.TryGetValue(enemyId, out var entry))
+            {
+                return;
+            }
+
+            var copy = SpawnEnemy(entry, GetSpawnPathForLane(brood.LaneKey), _wave, 20000 + _runtimeSpawnIndex, brood.LaneKey);
+            if (copy == null)
+            {
+                return;
+            }
+
+            copy.WarpToProgress(brood.GetRouteProgress01());
+            copy.SetCurrentHealth(Mathf.Max(1, Mathf.RoundToInt(copy.MaxHealth * 0.5f)));
+            PushTacticalEvent($"Echo Brood echoed: {entry.displayName} returns at half strength", 4.6f);
+        }
+
         // ── Salvage Derrick economy services (expansion tower 10) ──
         // Registry maintained at build/sell; pruned of destroyed entries on
         // query (Unity fake-null), so level resets need no extra sweep.
@@ -422,6 +545,15 @@ namespace TD
                 "husk_titan" => "Art/anim/enemy_husk_titan_00",
                 "echo_mimic" => "Art/anim/enemy_echo_mimic_00",
                 "furnace_matriarch" => "Art/anim/enemy_furnace_matriarch_00",
+                "cinder_husk" => "Art/anim/enemy_cinder_husk_00",
+                "rail_splitter" => "Art/anim/enemy_rail_splitter_00",
+                "acid_blister" => "Art/anim/enemy_acid_blister_00",
+                "forge_dragoon" => "Art/anim/enemy_forge_dragoon_00",
+                "ember_strider" => "Art/anim/enemy_ember_strider_00",
+                "echo_brood" => "Art/anim/enemy_echo_brood_00",
+                // Bosses ship with the shared fallback body until the C-3
+                // batch lands; their logic is live regardless (data-locked
+                // until the batch-3 wave reweave references them).
                 _ => "Art/enemy_slime"
             };
         }
@@ -476,6 +608,12 @@ namespace TD
                 "husk_titan" => "Art/anim/enemy_husk_titan",
                 "echo_mimic" => "Art/anim/enemy_echo_mimic",
                 "furnace_matriarch" => "Art/anim/enemy_furnace_matriarch",
+                "cinder_husk" => "Art/anim/enemy_cinder_husk",
+                "rail_splitter" => "Art/anim/enemy_rail_splitter",
+                "acid_blister" => "Art/anim/enemy_acid_blister",
+                "forge_dragoon" => "Art/anim/enemy_forge_dragoon",
+                "ember_strider" => "Art/anim/enemy_ember_strider",
+                "echo_brood" => "Art/anim/enemy_echo_brood",
                 _ => string.Empty
             };
         }
@@ -496,6 +634,12 @@ namespace TD
                 "husk_titan" => 6,
                 "echo_mimic" => 8,
                 "furnace_matriarch" => 6,
+                "cinder_husk" => 8,
+                "rail_splitter" => 8,
+                "acid_blister" => 2,
+                "forge_dragoon" => 2,
+                "ember_strider" => 8,
+                "echo_brood" => 2,
                 _ => 1
             };
         }
@@ -516,6 +660,12 @@ namespace TD
                 "husk_titan" => 5.8f,
                 "echo_mimic" => 9f,
                 "furnace_matriarch" => 5.4f,
+                "cinder_husk" => 7.5f,
+                "rail_splitter" => 10f,
+                "acid_blister" => 5.5f,
+                "forge_dragoon" => 6f,
+                "ember_strider" => 11f,
+                "echo_brood" => 8f,
                 _ => 6f
             };
         }
@@ -536,6 +686,16 @@ namespace TD
                 "husk_titan" => new Color(0.42f, 0.38f, 0.34f),
                 "echo_mimic" => new Color(0.56f, 0.44f, 0.82f),
                 "furnace_matriarch" => new Color(0.66f, 0.22f, 0.18f),
+                "cinder_husk" => new Color(0.32f, 0.26f, 0.24f),
+                "rail_splitter" => new Color(0.62f, 0.35f, 0.25f),
+                "acid_blister" => new Color(0.78f, 0.88f, 0.42f),
+                "forge_dragoon" => new Color(0.55f, 0.30f, 0.28f),
+                "ember_strider" => new Color(0.90f, 0.45f, 0.20f),
+                "echo_brood" => new Color(0.56f, 0.44f, 0.82f),
+                "containermaw" => new Color(0.45f, 0.42f, 0.36f),
+                "junction_tyrant" => new Color(0.58f, 0.30f, 0.48f),
+                "kiln_custodian" => new Color(0.72f, 0.40f, 0.18f),
+                "echo_harbinger" => new Color(0.44f, 0.50f, 0.86f),
                 _ => new Color(0.82f, 0.29f, 0.26f)
             };
         }
@@ -596,6 +756,16 @@ namespace TD
                 "husk_titan" => new Vector2(0.52f, 0.52f),
                 "echo_mimic" => new Vector2(0.44f, 0.44f),
                 "furnace_matriarch" => new Vector2(0.64f, 0.64f),
+                "cinder_husk" => new Vector2(0.42f, 0.42f),
+                "rail_splitter" => new Vector2(0.44f, 0.30f),
+                "acid_blister" => new Vector2(0.44f, 0.44f),
+                "forge_dragoon" => new Vector2(0.46f, 0.46f),
+                "ember_strider" => new Vector2(0.38f, 0.38f),
+                "echo_brood" => new Vector2(0.34f, 0.34f),
+                "containermaw" => new Vector2(0.62f, 0.62f),
+                "junction_tyrant" => new Vector2(0.60f, 0.60f),
+                "kiln_custodian" => new Vector2(0.60f, 0.60f),
+                "echo_harbinger" => new Vector2(0.60f, 0.60f),
                 _ => new Vector2(0.38f, 0.38f)
             };
         }
@@ -678,6 +848,16 @@ namespace TD
                 "husk_titan" => 0.57f,
                 "echo_mimic" => 0.54f,
                 "furnace_matriarch" => 0.58f,
+                "cinder_husk" => 0.55f,
+                "rail_splitter" => 0.53f,
+                "acid_blister" => 0.54f,
+                "forge_dragoon" => 0.57f,
+                "ember_strider" => 0.52f,
+                "echo_brood" => 0.51f,
+                "containermaw" => 0.58f,
+                "junction_tyrant" => 0.58f,
+                "kiln_custodian" => 0.58f,
+                "echo_harbinger" => 0.58f,
                 _ => 0.52f
             };
         }

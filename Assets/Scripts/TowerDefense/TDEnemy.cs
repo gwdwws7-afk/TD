@@ -77,6 +77,11 @@ namespace TD
         private TDBlockerWagon _engagedWagon;
         private TDBlockerWagon _queuedWagon;
         private float _wagonAttackTimer;
+        // Forge Dragoon shield layer (expansion batch 2): the first 3 hits
+        // each wave are immune — multi-hit tools burn the charges fast, single
+        // snipers waste shots on it.
+        private int _shieldHitsRemaining;
+        private int _shieldWave = -1;
         private int _hp;
         private int _maxHp;
         private int _armorFlat;
@@ -441,7 +446,9 @@ namespace TD
 
             var target = _path[_nextWaypointIndex];
             var delta = target - transform.position;
-            var effectiveSpeed = _baseSpeed * _specialSpeedMultiplier * _scenarioSpeedMultiplier * Mathf.Clamp01(1f - _slowPct);
+            var effectiveSpeed = _baseSpeed * _specialSpeedMultiplier * _scenarioSpeedMultiplier *
+                                 ResolveCinderPileSpeedBonus() * ResolveSplitterSpeedMultiplier() *
+                                 Mathf.Clamp01(1f - _slowPct);
             var minMoveFloor = 0.35f;
             if (_staggerTimer > 0f)
             {
@@ -691,7 +698,10 @@ namespace TD
             // making Frost Coil / Grav Snare a hard requirement for Burrow Sapper and
             // Cinder Glider. High fire-rate towers (Ember Flak 1.35/s, Arc Welder 0.85/s
             // but chain) also bypass this via their own flag on the source tower.
-            if (sourceTower != null && !sourceTower.IgnoresFastEvade &&
+            // Ember Strider: marked prey cannot dodge and pays for it.
+            var striderMarked = string.Equals(_enemyId, "ember_strider", StringComparison.Ordinal) && IsMarked;
+
+            if (sourceTower != null && !sourceTower.IgnoresFastEvade && !striderMarked &&
                 !IsSlowed && _baseSpeed >= FastEvadeSpeedThreshold)
             {
                 var evadeChance = sourceTower.EvadeableFastEnemyMissChance;
@@ -701,8 +711,19 @@ namespace TD
                 }
             }
 
+            // Forge Dragoon: shield layer absorbs the wave's first 3 hits.
+            if (AbsorbHitWithShield())
+            {
+                _hitFxTimer = 0.10f;
+                return 0;
+            }
+
             var wasSlowed = IsSlowed;
             var damageWithExposure = Mathf.RoundToInt(rawDamage * Mathf.Max(1f, _exposedMultiplier));
+            if (striderMarked)
+            {
+                damageWithExposure = Mathf.RoundToInt(damageWithExposure * 1.25f);
+            }
             var effectiveArmor = Mathf.Max(0, _armorFlat - _armorBreakFlat);
             // Hybrid armor model — see TDCombatMath.ResolveArmoredDamage
             // (flat + percentage mitigation, floor of 1).
@@ -836,6 +857,93 @@ namespace TD
             _engagedWagon = null;
             _queuedWagon = null;
             _wagonAttackTimer = 0f;
+        }
+
+        private float ResolveCinderPileSpeedBonus()
+        {
+            // Cinder Husk's remains (expansion batch 2): a fresh pile speeds
+            // whoever crosses it — killing in the wrong place feeds the wave.
+            return _gameManager != null && _gameManager.IsOnCinderPile(transform.position) ? 1.25f : 1f;
+        }
+
+        /// <summary>
+        /// Rail Splitter: sprints on straight track (x1.8), drags through
+        /// bends (x0.7) — pure segment geometry, straight when the path
+        /// keeps its direction.
+        /// </summary>
+        private float ResolveSplitterSpeedMultiplier()
+        {
+            if (!string.Equals(_enemyId, "rail_splitter", StringComparison.Ordinal) ||
+                _path == null || _path.Count <= 1)
+            {
+                return 1f;
+            }
+
+            var index = Mathf.Clamp(_nextWaypointIndex, 1, _path.Count - 1);
+            var outDir = index + 1 < _path.Count ? _path[index + 1] - _path[index] : _path[index] - _path[index - 1];
+            var inDir = _path[index] - _path[index - 1];
+            if (inDir.sqrMagnitude < 1e-6f || outDir.sqrMagnitude < 1e-6f)
+            {
+                return 1f;
+            }
+
+            return Vector3.Dot(inDir.normalized, outDir.normalized) >= 0.9f ? 1.8f : 0.7f;
+        }
+
+        /// <summary>Route progress for lane swaps and echo copies.</summary>
+        public float GetRouteProgress01()
+        {
+            if (_path == null || _path.Count <= 1)
+            {
+                return 0f;
+            }
+
+            return Mathf.Clamp01((float)_nextWaypointIndex / (_path.Count - 1));
+        }
+
+        /// <summary>Places the enemy at a progress point (echo copies, lane swaps).</summary>
+        public void WarpToProgress(float progress01)
+        {
+            if (_path == null || _path.Count == 0)
+            {
+                return;
+            }
+
+            var progress = Mathf.Clamp01(progress01);
+            _nextWaypointIndex = Mathf.Clamp(Mathf.RoundToInt(progress * (_path.Count - 1)), 1, _path.Count - 1);
+            transform.position = _path[_nextWaypointIndex - 1] + ((_path[_nextWaypointIndex] - _path[_nextWaypointIndex - 1]) * 0.5f);
+        }
+
+        public void SetCurrentHealth(int hp)
+        {
+            _hp = Mathf.Clamp(hp, 0, _maxHp);
+            if (_hp <= 0)
+            {
+                ResolveKill(null);
+            }
+        }
+
+        private bool AbsorbHitWithShield()
+        {
+            if (!string.Equals(_enemyId, "forge_dragoon", StringComparison.Ordinal))
+            {
+                return false;
+            }
+
+            var currentWave = _gameManager != null ? _gameManager.CurrentWaveIndex : 0;
+            if (_shieldWave != currentWave)
+            {
+                _shieldWave = currentWave;
+                _shieldHitsRemaining = 3;
+            }
+
+            if (_shieldHitsRemaining <= 0)
+            {
+                return false;
+            }
+
+            _shieldHitsRemaining--;
+            return true;
         }
 
         /// <summary>

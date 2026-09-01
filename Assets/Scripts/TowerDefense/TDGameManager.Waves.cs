@@ -123,7 +123,7 @@ namespace TD
             AdvanceTutorial(TDFirstRunTutorialStep.StartWave);
         }
 
-        private void SpawnEnemy(
+        private TDEnemy SpawnEnemy(
             TDEnemyCatalogEntry entry,
             IReadOnlyList<Vector3> path,
             int waveNumber,
@@ -154,7 +154,7 @@ namespace TD
                     pooledEnemy.Initialize(this, path ?? GetDefaultSpawnPath(), runtimeEntry, laneKey);
                     _activeEnemies.Add(pooledEnemy);
                     RegisterEnemySpawnForAnalytics(pooledEnemy);
-                    return;
+                    return pooledEnemy;
                 }
 
                 // Malformed pooled instance — discard and fall through to build.
@@ -227,6 +227,8 @@ namespace TD
                     1.45f);
                 PlayCriticalSfxTone("boss_warning", 175f, 0.36f, 0.96f, true);
             }
+
+            return enemy;
         }
 
         private IEnumerator SpawnSplitChildren(string enemyId, int count, float interval, string laneKey)

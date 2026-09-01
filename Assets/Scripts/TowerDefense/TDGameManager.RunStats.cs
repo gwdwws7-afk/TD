@@ -855,6 +855,7 @@ namespace TD
         {
             _activeEnemies.Remove(enemy);
             TrySpreadBurnOnKill(enemy, sourceTower);
+            RegisterExpansionDeathEffects(enemy);
             if (_gameOver)
             {
                 return;
