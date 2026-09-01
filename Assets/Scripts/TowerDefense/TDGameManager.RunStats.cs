@@ -854,6 +854,7 @@ namespace TD
         public void NotifyEnemyKilled(TDEnemy enemy, int reward, TDTower sourceTower)
         {
             _activeEnemies.Remove(enemy);
+            TrySpreadBurnOnKill(enemy, sourceTower);
             if (_gameOver)
             {
                 return;

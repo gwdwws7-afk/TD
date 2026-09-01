@@ -64,6 +64,13 @@ namespace TD
         private float _armorBreakTimer;
         private float _exposedTimer;
         private float _exposedMultiplier = 1f;
+        // Slag Burner DoT slot — independent of slow/expose by design note
+        // (expansion tower 9). Zero for every fight without a Slag Burner.
+        private int _burnLayers;
+        private float _burnDamagePerLayer;
+        private float _burnTimer;
+        private float _burnTickAccumulator;
+        private TDTower _burnSourceTower;
         private int _hp;
         private int _maxHp;
         private int _armorFlat;
@@ -122,6 +129,9 @@ namespace TD
         public int ArmorFlat => _armorFlat;
         public bool IsMarked => _resonanceMarkTimer > 0f;
         public bool IsSlowed => _slowTimer > 0f && _slowPct > 0f;
+        public bool IsBurning => _burnLayers > 0 && _burnTimer > 0f;
+        public int BurnLayers => _burnLayers;
+        public float BurnDamagePerLayer => _burnDamagePerLayer;
         public bool IsStaggered => _staggerTimer > 0f;
         public bool IsArmorBroken => _armorBreakTimer > 0f && _armorBreakFlat > 0;
         public bool IsExposed => _exposedTimer > 0f && _exposedMultiplier > 1f;
@@ -258,6 +268,11 @@ namespace TD
             _armorBreakTimer = 0f;
             _exposedTimer = 0f;
             _exposedMultiplier = 1f;
+            _burnLayers = 0;
+            _burnDamagePerLayer = 0f;
+            _burnTimer = 0f;
+            _burnTickAccumulator = 0f;
+            _burnSourceTower = null;
             _hitFxTimer = 0f;
             _bossWarningFxPlayed = false;
             _burrowAmbushFxPlayed = false;
@@ -366,6 +381,25 @@ namespace TD
                 if (_exposedTimer <= 0f)
                 {
                     _exposedMultiplier = 1f;
+                }
+            }
+
+            if (_burnLayers > 0)
+            {
+                _burnTimer -= Time.deltaTime;
+                if (_burnTimer <= 0f)
+                {
+                    _burnLayers = 0;
+                    _burnTickAccumulator = 0f;
+                }
+                else
+                {
+                    _burnTickAccumulator += Time.deltaTime;
+                    if (_burnTickAccumulator >= TDBurnSystem.BurnTickInterval)
+                    {
+                        _burnTickAccumulator -= TDBurnSystem.BurnTickInterval;
+                        TakeBurnTick();
+                    }
                 }
             }
 
@@ -690,6 +724,46 @@ namespace TD
             }
 
             return appliedDamage;
+        }
+
+        public void ApplyBurn(int layers, float damagePerLayerPerSecond, float duration, TDTower sourceTower)
+        {
+            if (_resolved || layers <= 0 || duration <= 0f || damagePerLayerPerSecond <= 0f)
+            {
+                return;
+            }
+
+            _burnLayers = TDBurnSystem.ClampStacks(_burnLayers + layers);
+            // Strongest fire wins per layer; duration refreshes to the longest
+            // remaining so re-ignition never weakens an existing burn.
+            _burnDamagePerLayer = Mathf.Max(_burnDamagePerLayer, damagePerLayerPerSecond);
+            _burnTimer = Mathf.Max(_burnTimer, duration);
+            _burnSourceTower = sourceTower;
+        }
+
+        public void ClearBurn()
+        {
+            _burnLayers = 0;
+            _burnDamagePerLayer = 0f;
+            _burnTimer = 0f;
+            _burnTickAccumulator = 0f;
+        }
+
+        private void TakeBurnTick()
+        {
+            if (_resolved)
+            {
+                return;
+            }
+
+            var rawTick = TDBurnSystem.ResolveTickRawDamage(_burnLayers, _burnDamagePerLayer);
+            var damageTaken = TDBurnSystem.ResolveBurnTick(rawTick, _armorFlat, _armorBreakFlat);
+            _hp = Mathf.Max(0, _hp - damageTaken);
+            _gameManager?.NotifyEnemyDamaged(_burnSourceTower, this, damageTaken, 0f, 0f);
+            if (_hp <= 0)
+            {
+                ResolveKill(_burnSourceTower);
+            }
         }
 
         public void ApplyArmorBreak(int flatAmount, float duration)

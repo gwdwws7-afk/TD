@@ -362,12 +362,46 @@ namespace TD
                         }
                     }
                     break;
+                case TDTowerKind.SlagBurner:
+                    {
+                        enemy.ApplyBurn(
+                            _sourceTower != null ? _sourceTower.BurnLayersPerHit : 0,
+                            _sourceTower != null ? _sourceTower.BurnDamagePerLayer : 0f,
+                            _sourceTower != null ? _sourceTower.BurnDuration : 0f,
+                            _sourceTower);
+                        if (_damageSpecialist && enemy.BurnLayers >= TDBurnSystem.MaxBurnLayers)
+                        {
+                            DetonateBurnStacks(enemy);
+                        }
+                    }
+                    break;
             }
 
             if (_utilitySpecialist && isPrimaryImpact)
             {
                 ApplyUtilitySpecialistField(impactPoint, enemy);
             }
+        }
+
+        private void DetonateBurnStacks(TDEnemy enemy)
+        {
+            if (enemy == null || enemy.BurnLayers <= 0)
+            {
+                return;
+            }
+
+            // Slag Sump: full stacks resolve at once as a direct hit (regular
+            // armor pipeline), then the fire goes out.
+            var burst = TDBurnSystem.ResolveDetonateDamage(enemy.BurnLayers, enemy.BurnDamagePerLayer);
+            var modified = _gameManager != null
+                ? _gameManager.GetModifiedDamageForEnemy(_sourceTower, enemy, burst)
+                : burst;
+            var damageTaken = enemy.TakeHit(modified, 0f, 0f, _sourceTower);
+            if (damageTaken > 0)
+            {
+                _gameManager?.NotifyEnemyDamaged(_sourceTower, enemy, damageTaken, 0f, 0f);
+            }
+            enemy.ClearBurn();
         }
 
         private int ApplyDamageSpecialistBonus(TDEnemy enemy, int rawDamage)
@@ -385,6 +419,12 @@ namespace TD
                     {
                         enemy.ApplyArmorBreak(6, 2.6f);
                         multiplier *= 1.38f;
+                    }
+                    break;
+                case TDTowerKind.SlagBurner:
+                    if (enemy.HasAnyTag("attrition", "heavy", "boss"))
+                    {
+                        multiplier *= 1.25f;
                     }
                     break;
                 case TDTowerKind.CinderMortar:

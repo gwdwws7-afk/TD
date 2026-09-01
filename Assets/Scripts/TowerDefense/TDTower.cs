@@ -121,6 +121,11 @@ namespace TD
             public float slowPct;
             public float slowDuration;
             public float heavyMultiplier;
+            // Slag Burner DoT block (expansion tower 9). Zeros = no burn.
+            public int burnLayersPerHit;
+            public float burnDamagePerLayer;
+            public float burnDuration;
+            public float burnSpreadRadius;
             public string spritePath;
             public Color fallbackColor;
             public string animationPrefix;
@@ -173,7 +178,9 @@ namespace TD
             new("beacon_signal_burn", TDTowerKind.ResonanceBeacon, TDTowerUpgradeBranch.Damage, "Signal Burn", "Burns marked, support, and attrition targets.", new[] { "support", "attrition", "special" }, TDResonanceAffinity.EmberSurge),
             new("beacon_resonance_relay", TDTowerKind.ResonanceBeacon, TDTowerUpgradeBranch.Utility, "Resonance Relay", "Relays marks, exposure, and extra command charge.", new[] { "support", "attrition", "mixed" }, TDResonanceAffinity.Either),
             new("grav_event_horizon", TDTowerKind.GravSnare, TDTowerUpgradeBranch.Damage, "Event Horizon", "Damage scales with mass and route progress.", new[] { "heavy", "fast", "boss" }, TDResonanceAffinity.EmberSurge),
-            new("grav_singularity_well", TDTowerKind.GravSnare, TDTowerUpgradeBranch.Utility, "Singularity Well", "Wide gravity pulses pin and expose groups.", new[] { "fast", "flank", "swarm" }, TDResonanceAffinity.FractureMark)
+            new("grav_singularity_well", TDTowerKind.GravSnare, TDTowerUpgradeBranch.Utility, "Singularity Well", "Wide gravity pulses pin and expose groups.", new[] { "fast", "flank", "swarm" }, TDResonanceAffinity.FractureMark),
+            new("slag_slag_sump", TDTowerKind.SlagBurner, TDTowerUpgradeBranch.Damage, "Slag Sump", "Full burn stacks detonate in one burst.", new[] { "attrition", "heavy", "boss" }, TDResonanceAffinity.EmberSurge),
+            new("slag_wildfire_drift", TDTowerKind.SlagBurner, TDTowerUpgradeBranch.Utility, "Wildfire Drift", "Burning kills spread fire to nearby prey.", new[] { "swarm", "spawn", "split" }, TDResonanceAffinity.FractureMark)
         };
 
         private readonly List<TDTowerUpgradeBranch> _upgradeHistory = new();
@@ -209,6 +216,10 @@ namespace TD
         public float SlowPct => _activeState?.slowPct ?? 0f;
         public float SlowDuration => _activeState?.slowDuration ?? 0f;
         public float HeavyMultiplier => _activeState?.heavyMultiplier ?? 1f;
+        public int BurnLayersPerHit => _activeState?.burnLayersPerHit ?? 0;
+        public float BurnDamagePerLayer => _activeState?.burnDamagePerLayer ?? 0f;
+        public float BurnDuration => _activeState?.burnDuration ?? 0f;
+        public float BurnSpreadRadius => _activeState?.burnSpreadRadius ?? 0f;
 
         /// <summary>
         /// Miss chance vs fast (speed >= 2.2) unslowed enemies for slow-firing
@@ -916,6 +927,10 @@ namespace TD
                     state.damage = Mathf.RoundToInt(state.damage * (1f + (0.15f * factor)));
                     state.aoeMinFalloff = Mathf.Clamp01(state.aoeMinFalloff + (0.10f * factor));
                     break;
+                case TDTowerKind.SlagBurner:
+                    state.damage = Mathf.RoundToInt(state.damage * (1f + (0.18f * factor)));
+                    state.burnDamagePerLayer *= 1f + (0.15f * factor);
+                    break;
             }
         }
 
@@ -956,6 +971,10 @@ namespace TD
                     state.aoeRadius *= 1f + (0.10f * factor);
                     state.slowPct = Mathf.Clamp(state.slowPct + (0.10f * factor), 0f, 0.80f);
                     state.slowDuration += 0.35f * factor;
+                    break;
+                case TDTowerKind.SlagBurner:
+                    state.burnDuration += 0.4f * factor;
+                    state.burnSpreadRadius *= 1f + (0.15f * factor);
                     break;
             }
         }
@@ -1215,6 +1234,10 @@ namespace TD
                     slowPct = 0f,
                     slowDuration = 0f,
                     heavyMultiplier = 1f,
+                    burnLayersPerHit = 3,
+                    burnDamagePerLayer = 2.0f,
+                    burnDuration = 3.0f,
+                    burnSpreadRadius = 1.0f,
                     spritePath = "Art/anim/tower_slag_burner_00",
                     fallbackColor = new Color(0.84f, 0.27f, 0.27f),
                     animationPrefix = "Art/anim/tower_slag_burner",
@@ -1341,6 +1364,10 @@ namespace TD
                 slowPct = source.slowPct,
                 slowDuration = source.slowDuration,
                 heavyMultiplier = source.heavyMultiplier,
+                burnLayersPerHit = source.burnLayersPerHit,
+                burnDamagePerLayer = source.burnDamagePerLayer,
+                burnDuration = source.burnDuration,
+                burnSpreadRadius = source.burnSpreadRadius,
                 spritePath = source.spritePath,
                 fallbackColor = source.fallbackColor,
                 animationPrefix = source.animationPrefix,

@@ -73,6 +73,34 @@ namespace TD
             };
         }
 
+        private void TrySpreadBurnOnKill(TDEnemy enemy, TDTower sourceTower)
+        {
+            // Wildfire line (utility levels) spreads fire from burning kills.
+            // Base: 1 layer to 2 targets at the tower's spread radius; the
+            // Wildfire Drift specialization widens to 2 cells / 3 targets / 2
+            // layers. Targets come from the P1 shared buffer — consume before
+            // any other range query runs.
+            if (enemy == null || enemy.BurnLayers <= 0 || sourceTower == null ||
+                sourceTower.Kind != TDTowerKind.SlagBurner || sourceTower.UtilityBranchCount <= 0)
+            {
+                return;
+            }
+
+            var wildfire = sourceTower.IsUtilitySpecialist;
+            var radius = wildfire ? Mathf.Max(2f, sourceTower.BurnSpreadRadius) : sourceTower.BurnSpreadRadius;
+            var maxTargets = wildfire ? 3 : 2;
+            var layers = wildfire ? 2 : 1;
+            var targets = GetEnemiesInRange(enemy.transform.position, radius, maxTargets);
+            for (var i = 0; i < targets.Count; i++)
+            {
+                var target = targets[i];
+                if (target != null && target.IsTargetable)
+                {
+                    target.ApplyBurn(layers, sourceTower.BurnDamagePerLayer, sourceTower.BurnDuration, sourceTower);
+                }
+            }
+        }
+
         public List<TDEnemy> GetEnemiesInRange(Vector3 origin, float radius, int maxTargets)
         {
             // Shared buffers: this query sits on the damage hot path (AoE,
