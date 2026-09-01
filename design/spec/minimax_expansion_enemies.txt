@@ -67,9 +67,9 @@ next idle animation frame of the exact same subject: keep body, silhouette, posi
 ```text
 next idle animation frame of the exact same subject: keep body, silhouette, position and ground contact identical, only subtle mechanical sway, drifting steam or flickering lights
 ```
-【重做标记 08-31】此帧在帧连续性审计中与 idle_06 断链(闭环指标超限),需按
-上面原链重新生成——本体剪影/接地位置保持与 06 完全一致。此项豁免
-"定稿保护"(连续性缺陷退回)。
+【已关账 09-01】重做帧已到货验收:几何接回(漂移 66→7.5px);交付时整体偏亮
+52 级(白热版),美术会话按亮度曲线压回 06 同档(余烬带覆盖 85%,族规内),
+视觉复验通过。
 
 ## enemy_cinder_husk_death_00
 参考图上传:output/imagegen/_expansion_raw/enemy_cinder_husk_00.png
