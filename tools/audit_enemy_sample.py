@@ -24,7 +24,7 @@ ANIM = Path("E:/TD/Assets/Resources/Art/anim")
 SPEC = {
     "cinder_husk":  ((0, 40), "bright orange joints #E8842A (hue ~30)", "fx_ember_pile", "burst"),
     "rail_splitter": ((8, 45), "steel-bright wedge head accents", "fx_speed_streak", "collapse"),
-    "acid_blister": ((60, 120), "yellow-green #C8E06A", "fx_acid", "burst"),
+    "acid_blister": ((60, 125), "yellow-green #C8E06A", "fx_acid", "burst"),
     "forge_dragoon": ((0, 40), "cold-steel shield #7FA8C4 accents", "fx_shield", "collapse"),
     "ember_strider": ((0, 40), "leg-joint ember orange", "fx_mark", "collapse"),
     "echo_brood": ((240, 290), "echo violet family 240-270", "fx_echo", "burst"),
