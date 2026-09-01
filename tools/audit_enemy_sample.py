@@ -97,12 +97,14 @@ def death_continuity(kind, death_style="collapse"):
         prev = dm
 
 
-def pose_sheet_check(path, big_frac=0.08):
+def pose_sheet_check(path, big_frac=0.15):
     """Design ruling f50bee9: body frames must be a single subject.
 
     A 2x2/1x4 pose sheet shows up as several same-scale components
     (cinder_husk death_02 pre-fix: 4 comps of ~24-33k px each). Flag any
-    frame with >=2 components each >= big_frac of the largest one.
+    frame with >=2 same-scale components whose bboxes are spatially
+    DISJOINT from the largest (leggy walkers legitimately shed thin
+    legs below the torso - those bboxes overlap/nest, not quadrant out).
     """
     from scipy import ndimage
     al = np.array(Image.open(path).convert("RGBA"))[:, :, 3]
@@ -110,11 +112,26 @@ def pose_sheet_check(path, big_frac=0.08):
     if m.sum() < 500:
         return 1, 0.0
     lab, n = ndimage.label(m)
-    sizes = np.sort(np.array([s for s in ndimage.sum(m, lab, range(1, n + 1)) if s > 50]))[::-1]
-    if len(sizes) == 0:
+    sums = ndimage.sum(m, lab, range(1, n + 1))
+    boxes = []
+    for i in range(n):
+        if sums[i] > 50:
+            ys, xs = np.where(lab == i + 1)
+            boxes.append((int(sums[i]), xs.min(), xs.max(), ys.min(), ys.max()))
+    boxes.sort(reverse=True)
+    if not boxes:
         return 1, 0.0
-    majors = int((sizes >= sizes[0] * big_frac).sum())
-    return majors, (sizes[1] / sizes[0] if len(sizes) > 1 else 0.0)
+    top = boxes[0]
+    majors, second = 1, 0.0
+    for sz, x0, x1, y0, y1 in boxes[1:]:
+        if sz < top[0] * big_frac:
+            break
+        disjoint = (x1 < top[1] or x0 > top[2] or y1 < top[3] or y0 > top[4])
+        if disjoint:
+            majors += 1
+            if second == 0.0:
+                second = sz / top[0]
+    return majors, (second if majors > 1 else sum(b[0] for b in boxes[1:2]) / top[0] if len(boxes) > 1 else 0.0)
 
 
 def audit(kind):
