@@ -1628,6 +1628,7 @@ namespace TD
             _subsidyPaidTotal = 0;
             _salvageDerricks.Clear();
             _derrickWaveCredited = 0;
+            TDBlockerWagon.ClearAll();
 
             // Invalidate per-run UI caches (readiness key could otherwise alias
             // across levels with equal wave/tower counts).

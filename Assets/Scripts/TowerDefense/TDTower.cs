@@ -131,6 +131,13 @@ namespace TD
             public float bountyBonusPercent;
             public int waveSalvageIncome;
             public int killBudgetRebate;
+            // Rail Barricade wagon block (expansion tower 11). Zeros = no wagon.
+            public int wagonMaxHp;
+            public int wagonArmor;
+            public int wagonThornsPerSecond;
+            public float wagonRepairPerSecond;
+            public float wagonSlowFieldRadius;
+            public float wagonSlowFieldPercent;
             public string spritePath;
             public Color fallbackColor;
             public string animationPrefix;
@@ -187,7 +194,9 @@ namespace TD
             new("slag_slag_sump", TDTowerKind.SlagBurner, TDTowerUpgradeBranch.Damage, "Slag Sump", "Full burn stacks detonate in one burst.", new[] { "attrition", "heavy", "boss" }, TDResonanceAffinity.EmberSurge),
             new("slag_wildfire_drift", TDTowerKind.SlagBurner, TDTowerUpgradeBranch.Utility, "Wildfire Drift", "Burning kills spread fire to nearby prey.", new[] { "swarm", "spawn", "split" }, TDResonanceAffinity.FractureMark),
             new("derrick_scrap_protocol", TDTowerKind.SalvageDerrick, TDTowerUpgradeBranch.Damage, "Scrap Protocol", "Boss and elite bounties pay 1.5x inside the ring.", new[] { "boss", "elite", "heavy" }, TDResonanceAffinity.Either),
-            new("derrick_supply_drop", TDTowerKind.SalvageDerrick, TDTowerUpgradeBranch.Utility, "Supply Drop", "Every wave opens with +3 budget.", new[] { "support", "mixed", "swarm" }, TDResonanceAffinity.Either)
+            new("derrick_supply_drop", TDTowerKind.SalvageDerrick, TDTowerUpgradeBranch.Utility, "Supply Drop", "Every wave opens with +3 budget.", new[] { "support", "mixed", "swarm" }, TDResonanceAffinity.Either),
+            new("barricade_derailment", TDTowerKind.RailBarricade, TDTowerUpgradeBranch.Damage, "Derailment", "A wrecked wagon detonates: blast, armor break, stall.", new[] { "armored", "heavy" }, TDResonanceAffinity.EmberSurge),
+            new("barricade_holding_order", TDTowerKind.RailBarricade, TDTowerUpgradeBranch.Utility, "Holding Order", "Faster rebuilds and a taunt pulse holds the line.", new[] { "fast", "flank", "swarm" }, TDResonanceAffinity.FractureMark)
         };
 
         private readonly List<TDTowerUpgradeBranch> _upgradeHistory = new();
@@ -231,6 +240,12 @@ namespace TD
         public float BountyBonusPercent => _activeState?.bountyBonusPercent ?? 0f;
         public int WaveSalvageIncome => _activeState?.waveSalvageIncome ?? 0;
         public int KillBudgetRebate => _activeState?.killBudgetRebate ?? 0;
+        public int WagonMaxHp => _activeState?.wagonMaxHp ?? 0;
+        public int WagonArmor => _activeState?.wagonArmor ?? 0;
+        public int WagonThornsPerSecond => _activeState?.wagonThornsPerSecond ?? 0;
+        public float WagonRepairPerSecond => _activeState?.wagonRepairPerSecond ?? 0f;
+        public float WagonSlowFieldRadius => _activeState?.wagonSlowFieldRadius ?? 0f;
+        public float WagonSlowFieldPercent => _activeState?.wagonSlowFieldPercent ?? 0f;
 
         /// <summary>
         /// Miss chance vs fast (speed >= 2.2) unslowed enemies for slow-firing
@@ -947,6 +962,11 @@ namespace TD
                 case TDTowerKind.SalvageDerrick:
                     state.waveSalvageIncome += 6;
                     break;
+                // Armor line: plate +2/level, thorns +4/level (both flat).
+                case TDTowerKind.RailBarricade:
+                    state.wagonArmor += 2;
+                    state.wagonThornsPerSecond += 4;
+                    break;
             }
         }
 
@@ -997,6 +1017,12 @@ namespace TD
                 case TDTowerKind.SalvageDerrick:
                     state.killBountyAuraRadius *= 1f + (0.12f * factor);
                     state.killBudgetRebate += 1;
+                    break;
+                // Maintenance line: self-repair +4 HP/s per level (flat), slow
+                // field +5 percentage points per level (flat).
+                case TDTowerKind.RailBarricade:
+                    state.wagonRepairPerSecond += 4f;
+                    state.wagonSlowFieldPercent = Mathf.Clamp(state.wagonSlowFieldPercent + 0.05f, 0f, 0.5f);
                     break;
             }
         }
@@ -1336,7 +1362,13 @@ namespace TD
                     baseTint = new Color(1f, 1f, 1f, 1f),
                     baseScale = 0.98f,
                     baseYOffset = -0.08f,
-                    baseSortingOrder = 9
+                    baseSortingOrder = 9,
+                    wagonMaxHp = 240,
+                    wagonArmor = 4,
+                    wagonThornsPerSecond = 0,
+                    wagonRepairPerSecond = 0f,
+                    wagonSlowFieldRadius = 1.5f,
+                    wagonSlowFieldPercent = 0.10f
                 },
                 TDTowerKind.LongRailCannon => new TowerState
                 {
@@ -1396,6 +1428,12 @@ namespace TD
                 bountyBonusPercent = source.bountyBonusPercent,
                 waveSalvageIncome = source.waveSalvageIncome,
                 killBudgetRebate = source.killBudgetRebate,
+                wagonMaxHp = source.wagonMaxHp,
+                wagonArmor = source.wagonArmor,
+                wagonThornsPerSecond = source.wagonThornsPerSecond,
+                wagonRepairPerSecond = source.wagonRepairPerSecond,
+                wagonSlowFieldRadius = source.wagonSlowFieldRadius,
+                wagonSlowFieldPercent = source.wagonSlowFieldPercent,
                 spritePath = source.spritePath,
                 fallbackColor = source.fallbackColor,
                 animationPrefix = source.animationPrefix,

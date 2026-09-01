@@ -71,6 +71,12 @@ namespace TD
         private float _burnTimer;
         private float _burnTickAccumulator;
         private TDTower _burnSourceTower;
+        // Rail Barricade engagement state (expansion tower 11). The enemy
+        // either fights the wagon (_engagedWagon), stands in line
+        // (_queuedWagon), or moves freely — both null.
+        private TDBlockerWagon _engagedWagon;
+        private TDBlockerWagon _queuedWagon;
+        private float _wagonAttackTimer;
         private int _hp;
         private int _maxHp;
         private int _armorFlat;
@@ -130,6 +136,9 @@ namespace TD
         public bool IsMarked => _resonanceMarkTimer > 0f;
         public bool IsSlowed => _slowTimer > 0f && _slowPct > 0f;
         public bool IsBurning => _burnLayers > 0 && _burnTimer > 0f;
+        public TDBlockerWagon EngagedWagon => _engagedWagon;
+        public TDBlockerWagon QueuedWagon => _queuedWagon;
+        public int LineDamage => _lineDamage;
         public int BurnLayers => _burnLayers;
         public float BurnDamagePerLayer => _burnDamagePerLayer;
         public bool IsStaggered => _staggerTimer > 0f;
@@ -273,6 +282,9 @@ namespace TD
             _burnTimer = 0f;
             _burnTickAccumulator = 0f;
             _burnSourceTower = null;
+            _engagedWagon = null;
+            _queuedWagon = null;
+            _wagonAttackTimer = 0f;
             _hitFxTimer = 0f;
             _bossWarningFxPlayed = false;
             _burrowAmbushFxPlayed = false;
@@ -413,6 +425,11 @@ namespace TD
             }
 
             UpdateSpecialMovementState();
+
+            if (!UpdateWagonEngagement())
+            {
+                return;
+            }
 
             if (_nextWaypointIndex >= _path.Count)
             {
@@ -724,6 +741,148 @@ namespace TD
             }
 
             return appliedDamage;
+        }
+
+        /// <summary>
+        /// Rail Barricade engagement tick (expansion tower 11). Returns false
+        /// when the enemy spent the frame fighting or queuing at a wagon —
+        /// callers must not move it. Bypassers never enter; bosses crush the
+        /// wagon inside FindBlockingWagon and walk on.
+        /// </summary>
+        private bool UpdateWagonEngagement()
+        {
+            if (_engagedWagon != null)
+            {
+                if (!_engagedWagon.IsAlive)
+                {
+                    _engagedWagon = null;
+                    return true;
+                }
+
+                RefreshEnemyMotion(Vector3.zero, 0f);
+                _wagonAttackTimer -= Time.deltaTime;
+                if (_wagonAttackTimer <= 0f)
+                {
+                    _wagonAttackTimer = TDBlockContract.EngageAttackInterval;
+                    _engagedWagon.TakeEngagementHit(_lineDamage);
+                }
+
+                return false;
+            }
+
+            if (_queuedWagon != null)
+            {
+                if (!_queuedWagon.IsAlive)
+                {
+                    _queuedWagon = null;
+                    return true;
+                }
+
+                RefreshEnemyMotion(Vector3.zero, 0f);
+                if (_queuedWagon.TryEngage(this))
+                {
+                    _engagedWagon = _queuedWagon;
+                    _queuedWagon = null;
+                    _wagonAttackTimer = TDBlockContract.EngageAttackInterval;
+                }
+
+                return false;
+            }
+
+            var wagon = TDBlockerWagon.FindBlockingWagon(transform.position, this);
+            if (wagon == null)
+            {
+                return true;
+            }
+
+            RefreshEnemyMotion(Vector3.zero, 0f);
+            if (wagon.TryEngage(this))
+            {
+                _engagedWagon = wagon;
+                _wagonAttackTimer = TDBlockContract.EngageAttackInterval;
+            }
+            else
+            {
+                _queuedWagon = wagon;
+            }
+
+            return false;
+        }
+
+        /// <summary>Taunt pulse / wagon-death hook: pull this enemy into the fight.</summary>
+        public void TryEngageWagon(TDBlockerWagon wagon)
+        {
+            if (_resolved || _dying || wagon == null || !wagon.IsAlive ||
+                _engagedWagon != null || _queuedWagon != null)
+            {
+                return;
+            }
+
+            RefreshEnemyMotion(Vector3.zero, 0f);
+            if (wagon.TryEngage(this))
+            {
+                _engagedWagon = wagon;
+                _wagonAttackTimer = TDBlockContract.EngageAttackInterval;
+            }
+            else
+            {
+                _queuedWagon = wagon;
+            }
+        }
+
+        public void DetachFromWagon()
+        {
+            _engagedWagon = null;
+            _queuedWagon = null;
+            _wagonAttackTimer = 0f;
+        }
+
+        /// <summary>
+        /// Fixed damage channel (wagon thorns): no armor, no evasion, no
+        /// tower DPS attribution — the zero-contribution exemption. Kills
+        /// resolve without a source tower (bounty intact, no tower credit).
+        /// </summary>
+        public void TakeDirectDamage(int amount)
+        {
+            if (_resolved || _dying || amount <= 0)
+            {
+                return;
+            }
+
+            _hp = Mathf.Max(0, _hp - amount);
+            _hitFxTimer = 0.10f;
+            if (_hp <= 0)
+            {
+                ResolveKill(null);
+            }
+        }
+
+        /// <summary>Wagon slow field: uses the standard slow slot semantics.</summary>
+        public void ApplyFieldSlow(float slowPct, float duration)
+        {
+            if (_resolved || slowPct <= 0f || duration <= 0f)
+            {
+                return;
+            }
+
+            var appliedSlow = slowPct;
+            if (HasTag("flank"))
+            {
+                appliedSlow *= 0.65f;
+            }
+
+            if (HasTag("boss"))
+            {
+                appliedSlow *= 0.55f;
+            }
+
+            var wasSlowed = IsSlowed;
+            _slowPct = Mathf.Clamp(Mathf.Max(_slowPct, appliedSlow), 0f, 0.9f);
+            _slowTimer = Mathf.Max(_slowTimer, duration);
+            if (!wasSlowed && IsSlowed)
+            {
+                _gameManager?.NotifyEnemySlowed(this, _slowPct);
+            }
         }
 
         public void ApplyBurn(int layers, float damagePerLayerPerSecond, float duration, TDTower sourceTower)

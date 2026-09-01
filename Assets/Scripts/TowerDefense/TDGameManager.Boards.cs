@@ -246,6 +246,7 @@ namespace TD
 
             UpdateTowerTooltip(null);
             UnregisterSalvageDerrick(tower);
+            TDBlockerWagon.RetractFor(tower);
             _gridMap?.SetTower(cell, false);
             _builtTowerCount = Mathf.Max(0, _builtTowerCount - 1);
             _defenseBudget += refund;
@@ -321,6 +322,41 @@ namespace TD
             return tower != null;
         }
 
+        private void TrySpawnBlockerWagon(TDTower tower)
+        {
+            // Barricades park their wagon on the nearest track point of the
+            // default route; one wagon per segment key (later builds on the
+            // same segment are no-ops).
+            if (tower == null || tower.Kind != TDTowerKind.RailBarricade)
+            {
+                return;
+            }
+
+            var points = _gridMap?.PathWorldPoints;
+            if (points == null || points.Count == 0)
+            {
+                return;
+            }
+
+            var bestIndex = -1;
+            var bestSqr = float.MaxValue;
+            var origin = tower.transform.position;
+            for (var i = 0; i < points.Count; i++)
+            {
+                var sqr = (points[i] - origin).sqrMagnitude;
+                if (sqr < bestSqr)
+                {
+                    bestSqr = sqr;
+                    bestIndex = i;
+                }
+            }
+
+            if (bestIndex >= 0)
+            {
+                TDBlockerWagon.SpawnFor(this, tower, points[bestIndex], $"seg_{bestIndex}");
+            }
+        }
+
         private TDTower SpawnTower(Vector2Int cell, TDTowerKind kind)
         {
             var towerObject = new GameObject($"Tower_{cell.x}_{cell.y}");
@@ -336,6 +372,7 @@ namespace TD
             tower.Initialize(this, kind, cell);
             RegisterTowerForAnalytics(tower);
             RegisterSalvageDerrick(tower);
+            TrySpawnBlockerWagon(tower);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD || TD_AUTOMATION
             TrackP135TowerBuilt(tower);
 #endif

@@ -358,6 +358,14 @@ namespace TD
                     continue;
                 }
 
+                // Blocker wagons never earn DPS — the zero-contribution rule
+                // would sell a live barricade. Only idle wagons are sellable
+                // (spec: wagon must hold no traffic to be sold).
+                if (tower.Kind == TDTowerKind.RailBarricade && TDBlockerWagon.HasEngagedTraffic(tower))
+                {
+                    continue;
+                }
+
                 if (!_p124TowerFirstWave.TryGetValue(stat.towerId, out var firstWave))
                 {
                     _p124TowerFirstWave[stat.towerId] = _wave;
