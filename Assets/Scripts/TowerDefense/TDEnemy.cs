@@ -82,6 +82,14 @@ namespace TD
         // snipers waste shots on it.
         private int _shieldHitsRemaining;
         private int _shieldWave = -1;
+        // Exam-boss runtime (expansion batch 2). Zero/None = not a boss.
+        private int _bossPhaseIndex;
+        private float _bossActionTimer;
+        private float _bossStackPauseTimer;
+        private int _bossArmorStacks;
+        private int _mimicHitsAtHalfDamage;
+        private float _slowImmuneTimer;
+        private TDBossPhases.MimicCategory _mimicCategory = TDBossPhases.MimicCategory.None;
         private int _hp;
         private int _maxHp;
         private int _armorFlat;
@@ -144,6 +152,7 @@ namespace TD
         public TDBlockerWagon EngagedWagon => _engagedWagon;
         public TDBlockerWagon QueuedWagon => _queuedWagon;
         public int LineDamage => _lineDamage;
+        public int CurrentHealth => _hp;
         public int BurnLayers => _burnLayers;
         public float BurnDamagePerLayer => _burnDamagePerLayer;
         public bool IsStaggered => _staggerTimer > 0f;
@@ -290,6 +299,18 @@ namespace TD
             _engagedWagon = null;
             _queuedWagon = null;
             _wagonAttackTimer = 0f;
+            // Shield and boss state reset per LIFE, not per wave — a pooled
+            // dragoon reused inside the same wave is a new specimen with a
+            // fresh shield; a reused boss body starts at phase zero.
+            _shieldWave = -1;
+            _shieldHitsRemaining = 0;
+            _bossPhaseIndex = 0;
+            _bossActionTimer = 0f;
+            _bossStackPauseTimer = 0f;
+            _bossArmorStacks = 0;
+            _mimicHitsAtHalfDamage = 0;
+            _slowImmuneTimer = 0f;
+            _mimicCategory = TDBossPhases.MimicCategory.None;
             _hitFxTimer = 0f;
             _bossWarningFxPlayed = false;
             _burrowAmbushFxPlayed = false;
@@ -430,6 +451,7 @@ namespace TD
             }
 
             UpdateSpecialMovementState();
+            UpdateBossPhases();
 
             if (!UpdateWagonEngagement())
             {
@@ -728,6 +750,11 @@ namespace TD
             // Hybrid armor model — see TDCombatMath.ResolveArmoredDamage
             // (flat + percentage mitigation, floor of 1).
             var damageTaken = TDCombatMath.ResolveArmoredDamage(damageWithExposure, effectiveArmor);
+            if (_mimicHitsAtHalfDamage > 0)
+            {
+                _mimicHitsAtHalfDamage--;
+                damageTaken = Mathf.Max(1, Mathf.CeilToInt(damageTaken * 0.5f));
+            }
             var appliedDamage = Mathf.Min(Mathf.Max(0, _hp), damageTaken);
             _hitFlashTimer = HitFlashDuration;
             _hitReactionTimer = HitFlashDuration;
@@ -741,7 +768,7 @@ namespace TD
 
             TryPlayHitFx(sourceTower);
 
-            if (slowPct > 0f && slowDuration > 0f)
+            if (slowPct > 0f && slowDuration > 0f && _slowImmuneTimer <= 0f)
             {
                 var appliedSlow = slowPct;
                 if (HasTag("flank"))
@@ -859,6 +886,206 @@ namespace TD
             _wagonAttackTimer = 0f;
         }
 
+        /// <summary>
+        /// Exam-boss drivers (boss-design-spec-v1). Thresholds walk one step
+        /// per crossing so burst damage still fires every transition in
+        /// order; actions are plain timers against manager services.
+        /// </summary>
+        private void UpdateBossPhases()
+        {
+            if (_slowImmuneTimer > 0f)
+            {
+                _slowImmuneTimer = Mathf.Max(0f, _slowImmuneTimer - Time.deltaTime);
+            }
+
+            if (!HasTag("boss") || _gameManager == null)
+            {
+                return;
+            }
+
+            var ratio = HealthRatio;
+            var id = _enemyId;
+            if (string.Equals(id, "containermaw", StringComparison.Ordinal))
+            {
+                var next = TDBossPhases.ResolvePhaseIndex(ratio, _bossPhaseIndex,
+                    new[] { TDBossPhases.ContainerPhaseTwoHealthRatio });
+                if (next != _bossPhaseIndex)
+                {
+                    _bossPhaseIndex = next;
+                    // Shed-armor berserk: plate 10 -> 2, speed x1.6, heavier hits.
+                    SetArmorFlat(TDBossPhases.ContainerPhaseTwoArmor);
+                    SetBaseSpeed(_baseSpeed * TDBossPhases.ContainerPhaseTwoSpeedMultiplier);
+                    _lineDamage = TDBossPhases.ContainerPhaseTwoLineDamage;
+                    _gameManager.NotifyBossPhaseTransition(this, "Shed armor", "berserk run — slow it down");
+                }
+                else if (_bossPhaseIndex == 0)
+                {
+                    _bossActionTimer -= Time.deltaTime;
+                    if (_bossActionTimer <= 0f)
+                    {
+                        _bossActionTimer = TDBossPhases.ContainerThrowInterval;
+                        _gameManager.BlockRandomBuildCell(TDBossPhases.ContainerBlockDuration);
+                    }
+                }
+            }
+            else if (string.Equals(id, "junction_tyrant", StringComparison.Ordinal))
+            {
+                var next = TDBossPhases.ResolvePhaseIndex(ratio, _bossPhaseIndex,
+                    new[] { TDBossPhases.TyrantSplitHealthRatio });
+                if (next != _bossPhaseIndex)
+                {
+                    _bossPhaseIndex = next;
+                    _gameManager.SpawnTyrantTwin(this);
+                }
+                else if (_bossPhaseIndex == 0)
+                {
+                    _bossActionTimer -= Time.deltaTime;
+                    if (_bossActionTimer <= 0f)
+                    {
+                        _bossActionTimer = TDBossPhases.TyrantRerouteInterval;
+                        _gameManager.SwapEnemyToAlternateLane(this);
+                    }
+                }
+            }
+            else if (string.Equals(id, "kiln_custodian", StringComparison.Ordinal))
+            {
+                var next = TDBossPhases.ResolvePhaseIndex(ratio, _bossPhaseIndex, new[] { 0.70f, 0.35f });
+                if (next != _bossPhaseIndex)
+                {
+                    _bossPhaseIndex = next;
+                    _gameManager.SummonKilnWave(LaneKey);
+                    _gameManager.NotifyBossPhaseTransition(this, $"Kiln tide #{_bossPhaseIndex}", "swarm from the rear");
+                }
+
+                if (_bossStackPauseTimer > 0f)
+                {
+                    _bossStackPauseTimer = Mathf.Max(0f, _bossStackPauseTimer - Time.deltaTime);
+                }
+                else
+                {
+                    _bossActionTimer -= Time.deltaTime;
+                    if (_bossActionTimer <= 0f)
+                    {
+                        _bossActionTimer = TDBossPhases.CustodianStackInterval;
+                        _bossArmorStacks = TDBossPhases.ClampStacks(_bossArmorStacks + 1);
+                        // Stacking rides the armor-break slot in reverse
+                        // (negative break = bonus plate) — tower armor break
+                        // and Kiln Purge both counteract it naturally.
+                        if (_armorBreakFlat > -TDBossPhases.CustodianMaxStacks)
+                        {
+                            _armorBreakFlat--;
+                        }
+                    }
+                }
+            }
+            else if (string.Equals(id, "echo_harbinger", StringComparison.Ordinal))
+            {
+                var next = TDBossPhases.ResolvePhaseIndex(ratio, _bossPhaseIndex, new[] { 0.70f, 0.35f });
+                if (next != _bossPhaseIndex)
+                {
+                    _bossPhaseIndex = next;
+                    // Phase re-mimic: wipe debuffs, become the next most-built tower.
+                    ClearDebuffs();
+                    var kind = _gameManager.GetNthMostBuiltTowerKind(_bossPhaseIndex);
+                    if (kind.HasValue)
+                    {
+                        _mimicCategory = TDBossPhases.ResolveMimicCategory(kind.Value);
+                        _gameManager.NotifyBossPhaseTransition(this, "Re-mimic", $"now wears {kind.Value}");
+                    }
+                }
+
+                _bossActionTimer -= Time.deltaTime;
+                if (_bossActionTimer <= 0f)
+                {
+                    _bossActionTimer = TDBossPhases.HarbingerMimicInterval;
+                    if (_mimicCategory == TDBossPhases.MimicCategory.None)
+                    {
+                        var initial = _gameManager.GetNthMostBuiltTowerKind(0);
+                        _mimicCategory = initial.HasValue
+                            ? TDBossPhases.ResolveMimicCategory(initial.Value)
+                            : TDBossPhases.MimicCategory.Surge;
+                    }
+
+                    ApplyMimicPulse();
+                }
+            }
+        }
+
+        private void ApplyMimicPulse()
+        {
+            switch (_mimicCategory)
+            {
+                case TDBossPhases.MimicCategory.Surge:
+                    _specialSpeedMultiplier = 1.8f;
+                    _specialBurstTimer = 2.0f;
+                    _specialBurstUsed = true;
+                    break;
+                case TDBossPhases.MimicCategory.BurnCloud:
+                    _gameManager.ApplyTowerAcidBurst(transform.position, 1.5f, 4f, 0.88f);
+                    break;
+                case TDBossPhases.MimicCategory.Slipstream:
+                    _slowImmuneTimer = 5f;
+                    break;
+                case TDBossPhases.MimicCategory.Reforge:
+                    _armorBreakFlat -= 3;
+                    break;
+                case TDBossPhases.MimicCategory.Barrage:
+                    _mimicHitsAtHalfDamage = 3;
+                    break;
+                case TDBossPhases.MimicCategory.SignalJam:
+                    _gameManager.ApplyMimicSignalJamming();
+                    break;
+            }
+        }
+
+        /// <summary>Kiln Purge hit: cuts stacked plate and stalls the forge.</summary>
+        public void OnKilnPurge()
+        {
+            _bossStackPauseTimer = TDBossPhases.CustodianPurgePauseSeconds;
+            _bossArmorStacks = Mathf.Max(0, _bossArmorStacks - TDBossPhases.CustodianPurgeArmorCut);
+            if (_armorBreakFlat < 0)
+            {
+                // Only the stacked (negative) region — tower armor breaks stay.
+                _armorBreakFlat = Mathf.Min(0, _armorBreakFlat + TDBossPhases.CustodianPurgeArmorCut);
+            }
+        }
+
+        /// <summary>Phase transition / split hook: drops every debuff at once.</summary>
+        public void ClearDebuffs()
+        {
+            _resonanceMarkTimer = 0f;
+            _exposedTimer = 0f;
+            _exposedMultiplier = 1f;
+            _armorBreakFlat = Mathf.Min(0, _armorBreakFlat);
+            _slowPct = 0f;
+            _slowTimer = 0f;
+            _staggerTimer = 0f;
+            _staggerMinSpeedMultiplier = 1f;
+        }
+
+        public void SetBaseSpeed(float speed)
+        {
+            _baseSpeed = Mathf.Max(0.05f, speed);
+        }
+
+        public void SetArmorFlat(int armor)
+        {
+            _armorFlat = Mathf.Max(0, armor);
+        }
+
+        /// <summary>Lane swap at preserved route progress (Tyrant).</summary>
+        public void SwapPath(IReadOnlyList<Vector3> newPath, float progress01, string laneKey)
+        {
+            if (newPath == null || newPath.Count == 0)
+            {
+                return;
+            }
+
+            _path = newPath;
+            _laneKey = laneKey;
+            WarpToProgress(progress01);
+        }
+
         private float ResolveCinderPileSpeedBonus()
         {
             // Cinder Husk's remains (expansion batch 2): a fresh pile speeds
@@ -969,7 +1196,7 @@ namespace TD
         /// <summary>Wagon slow field: uses the standard slow slot semantics.</summary>
         public void ApplyFieldSlow(float slowPct, float duration)
         {
-            if (_resolved || slowPct <= 0f || duration <= 0f)
+            if (_resolved || slowPct <= 0f || duration <= 0f || _slowImmuneTimer > 0f)
             {
                 return;
             }
@@ -1050,9 +1277,17 @@ namespace TD
             }
         }
 
-        public void ApplyStagger(float duration, float minSpeedMultiplier)
+        public void ApplyStagger(float duration, float minSpeedMultiplier, bool force = false)
         {
             if (_resolved || duration <= 0f)
+            {
+                return;
+            }
+
+            // Bosses shrug off stagger/knockback (boss-design-spec common
+            // rule). Two designed exceptions may force it through: the wagon
+            // crush and the exam scenario devices.
+            if (!force && HasAnyTag("boss", "final"))
             {
                 return;
             }

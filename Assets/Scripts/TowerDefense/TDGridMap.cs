@@ -10,7 +10,9 @@ namespace TD
         OutsideAuthoredSite = 2,
         Occupied = 3,
         FootprintOutsideBoard = 4,
-        RoadOverlap = 5
+        RoadOverlap = 5,
+        // Boss-thrown containers (Containermaw) seal a cell for a window.
+        RuntimeBlocked = 6
     }
 
     public sealed class TDGridMap
@@ -260,6 +262,11 @@ namespace TD
                 return TDBuildSiteValidity.Occupied;
             }
 
+            if (_runtimeBlockedCells.Count > 0 && _runtimeBlockedCells.Contains(cell))
+            {
+                return TDBuildSiteValidity.RuntimeBlocked;
+            }
+
             if (!IsFoundationInsideBoard(cell))
             {
                 return TDBuildSiteValidity.FootprintOutsideBoard;
@@ -268,6 +275,26 @@ namespace TD
             return GetRoadClearance(cell) >= RequiredRoadClearance
                 ? TDBuildSiteValidity.Valid
                 : TDBuildSiteValidity.RoadOverlap;
+        }
+
+        private readonly HashSet<Vector2Int> _runtimeBlockedCells = new();
+
+        /// <summary>Boss container seal — cleared by the manager on expiry.</summary>
+        public void SetRuntimeBlocked(Vector2Int cell, bool blocked)
+        {
+            if (blocked)
+            {
+                _runtimeBlockedCells.Add(cell);
+            }
+            else
+            {
+                _runtimeBlockedCells.Remove(cell);
+            }
+        }
+
+        public bool IsRuntimeBlocked(Vector2Int cell)
+        {
+            return _runtimeBlockedCells.Contains(cell);
         }
 
         public bool IsRecommendedBuildCell(Vector2Int cell)

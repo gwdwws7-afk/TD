@@ -309,7 +309,7 @@ namespace TD
                 return;
             }
 
-            boss.ApplyStagger(TDBlockContract.BossCrushStaggerSeconds, 0f);
+            boss.ApplyStagger(TDBlockContract.BossCrushStaggerSeconds, 0f, true);
             DestroyWagon();
         }
 

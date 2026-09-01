@@ -204,8 +204,16 @@ namespace TD
                 }
 
                 enemy.ApplyArmorBreak(3, Mathf.Max(3f, _activeScenarioMechanic.effectDurationSeconds));
-                enemy.ApplyStagger(0.8f, enemy.HasTag("boss") ? 0.72f : 0.18f);
+                // Scenario devices are a designed exception to boss stagger
+                // immunity (boss-design-spec common rule) — forced through.
+                enemy.ApplyStagger(0.8f, enemy.HasTag("boss") ? 0.72f : 0.18f, true);
                 enemy.TakeHit(Mathf.Max(6, Mathf.RoundToInt(enemy.MaxHealth * 0.08f)), 0.38f, 3.5f);
+                if (string.Equals(enemy.EnemyId, "kiln_custodian", StringComparison.Ordinal))
+                {
+                    // Kiln Purge vs its boss: cuts the stacked plate and stalls
+                    // the forge — the one true answer to the armor wall.
+                    enemy.OnKilnPurge();
+                }
                 affected++;
             }
 

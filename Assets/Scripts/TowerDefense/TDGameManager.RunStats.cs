@@ -226,9 +226,12 @@ namespace TD
             {
                 _matrixEmberConvergenceTriggers++;
                 var before = _resonanceWindowTimer;
-                _resonanceWindowTimer = Mathf.Min(
-                    ResonanceWindowDuration + MatrixConvergenceEmberWindowExtension,
-                    _resonanceWindowTimer + MatrixConvergenceEmberWindowExtension);
+                if (!IsResonanceChargeFrozen)
+                {
+                    _resonanceWindowTimer = Mathf.Min(
+                        ResonanceWindowDuration + MatrixConvergenceEmberWindowExtension,
+                        _resonanceWindowTimer + MatrixConvergenceEmberWindowExtension);
+                }
                 _matrixEmberConvergenceWindowSeconds += Mathf.Max(0f, _resonanceWindowTimer - before);
                 PushTacticalEvent("MATRIX CONVERGENCE: Ember Overdrive", 5.2f);
                 SetStatus("Matrix Convergence: Ember Overdrive engaged");
@@ -899,7 +902,8 @@ namespace TD
 
             AddResonanceCharge(ResonanceKillCharge);
 
-            if (IsResonanceWindowActive && _activeResonanceCommand == TDResonanceCommand.EmberSurge)
+            if (IsResonanceWindowActive && _activeResonanceCommand == TDResonanceCommand.EmberSurge &&
+                !IsResonanceChargeFrozen)
             {
                 _resonanceWindowTimer = Mathf.Min(ResonanceWindowDuration, _resonanceWindowTimer + 0.28f);
             }
