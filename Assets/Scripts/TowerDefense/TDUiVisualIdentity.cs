@@ -51,6 +51,14 @@ namespace TD
                     new Color(0.41f, 0.81f, 0.45f, 1f), "Art/UI/P11/tower_resonance_beacon", "SUPPORT", "SIGNAL"),
                 TDTowerKind.GravSnare => new TDTowerVisualIdentity(
                     new Color(0.45f, 0.52f, 0.89f, 1f), "Art/UI/P11/tower_grav_snare", "CONTROL", "WELL"),
+                TDTowerKind.SlagBurner => new TDTowerVisualIdentity(
+                    new Color(0.84f, 0.27f, 0.27f, 1f), "Art/UI/P11/tower_slag_burner", "BURN", "STACK"),
+                TDTowerKind.SalvageDerrick => new TDTowerVisualIdentity(
+                    new Color(0.50f, 0.78f, 0.43f, 1f), "Art/UI/P11/tower_salvage_derrick", "SALVAGE", "BOUNTY"),
+                TDTowerKind.RailBarricade => new TDTowerVisualIdentity(
+                    new Color(0.36f, 0.54f, 0.66f, 1f), "Art/UI/P11/tower_rail_barricade", "BLOCK", "HOLD"),
+                TDTowerKind.LongRailCannon => new TDTowerVisualIdentity(
+                    new Color(0.42f, 0.36f, 0.91f, 1f), "Art/UI/P11/tower_long_rail_cannon", "SNIPE", "LINE"),
                 _ => new TDTowerVisualIdentity(Color.white, "Art/UI/P11/tower_rail_lancer", "TOWER", "MARK")
             };
         }

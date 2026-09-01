@@ -135,7 +135,14 @@ namespace TD
             KeyCode.Alpha5,
             KeyCode.Alpha6,
             KeyCode.Alpha7,
-            KeyCode.Alpha8
+            KeyCode.Alpha8,
+            // Expansion batch 1 (SlagBurner/SalvageDerrick/RailBarricade/
+            // LongRailCannon). Formation caps at 4 kinds per run, so keys
+            // beyond 4 are capacity, not a normal-play binding.
+            KeyCode.Alpha9,
+            KeyCode.Alpha0,
+            KeyCode.Q,
+            KeyCode.E
         };
 
         private static readonly string[] EmberSurgeThreatPatterns =
@@ -1939,16 +1946,19 @@ namespace TD
                 var towerKind = buildOrder[i];
                 var column = i % 4;
                 var row = i / 4;
+                // 12-kind roster = 3 rows of 4; card 58px tall at 66px pitch
+                // keeps the grid above the doctrine band (see layout note at
+                // the doctrine header below).
                 var button = CreateUiButton(
                     $"Formation Tower {towerKind}",
                     _uiFormationRoot,
-                    new Vector2(24f + (column * 145f), -164f - (row * 90f)),
-                    new Vector2(133f, 76f),
+                    new Vector2(24f + (column * 145f), -160f - (row * 66f)),
+                    new Vector2(133f, 58f),
                     string.Empty,
                     11,
                     () => ToggleFormationTower(towerKind));
                 var identity = TDUiVisualIdentity.GetTower(towerKind);
-                var icon = CreateUiSpriteImage($"Formation {towerKind} Identity Icon", button.transform, new Vector2(8f, -12f), new Vector2(50f, 50f), identity.iconResourcePath, Color.white);
+                var icon = CreateUiSpriteImage($"Formation {towerKind} Identity Icon", button.transform, new Vector2(8f, -8f), new Vector2(42f, 42f), identity.iconResourcePath, Color.white);
                 var accent = CreateUiImage($"Formation {towerKind} Identity Accent", button.transform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), Vector2.zero, new Vector2(0f, 4f), identity.accent);
                 var outline = button.gameObject.AddComponent<Outline>();
                 outline.effectColor = identity.accent;
@@ -1959,8 +1969,8 @@ namespace TD
                 label.rectTransform.anchorMin = new Vector2(0f, 1f);
                 label.rectTransform.anchorMax = new Vector2(0f, 1f);
                 label.rectTransform.pivot = new Vector2(0f, 1f);
-                label.rectTransform.anchoredPosition = new Vector2(68f, -6f);
-                label.rectTransform.sizeDelta = new Vector2(59f, 64f);
+                label.rectTransform.anchoredPosition = new Vector2(56f, -7f);
+                label.rectTransform.sizeDelta = new Vector2(71f, 44f);
                 label.alignment = TextAnchor.MiddleLeft;
                 _uiFormationTowerButtons.Add(button);
                 _uiFormationTowerButtonTexts.Add(label);
@@ -1969,7 +1979,7 @@ namespace TD
                 _uiFormationTowerOutlines.Add(outline);
             }
 
-            CreateUiText("Doctrine Header", _uiFormationRoot, new Vector2(24f, -348f), new Vector2(568f, 24f), "RESONANCE DOCTRINE", 12, FontStyle.Bold, TextAnchor.MiddleLeft, new Color(0.78f, 0.90f, 0.98f, 1f));
+            CreateUiText("Doctrine Header", _uiFormationRoot, new Vector2(24f, -358f), new Vector2(568f, 18f), "RESONANCE DOCTRINE", 12, FontStyle.Bold, TextAnchor.MiddleLeft, new Color(0.78f, 0.90f, 0.98f, 1f));
             _uiFormationDoctrineButtons.Clear();
             _uiFormationDoctrineButtonTexts.Clear();
             var doctrines = new[]
@@ -1984,8 +1994,8 @@ namespace TD
                 var button = CreateUiButton(
                     $"Doctrine {doctrine}",
                     _uiFormationRoot,
-                    new Vector2(24f + (i * 194f), -380f),
-                    new Vector2(180f, 54f),
+                    new Vector2(24f + (i * 194f), -382f),
+                    new Vector2(180f, 46f),
                     string.Empty,
                     11,
                     () => SelectFormationDoctrine(doctrine));
@@ -1993,8 +2003,8 @@ namespace TD
                 _uiFormationDoctrineButtonTexts.Add(button.GetComponentInChildren<Text>());
             }
 
-            _uiFormationLockText = CreateUiText("Formation Lock State", _uiFormationRoot, new Vector2(24f, -448f), new Vector2(568f, 54f), string.Empty, 11, FontStyle.Bold, TextAnchor.UpperLeft, new Color(0.96f, 0.76f, 0.56f, 1f));
-            CreateUiText("Difficulty Header", _uiFormationRoot, new Vector2(24f, -508f), new Vector2(568f, 18f), "CAMPAIGN DIFFICULTY", 11, FontStyle.Bold, TextAnchor.MiddleLeft, new Color(0.78f, 0.90f, 0.98f, 1f));
+            _uiFormationLockText = CreateUiText("Formation Lock State", _uiFormationRoot, new Vector2(24f, -436f), new Vector2(568f, 40f), string.Empty, 11, FontStyle.Bold, TextAnchor.UpperLeft, new Color(0.96f, 0.76f, 0.56f, 1f));
+            CreateUiText("Difficulty Header", _uiFormationRoot, new Vector2(24f, -482f), new Vector2(568f, 16f), "CAMPAIGN DIFFICULTY", 11, FontStyle.Bold, TextAnchor.MiddleLeft, new Color(0.78f, 0.90f, 0.98f, 1f));
             _uiFormationDifficultyButtons.Clear();
             _uiFormationDifficultyButtonTexts.Clear();
             var difficultyTiers = new[]
@@ -2009,7 +2019,7 @@ namespace TD
                 var button = CreateUiButton(
                     $"Difficulty {difficulty}",
                     _uiFormationRoot,
-                    new Vector2(24f + (i * 194f), -530f),
+                    new Vector2(24f + (i * 194f), -500f),
                     new Vector2(180f, 42f),
                     GetDifficultyShortLabel(difficulty),
                     11,
@@ -2063,10 +2073,10 @@ namespace TD
                 "Roster Header Ornament", _uiFormationRoot, new Vector2(24f, -118f), new Vector2(220f, 41f), "header_ornament",
                 new Rect(0.027f, 0.042f, 0.945f, 0.906f));
             TDUiWorldSkin.CreateFormationUnderlay(
-                "Doctrine Header Ornament", _uiFormationRoot, new Vector2(24f, -346f), new Vector2(220f, 41f), "header_ornament",
+                "Doctrine Header Ornament", _uiFormationRoot, new Vector2(24f, -356f), new Vector2(220f, 41f), "header_ornament",
                 new Rect(0.027f, 0.042f, 0.945f, 0.906f));
             TDUiWorldSkin.CreateFormationUnderlay(
-                "Difficulty Header Ornament", _uiFormationRoot, new Vector2(24f, -506f), new Vector2(220f, 41f), "header_ornament",
+                "Difficulty Header Ornament", _uiFormationRoot, new Vector2(24f, -480f), new Vector2(220f, 41f), "header_ornament",
                 new Rect(0.027f, 0.042f, 0.945f, 0.906f));
             _uiFormationRoot.gameObject.SetActive(false);
         }
@@ -3359,6 +3369,10 @@ namespace TD
                 TDTowerKind.EmberFlak => "Speed/Intercept",
                 TDTowerKind.ResonanceBeacon => "Attrition/Support",
                 TDTowerKind.GravSnare => "Control/Mixed",
+                TDTowerKind.SlagBurner => "Burn/Attrition",
+                TDTowerKind.SalvageDerrick => "Economy/Bounty",
+                TDTowerKind.RailBarricade => "Block/Intercept",
+                TDTowerKind.LongRailCannon => "Snipe/Pierce",
                 _ => "Mixed"
             };
         }

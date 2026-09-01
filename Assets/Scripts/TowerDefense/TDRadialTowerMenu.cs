@@ -41,7 +41,8 @@ namespace TD
         private static readonly Color TextBright = new(0.93f, 0.96f, 0.98f, 1f);
         private static readonly Color TextDim = new(0.45f, 0.48f, 0.52f, 0.60f);
 
-        // Tower display colors (compact versions for icons).
+        // Tower display colors (compact versions for icons). Order matches
+        // TDTowerKind — (int)kind indexes this array directly.
         private static readonly Color[] TowerColors =
         {
             new(0.20f, 0.38f, 0.80f, 1f), // RailLancer - blue
@@ -52,11 +53,16 @@ namespace TD
             new(0.95f, 0.45f, 0.20f, 1f), // EmberFlak - red-orange
             new(0.30f, 0.85f, 0.45f, 1f), // ResonanceBeacon - green
             new(0.50f, 0.40f, 0.80f, 1f), // GravSnare - purple
+            new(0.84f, 0.27f, 0.27f, 1f), // SlagBurner - slag red #D64545
+            new(0.50f, 0.78f, 0.43f, 1f), // SalvageDerrick - salvage green #7FC86E
+            new(0.36f, 0.54f, 0.66f, 1f), // RailBarricade - guard steel blue #5D8AA8
+            new(0.42f, 0.36f, 0.91f, 1f), // LongRailCannon - deep space violet #6C5CE7
         };
 
         private static readonly string[] TowerShortNames =
         {
             "RAIL", "CIND", "FROST", "ARC", "SIEGE", "FLAK", "BEACON", "GRAV",
+            "SLAG", "SALV", "BARR", "CANN",
         };
 
         public void Build(Canvas parent)

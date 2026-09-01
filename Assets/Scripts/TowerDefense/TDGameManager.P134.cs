@@ -126,6 +126,7 @@ namespace TD
 
             var towers = FindObjectsByType<TDTower>(FindObjectsSortMode.None);
             var towerKinds = towers.Select(tower => tower.Kind).Distinct().OrderBy(kind => (int)kind).ToArray();
+            var expectedTowerKinds = (TDTowerKind[])Enum.GetValues(typeof(TDTowerKind));
             var readability = towers
                 .Select(tower => tower.Readability)
                 .Where(item => item != null)
@@ -134,9 +135,12 @@ namespace TD
             var projectileIds = readability.Select(item => item.ProjectileLanguageId).Distinct(StringComparer.Ordinal).ToArray();
             var impactIds = readability.Select(item => item.ImpactShapeId).Distinct(StringComparer.Ordinal).ToArray();
             var upgradeIds = readability.Select(item => item.UpgradeMotionId).Distinct(StringComparer.Ordinal).ToArray();
-            var towerIdentityPass = towerKinds.Length == 8 && readability.Length >= 8 &&
-                                    chargeIds.Length == 8 && projectileIds.Length == 8 &&
-                                    impactIds.Length == 8 && upgradeIds.Length == 8 &&
+            var towerIdentityPass = towerKinds.Length == expectedTowerKinds.Length &&
+                                    readability.Length >= expectedTowerKinds.Length &&
+                                    chargeIds.Length == expectedTowerKinds.Length &&
+                                    projectileIds.Length == expectedTowerKinds.Length &&
+                                    impactIds.Length == expectedTowerKinds.Length &&
+                                    upgradeIds.Length == expectedTowerKinds.Length &&
                                     readability.All(item =>
                                         item.ChargeVisible &&
                                         item.AttackPresentationCount > 0 &&
@@ -155,7 +159,7 @@ namespace TD
                     missingProjectileResources.Add($"{kind}:impact");
                 }
             }
-            var projectilePass = towerKinds.Length == 8 && missingProjectileResources.Count == 0;
+            var projectilePass = towerKinds.Length == expectedTowerKinds.Length && missingProjectileResources.Count == 0;
 
             var expectedAudioKeys = new[]
             {
@@ -178,7 +182,11 @@ namespace TD
                 "tower_fire_siegedrill",
                 "tower_fire_emberflak",
                 "tower_fire_resonancebeacon",
-                "tower_fire_gravsnare"
+                "tower_fire_gravsnare",
+                "tower_fire_slagburner",
+                "tower_fire_salvagederrick",
+                "tower_fire_railbarricade",
+                "tower_fire_longrailcannon"
             };
             var audioPass = _sfxSource != null && _tacticalSfxSource != null && _criticalSfxSource != null &&
                             expectedAudioKeys.All(key => _sfxClipCache.ContainsKey(key));
@@ -191,7 +199,7 @@ namespace TD
                 : Array.Empty<TDUiFocusVisual>();
             var selectedObject = EventSystem.current?.currentSelectedGameObject;
             var selectedFocus = selectedObject != null ? selectedObject.GetComponent<TDUiFocusVisual>() : null;
-            var keyboardPass = TowerHotkeys.Length == 8 &&
+            var keyboardPass = TowerHotkeys.Length == expectedTowerKinds.Length &&
                                TDInputBindings.GetKey(TDInputAction.StartWave) != KeyCode.None &&
                                TDInputBindings.GetKey(TDInputAction.Pause) != KeyCode.None;
             var mousePass = _mainCamera != null && towers.All(tower => tower.GetComponent<Collider2D>() != null);

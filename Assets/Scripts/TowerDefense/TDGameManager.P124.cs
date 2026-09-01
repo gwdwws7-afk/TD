@@ -1479,19 +1479,25 @@ namespace TD
                 {
                     TDTowerKind.RailLancer, TDTowerKind.SiegeDrill, TDTowerKind.EmberFlak,
                     TDTowerKind.ResonanceBeacon, TDTowerKind.CinderMortar, TDTowerKind.FrostCoil,
-                    TDTowerKind.ArcWelder, TDTowerKind.GravSnare
+                    TDTowerKind.ArcWelder, TDTowerKind.GravSnare,
+                    TDTowerKind.SlagBurner, TDTowerKind.LongRailCannon,
+                    TDTowerKind.SalvageDerrick, TDTowerKind.RailBarricade
                 },
                 "control_lattice" => new[]
                 {
                     TDTowerKind.FrostCoil, TDTowerKind.GravSnare, TDTowerKind.ArcWelder,
                     TDTowerKind.ResonanceBeacon, TDTowerKind.CinderMortar, TDTowerKind.RailLancer,
-                    TDTowerKind.EmberFlak, TDTowerKind.SiegeDrill
+                    TDTowerKind.EmberFlak, TDTowerKind.SiegeDrill,
+                    TDTowerKind.SlagBurner, TDTowerKind.LongRailCannon,
+                    TDTowerKind.SalvageDerrick, TDTowerKind.RailBarricade
                 },
                 _ => new[]
                 {
                     TDTowerKind.RailLancer, TDTowerKind.CinderMortar, TDTowerKind.FrostCoil,
                     TDTowerKind.ArcWelder, TDTowerKind.ResonanceBeacon, TDTowerKind.EmberFlak,
-                    TDTowerKind.SiegeDrill, TDTowerKind.GravSnare
+                    TDTowerKind.SiegeDrill, TDTowerKind.GravSnare,
+                    TDTowerKind.SlagBurner, TDTowerKind.LongRailCannon,
+                    TDTowerKind.SalvageDerrick, TDTowerKind.RailBarricade
                 }
             };
         }

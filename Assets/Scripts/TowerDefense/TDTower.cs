@@ -12,7 +12,13 @@ namespace TD
         SiegeDrill = 4,
         EmberFlak = 5,
         ResonanceBeacon = 6,
-        GravSnare = 7
+        GravSnare = 7,
+        // Expansion batch 1 (unlock L04/L09/L14/L18). Values must stay
+        // appended: (int)kind-indexed arrays (radial menu) rely on order.
+        SlagBurner = 8,
+        SalvageDerrick = 9,
+        RailBarricade = 10,
+        LongRailCannon = 11
     }
 
     public enum TDTowerUpgradeBranch
@@ -143,7 +149,11 @@ namespace TD
             TDTowerKind.SiegeDrill,
             TDTowerKind.EmberFlak,
             TDTowerKind.ResonanceBeacon,
-            TDTowerKind.GravSnare
+            TDTowerKind.GravSnare,
+            TDTowerKind.SlagBurner,
+            TDTowerKind.SalvageDerrick,
+            TDTowerKind.RailBarricade,
+            TDTowerKind.LongRailCannon
         };
 
         private static readonly TDTowerSpecializationDefinition[] SpecializationDefinitions =
@@ -291,6 +301,18 @@ namespace TD
                 case "grav_snare_tower":
                     kind = TDTowerKind.GravSnare;
                     return true;
+                case "slag_burner_tower":
+                    kind = TDTowerKind.SlagBurner;
+                    return true;
+                case "salvage_derrick_tower":
+                    kind = TDTowerKind.SalvageDerrick;
+                    return true;
+                case "rail_barricade_tower":
+                    kind = TDTowerKind.RailBarricade;
+                    return true;
+                case "long_rail_cannon_tower":
+                    kind = TDTowerKind.LongRailCannon;
+                    return true;
                 default:
                     kind = TDTowerKind.RailLancer;
                     return false;
@@ -309,6 +331,10 @@ namespace TD
                 TDTowerKind.EmberFlak => "ember_flak_tower",
                 TDTowerKind.ResonanceBeacon => "resonance_beacon_tower",
                 TDTowerKind.GravSnare => "grav_snare_tower",
+                TDTowerKind.SlagBurner => "slag_burner_tower",
+                TDTowerKind.SalvageDerrick => "salvage_derrick_tower",
+                TDTowerKind.RailBarricade => "rail_barricade_tower",
+                TDTowerKind.LongRailCannon => "long_rail_cannon_tower",
                 _ => "rail_lancer_tower"
             };
         }
@@ -325,6 +351,10 @@ namespace TD
                 TDTowerKind.EmberFlak => "Ember Flak",
                 TDTowerKind.ResonanceBeacon => "Resonance Beacon",
                 TDTowerKind.GravSnare => "Grav Snare",
+                TDTowerKind.SlagBurner => "Slag Burner",
+                TDTowerKind.SalvageDerrick => "Salvage Derrick",
+                TDTowerKind.RailBarricade => "Rail Barricade",
+                TDTowerKind.LongRailCannon => "Long Rail Cannon",
                 _ => kind.ToString()
             };
         }
@@ -1164,6 +1194,130 @@ namespace TD
                     baseTint = new Color(1f, 1f, 1f, 1f),
                     baseScale = 0.98f,
                     baseYOffset = -0.08f,
+                    baseSortingOrder = 9
+                },
+                // Expansion batch 1 base states (expansion-tower-sheets-v1).
+                // Pierce/burn/aura/wagon behaviors land with their systems;
+                // these states carry the sheet baselines so cost/range/cadence
+                // tables, the simulator, and tests see the real numbers now.
+                TDTowerKind.SlagBurner => new TowerState
+                {
+                    displayName = "Slag Burner",
+                    buildCost = 50,
+                    range = 2.2f,
+                    shotsPerSecond = 1.1f,
+                    windupDuration = 0.18f,
+                    damage = 8,
+                    projectileSpeed = 8.0f,
+                    aoeRadius = 0f,
+                    aoeMaxTargets = 1,
+                    aoeMinFalloff = 1f,
+                    slowPct = 0f,
+                    slowDuration = 0f,
+                    heavyMultiplier = 1f,
+                    spritePath = "Art/anim/tower_slag_burner_00",
+                    fallbackColor = new Color(0.84f, 0.27f, 0.27f),
+                    animationPrefix = "Art/anim/tower_slag_burner",
+                    animationFrames = 6,
+                    animationFps = 6.5f,
+                    visualScale = 0.96f,
+                    visualYOffset = -0.09f,
+                    sortingOrder = 12,
+                    baseSpritePath = "Art/tower_base_plate",
+                    baseTint = new Color(1f, 1f, 1f, 1f),
+                    baseScale = 0.96f,
+                    baseYOffset = -0.09f,
+                    baseSortingOrder = 9
+                },
+                TDTowerKind.SalvageDerrick => new TowerState
+                {
+                    displayName = "Salvage Derrick",
+                    buildCost = 44,
+                    range = 1.8f,
+                    shotsPerSecond = 0.9f,
+                    windupDuration = 0.24f,
+                    damage = 5,
+                    projectileSpeed = 7.5f,
+                    aoeRadius = 0f,
+                    aoeMaxTargets = 1,
+                    aoeMinFalloff = 1f,
+                    slowPct = 0f,
+                    slowDuration = 0f,
+                    heavyMultiplier = 1f,
+                    spritePath = "Art/anim/tower_salvage_derrick_00",
+                    fallbackColor = new Color(0.50f, 0.78f, 0.43f),
+                    animationPrefix = "Art/anim/tower_salvage_derrick",
+                    animationFrames = 6,
+                    animationFps = 5.5f,
+                    visualScale = 1.00f,
+                    visualYOffset = -0.09f,
+                    sortingOrder = 12,
+                    baseSpritePath = "Art/tower_base_plate",
+                    baseTint = new Color(1f, 1f, 1f, 1f),
+                    baseScale = 0.98f,
+                    baseYOffset = -0.09f,
+                    baseSortingOrder = 9
+                },
+                TDTowerKind.RailBarricade => new TowerState
+                {
+                    // No ranged attack per the behavior spec — the wagon body
+                    // does the intercepting. Placeholder cadence/damage keep
+                    // the generic invariants (damage > 0, windup < interval)
+                    // valid until TDBlockerWagon replaces targeting.
+                    displayName = "Rail Barricade",
+                    buildCost = 60,
+                    range = 1.2f,
+                    shotsPerSecond = 0.5f,
+                    windupDuration = 0.30f,
+                    damage = 4,
+                    projectileSpeed = 6.0f,
+                    aoeRadius = 0f,
+                    aoeMaxTargets = 1,
+                    aoeMinFalloff = 1f,
+                    slowPct = 0f,
+                    slowDuration = 0f,
+                    heavyMultiplier = 1f,
+                    spritePath = "Art/anim/tower_rail_barricade_00",
+                    fallbackColor = new Color(0.36f, 0.54f, 0.66f),
+                    animationPrefix = "Art/anim/tower_rail_barricade",
+                    animationFrames = 6,
+                    animationFps = 5.0f,
+                    visualScale = 1.02f,
+                    visualYOffset = -0.08f,
+                    sortingOrder = 12,
+                    baseSpritePath = "Art/tower_base_plate",
+                    baseTint = new Color(1f, 1f, 1f, 1f),
+                    baseScale = 0.98f,
+                    baseYOffset = -0.08f,
+                    baseSortingOrder = 9
+                },
+                TDTowerKind.LongRailCannon => new TowerState
+                {
+                    displayName = "Long Rail Cannon",
+                    buildCost = 72,
+                    range = 4.8f,
+                    shotsPerSecond = 0.4f,
+                    windupDuration = 0.50f,
+                    damage = 34,
+                    projectileSpeed = 14f,
+                    aoeRadius = 0f,
+                    aoeMaxTargets = 1,
+                    aoeMinFalloff = 1f,
+                    slowPct = 0f,
+                    slowDuration = 0f,
+                    heavyMultiplier = 1f,
+                    spritePath = "Art/anim/tower_long_rail_cannon_00",
+                    fallbackColor = new Color(0.42f, 0.36f, 0.91f),
+                    animationPrefix = "Art/anim/tower_long_rail_cannon",
+                    animationFrames = 6,
+                    animationFps = 6.0f,
+                    visualScale = 1.00f,
+                    visualYOffset = -0.10f,
+                    sortingOrder = 12,
+                    baseSpritePath = "Art/tower_base_plate",
+                    baseTint = new Color(1f, 1f, 1f, 1f),
+                    baseScale = 0.96f,
+                    baseYOffset = -0.10f,
                     baseSortingOrder = 9
                 },
                 _ => new TowerState()

@@ -211,7 +211,9 @@ namespace TD
                 {
                     TDTowerKind.RailLancer, TDTowerKind.SiegeDrill, TDTowerKind.EmberFlak,
                     TDTowerKind.ResonanceBeacon, TDTowerKind.CinderMortar, TDTowerKind.FrostCoil,
-                    TDTowerKind.ArcWelder, TDTowerKind.GravSnare
+                    TDTowerKind.ArcWelder, TDTowerKind.GravSnare,
+                    TDTowerKind.SlagBurner, TDTowerKind.LongRailCannon,
+                    TDTowerKind.SalvageDerrick, TDTowerKind.RailBarricade
                 },
                 outputFactor = 1.10f,
                 coverageFactor = 0.94f,
@@ -229,7 +231,9 @@ namespace TD
                 {
                     TDTowerKind.FrostCoil, TDTowerKind.CinderMortar, TDTowerKind.ArcWelder,
                     TDTowerKind.GravSnare, TDTowerKind.ResonanceBeacon, TDTowerKind.EmberFlak,
-                    TDTowerKind.RailLancer, TDTowerKind.SiegeDrill
+                    TDTowerKind.RailLancer, TDTowerKind.SiegeDrill,
+                    TDTowerKind.SlagBurner, TDTowerKind.LongRailCannon,
+                    TDTowerKind.SalvageDerrick, TDTowerKind.RailBarricade
                 },
                 outputFactor = 0.94f,
                 coverageFactor = 1.10f,
@@ -247,7 +251,9 @@ namespace TD
                 {
                     TDTowerKind.RailLancer, TDTowerKind.CinderMortar, TDTowerKind.FrostCoil,
                     TDTowerKind.ResonanceBeacon, TDTowerKind.ArcWelder, TDTowerKind.EmberFlak,
-                    TDTowerKind.SiegeDrill, TDTowerKind.GravSnare
+                    TDTowerKind.SiegeDrill, TDTowerKind.GravSnare,
+                    TDTowerKind.SlagBurner, TDTowerKind.LongRailCannon,
+                    TDTowerKind.SalvageDerrick, TDTowerKind.RailBarricade
                 },
                 outputFactor = 1.01f,
                 coverageFactor = 1.05f,

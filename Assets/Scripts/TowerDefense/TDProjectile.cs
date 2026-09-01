@@ -1026,6 +1026,10 @@ namespace TD
                 TDTowerKind.EmberFlak => "ember_flak",
                 TDTowerKind.ResonanceBeacon => "resonance_beacon",
                 TDTowerKind.GravSnare => "grav_snare",
+                TDTowerKind.SlagBurner => "slag_burner",
+                TDTowerKind.SalvageDerrick => "salvage_derrick",
+                TDTowerKind.RailBarricade => "rail_barricade",
+                TDTowerKind.LongRailCannon => "long_rail_cannon",
                 _ => "rail_lancer"
             };
         }

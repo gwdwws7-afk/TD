@@ -38,6 +38,12 @@ namespace TD.Tests
                 (TDTowerKind.EmberFlak, 0.14f),
                 (TDTowerKind.ResonanceBeacon, 0.25f),
                 (TDTowerKind.GravSnare, 0.36f),
+                // Expansion batch 1 (expansion-tower-sheets-v1). RailBarricade
+                // is a deployment pose, not a fire cadence — it stays out of
+                // the lock table by design.
+                (TDTowerKind.SlagBurner, 0.18f),
+                (TDTowerKind.SalvageDerrick, 0.24f),
+                (TDTowerKind.LongRailCannon, 0.50f),
             };
 
             foreach (var (kind, windup) in expected)

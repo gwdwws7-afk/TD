@@ -71,6 +71,18 @@ namespace TD
                 TDTowerKind.GravSnare => new TDTowerPresentationProfile(
                     2.3f, 0.50f, 0.62f, 0.28f, 0.014f, 0.78f, 1.10f,
                     "grav_compress", "gravity_orbit", "implosion_disc", "singularity_fold"),
+                TDTowerKind.SlagBurner => new TDTowerPresentationProfile(
+                    3.6f, 0.46f, 0.60f, 0.26f, 0.034f, 0.72f, 1.04f,
+                    "slag_simmer", "clinker_bolt", "scald_wave", "grate_heave"),
+                TDTowerKind.SalvageDerrick => new TDTowerPresentationProfile(
+                    2.4f, 0.50f, 0.62f, 0.28f, 0.018f, 0.80f, 1.10f,
+                    "winch_creak", "scrap_bit", "spark_shower", "crane_swing"),
+                TDTowerKind.RailBarricade => new TDTowerPresentationProfile(
+                    2.0f, 0.52f, 0.64f, 0.30f, 0.046f, 0.84f, 1.12f,
+                    "brake_set", "plate_shove", "buffer_clang", "bolt_torque"),
+                TDTowerKind.LongRailCannon => new TDTowerPresentationProfile(
+                    5.0f, 0.42f, 0.58f, 0.20f, 0.056f, 0.66f, 1.00f,
+                    "long_charge", "rail_slug", "bore_line", "barrel_recoil"),
                 _ => new TDTowerPresentationProfile(
                     4f, 0.46f, 0.60f, 0.18f, 0.024f, 0.60f, 1f,
                     "standard", "standard", "standard", "standard")
