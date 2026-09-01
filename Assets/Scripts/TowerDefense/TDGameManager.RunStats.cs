@@ -866,7 +866,8 @@ namespace TD
                 RecordEnemyCodexObservation(enemy.EnemyId, TDEnemyCodexObservation.CounterKilled);
             }
 
-            var combatReward = TDEconomyTuning.ScaleCombatBounty(reward, _wave, GetConfiguredWaveCount());
+            var auraReward = ApplySalvageBountyAura(enemy, reward);
+            var combatReward = TDEconomyTuning.ScaleCombatBounty(auraReward, _wave, GetConfiguredWaveCount());
             _defenseBudget += combatReward;
             TrackP125CombatIncome(combatReward);
             _totalKills++;
@@ -1034,6 +1035,18 @@ namespace TD
 
         private void BeginWaveStat(int waveIndex)
         {
+            // Derrick fuse resets per wave; Supply Drop pays here so both wave
+            // loops (config + fallback) get it from one site.
+            _derrickWaveCredited = 0;
+            _salvageDerricks.RemoveAll(tower => tower == null);
+            for (var i = 0; i < _salvageDerricks.Count; i++)
+            {
+                if (_salvageDerricks[i].IsUtilitySpecialist)
+                {
+                    CreditDerrickWaveIncome(3);
+                }
+            }
+
             _currentWaveStat = new TDWaveRuntimeStat
             {
                 waveIndex = waveIndex,

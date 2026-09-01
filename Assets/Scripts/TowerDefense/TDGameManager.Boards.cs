@@ -245,6 +245,7 @@ namespace TD
             }
 
             UpdateTowerTooltip(null);
+            UnregisterSalvageDerrick(tower);
             _gridMap?.SetTower(cell, false);
             _builtTowerCount = Mathf.Max(0, _builtTowerCount - 1);
             _defenseBudget += refund;
@@ -334,6 +335,7 @@ namespace TD
             var tower = towerObject.AddComponent<TDTower>();
             tower.Initialize(this, kind, cell);
             RegisterTowerForAnalytics(tower);
+            RegisterSalvageDerrick(tower);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD || TD_AUTOMATION
             TrackP135TowerBuilt(tower);
 #endif

@@ -1626,6 +1626,8 @@ namespace TD
             // must not leak across levels).
             _subsidyEntitledHundredths = 0;
             _subsidyPaidTotal = 0;
+            _salvageDerricks.Clear();
+            _derrickWaveCredited = 0;
 
             // Invalidate per-run UI caches (readiness key could otherwise alias
             // across levels with equal wave/tower counts).

@@ -126,6 +126,11 @@ namespace TD
             public float burnDamagePerLayer;
             public float burnDuration;
             public float burnSpreadRadius;
+            // Salvage Derrick economy block (expansion tower 10). Zeros = no aura.
+            public float killBountyAuraRadius;
+            public float bountyBonusPercent;
+            public int waveSalvageIncome;
+            public int killBudgetRebate;
             public string spritePath;
             public Color fallbackColor;
             public string animationPrefix;
@@ -180,7 +185,9 @@ namespace TD
             new("grav_event_horizon", TDTowerKind.GravSnare, TDTowerUpgradeBranch.Damage, "Event Horizon", "Damage scales with mass and route progress.", new[] { "heavy", "fast", "boss" }, TDResonanceAffinity.EmberSurge),
             new("grav_singularity_well", TDTowerKind.GravSnare, TDTowerUpgradeBranch.Utility, "Singularity Well", "Wide gravity pulses pin and expose groups.", new[] { "fast", "flank", "swarm" }, TDResonanceAffinity.FractureMark),
             new("slag_slag_sump", TDTowerKind.SlagBurner, TDTowerUpgradeBranch.Damage, "Slag Sump", "Full burn stacks detonate in one burst.", new[] { "attrition", "heavy", "boss" }, TDResonanceAffinity.EmberSurge),
-            new("slag_wildfire_drift", TDTowerKind.SlagBurner, TDTowerUpgradeBranch.Utility, "Wildfire Drift", "Burning kills spread fire to nearby prey.", new[] { "swarm", "spawn", "split" }, TDResonanceAffinity.FractureMark)
+            new("slag_wildfire_drift", TDTowerKind.SlagBurner, TDTowerUpgradeBranch.Utility, "Wildfire Drift", "Burning kills spread fire to nearby prey.", new[] { "swarm", "spawn", "split" }, TDResonanceAffinity.FractureMark),
+            new("derrick_scrap_protocol", TDTowerKind.SalvageDerrick, TDTowerUpgradeBranch.Damage, "Scrap Protocol", "Boss and elite bounties pay 1.5x inside the ring.", new[] { "boss", "elite", "heavy" }, TDResonanceAffinity.Either),
+            new("derrick_supply_drop", TDTowerKind.SalvageDerrick, TDTowerUpgradeBranch.Utility, "Supply Drop", "Every wave opens with +3 budget.", new[] { "support", "mixed", "swarm" }, TDResonanceAffinity.Either)
         };
 
         private readonly List<TDTowerUpgradeBranch> _upgradeHistory = new();
@@ -220,6 +227,10 @@ namespace TD
         public float BurnDamagePerLayer => _activeState?.burnDamagePerLayer ?? 0f;
         public float BurnDuration => _activeState?.burnDuration ?? 0f;
         public float BurnSpreadRadius => _activeState?.burnSpreadRadius ?? 0f;
+        public float KillBountyAuraRadius => _activeState?.killBountyAuraRadius ?? 0f;
+        public float BountyBonusPercent => _activeState?.bountyBonusPercent ?? 0f;
+        public int WaveSalvageIncome => _activeState?.waveSalvageIncome ?? 0;
+        public int KillBudgetRebate => _activeState?.killBudgetRebate ?? 0;
 
         /// <summary>
         /// Miss chance vs fast (speed >= 2.2) unslowed enemies for slow-firing
@@ -931,6 +942,11 @@ namespace TD
                     state.damage = Mathf.RoundToInt(state.damage * (1f + (0.18f * factor)));
                     state.burnDamagePerLayer *= 1f + (0.15f * factor);
                     break;
+                // Salvage line: flat +6/level (sheet 6/12/18 — no diminishing
+                // on the flat stipend).
+                case TDTowerKind.SalvageDerrick:
+                    state.waveSalvageIncome += 6;
+                    break;
             }
         }
 
@@ -975,6 +991,12 @@ namespace TD
                 case TDTowerKind.SlagBurner:
                     state.burnDuration += 0.4f * factor;
                     state.burnSpreadRadius *= 1f + (0.15f * factor);
+                    break;
+                // Supply line: ring widens 12%/level (diminished); rebate is a
+                // flat +1/level per in-ring kill.
+                case TDTowerKind.SalvageDerrick:
+                    state.killBountyAuraRadius *= 1f + (0.12f * factor);
+                    state.killBudgetRebate += 1;
                     break;
             }
         }
@@ -1267,6 +1289,8 @@ namespace TD
                     slowPct = 0f,
                     slowDuration = 0f,
                     heavyMultiplier = 1f,
+                    killBountyAuraRadius = 2.5f,
+                    bountyBonusPercent = 0.18f,
                     spritePath = "Art/anim/tower_salvage_derrick_00",
                     fallbackColor = new Color(0.50f, 0.78f, 0.43f),
                     animationPrefix = "Art/anim/tower_salvage_derrick",
@@ -1368,6 +1392,10 @@ namespace TD
                 burnDamagePerLayer = source.burnDamagePerLayer,
                 burnDuration = source.burnDuration,
                 burnSpreadRadius = source.burnSpreadRadius,
+                killBountyAuraRadius = source.killBountyAuraRadius,
+                bountyBonusPercent = source.bountyBonusPercent,
+                waveSalvageIncome = source.waveSalvageIncome,
+                killBudgetRebate = source.killBudgetRebate,
                 spritePath = source.spritePath,
                 fallbackColor = source.fallbackColor,
                 animationPrefix = source.animationPrefix,

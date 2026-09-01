@@ -357,6 +357,16 @@ namespace TD
 
                 _defenseBudget += reward;
                 TrackP125ClearIncome(reward);
+                // Derrick salvage line: per-crane stipend at settlement, fused.
+                _salvageDerricks.RemoveAll(tower => tower == null);
+                for (var i = 0; i < _salvageDerricks.Count; i++)
+                {
+                    var salvage = _salvageDerricks[i].WaveSalvageIncome;
+                    if (salvage > 0)
+                    {
+                        CreditDerrickWaveIncome(salvage);
+                    }
+                }
                 SetStatus($"Wave {_wave} cleared, reward +{reward} budget");
                 PushTacticalEvent($"Clear W{_wave:00}: kills {_currentWaveStat?.kills ?? 0}, leaks {_currentWaveStat?.escapes ?? 0}, +{reward} budget", 6.0f);
                 _battlePresentation?.ShowCinematic(

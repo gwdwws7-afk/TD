@@ -73,6 +73,106 @@ namespace TD
             };
         }
 
+        // ── Salvage Derrick economy services (expansion tower 10) ──
+        // Registry maintained at build/sell; pruned of destroyed entries on
+        // query (Unity fake-null), so level resets need no extra sweep.
+        private readonly List<TDTower> _salvageDerricks = new();
+        private int _derrickWaveCredited;
+
+        private void RegisterSalvageDerrick(TDTower tower)
+        {
+            if (tower != null && tower.Kind == TDTowerKind.SalvageDerrick && !_salvageDerricks.Contains(tower))
+            {
+                _salvageDerricks.Add(tower);
+            }
+        }
+
+        private void UnregisterSalvageDerrick(TDTower tower)
+        {
+            _salvageDerricks.Remove(tower);
+        }
+
+        /// <summary>
+        /// Credits a derrick-sourced income increment against the per-wave
+        /// fuse (TDEconomyTuning.DerrickWaveIncomeCeiling) and pays whatever
+        /// survived the clamp straight into the budget.
+        /// </summary>
+        private void CreditDerrickWaveIncome(int amount)
+        {
+            var credited = TDEconomyTuning.ClampDerrickWaveCredit(_derrickWaveCredited, amount);
+            if (credited <= 0)
+            {
+                return;
+            }
+
+            _derrickWaveCredited += credited;
+            _defenseBudget += credited;
+        }
+
+        /// <summary>
+        /// Kill bounties inside a crane's ring pay a premium (strongest ring
+        /// wins — no stacking) and refund budget per the supply line. Called
+        /// from the kill funnel before combat-bounty decay.
+        /// </summary>
+        private int ApplySalvageBountyAura(TDEnemy enemy, int reward)
+        {
+            if (enemy == null || reward <= 0 || _salvageDerricks.Count == 0)
+            {
+                return reward;
+            }
+
+            _salvageDerricks.RemoveAll(tower => tower == null);
+            TDTower bestRing = null;
+            var bestBonus = 0f;
+            var rebate = 0;
+            var position = enemy.transform.position;
+            for (var i = 0; i < _salvageDerricks.Count; i++)
+            {
+                var derrick = _salvageDerricks[i];
+                var radius = derrick.KillBountyAuraRadius;
+                if (radius <= 0f)
+                {
+                    continue;
+                }
+
+                var delta = derrick.transform.position - position;
+                if (delta.sqrMagnitude > radius * radius)
+                {
+                    continue;
+                }
+
+                if (derrick.BountyBonusPercent > bestBonus)
+                {
+                    bestBonus = derrick.BountyBonusPercent;
+                    bestRing = derrick;
+                }
+
+                rebate = Mathf.Max(rebate, derrick.KillBudgetRebate);
+            }
+
+            if (bestRing == null && rebate <= 0)
+            {
+                return reward;
+            }
+
+            var multiplier = TDEconomyTuning.ResolveAuraBountyMultiplier(
+                bestBonus,
+                bestRing != null && bestRing.IsDamageSpecialist,
+                enemy.HasAnyTag("boss", "elite"));
+            var adjusted = Mathf.RoundToInt(reward * multiplier);
+            if (adjusted > reward)
+            {
+                CreditDerrickWaveIncome(adjusted - reward);
+            }
+
+            if (rebate > 0)
+            {
+                CreditDerrickWaveIncome(rebate);
+            }
+
+            return adjusted;
+        }
+
         private void TrySpreadBurnOnKill(TDEnemy enemy, TDTower sourceTower)
         {
             // Wildfire line (utility levels) spreads fire from burning kills.

@@ -74,6 +74,36 @@ namespace TD
                 : Mathf.Max(1, Mathf.RoundToInt(missionScaledReward * GetCombatBountyMultiplier(waveIndex, waveCount)));
         }
 
+        // ── Salvage Derrick (expansion tower 10) ──
+        // Roadmap fuse ("单波收入上限保险丝，防止玩家躺赢"): the crane's whole
+        // per-wave increment — salvage + aura bounty bonus + kill rebates +
+        // supply drops — never exceeds this ceiling. Combat bounty decay
+        // applies after the aura, so pre-decay accounting is conservative
+        // (the fuse trips no later than the spec's post-decay intent).
+        public const int DerrickWaveIncomeCeiling = 45;
+
+        public static int ResolveDerrickWaveIncome(int salvage, int rebatePerKill, int auraKills, int supplyDrop)
+        {
+            var raw = salvage + (rebatePerKill * Mathf.Max(0, auraKills)) + Mathf.Max(0, supplyDrop);
+            return Mathf.Min(raw, DerrickWaveIncomeCeiling);
+        }
+
+        public static int ClampDerrickWaveCredit(int alreadyCreditedThisWave, int amount)
+        {
+            return Mathf.Max(0, Mathf.Min(Mathf.Max(0, amount), DerrickWaveIncomeCeiling - alreadyCreditedThisWave));
+        }
+
+        public static float ResolveAuraBountyMultiplier(float bountyBonusPercent, bool scrapProtocol, bool bossOrElite)
+        {
+            var multiplier = 1f + Mathf.Max(0f, bountyBonusPercent);
+            if (scrapProtocol && bossOrElite)
+            {
+                multiplier *= 1.5f;
+            }
+
+            return multiplier;
+        }
+
         public static int ScaleWaveClearReward(int missionScaledReward, int waveIndex, int waveCount)
         {
             return missionScaledReward <= 0
