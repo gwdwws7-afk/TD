@@ -1000,7 +1000,11 @@ namespace TD
         {
             Vector2Int? bestCell = null;
             var bestScore = float.MinValue;
-            var candidates = _gridMap.RecommendedBuildCells;
+            // B.4: the full authored table, not just its recommended subset —
+            // hollow_kiln's recommended 4 of 12 starved the build loop.
+            var candidates = _gridMap.UsesAuthoredBuildCells
+                ? _gridMap.AuthoredBuildCells
+                : _gridMap.RecommendedBuildCells;
             for (var i = 0; i < candidates.Count; i++)
             {
                 var cell = candidates[i];

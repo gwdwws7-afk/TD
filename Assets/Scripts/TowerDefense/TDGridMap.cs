@@ -272,6 +272,17 @@ namespace TD
                 return TDBuildSiteValidity.FootprintOutsideBoard;
             }
 
+            // B.4 root cause (reweave-input §1): hand-authored site tables
+            // are design statements — on hollow_kiln_basin 8 of 12 authored
+            // spots failed this heuristic, capping the level at 4 towers
+            // while budget piled up idle. The clearance heuristic now only
+            // governs maps WITHOUT an authored table; board, footprint and
+            // occupancy checks still apply everywhere.
+            if (_authoredBuildCellSet.Count > 0)
+            {
+                return TDBuildSiteValidity.Valid;
+            }
+
             return GetRoadClearance(cell) >= RequiredRoadClearance
                 ? TDBuildSiteValidity.Valid
                 : TDBuildSiteValidity.RoadOverlap;
