@@ -94,10 +94,10 @@
         {
           "enemyId": "rail_splitter",
           "count": 1,
-          "startDelay": 1.34,
+          "startDelay": 1.4,
           "spawnInterval": 0.3,
           "formation": "stream",
-          "lane": "left"
+          "lane": "center"
         },
         {
           "enemyId": "skitter_runner",
@@ -134,7 +134,7 @@
         {
           "enemyId": "cinder_husk",
           "count": 2,
-          "startDelay": 1.35,
+          "startDelay": 0.64,
           "spawnInterval": 0.45,
           "formation": "pack",
           "lane": "right"
@@ -142,7 +142,7 @@
         {
           "enemyId": "acid_blister",
           "count": 1,
-          "startDelay": 0.91,
+          "startDelay": 1.49,
           "spawnInterval": 0.45,
           "formation": "pack",
           "lane": "right"
@@ -150,10 +150,10 @@
         {
           "enemyId": "forge_dragoon",
           "count": 1,
-          "startDelay": 1.46,
+          "startDelay": 1.34,
           "spawnInterval": 0.45,
           "formation": "pack",
-          "lane": "right"
+          "lane": "center"
         },
         {
           "enemyId": "ash_swarm",
@@ -206,10 +206,10 @@
         {
           "enemyId": "ember_strider",
           "count": 1,
-          "startDelay": 1.52,
+          "startDelay": 0.91,
           "spawnInterval": 0.3,
           "formation": "stream",
-          "lane": "left"
+          "lane": "center"
         }
       ]
     },
@@ -238,15 +238,15 @@
         {
           "enemyId": "cinder_husk",
           "count": 2,
-          "startDelay": 1.01,
+          "startDelay": 1.77,
           "spawnInterval": 0.45,
           "formation": "pack",
-          "lane": "center"
+          "lane": "left"
         },
         {
           "enemyId": "rail_splitter",
           "count": 2,
-          "startDelay": 0.79,
+          "startDelay": 1.05,
           "spawnInterval": 0.3,
           "formation": "stream",
           "lane": "center"
@@ -254,10 +254,10 @@
         {
           "enemyId": "forge_dragoon",
           "count": 1,
-          "startDelay": 1.61,
+          "startDelay": 1.01,
           "spawnInterval": 0.45,
           "formation": "pack",
-          "lane": "left"
+          "lane": "center"
         }
       ]
     },
@@ -302,10 +302,10 @@
         {
           "enemyId": "acid_blister",
           "count": 1,
-          "startDelay": 0.89,
+          "startDelay": 0.79,
           "spawnInterval": 0.45,
           "formation": "pack",
-          "lane": "center"
+          "lane": "right"
         }
       ]
     },
@@ -351,10 +351,10 @@
         {
           "enemyId": "rail_splitter",
           "count": 1,
-          "startDelay": 1.42,
+          "startDelay": 1.61,
           "spawnInterval": 0.3,
           "formation": "stream",
-          "lane": "left"
+          "lane": "split_lane"
         },
         {
           "enemyId": "ash_swarm",
@@ -362,7 +362,7 @@
           "startDelay": 0.08,
           "spawnInterval": 0.22,
           "formation": "swarm",
-          "lane": "center"
+          "lane": "left"
         }
       ]
     },
@@ -401,7 +401,7 @@
         {
           "enemyId": "cinder_husk",
           "count": 3,
-          "startDelay": 1.73,
+          "startDelay": 1.77,
           "spawnInterval": 0.45,
           "formation": "pack",
           "lane": "right"
@@ -409,23 +409,23 @@
         {
           "enemyId": "acid_blister",
           "count": 2,
-          "startDelay": 1.39,
-          "spawnInterval": 0.45,
-          "formation": "pack",
-          "lane": "left"
-        },
-        {
-          "enemyId": "forge_dragoon",
-          "count": 1,
-          "startDelay": 1.77,
+          "startDelay": 1.69,
           "spawnInterval": 0.45,
           "formation": "pack",
           "lane": "right"
         },
         {
+          "enemyId": "forge_dragoon",
+          "count": 1,
+          "startDelay": 1.67,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "cross_lane"
+        },
+        {
           "enemyId": "ember_strider",
           "count": 1,
-          "startDelay": 1.54,
+          "startDelay": 1.73,
           "spawnInterval": 0.3,
           "formation": "stream",
           "lane": "right"
@@ -526,15 +526,15 @@
         {
           "enemyId": "cinder_husk",
           "count": 3,
-          "startDelay": 0.74,
+          "startDelay": 1.39,
           "spawnInterval": 0.45,
           "formation": "pack",
-          "lane": "center"
+          "lane": "right"
         },
         {
           "enemyId": "rail_splitter",
           "count": 2,
-          "startDelay": 0.89,
+          "startDelay": 1.77,
           "spawnInterval": 0.3,
           "formation": "stream",
           "lane": "center"
@@ -542,10 +542,10 @@
         {
           "enemyId": "forge_dragoon",
           "count": 1,
-          "startDelay": 1.62,
+          "startDelay": 1.43,
           "spawnInterval": 0.45,
           "formation": "pack",
-          "lane": "right"
+          "lane": "left"
         }
       ]
     },
@@ -585,10 +585,10 @@
         {
           "enemyId": "acid_blister",
           "count": 1,
-          "startDelay": 1.55,
+          "startDelay": 1.2,
           "spawnInterval": 0.45,
           "formation": "pack",
-          "lane": "right"
+          "lane": "cross_lane"
         },
         {
           "enemyId": "skitter_runner",
@@ -644,18 +644,18 @@
         {
           "enemyId": "rail_splitter",
           "count": 1,
-          "startDelay": 1.37,
+          "startDelay": 0.89,
           "spawnInterval": 0.3,
           "formation": "stream",
-          "lane": "center"
+          "lane": "left"
         },
         {
           "enemyId": "ember_strider",
           "count": 1,
-          "startDelay": 1.67,
+          "startDelay": 1.62,
           "spawnInterval": 0.3,
           "formation": "stream",
-          "lane": "left"
+          "lane": "center"
         }
       ]
     },
@@ -703,23 +703,23 @@
         {
           "enemyId": "cinder_husk",
           "count": 2,
-          "startDelay": 1.11,
-          "spawnInterval": 0.45,
-          "formation": "pack",
-          "lane": "all"
-        },
-        {
-          "enemyId": "acid_blister",
-          "count": 1,
-          "startDelay": 1.57,
+          "startDelay": 1.55,
           "spawnInterval": 0.45,
           "formation": "pack",
           "lane": "right"
         },
         {
+          "enemyId": "acid_blister",
+          "count": 1,
+          "startDelay": 0.67,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "all"
+        },
+        {
           "enemyId": "forge_dragoon",
           "count": 1,
-          "startDelay": 1.43,
+          "startDelay": 1.11,
           "spawnInterval": 0.45,
           "formation": "pack",
           "lane": "all"
@@ -815,7 +815,7 @@
         {
           "enemyId": "cinder_husk",
           "count": 2,
-          "startDelay": 1.62,
+          "startDelay": 1.57,
           "spawnInterval": 0.45,
           "formation": "pack",
           "lane": "center"
@@ -823,18 +823,18 @@
         {
           "enemyId": "rail_splitter",
           "count": 2,
-          "startDelay": 1.02,
+          "startDelay": 1.43,
           "spawnInterval": 0.3,
           "formation": "stream",
-          "lane": "center"
+          "lane": "right"
         },
         {
           "enemyId": "forge_dragoon",
           "count": 1,
-          "startDelay": 1.32,
+          "startDelay": 1.62,
           "spawnInterval": 0.45,
           "formation": "pack",
-          "lane": "right"
+          "lane": "center"
         }
       ]
     },
@@ -884,7 +884,7 @@
         {
           "enemyId": "acid_blister",
           "count": 1,
-          "startDelay": 1.39,
+          "startDelay": 1.02,
           "spawnInterval": 0.45,
           "formation": "pack",
           "lane": "right"
@@ -892,10 +892,10 @@
         {
           "enemyId": "ember_strider",
           "count": 1,
-          "startDelay": 0.71,
+          "startDelay": 1.32,
           "spawnInterval": 0.3,
           "formation": "stream",
-          "lane": "center"
+          "lane": "all"
         },
         {
           "enemyId": "skitter_runner",
@@ -944,10 +944,10 @@
         {
           "enemyId": "rail_splitter",
           "count": 4,
-          "startDelay": 1.3,
+          "startDelay": 1.39,
           "spawnInterval": 0.3,
           "formation": "stream",
-          "lane": "left"
+          "lane": "right"
         },
         {
           "enemyId": "ash_swarm",
@@ -955,7 +955,7 @@
           "startDelay": 0.08,
           "spawnInterval": 0.22,
           "formation": "swarm",
-          "lane": "center"
+          "lane": "left"
         }
       ]
     },
@@ -1013,7 +1013,7 @@
         {
           "enemyId": "cinder_husk",
           "count": 2,
-          "startDelay": 1.8,
+          "startDelay": 0.71,
           "spawnInterval": 0.45,
           "formation": "pack",
           "lane": "right"
@@ -1021,15 +1021,15 @@
         {
           "enemyId": "acid_blister",
           "count": 1,
-          "startDelay": 0.84,
+          "startDelay": 0.93,
           "spawnInterval": 0.45,
           "formation": "pack",
-          "lane": "right"
+          "lane": "center"
         },
         {
           "enemyId": "forge_dragoon",
           "count": 1,
-          "startDelay": 1.37,
+          "startDelay": 1.59,
           "spawnInterval": 0.45,
           "formation": "pack",
           "lane": "right"
@@ -1093,7 +1093,7 @@
           "startDelay": 0.08,
           "spawnInterval": 0.22,
           "formation": "swarm",
-          "lane": "right"
+          "lane": "left"
         }
       ]
     },
@@ -1143,7 +1143,7 @@
         {
           "enemyId": "cinder_husk",
           "count": 3,
-          "startDelay": 0.63,
+          "startDelay": 1.53,
           "spawnInterval": 0.45,
           "formation": "pack",
           "lane": "left"
@@ -1151,23 +1151,23 @@
         {
           "enemyId": "rail_splitter",
           "count": 3,
-          "startDelay": 1.59,
+          "startDelay": 0.63,
           "spawnInterval": 0.3,
           "formation": "stream",
-          "lane": "right"
+          "lane": "left"
         },
         {
           "enemyId": "forge_dragoon",
           "count": 1,
-          "startDelay": 1.78,
+          "startDelay": 1.59,
           "spawnInterval": 0.45,
           "formation": "pack",
-          "lane": "left"
+          "lane": "right"
         },
         {
           "enemyId": "ember_strider",
           "count": 2,
-          "startDelay": 0.77,
+          "startDelay": 1.78,
           "spawnInterval": 0.3,
           "formation": "stream",
           "lane": "left"
@@ -1228,10 +1228,10 @@
         {
           "enemyId": "acid_blister",
           "count": 2,
-          "startDelay": 1.11,
+          "startDelay": 0.77,
           "spawnInterval": 0.45,
           "formation": "pack",
-          "lane": "all"
+          "lane": "center"
         },
         {
           "enemyId": "ash_swarm",

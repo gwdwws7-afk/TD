@@ -79,7 +79,7 @@
       ],
       "prepSeconds": 8.2,
       "rewardGold": 60,
-      "budgetTarget": 27.1,
+      "budgetTarget": 25.3,
       "budgetTolerance": 1.1,
       "hint": "[L13] W01: 识别新威胁并调整火力分工。",
       "groups": [
@@ -93,7 +93,7 @@
         },
         {
           "enemyId": "skitter_runner",
-          "count": 20,
+          "count": 18,
           "startDelay": 0.08,
           "spawnInterval": 0.25,
           "formation": "stream",
@@ -111,7 +111,7 @@
       ],
       "prepSeconds": 8.06,
       "rewardGold": 55,
-      "budgetTarget": 31.3,
+      "budgetTarget": 29.2,
       "budgetTolerance": 1.1,
       "hint": "[L13] W02 REINFORCE: 窑炉净化已解锁；等敌群重叠后再消耗有限充能。",
       "groups": [
@@ -141,7 +141,7 @@
         },
         {
           "enemyId": "ash_swarm",
-          "count": 14,
+          "count": 11,
           "startDelay": 0.08,
           "spawnInterval": 0.22,
           "formation": "swarm",
@@ -159,7 +159,7 @@
       ],
       "prepSeconds": 8.32,
       "rewardGold": 60,
-      "budgetTarget": 40.6,
+      "budgetTarget": 37.8,
       "budgetTolerance": 1.1,
       "hint": "[L13] W03 EXAM: 在装甲与高速敌人交汇时净化，破甲和停滞价值最高。",
       "groups": [
@@ -194,14 +194,6 @@
           "spawnInterval": 0.45,
           "formation": "pack",
           "lane": "right"
-        },
-        {
-          "enemyId": "skitter_runner",
-          "count": 3,
-          "startDelay": 0.08,
-          "spawnInterval": 0.25,
-          "formation": "stream",
-          "lane": "center"
         }
       ]
     },
@@ -215,7 +207,7 @@
       ],
       "prepSeconds": 7.78,
       "rewardGold": 45,
-      "budgetTarget": 39.4,
+      "budgetTarget": 36.7,
       "budgetTolerance": 1.1,
       "hint": "[L13] W04: 识别新威胁并调整火力分工。",
       "groups": [
@@ -237,7 +229,7 @@
         },
         {
           "enemyId": "ash_swarm",
-          "count": 7,
+          "count": 4,
           "startDelay": 0.08,
           "spawnInterval": 0.22,
           "formation": "swarm",
@@ -255,13 +247,13 @@
       ],
       "prepSeconds": 7.64,
       "rewardGold": 45,
-      "budgetTarget": 41.5,
+      "budgetTarget": 38.7,
       "budgetTolerance": 1.1,
       "hint": "[L13] W05: 持续压制并补齐覆盖空洞。",
       "groups": [
         {
           "enemyId": "cinder_glider",
-          "count": 3,
+          "count": 2,
           "startDelay": 0,
           "spawnInterval": 0.24,
           "formation": "stream",
@@ -312,7 +304,7 @@
       ],
       "prepSeconds": 7.9,
       "rewardGold": 45,
-      "budgetTarget": 53.4,
+      "budgetTarget": 49.7,
       "budgetTolerance": 1.1,
       "hint": "[L13] W06: 综合考核：输出、控制、反制链稳定性。",
       "groups": [
@@ -342,7 +334,7 @@
         },
         {
           "enemyId": "ash_swarm",
-          "count": 11,
+          "count": 6,
           "startDelay": 0.08,
           "spawnInterval": 0.22,
           "formation": "swarm",
@@ -362,7 +354,7 @@
       ],
       "prepSeconds": 7.36,
       "rewardGold": 45,
-      "budgetTarget": 52.2,
+      "budgetTarget": 48.6,
       "budgetTolerance": 1.07,
       "hint": "[L13] W07: 识别新威胁并调整火力分工。 多线同时压测。",
       "groups": [
@@ -397,14 +389,6 @@
           "spawnInterval": 0.3,
           "formation": "stream",
           "lane": "split_lane"
-        },
-        {
-          "enemyId": "ash_swarm",
-          "count": 5,
-          "startDelay": 0.08,
-          "spawnInterval": 0.22,
-          "formation": "swarm",
-          "lane": "split_lane"
         }
       ]
     },
@@ -420,7 +404,7 @@
       ],
       "prepSeconds": 7.22,
       "rewardGold": 45,
-      "budgetTarget": 54.2,
+      "budgetTarget": 50.4,
       "budgetTolerance": 1.07,
       "hint": "[L13] W08: 持续压制并补齐覆盖空洞。 多线同时压测。",
       "groups": [
@@ -451,17 +435,9 @@
         {
           "enemyId": "acid_blister",
           "count": 1,
-          "startDelay": 1.19,
+          "startDelay": 0.94,
           "spawnInterval": 0.45,
           "formation": "pack",
-          "lane": "left"
-        },
-        {
-          "enemyId": "skitter_runner",
-          "count": 4,
-          "startDelay": 0.08,
-          "spawnInterval": 0.25,
-          "formation": "stream",
           "lane": "center"
         }
       ]
@@ -479,7 +455,7 @@
       ],
       "prepSeconds": 7.48,
       "rewardGold": 50,
-      "budgetTarget": 65.2,
+      "budgetTarget": 60.7,
       "budgetTolerance": 1.07,
       "hint": "[L13] W09: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
       "groups": [
@@ -509,19 +485,19 @@
         },
         {
           "enemyId": "rail_splitter",
-          "count": 3,
-          "startDelay": 1.64,
+          "count": 2,
+          "startDelay": 1.23,
           "spawnInterval": 0.3,
           "formation": "stream",
           "lane": "cross_lane"
         },
         {
           "enemyId": "ash_swarm",
-          "count": 9,
+          "count": 8,
           "startDelay": 0.08,
           "spawnInterval": 0.22,
           "formation": "swarm",
-          "lane": "left"
+          "lane": "cross_lane"
         }
       ]
     },
@@ -538,7 +514,7 @@
       ],
       "prepSeconds": 7.44,
       "rewardGold": 53,
-      "budgetTarget": 67.0,
+      "budgetTarget": 62.4,
       "budgetTolerance": 1.07,
       "hint": "[L13] W10: 识别新威胁并调整火力分工。 多线同时压测。",
       "groups": [
@@ -560,19 +536,19 @@
         },
         {
           "enemyId": "cinder_husk",
-          "count": 2,
-          "startDelay": 1.07,
+          "count": 1,
+          "startDelay": 0.72,
           "spawnInterval": 0.45,
           "formation": "pack",
-          "lane": "left"
+          "lane": "split_lane"
         },
         {
           "enemyId": "acid_blister",
           "count": 1,
-          "startDelay": 0.75,
+          "startDelay": 1.52,
           "spawnInterval": 0.45,
           "formation": "pack",
-          "lane": "split_lane"
+          "lane": "left"
         }
       ]
     },
@@ -589,7 +565,7 @@
       ],
       "prepSeconds": 6.8,
       "rewardGold": 51,
-      "budgetTarget": 67.0,
+      "budgetTarget": 62.4,
       "budgetTolerance": 1.07,
       "hint": "[L13] W11: 持续压制并补齐覆盖空洞。 多线同时压测。",
       "groups": [
@@ -619,7 +595,7 @@
         },
         {
           "enemyId": "ash_swarm",
-          "count": 11,
+          "count": 6,
           "startDelay": 0.08,
           "spawnInterval": 0.22,
           "formation": "swarm",
@@ -640,7 +616,7 @@
       ],
       "prepSeconds": 7.06,
       "rewardGold": 56,
-      "budgetTarget": 77.4,
+      "budgetTarget": 72.0,
       "budgetTolerance": 1.07,
       "hint": "[L13] W12: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
       "groups": [
@@ -671,15 +647,15 @@
         {
           "enemyId": "cinder_husk",
           "count": 2,
-          "startDelay": 0.91,
+          "startDelay": 1.22,
           "spawnInterval": 0.45,
           "formation": "pack",
-          "lane": "all"
+          "lane": "left"
         },
         {
           "enemyId": "rail_splitter",
-          "count": 2,
-          "startDelay": 0.82,
+          "count": 1,
+          "startDelay": 0.91,
           "spawnInterval": 0.3,
           "formation": "stream",
           "lane": "all"
@@ -700,7 +676,7 @@
       ],
       "prepSeconds": 6.52,
       "rewardGold": 55,
-      "budgetTarget": 74.0,
+      "budgetTarget": 68.9,
       "budgetTolerance": 1.05,
       "hint": "[L13] W13: 识别新威胁并调整火力分工。 多线同时压测。",
       "groups": [
@@ -723,14 +699,14 @@
         {
           "enemyId": "acid_blister",
           "count": 1,
-          "startDelay": 1.54,
+          "startDelay": 0.82,
           "spawnInterval": 0.45,
           "formation": "pack",
-          "lane": "center"
+          "lane": "all"
         },
         {
           "enemyId": "skitter_runner",
-          "count": 9,
+          "count": 4,
           "startDelay": 0.08,
           "spawnInterval": 0.25,
           "formation": "stream",
@@ -752,7 +728,7 @@
       ],
       "prepSeconds": 6.38,
       "rewardGold": 57,
-      "budgetTarget": 76.7,
+      "budgetTarget": 71.4,
       "budgetTolerance": 1.05,
       "hint": "[L13] W14: 持续压制并补齐覆盖空洞。 多线同时压测。",
       "groups": [
@@ -782,19 +758,19 @@
         },
         {
           "enemyId": "rail_splitter",
-          "count": 2,
-          "startDelay": 0.74,
+          "count": 1,
+          "startDelay": 0.96,
           "spawnInterval": 0.3,
           "formation": "stream",
           "lane": "right"
         },
         {
           "enemyId": "ash_swarm",
-          "count": 6,
+          "count": 3,
           "startDelay": 0.08,
           "spawnInterval": 0.22,
           "formation": "swarm",
-          "lane": "center"
+          "lane": "right"
         }
       ]
     },
@@ -813,7 +789,7 @@
       ],
       "prepSeconds": 6.64,
       "rewardGold": 62,
-      "budgetTarget": 98.1,
+      "budgetTarget": 91.4,
       "budgetTolerance": 1.05,
       "hint": "[L13] W15 EXAM PEAK: 不要把净化浪费在前排少量敌人，等待编织路线形成密集窗口。",
       "groups": [
@@ -843,16 +819,16 @@
         },
         {
           "enemyId": "cinder_husk",
-          "count": 3,
-          "startDelay": 1.01,
+          "count": 1,
+          "startDelay": 1.22,
           "spawnInterval": 0.45,
           "formation": "pack",
           "lane": "left"
         },
         {
           "enemyId": "acid_blister",
-          "count": 2,
-          "startDelay": 1.79,
+          "count": 1,
+          "startDelay": 0.97,
           "spawnInterval": 0.45,
           "formation": "pack",
           "lane": "left"
@@ -873,7 +849,7 @@
       ],
       "prepSeconds": 6.1,
       "rewardGold": 61,
-      "budgetTarget": 86.5,
+      "budgetTarget": 80.6,
       "budgetTolerance": 1.05,
       "hint": "[L13] W16: 识别新威胁并调整火力分工。 多线同时压测。",
       "groups": [
@@ -895,7 +871,7 @@
         },
         {
           "enemyId": "ash_swarm",
-          "count": 28,
+          "count": 20,
           "startDelay": 0.08,
           "spawnInterval": 0.22,
           "formation": "swarm",
@@ -918,7 +894,7 @@
       ],
       "prepSeconds": 5.96,
       "rewardGold": 63,
-      "budgetTarget": 88.4,
+      "budgetTarget": 82.3,
       "budgetTolerance": 1.04,
       "hint": "[L13] W17: 持续压制并补齐覆盖空洞。 多线同时压测。",
       "groups": [
@@ -948,7 +924,7 @@
         },
         {
           "enemyId": "carapace_brute",
-          "count": 4,
+          "count": 3,
           "startDelay": 4.32,
           "spawnInterval": 0.68,
           "formation": "stagger",
@@ -957,7 +933,7 @@
         {
           "enemyId": "cinder_husk",
           "count": 1,
-          "startDelay": 0.86,
+          "startDelay": 1.74,
           "spawnInterval": 0.45,
           "formation": "pack",
           "lane": "right"
@@ -965,10 +941,10 @@
         {
           "enemyId": "rail_splitter",
           "count": 1,
-          "startDelay": 1.0,
+          "startDelay": 0.86,
           "spawnInterval": 0.3,
           "formation": "stream",
-          "lane": "all"
+          "lane": "right"
         }
       ]
     },
@@ -987,7 +963,7 @@
       ],
       "prepSeconds": 6.22,
       "rewardGold": 68,
-      "budgetTarget": 98.4,
+      "budgetTarget": 91.6,
       "budgetTolerance": 1.04,
       "hint": "[L13] W18 EXAM: 用净化打断最危险的交汇段，再让专精塔完成克制收割。",
       "groups": [
@@ -1026,18 +1002,10 @@
         {
           "enemyId": "acid_blister",
           "count": 1,
-          "startDelay": 1.25,
+          "startDelay": 1.0,
           "spawnInterval": 0.45,
           "formation": "pack",
-          "lane": "left"
-        },
-        {
-          "enemyId": "ash_swarm",
-          "count": 4,
-          "startDelay": 0.08,
-          "spawnInterval": 0.22,
-          "formation": "swarm",
-          "lane": "left"
+          "lane": "center"
         }
       ]
     },
@@ -1056,7 +1024,7 @@
       ],
       "prepSeconds": 5.68,
       "rewardGold": 67,
-      "budgetTarget": 92.2,
+      "budgetTarget": 85.9,
       "budgetTolerance": 1.04,
       "hint": "[L13] W19: 识别新威胁并调整火力分工。 多线同时压测。",
       "groups": [
@@ -1086,17 +1054,9 @@
         },
         {
           "enemyId": "rail_splitter",
-          "count": 2,
-          "startDelay": 0.64,
+          "count": 1,
+          "startDelay": 1.25,
           "spawnInterval": 0.3,
-          "formation": "stream",
-          "lane": "center"
-        },
-        {
-          "enemyId": "skitter_runner",
-          "count": 5,
-          "startDelay": 0.08,
-          "spawnInterval": 0.25,
           "formation": "stream",
           "lane": "center"
         }
@@ -1118,7 +1078,7 @@
       ],
       "prepSeconds": 10.0,
       "rewardGold": 73,
-      "budgetTarget": 127.8,
+      "budgetTarget": 120.1,
       "budgetTolerance": 1.04,
       "hint": "[L13] W20 考试 Boss：窑炉看守——用这一关教过的答案应对。",
       "groups": [
@@ -1156,19 +1116,19 @@
         },
         {
           "enemyId": "cinder_husk",
-          "count": 5,
-          "startDelay": 1.76,
+          "count": 4,
+          "startDelay": 1.62,
           "spawnInterval": 0.45,
           "formation": "pack",
-          "lane": "center"
+          "lane": "right"
         },
         {
           "enemyId": "acid_blister",
-          "count": 3,
-          "startDelay": 0.89,
+          "count": 2,
+          "startDelay": 0.79,
           "spawnInterval": 0.45,
           "formation": "pack",
-          "lane": "left"
+          "lane": "right"
         },
         {
           "enemyId": "kiln_custodian",

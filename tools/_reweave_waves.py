@@ -81,6 +81,11 @@ for lv in range(1, 21):
     ws = d['waves']
     segment = 'A' if lv <= 9 else ('B' if lv <= 15 else 'C')
     mult = 1 + 0.04 * (lv - 9) if segment == 'B' else 1.0
+    # Acceptance tuning (battery 2026-09-02): adaptive won with 2 integrity,
+    # control collapsed at W7 — L13 rides 1.08 instead of 1.16 so the
+    # low-damage doctrine can finish the exam while keeping the boss fight.
+    if lv == 13:
+        mult = 1.08
     boss_id = BOSS_LEVELS.get(lv)
     avail = available(lv)
     intro_today = ENEMY_UNLOCK.get(lv, [])
