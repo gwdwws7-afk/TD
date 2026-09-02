@@ -750,6 +750,11 @@ namespace TD
             // Hybrid armor model — see TDCombatMath.ResolveArmoredDamage
             // (flat + percentage mitigation, floor of 1).
             var damageTaken = TDCombatMath.ResolveArmoredDamage(damageWithExposure, effectiveArmor);
+            if (striderMarked && damageTaken > 0)
+            {
+                TryPlayExpansionBehaviorFx("marked_ignite");
+            }
+
             if (_mimicHitsAtHalfDamage > 0)
             {
                 _mimicHitsAtHalfDamage--;
@@ -1170,6 +1175,11 @@ namespace TD
             }
 
             _shieldHitsRemaining--;
+            if (_shieldHitsRemaining == 0)
+            {
+                TryPlayExpansionBehaviorFx("shield_shatter");
+            }
+
             return true;
         }
 
@@ -1332,6 +1342,15 @@ namespace TD
         private void ResolveKill(TDTower sourceTower)
         {
             _resolved = true;
+            if (string.Equals(_enemyId, "acid_blister", StringComparison.Ordinal))
+            {
+                TryPlayExpansionBehaviorFx("acid_burst");
+            }
+            else if (string.Equals(_enemyId, "echo_brood", StringComparison.Ordinal))
+            {
+                TryPlayExpansionBehaviorFx("echo_split");
+            }
+
             _gameManager.NotifyEnemyKilled(this, _reward, sourceTower);
 
             _dying = true;
@@ -1635,6 +1654,57 @@ namespace TD
                 3,
                 new Color(1f, 0.88f, 0.62f, 0.92f),
                 new Color(1f, 0.54f, 0.24f, 0f));
+        }
+
+        /// <summary>
+        /// Expansion batch-2 behavior FX (art delivered with the C-2 closure:
+        /// 6 frames each). All fall back silently when art is absent.
+        /// </summary>
+        private void TryPlayExpansionBehaviorFx(string fxKey)
+        {
+            switch (fxKey)
+            {
+                case "acid_burst":
+                    SpawnFxSequence(
+                        "Fx_AcidBurst",
+                        "Art/anim/fx_acid_burst",
+                        6, 11f, false,
+                        new Vector3(0f, 0.04f, 0f),
+                        0.55f, 1.65f, 6,
+                        new Color(0.80f, 0.92f, 0.45f, 0.92f),
+                        new Color(0.45f, 0.72f, 0.25f, 0f));
+                    break;
+                case "echo_split":
+                    SpawnFxSequence(
+                        "Fx_EchoSplit",
+                        "Art/anim/fx_echo_split",
+                        6, 10f, false,
+                        new Vector3(0f, 0.05f, 0f),
+                        0.65f, 1.45f, 6,
+                        new Color(0.72f, 0.62f, 1.00f, 0.92f),
+                        new Color(0.40f, 0.32f, 0.80f, 0f));
+                    break;
+                case "shield_shatter":
+                    SpawnFxSequence(
+                        "Fx_ShieldShatter",
+                        "Art/anim/fx_shield_shatter",
+                        6, 13f, true,
+                        new Vector3(0f, 0.02f, 0f),
+                        0.95f, 1.30f, 4,
+                        new Color(0.66f, 0.82f, 0.95f, 0.95f),
+                        new Color(0.30f, 0.42f, 0.55f, 0f));
+                    break;
+                case "marked_ignite":
+                    SpawnFxSequence(
+                        "Fx_MarkedIgnite",
+                        "Art/anim/fx_marked_ignite",
+                        6, 12f, true,
+                        new Vector3(0f, 0.03f, 0f),
+                        0.60f, 1.20f, 4,
+                        new Color(1.00f, 0.62f, 0.25f, 0.94f),
+                        new Color(0.85f, 0.25f, 0.10f, 0f));
+                    break;
+            }
         }
 
         private void TryPlayDeathFx()
