@@ -636,10 +636,10 @@ namespace TD
                 "furnace_matriarch" => 6,
                 "cinder_husk" => 8,
                 "rail_splitter" => 8,
-                "acid_blister" => 2,
-                "forge_dragoon" => 2,
+                "acid_blister" => 8,
+                "forge_dragoon" => 8,
                 "ember_strider" => 8,
-                "echo_brood" => 2,
+                "echo_brood" => 8,
                 _ => 1
             };
         }
