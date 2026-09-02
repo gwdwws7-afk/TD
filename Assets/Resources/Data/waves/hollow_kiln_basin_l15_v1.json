@@ -1,1015 +1,1247 @@
 ﻿{
-    "schemaVersion": "wave-schema-v1",
-    "waveSetId": "hollow_kiln_basin_l15_v1",
-    "mapId": "hollow_kiln_basin",
-    "displayName": "Hollow Kiln Basin L15 (chapter_c)",
-    "globalDefaults": {
-        "prepSeconds": 8.1,
-        "baseRewardGold": 25,
-        "spawnMinSpacing": 0.16,
-        "lineDamageDefault": 1,
-        "maxConcurrentEnemiesHint": 116
+  "schemaVersion": "wave-schema-v1",
+  "waveSetId": "hollow_kiln_basin_l15_v1",
+  "mapId": "hollow_kiln_basin",
+  "displayName": "Hollow Kiln Basin L15 (chapter_c)",
+  "globalDefaults": {
+    "prepSeconds": 8.1,
+    "baseRewardGold": 25,
+    "spawnMinSpacing": 0.16,
+    "lineDamageDefault": 1,
+    "maxConcurrentEnemiesHint": 116
+  },
+  "enemyCatalog": [
+    {
+      "enemyId": "skitter_runner",
+      "displayName": "Skitter Runner",
+      "hp": 26,
+      "speed": 2.2,
+      "armorFlat": 0,
+      "rewardGold": 6,
+      "lineDamage": 1,
+      "threatCost": 1.0,
+      "tags": [
+        "fast",
+        "light"
+      ]
     },
-    "enemyCatalog": [
+    {
+      "enemyId": "carapace_brute",
+      "displayName": "Carapace Brute",
+      "hp": 120,
+      "speed": 0.8,
+      "armorFlat": 4,
+      "rewardGold": 14,
+      "lineDamage": 2,
+      "threatCost": 4.5,
+      "tags": [
+        "heavy",
+        "armored"
+      ]
+    },
+    {
+      "enemyId": "ash_swarm",
+      "displayName": "Ash Swarm",
+      "hp": 16,
+      "speed": 1.5,
+      "armorFlat": 0,
+      "rewardGold": 4,
+      "lineDamage": 1,
+      "threatCost": 0.8,
+      "tags": [
+        "swarm",
+        "light"
+      ]
+    },
+    {
+      "enemyId": "plated_spore",
+      "displayName": "Plated Spore",
+      "hp": 70,
+      "speed": 1.1,
+      "armorFlat": 8,
+      "rewardGold": 10,
+      "lineDamage": 2,
+      "threatCost": 3.2,
+      "tags": [
+        "armored",
+        "mid"
+      ]
+    }
+  ],
+  "waves": [
+    {
+      "waveIndex": 1,
+      "phase": "introduce",
+      "goalTag": "chapter_c_hollow_kiln_basin_l15_w01_introduce",
+      "threatTags": [
+        "introduce",
+        "hollow_kiln_basin"
+      ],
+      "prepSeconds": 8.1,
+      "rewardGold": 72,
+      "budgetTarget": 29.0,
+      "budgetTolerance": 1.1,
+      "hint": "[L15] W01: 识别新威胁并调整火力分工。",
+      "groups": [
         {
-            "enemyId": "skitter_runner",
-            "displayName": "Skitter Runner",
-            "hp": 26,
-            "speed": 2.2,
-            "armorFlat": 0,
-            "rewardGold": 6,
-            "lineDamage": 1,
-            "threatCost": 1.0,
-            "tags": [
-                "fast",
-                "light"
-            ]
+          "enemyId": "spore_carrier",
+          "count": 3,
+          "startDelay": 3.4,
+          "spawnInterval": 0.55,
+          "formation": "pack",
+          "lane": "center"
         },
         {
-            "enemyId": "carapace_brute",
-            "displayName": "Carapace Brute",
-            "hp": 120,
-            "speed": 0.8,
-            "armorFlat": 4,
-            "rewardGold": 14,
-            "lineDamage": 2,
-            "threatCost": 4.5,
-            "tags": [
-                "heavy",
-                "armored"
-            ]
+          "enemyId": "rail_splitter",
+          "count": 1,
+          "startDelay": 1.34,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "left"
         },
         {
-            "enemyId": "ash_swarm",
-            "displayName": "Ash Swarm",
-            "hp": 16,
-            "speed": 1.5,
-            "armorFlat": 0,
-            "rewardGold": 4,
-            "lineDamage": 1,
-            "threatCost": 0.8,
-            "tags": [
-                "swarm",
-                "light"
-            ]
-        },
-        {
-            "enemyId": "plated_spore",
-            "displayName": "Plated Spore",
-            "hp": 70,
-            "speed": 1.1,
-            "armorFlat": 8,
-            "rewardGold": 10,
-            "lineDamage": 2,
-            "threatCost": 3.2,
-            "tags": [
-                "armored",
-                "mid"
-            ]
+          "enemyId": "skitter_runner",
+          "count": 15,
+          "startDelay": 0.08,
+          "spawnInterval": 0.25,
+          "formation": "stream",
+          "lane": "center"
         }
-    ],
-    "waves": [
+      ]
+    },
+    {
+      "waveIndex": 2,
+      "phase": "reinforce",
+      "goalTag": "chapter_c_hollow_kiln_basin_l15_w02_reinforce",
+      "threatTags": [
+        "reinforce",
+        "hollow_kiln_basin"
+      ],
+      "prepSeconds": 7.96,
+      "rewardGold": 91,
+      "budgetTarget": 33.5,
+      "budgetTolerance": 1.1,
+      "hint": "[L15] W02: 持续压制并补齐覆盖空洞。",
+      "groups": [
         {
-            "waveIndex": 1,
-            "phase": "introduce",
-            "goalTag": "chapter_c_hollow_kiln_basin_l15_w01_introduce",
-            "threatTags": [
-                "introduce",
-                "hollow_kiln_basin"
-            ],
-            "prepSeconds": 8.1,
-            "rewardGold": 72,
-            "budgetTarget": 17.6,
-            "budgetTolerance": 1.1,
-            "hint": "[L15] W01: 识别新威胁并调整火力分工。",
-            "groups": [
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 8,
-                    "startDelay": 0.6,
-                    "spawnInterval": 0.32,
-                    "formation": "stream",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "spore_carrier",
-                    "count": 3,
-                    "startDelay": 3.4,
-                    "spawnInterval": 0.55,
-                    "formation": "pack",
-                    "lane": "center"
-                }
-            ]
+          "enemyId": "husk_titan",
+          "count": 1,
+          "startDelay": 0.6,
+          "spawnInterval": 1.3,
+          "formation": "burst",
+          "lane": "center"
         },
         {
-            "waveIndex": 2,
-            "phase": "reinforce",
-            "goalTag": "chapter_c_hollow_kiln_basin_l15_w02_reinforce",
-            "threatTags": [
-                "reinforce",
-                "hollow_kiln_basin"
-            ],
-            "prepSeconds": 7.96,
-            "rewardGold": 91,
-            "budgetTarget": 25.5,
-            "budgetTolerance": 1.1,
-            "hint": "[L15] W02: 持续压制并补齐覆盖空洞。",
-            "groups": [
-                {
-                    "enemyId": "husk_titan",
-                    "count": 1,
-                    "startDelay": 0.6,
-                    "spawnInterval": 1.3,
-                    "formation": "burst",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 20,
-                    "startDelay": 3.8,
-                    "spawnInterval": 0.23,
-                    "formation": "pack",
-                    "lane": "right"
-                }
-            ]
+          "enemyId": "cinder_husk",
+          "count": 2,
+          "startDelay": 1.35,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "right"
         },
         {
-            "waveIndex": 3,
-            "phase": "exam",
-            "goalTag": "chapter_c_hollow_kiln_basin_l15_w03_exam",
-            "threatTags": [
-                "exam",
-                "hollow_kiln_basin"
-            ],
-            "prepSeconds": 8.22,
-            "rewardGold": 40,
-            "budgetTarget": 47.8,
-            "budgetTolerance": 1.1,
-            "hint": "[L15] W03: 综合考核：输出、控制、反制链稳定性。",
-            "groups": [
-                {
-                    "enemyId": "husk_titan",
-                    "count": 2,
-                    "startDelay": 0.4,
-                    "spawnInterval": 0.9,
-                    "formation": "burst",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "spore_carrier",
-                    "count": 5,
-                    "startDelay": 2.2,
-                    "spawnInterval": 0.3,
-                    "formation": "pack",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "plated_spore",
-                    "count": 4,
-                    "startDelay": 4.0,
-                    "spawnInterval": 0.9,
-                    "formation": "burst",
-                    "lane": "center"
-                }
-            ]
+          "enemyId": "acid_blister",
+          "count": 1,
+          "startDelay": 0.91,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "right"
         },
         {
-            "waveIndex": 4,
-            "phase": "introduce",
-            "goalTag": "chapter_c_hollow_kiln_basin_l15_w04_introduce",
-            "threatTags": [
-                "introduce",
-                "hollow_kiln_basin"
-            ],
-            "prepSeconds": 7.68,
-            "rewardGold": 39,
-            "budgetTarget": 48.5,
-            "budgetTolerance": 1.1,
-            "hint": "[L15] W04: 识别新威胁并调整火力分工。",
-            "groups": [
-                {
-                    "enemyId": "husk_titan",
-                    "count": 3,
-                    "startDelay": 0,
-                    "spawnInterval": 0.79,
-                    "formation": "burst",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 25,
-                    "startDelay": 1.12,
-                    "spawnInterval": 0.2,
-                    "formation": "pack",
-                    "lane": "center"
-                }
-            ]
+          "enemyId": "forge_dragoon",
+          "count": 1,
+          "startDelay": 1.46,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "right"
         },
         {
-            "waveIndex": 5,
-            "phase": "reinforce",
-            "goalTag": "chapter_c_hollow_kiln_basin_l15_w05_reinforce",
-            "threatTags": [
-                "reinforce",
-                "hollow_kiln_basin"
-            ],
-            "prepSeconds": 7.54,
-            "rewardGold": 41,
-            "budgetTarget": 53,
-            "budgetTolerance": 1.1,
-            "hint": "[L15] W05: 持续压制并补齐覆盖空洞。",
-            "groups": [
-                {
-                    "enemyId": "husk_titan",
-                    "count": 2,
-                    "startDelay": 0.16,
-                    "spawnInterval": 0.75,
-                    "formation": "burst",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "spore_carrier",
-                    "count": 5,
-                    "startDelay": 0.96,
-                    "spawnInterval": 0.19,
-                    "formation": "pack",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "carapace_brute",
-                    "count": 4,
-                    "startDelay": 2.32,
-                    "spawnInterval": 0.75,
-                    "formation": "burst",
-                    "lane": "left"
-                }
-            ]
-        },
-        {
-            "waveIndex": 6,
-            "phase": "exam",
-            "goalTag": "chapter_c_hollow_kiln_basin_l15_w06_exam",
-            "threatTags": [
-                "exam",
-                "hollow_kiln_basin",
-                "split"
-            ],
-            "prepSeconds": 7.8,
-            "rewardGold": 46,
-            "budgetTarget": 62.1,
-            "budgetTolerance": 1.1,
-            "hint": "[L15] W06: 综合考核：输出、控制、反制链稳定性。",
-            "groups": [
-                {
-                    "enemyId": "cinder_glider",
-                    "count": 8,
-                    "startDelay": 0.4,
-                    "spawnInterval": 0.28,
-                    "formation": "split_lane",
-                    "lane": "split_lane"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 19,
-                    "startDelay": 2.4,
-                    "spawnInterval": 0.23,
-                    "formation": "pack",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "rail_warden",
-                    "count": 3,
-                    "startDelay": 5.8,
-                    "spawnInterval": 0.9,
-                    "formation": "burst",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "carapace_brute",
-                    "count": 3,
-                    "startDelay": 7.2,
-                    "spawnInterval": 0.9,
-                    "formation": "burst",
-                    "lane": "right"
-                }
-            ]
-        },
-        {
-            "waveIndex": 7,
-            "phase": "introduce",
-            "goalTag": "chapter_c_hollow_kiln_basin_l15_w07_introduce",
-            "threatTags": [
-                "introduce",
-                "hollow_kiln_basin",
-                "split",
-                "armored"
-            ],
-            "prepSeconds": 7.26,
-            "rewardGold": 45,
-            "budgetTarget": 63,
-            "budgetTolerance": 1.07,
-            "hint": "[L15] W07: 识别新威胁并调整火力分工。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 32,
-                    "startDelay": 0.4,
-                    "spawnInterval": 0.22,
-                    "formation": "pack",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "cinder_glider",
-                    "count": 7,
-                    "startDelay": 3.0,
-                    "spawnInterval": 0.28,
-                    "formation": "cross_lane",
-                    "lane": "cross_lane"
-                },
-                {
-                    "enemyId": "plated_spore",
-                    "count": 6,
-                    "startDelay": 6.5,
-                    "spawnInterval": 0.9,
-                    "formation": "burst",
-                    "lane": "right"
-                }
-            ]
-        },
-        {
-            "waveIndex": 8,
-            "phase": "reinforce",
-            "goalTag": "chapter_c_hollow_kiln_basin_l15_w08_reinforce",
-            "threatTags": [
-                "reinforce",
-                "hollow_kiln_basin",
-                "split",
-                "armored"
-            ],
-            "prepSeconds": 7.12,
-            "rewardGold": 47,
-            "budgetTarget": 65.8,
-            "budgetTolerance": 1.07,
-            "hint": "[L15] W08: 持续压制并补齐覆盖空洞。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "spore_carrier",
-                    "count": 7,
-                    "startDelay": 0.4,
-                    "spawnInterval": 0.3,
-                    "formation": "pack",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 16,
-                    "startDelay": 2.4,
-                    "spawnInterval": 0.28,
-                    "formation": "split_lane",
-                    "lane": "split_lane"
-                },
-                {
-                    "enemyId": "husk_titan",
-                    "count": 2,
-                    "startDelay": 5.8,
-                    "spawnInterval": 1.0,
-                    "formation": "burst",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "rail_warden",
-                    "count": 2,
-                    "startDelay": 7.2,
-                    "spawnInterval": 1.0,
-                    "formation": "burst",
-                    "lane": "center"
-                }
-            ]
-        },
-        {
-            "waveIndex": 9,
-            "phase": "exam",
-            "goalTag": "chapter_c_hollow_kiln_basin_l15_w09_exam",
-            "threatTags": [
-                "exam",
-                "hollow_kiln_basin",
-                "split",
-                "armored",
-                "flank"
-            ],
-            "prepSeconds": 7.38,
-            "rewardGold": 52,
-            "budgetTarget": 77.8,
-            "budgetTolerance": 1.07,
-            "hint": "[L15] W09: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 31,
-                    "startDelay": 0.4,
-                    "spawnInterval": 0.22,
-                    "formation": "pack",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "cinder_glider",
-                    "count": 7,
-                    "startDelay": 2.8,
-                    "spawnInterval": 0.28,
-                    "formation": "stream",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "carapace_brute",
-                    "count": 4,
-                    "startDelay": 5.0,
-                    "spawnInterval": 0.9,
-                    "formation": "burst",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "rail_warden",
-                    "count": 4,
-                    "startDelay": 7.4,
-                    "spawnInterval": 0.9,
-                    "formation": "burst",
-                    "lane": "right"
-                }
-            ]
-        },
-        {
-            "waveIndex": 10,
-            "phase": "introduce",
-            "goalTag": "chapter_c_hollow_kiln_basin_l15_w10_introduce",
-            "threatTags": [
-                "introduce",
-                "hollow_kiln_basin",
-                "split",
-                "armored",
-                "flank"
-            ],
-            "prepSeconds": 7.34,
-            "rewardGold": 55,
-            "budgetTarget": 81.2,
-            "budgetTolerance": 1.07,
-            "hint": "[L15] W10: 识别新威胁并调整火力分工。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "husk_titan",
-                    "count": 4,
-                    "startDelay": 0,
-                    "spawnInterval": 0.79,
-                    "formation": "burst",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 24,
-                    "startDelay": 1.28,
-                    "spawnInterval": 0.24,
-                    "formation": "cross_lane",
-                    "lane": "cross_lane"
-                },
-                {
-                    "enemyId": "spore_carrier",
-                    "count": 6,
-                    "startDelay": 2.64,
-                    "spawnInterval": 0.2,
-                    "formation": "spawn_chain",
-                    "lane": "right"
-                }
-            ]
-        },
-        {
-            "waveIndex": 11,
-            "phase": "reinforce",
-            "goalTag": "chapter_c_hollow_kiln_basin_l15_w11_reinforce",
-            "threatTags": [
-                "reinforce",
-                "hollow_kiln_basin",
-                "split",
-                "armored",
-                "flank"
-            ],
-            "prepSeconds": 6.7,
-            "rewardGold": 53,
-            "budgetTarget": 79.6,
-            "budgetTolerance": 1.07,
-            "hint": "[L15] W11: 持续压制并补齐覆盖空洞。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "carapace_brute",
-                    "count": 6,
-                    "startDelay": 0.4,
-                    "spawnInterval": 0.9,
-                    "formation": "burst",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "cinder_glider",
-                    "count": 7,
-                    "startDelay": 2.8,
-                    "spawnInterval": 0.3,
-                    "formation": "split_lane",
-                    "lane": "split_lane"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 22,
-                    "startDelay": 4.8,
-                    "spawnInterval": 0.23,
-                    "formation": "pack",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "rail_warden",
-                    "count": 4,
-                    "startDelay": 8.0,
-                    "spawnInterval": 0.9,
-                    "formation": "burst",
-                    "lane": "center"
-                }
-            ]
-        },
-        {
-            "waveIndex": 12,
-            "phase": "exam",
-            "goalTag": "chapter_c_hollow_kiln_basin_l15_w12_exam",
-            "threatTags": [
-                "exam",
-                "hollow_kiln_basin",
-                "split",
-                "armored",
-                "flank"
-            ],
-            "prepSeconds": 6.96,
-            "rewardGold": 58,
-            "budgetTarget": 91.6,
-            "budgetTolerance": 1.07,
-            "hint": "[L15] W12: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "rail_warden",
-                    "count": 7,
-                    "startDelay": 0.4,
-                    "spawnInterval": 0.8,
-                    "formation": "stagger",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 22,
-                    "startDelay": 2.0,
-                    "spawnInterval": 0.25,
-                    "formation": "adaptive",
-                    "lane": "all"
-                },
-                {
-                    "enemyId": "spore_carrier",
-                    "count": 6,
-                    "startDelay": 4.5,
-                    "spawnInterval": 0.3,
-                    "formation": "spawn_chain",
-                    "lane": "all"
-                },
-                {
-                    "enemyId": "rail_warden",
-                    "count": 5,
-                    "startDelay": 6.5,
-                    "spawnInterval": 0.8,
-                    "formation": "stagger",
-                    "lane": "right"
-                }
-            ]
-        },
-        {
-            "waveIndex": 13,
-            "phase": "introduce",
-            "goalTag": "chapter_c_hollow_kiln_basin_l15_w13_introduce",
-            "threatTags": [
-                "introduce",
-                "hollow_kiln_basin",
-                "split",
-                "armored",
-                "flank",
-                "high_pressure"
-            ],
-            "prepSeconds": 6.42,
-            "rewardGold": 57,
-            "budgetTarget": 86.8,
-            "budgetTolerance": 1.05,
-            "hint": "[L15] W13: 识别新威胁并调整火力分工。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "plated_spore",
-                    "count": 11,
-                    "startDelay": 0,
-                    "spawnInterval": 0.79,
-                    "formation": "stagger",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "spore_carrier",
-                    "count": 8,
-                    "startDelay": 1.36,
-                    "spawnInterval": 0.19,
-                    "formation": "spawn_chain",
-                    "lane": "all"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 26,
-                    "startDelay": 2.16,
-                    "spawnInterval": 0.25,
-                    "formation": "flank_stream",
-                    "lane": "right"
-                }
-            ]
-        },
-        {
-            "waveIndex": 14,
-            "phase": "reinforce",
-            "goalTag": "chapter_c_hollow_kiln_basin_l15_w14_reinforce",
-            "threatTags": [
-                "reinforce",
-                "hollow_kiln_basin",
-                "split",
-                "armored",
-                "flank",
-                "high_pressure"
-            ],
-            "prepSeconds": 6.28,
-            "rewardGold": 59,
-            "budgetTarget": 91.9,
-            "budgetTolerance": 1.05,
-            "hint": "[L15] W14: 持续压制并补齐覆盖空洞。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "husk_titan",
-                    "count": 3,
-                    "startDelay": 0,
-                    "spawnInterval": 0.75,
-                    "formation": "elite_drop",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 27,
-                    "startDelay": 1.2,
-                    "spawnInterval": 0.19,
-                    "formation": "pack",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "cinder_glider",
-                    "count": 8,
-                    "startDelay": 2.56,
-                    "spawnInterval": 0.23,
-                    "formation": "adaptive",
-                    "lane": "all"
-                },
-                {
-                    "enemyId": "rail_warden",
-                    "count": 5,
-                    "startDelay": 3.36,
-                    "spawnInterval": 0.75,
-                    "formation": "stagger",
-                    "lane": "center"
-                }
-            ]
-        },
-        {
-            "waveIndex": 15,
-            "phase": "exam",
-            "goalTag": "chapter_c_hollow_kiln_basin_l15_w15_exam",
-            "threatTags": [
-                "exam",
-                "hollow_kiln_basin",
-                "split",
-                "armored",
-                "flank",
-                "high_pressure",
-                "exam_peak"
-            ],
-            "prepSeconds": 6.54,
-            "rewardGold": 64,
-            "budgetTarget": 115,
-            "budgetTolerance": 1.05,
-            "hint": "[L15] W15: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "carapace_brute",
-                    "count": 8,
-                    "startDelay": 0.4,
-                    "spawnInterval": 0.85,
-                    "formation": "stagger",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "spore_carrier",
-                    "count": 9,
-                    "startDelay": 2.4,
-                    "spawnInterval": 0.32,
-                    "formation": "spawn_chain",
-                    "lane": "all"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 25,
-                    "startDelay": 4.3,
-                    "spawnInterval": 0.28,
-                    "formation": "flank_strike",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "rail_warden",
-                    "count": 6,
-                    "startDelay": 7.2,
-                    "spawnInterval": 0.85,
-                    "formation": "stagger",
-                    "lane": "right"
-                }
-            ]
-        },
-        {
-            "waveIndex": 16,
-            "phase": "introduce",
-            "goalTag": "chapter_c_hollow_kiln_basin_l15_w16_introduce",
-            "threatTags": [
-                "introduce",
-                "hollow_kiln_basin",
-                "split",
-                "armored",
-                "flank",
-                "high_pressure"
-            ],
-            "prepSeconds": 6,
-            "rewardGold": 63,
-            "budgetTarget": 78.4,
-            "budgetTolerance": 1.05,
-            "hint": "[L15] W16: 识别新威胁并调整火力分工。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "rail_warden",
-                    "count": 8,
-                    "startDelay": 0.4,
-                    "spawnInterval": 0.85,
-                    "formation": "stagger",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 30,
-                    "startDelay": 2.8,
-                    "spawnInterval": 0.22,
-                    "formation": "pack",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "cinder_glider",
-                    "count": 8,
-                    "startDelay": 5.5,
-                    "spawnInterval": 0.28,
-                    "formation": "flank_stream",
-                    "lane": "right"
-                }
-            ]
-        },
-        {
-            "waveIndex": 17,
-            "phase": "reinforce",
-            "goalTag": "chapter_c_hollow_kiln_basin_l15_w17_reinforce",
-            "threatTags": [
-                "reinforce",
-                "hollow_kiln_basin",
-                "split",
-                "armored",
-                "flank",
-                "high_pressure",
-                "endgame"
-            ],
-            "prepSeconds": 5.86,
-            "rewardGold": 65,
-            "budgetTarget": 103,
-            "budgetTolerance": 1.04,
-            "hint": "[L15] W17: 持续压制并补齐覆盖空洞。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "plated_spore",
-                    "count": 8,
-                    "startDelay": 0.4,
-                    "spawnInterval": 0.75,
-                    "formation": "stagger",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "spore_carrier",
-                    "count": 6,
-                    "startDelay": 2.0,
-                    "spawnInterval": 0.25,
-                    "formation": "spawn_chain",
-                    "lane": "all"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 19,
-                    "startDelay": 3.8,
-                    "spawnInterval": 0.25,
-                    "formation": "adaptive",
-                    "lane": "all"
-                },
-                {
-                    "enemyId": "rail_warden",
-                    "count": 4,
-                    "startDelay": 5.8,
-                    "spawnInterval": 0.7,
-                    "formation": "stagger",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "plated_spore",
-                    "count": 7,
-                    "startDelay": 6.8,
-                    "spawnInterval": 0.65,
-                    "formation": "stagger",
-                    "lane": "right"
-                }
-            ]
-        },
-        {
-            "waveIndex": 18,
-            "phase": "exam",
-            "goalTag": "chapter_c_hollow_kiln_basin_l15_w18_exam",
-            "threatTags": [
-                "exam",
-                "hollow_kiln_basin",
-                "split",
-                "armored",
-                "flank",
-                "high_pressure",
-                "endgame"
-            ],
-            "prepSeconds": 6.12,
-            "rewardGold": 70,
-            "budgetTarget": 122.8,
-            "budgetTolerance": 1.04,
-            "hint": "[L15] W18: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "husk_titan",
-                    "count": 3,
-                    "startDelay": 0,
-                    "spawnInterval": 0.62,
-                    "formation": "elite_drop",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 30,
-                    "startDelay": 0.92,
-                    "spawnInterval": 0.17,
-                    "formation": "pack",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "cinder_glider",
-                    "count": 8,
-                    "startDelay": 2.08,
-                    "spawnInterval": 0.2,
-                    "formation": "flank_strike",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "rail_warden",
-                    "count": 5,
-                    "startDelay": 3.24,
-                    "spawnInterval": 0.62,
-                    "formation": "stagger",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "husk_titan",
-                    "count": 3,
-                    "startDelay": 3.84,
-                    "spawnInterval": 0.62,
-                    "formation": "elite_drop",
-                    "lane": "left"
-                }
-            ]
-        },
-        {
-            "waveIndex": 19,
-            "phase": "introduce",
-            "goalTag": "chapter_c_hollow_kiln_basin_l15_w19_introduce",
-            "threatTags": [
-                "introduce",
-                "hollow_kiln_basin",
-                "split",
-                "armored",
-                "flank",
-                "high_pressure",
-                "endgame"
-            ],
-            "prepSeconds": 5.58,
-            "rewardGold": 69,
-            "budgetTarget": 111.8,
-            "budgetTolerance": 1.04,
-            "hint": "[L15] W19: 识别新威胁并调整火力分工。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "carapace_brute",
-                    "count": 8,
-                    "startDelay": 0.16,
-                    "spawnInterval": 0.71,
-                    "formation": "stagger",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "spore_carrier",
-                    "count": 8,
-                    "startDelay": 0.88,
-                    "spawnInterval": 0.17,
-                    "formation": "spawn_chain",
-                    "lane": "all"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 25,
-                    "startDelay": 2.16,
-                    "spawnInterval": 0.23,
-                    "formation": "flank_stream",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "rail_warden",
-                    "count": 6,
-                    "startDelay": 3.44,
-                    "spawnInterval": 0.71,
-                    "formation": "stagger",
-                    "lane": "left"
-                }
-            ]
-        },
-        {
-            "waveIndex": 20,
-            "phase": "reinforce",
-            "goalTag": "chapter_c_hollow_kiln_basin_l15_w20_reinforce",
-            "threatTags": [
-                "reinforce",
-                "hollow_kiln_basin",
-                "split",
-                "armored",
-                "flank",
-                "high_pressure",
-                "endgame"
-            ],
-            "prepSeconds": 5.94,
-            "rewardGold": 75,
-            "budgetTarget": 124.6,
-            "budgetTolerance": 1.04,
-            "hint": "[L15] W20: 持续压制并补齐覆盖空洞。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "rail_warden",
-                    "count": 8,
-                    "startDelay": 0,
-                    "spawnInterval": 0.68,
-                    "formation": "stagger",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 32,
-                    "startDelay": 1.28,
-                    "spawnInterval": 0.17,
-                    "formation": "pack",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "cinder_glider",
-                    "count": 9,
-                    "startDelay": 2,
-                    "spawnInterval": 0.21,
-                    "formation": "adaptive",
-                    "lane": "all"
-                },
-                {
-                    "enemyId": "rail_warden",
-                    "count": 5,
-                    "startDelay": 3.28,
-                    "spawnInterval": 0.68,
-                    "formation": "stagger",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "rail_warden",
-                    "count": 5,
-                    "startDelay": 4.56,
-                    "spawnInterval": 0.68,
-                    "formation": "stagger",
-                    "lane": "right"
-                }
-            ]
+          "enemyId": "ash_swarm",
+          "count": 8,
+          "startDelay": 0.08,
+          "spawnInterval": 0.22,
+          "formation": "swarm",
+          "lane": "right"
         }
-    ]
+      ]
+    },
+    {
+      "waveIndex": 3,
+      "phase": "introduce",
+      "goalTag": "chapter_c_hollow_kiln_basin_l15_w03_exam",
+      "threatTags": [
+        "exam",
+        "hollow_kiln_basin"
+      ],
+      "prepSeconds": 8.22,
+      "rewardGold": 45,
+      "budgetTarget": 43.4,
+      "budgetTolerance": 1.1,
+      "hint": "[L15] W03: 新威胁初现——余烬行者。观察其行为再定火力。",
+      "groups": [
+        {
+          "enemyId": "husk_titan",
+          "count": 2,
+          "startDelay": 0.4,
+          "spawnInterval": 0.9,
+          "formation": "burst",
+          "lane": "right"
+        },
+        {
+          "enemyId": "spore_carrier",
+          "count": 3,
+          "startDelay": 2.2,
+          "spawnInterval": 0.3,
+          "formation": "pack",
+          "lane": "left"
+        },
+        {
+          "enemyId": "plated_spore",
+          "count": 4,
+          "startDelay": 4.0,
+          "spawnInterval": 0.9,
+          "formation": "burst",
+          "lane": "center"
+        },
+        {
+          "enemyId": "ember_strider",
+          "count": 1,
+          "startDelay": 1.52,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "left"
+        }
+      ]
+    },
+    {
+      "waveIndex": 4,
+      "phase": "introduce",
+      "goalTag": "chapter_c_hollow_kiln_basin_l15_w04_introduce",
+      "threatTags": [
+        "introduce",
+        "hollow_kiln_basin"
+      ],
+      "prepSeconds": 7.68,
+      "rewardGold": 45,
+      "budgetTarget": 42.2,
+      "budgetTolerance": 1.1,
+      "hint": "[L15] W04: 识别新威胁并调整火力分工。",
+      "groups": [
+        {
+          "enemyId": "husk_titan",
+          "count": 2,
+          "startDelay": 0,
+          "spawnInterval": 0.79,
+          "formation": "burst",
+          "lane": "left"
+        },
+        {
+          "enemyId": "cinder_husk",
+          "count": 2,
+          "startDelay": 1.01,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "center"
+        },
+        {
+          "enemyId": "rail_splitter",
+          "count": 2,
+          "startDelay": 0.79,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "center"
+        },
+        {
+          "enemyId": "forge_dragoon",
+          "count": 1,
+          "startDelay": 1.61,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "left"
+        }
+      ]
+    },
+    {
+      "waveIndex": 5,
+      "phase": "reinforce",
+      "goalTag": "chapter_c_hollow_kiln_basin_l15_w05_reinforce",
+      "threatTags": [
+        "reinforce",
+        "hollow_kiln_basin"
+      ],
+      "prepSeconds": 7.54,
+      "rewardGold": 45,
+      "budgetTarget": 44.4,
+      "budgetTolerance": 1.1,
+      "hint": "[L15] W05: 持续压制并补齐覆盖空洞。",
+      "groups": [
+        {
+          "enemyId": "husk_titan",
+          "count": 2,
+          "startDelay": 0.16,
+          "spawnInterval": 0.75,
+          "formation": "burst",
+          "lane": "center"
+        },
+        {
+          "enemyId": "spore_carrier",
+          "count": 2,
+          "startDelay": 0.96,
+          "spawnInterval": 0.19,
+          "formation": "pack",
+          "lane": "right"
+        },
+        {
+          "enemyId": "carapace_brute",
+          "count": 4,
+          "startDelay": 2.32,
+          "spawnInterval": 0.75,
+          "formation": "burst",
+          "lane": "left"
+        },
+        {
+          "enemyId": "acid_blister",
+          "count": 1,
+          "startDelay": 0.89,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "center"
+        }
+      ]
+    },
+    {
+      "waveIndex": 6,
+      "phase": "exam",
+      "goalTag": "chapter_c_hollow_kiln_basin_l15_w06_exam",
+      "threatTags": [
+        "exam",
+        "hollow_kiln_basin",
+        "split"
+      ],
+      "prepSeconds": 7.8,
+      "rewardGold": 46,
+      "budgetTarget": 57.0,
+      "budgetTolerance": 1.1,
+      "hint": "[L15] W06: 综合考核：输出、控制、反制链稳定性。",
+      "groups": [
+        {
+          "enemyId": "cinder_glider",
+          "count": 8,
+          "startDelay": 0.4,
+          "spawnInterval": 0.28,
+          "formation": "split_lane",
+          "lane": "split_lane"
+        },
+        {
+          "enemyId": "rail_warden",
+          "count": 3,
+          "startDelay": 5.8,
+          "spawnInterval": 0.9,
+          "formation": "burst",
+          "lane": "center"
+        },
+        {
+          "enemyId": "carapace_brute",
+          "count": 3,
+          "startDelay": 7.2,
+          "spawnInterval": 0.9,
+          "formation": "burst",
+          "lane": "right"
+        },
+        {
+          "enemyId": "rail_splitter",
+          "count": 1,
+          "startDelay": 1.42,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "left"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 8,
+          "startDelay": 0.08,
+          "spawnInterval": 0.22,
+          "formation": "swarm",
+          "lane": "center"
+        }
+      ]
+    },
+    {
+      "waveIndex": 7,
+      "phase": "introduce",
+      "goalTag": "chapter_c_hollow_kiln_basin_l15_w07_introduce",
+      "threatTags": [
+        "introduce",
+        "hollow_kiln_basin",
+        "split",
+        "armored"
+      ],
+      "prepSeconds": 7.26,
+      "rewardGold": 45,
+      "budgetTarget": 55.8,
+      "budgetTolerance": 1.07,
+      "hint": "[L15] W07: 识别新威胁并调整火力分工。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "cinder_glider",
+          "count": 4,
+          "startDelay": 3.0,
+          "spawnInterval": 0.28,
+          "formation": "cross_lane",
+          "lane": "cross_lane"
+        },
+        {
+          "enemyId": "plated_spore",
+          "count": 6,
+          "startDelay": 6.5,
+          "spawnInterval": 0.9,
+          "formation": "burst",
+          "lane": "right"
+        },
+        {
+          "enemyId": "cinder_husk",
+          "count": 3,
+          "startDelay": 1.73,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "right"
+        },
+        {
+          "enemyId": "acid_blister",
+          "count": 2,
+          "startDelay": 1.39,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "left"
+        },
+        {
+          "enemyId": "forge_dragoon",
+          "count": 1,
+          "startDelay": 1.77,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "right"
+        },
+        {
+          "enemyId": "ember_strider",
+          "count": 1,
+          "startDelay": 1.54,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "right"
+        }
+      ]
+    },
+    {
+      "waveIndex": 8,
+      "phase": "reinforce",
+      "goalTag": "chapter_c_hollow_kiln_basin_l15_w08_reinforce",
+      "threatTags": [
+        "reinforce",
+        "hollow_kiln_basin",
+        "split",
+        "armored"
+      ],
+      "prepSeconds": 7.12,
+      "rewardGold": 47,
+      "budgetTarget": 57.9,
+      "budgetTolerance": 1.07,
+      "hint": "[L15] W08: 持续压制并补齐覆盖空洞。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "spore_carrier",
+          "count": 7,
+          "startDelay": 0.4,
+          "spawnInterval": 0.3,
+          "formation": "pack",
+          "lane": "center"
+        },
+        {
+          "enemyId": "husk_titan",
+          "count": 2,
+          "startDelay": 5.8,
+          "spawnInterval": 1.0,
+          "formation": "burst",
+          "lane": "left"
+        },
+        {
+          "enemyId": "rail_warden",
+          "count": 2,
+          "startDelay": 7.2,
+          "spawnInterval": 1.0,
+          "formation": "burst",
+          "lane": "center"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 8,
+          "startDelay": 0.08,
+          "spawnInterval": 0.25,
+          "formation": "stream",
+          "lane": "center"
+        }
+      ]
+    },
+    {
+      "waveIndex": 9,
+      "phase": "exam",
+      "goalTag": "chapter_c_hollow_kiln_basin_l15_w09_exam",
+      "threatTags": [
+        "exam",
+        "hollow_kiln_basin",
+        "split",
+        "armored",
+        "flank"
+      ],
+      "prepSeconds": 7.38,
+      "rewardGold": 52,
+      "budgetTarget": 69.7,
+      "budgetTolerance": 1.07,
+      "hint": "[L15] W09: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "cinder_glider",
+          "count": 7,
+          "startDelay": 2.8,
+          "spawnInterval": 0.28,
+          "formation": "stream",
+          "lane": "left"
+        },
+        {
+          "enemyId": "carapace_brute",
+          "count": 4,
+          "startDelay": 5.0,
+          "spawnInterval": 0.9,
+          "formation": "burst",
+          "lane": "center"
+        },
+        {
+          "enemyId": "rail_warden",
+          "count": 4,
+          "startDelay": 7.4,
+          "spawnInterval": 0.9,
+          "formation": "burst",
+          "lane": "right"
+        },
+        {
+          "enemyId": "cinder_husk",
+          "count": 3,
+          "startDelay": 0.74,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "center"
+        },
+        {
+          "enemyId": "rail_splitter",
+          "count": 2,
+          "startDelay": 0.89,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "center"
+        },
+        {
+          "enemyId": "forge_dragoon",
+          "count": 1,
+          "startDelay": 1.62,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "right"
+        }
+      ]
+    },
+    {
+      "waveIndex": 10,
+      "phase": "introduce",
+      "goalTag": "chapter_c_hollow_kiln_basin_l15_w10_introduce",
+      "threatTags": [
+        "introduce",
+        "hollow_kiln_basin",
+        "split",
+        "armored",
+        "flank"
+      ],
+      "prepSeconds": 7.34,
+      "rewardGold": 55,
+      "budgetTarget": 71.7,
+      "budgetTolerance": 1.07,
+      "hint": "[L15] W10: 识别新威胁并调整火力分工。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "husk_titan",
+          "count": 4,
+          "startDelay": 0,
+          "spawnInterval": 0.79,
+          "formation": "burst",
+          "lane": "left"
+        },
+        {
+          "enemyId": "spore_carrier",
+          "count": 6,
+          "startDelay": 2.64,
+          "spawnInterval": 0.2,
+          "formation": "spawn_chain",
+          "lane": "right"
+        },
+        {
+          "enemyId": "acid_blister",
+          "count": 1,
+          "startDelay": 1.55,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "right"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 9,
+          "startDelay": 0.08,
+          "spawnInterval": 0.25,
+          "formation": "stream",
+          "lane": "center"
+        }
+      ]
+    },
+    {
+      "waveIndex": 11,
+      "phase": "reinforce",
+      "goalTag": "chapter_c_hollow_kiln_basin_l15_w11_reinforce",
+      "threatTags": [
+        "reinforce",
+        "hollow_kiln_basin",
+        "split",
+        "armored",
+        "flank"
+      ],
+      "prepSeconds": 6.7,
+      "rewardGold": 53,
+      "budgetTarget": 71.7,
+      "budgetTolerance": 1.07,
+      "hint": "[L15] W11: 持续压制并补齐覆盖空洞。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "carapace_brute",
+          "count": 6,
+          "startDelay": 0.4,
+          "spawnInterval": 0.9,
+          "formation": "burst",
+          "lane": "center"
+        },
+        {
+          "enemyId": "cinder_glider",
+          "count": 7,
+          "startDelay": 2.8,
+          "spawnInterval": 0.3,
+          "formation": "split_lane",
+          "lane": "split_lane"
+        },
+        {
+          "enemyId": "rail_warden",
+          "count": 4,
+          "startDelay": 8.0,
+          "spawnInterval": 0.9,
+          "formation": "burst",
+          "lane": "center"
+        },
+        {
+          "enemyId": "rail_splitter",
+          "count": 1,
+          "startDelay": 1.37,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "center"
+        },
+        {
+          "enemyId": "ember_strider",
+          "count": 1,
+          "startDelay": 1.67,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "left"
+        }
+      ]
+    },
+    {
+      "waveIndex": 12,
+      "phase": "exam",
+      "goalTag": "chapter_c_hollow_kiln_basin_l15_w12_exam",
+      "threatTags": [
+        "exam",
+        "hollow_kiln_basin",
+        "split",
+        "armored",
+        "flank"
+      ],
+      "prepSeconds": 6.96,
+      "rewardGold": 58,
+      "budgetTarget": 82.7,
+      "budgetTolerance": 1.07,
+      "hint": "[L15] W12: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "rail_warden",
+          "count": 7,
+          "startDelay": 0.4,
+          "spawnInterval": 0.8,
+          "formation": "stagger",
+          "lane": "right"
+        },
+        {
+          "enemyId": "spore_carrier",
+          "count": 6,
+          "startDelay": 4.5,
+          "spawnInterval": 0.3,
+          "formation": "spawn_chain",
+          "lane": "all"
+        },
+        {
+          "enemyId": "rail_warden",
+          "count": 5,
+          "startDelay": 6.5,
+          "spawnInterval": 0.8,
+          "formation": "stagger",
+          "lane": "right"
+        },
+        {
+          "enemyId": "cinder_husk",
+          "count": 2,
+          "startDelay": 1.11,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "all"
+        },
+        {
+          "enemyId": "acid_blister",
+          "count": 1,
+          "startDelay": 1.57,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "right"
+        },
+        {
+          "enemyId": "forge_dragoon",
+          "count": 1,
+          "startDelay": 1.43,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "all"
+        }
+      ]
+    },
+    {
+      "waveIndex": 13,
+      "phase": "introduce",
+      "goalTag": "chapter_c_hollow_kiln_basin_l15_w13_introduce",
+      "threatTags": [
+        "introduce",
+        "hollow_kiln_basin",
+        "split",
+        "armored",
+        "flank",
+        "high_pressure"
+      ],
+      "prepSeconds": 6.42,
+      "rewardGold": 57,
+      "budgetTarget": 79.1,
+      "budgetTolerance": 1.05,
+      "hint": "[L15] W13: 识别新威胁并调整火力分工。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "plated_spore",
+          "count": 11,
+          "startDelay": 0,
+          "spawnInterval": 0.79,
+          "formation": "stagger",
+          "lane": "left"
+        },
+        {
+          "enemyId": "spore_carrier",
+          "count": 8,
+          "startDelay": 1.36,
+          "spawnInterval": 0.19,
+          "formation": "spawn_chain",
+          "lane": "all"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 18,
+          "startDelay": 0.08,
+          "spawnInterval": 0.25,
+          "formation": "stream",
+          "lane": "center"
+        }
+      ]
+    },
+    {
+      "waveIndex": 14,
+      "phase": "reinforce",
+      "goalTag": "chapter_c_hollow_kiln_basin_l15_w14_reinforce",
+      "threatTags": [
+        "reinforce",
+        "hollow_kiln_basin",
+        "split",
+        "armored",
+        "flank",
+        "high_pressure"
+      ],
+      "prepSeconds": 6.28,
+      "rewardGold": 59,
+      "budgetTarget": 82.0,
+      "budgetTolerance": 1.05,
+      "hint": "[L15] W14: 持续压制并补齐覆盖空洞。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "husk_titan",
+          "count": 3,
+          "startDelay": 0,
+          "spawnInterval": 0.75,
+          "formation": "elite_drop",
+          "lane": "center"
+        },
+        {
+          "enemyId": "cinder_glider",
+          "count": 8,
+          "startDelay": 2.56,
+          "spawnInterval": 0.23,
+          "formation": "adaptive",
+          "lane": "all"
+        },
+        {
+          "enemyId": "rail_warden",
+          "count": 5,
+          "startDelay": 3.36,
+          "spawnInterval": 0.75,
+          "formation": "stagger",
+          "lane": "center"
+        },
+        {
+          "enemyId": "cinder_husk",
+          "count": 2,
+          "startDelay": 1.62,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "center"
+        },
+        {
+          "enemyId": "rail_splitter",
+          "count": 2,
+          "startDelay": 1.02,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "center"
+        },
+        {
+          "enemyId": "forge_dragoon",
+          "count": 1,
+          "startDelay": 1.32,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "right"
+        }
+      ]
+    },
+    {
+      "waveIndex": 15,
+      "phase": "exam",
+      "goalTag": "chapter_c_hollow_kiln_basin_l15_w15_exam",
+      "threatTags": [
+        "exam",
+        "hollow_kiln_basin",
+        "split",
+        "armored",
+        "flank",
+        "high_pressure",
+        "exam_peak"
+      ],
+      "prepSeconds": 6.54,
+      "rewardGold": 64,
+      "budgetTarget": 104.9,
+      "budgetTolerance": 1.05,
+      "hint": "[L15] W15: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "carapace_brute",
+          "count": 8,
+          "startDelay": 0.4,
+          "spawnInterval": 0.85,
+          "formation": "stagger",
+          "lane": "right"
+        },
+        {
+          "enemyId": "spore_carrier",
+          "count": 9,
+          "startDelay": 2.4,
+          "spawnInterval": 0.32,
+          "formation": "spawn_chain",
+          "lane": "all"
+        },
+        {
+          "enemyId": "rail_warden",
+          "count": 6,
+          "startDelay": 7.2,
+          "spawnInterval": 0.85,
+          "formation": "stagger",
+          "lane": "right"
+        },
+        {
+          "enemyId": "acid_blister",
+          "count": 1,
+          "startDelay": 1.39,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "right"
+        },
+        {
+          "enemyId": "ember_strider",
+          "count": 1,
+          "startDelay": 0.71,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "center"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 4,
+          "startDelay": 0.08,
+          "spawnInterval": 0.25,
+          "formation": "stream",
+          "lane": "center"
+        }
+      ]
+    },
+    {
+      "waveIndex": 16,
+      "phase": "introduce",
+      "goalTag": "chapter_c_hollow_kiln_basin_l15_w16_introduce",
+      "threatTags": [
+        "introduce",
+        "hollow_kiln_basin",
+        "split",
+        "armored",
+        "flank",
+        "high_pressure"
+      ],
+      "prepSeconds": 6,
+      "rewardGold": 63,
+      "budgetTarget": 92.5,
+      "budgetTolerance": 1.05,
+      "hint": "[L15] W16: 识别新威胁并调整火力分工。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "rail_warden",
+          "count": 8,
+          "startDelay": 0.4,
+          "spawnInterval": 0.85,
+          "formation": "stagger",
+          "lane": "left"
+        },
+        {
+          "enemyId": "cinder_glider",
+          "count": 8,
+          "startDelay": 5.5,
+          "spawnInterval": 0.28,
+          "formation": "flank_stream",
+          "lane": "right"
+        },
+        {
+          "enemyId": "rail_splitter",
+          "count": 4,
+          "startDelay": 1.3,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "left"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 30,
+          "startDelay": 0.08,
+          "spawnInterval": 0.22,
+          "formation": "swarm",
+          "lane": "center"
+        }
+      ]
+    },
+    {
+      "waveIndex": 17,
+      "phase": "reinforce",
+      "goalTag": "chapter_c_hollow_kiln_basin_l15_w17_reinforce",
+      "threatTags": [
+        "reinforce",
+        "hollow_kiln_basin",
+        "split",
+        "armored",
+        "flank",
+        "high_pressure",
+        "endgame"
+      ],
+      "prepSeconds": 5.86,
+      "rewardGold": 65,
+      "budgetTarget": 94.5,
+      "budgetTolerance": 1.04,
+      "hint": "[L15] W17: 持续压制并补齐覆盖空洞。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "plated_spore",
+          "count": 8,
+          "startDelay": 0.4,
+          "spawnInterval": 0.75,
+          "formation": "stagger",
+          "lane": "center"
+        },
+        {
+          "enemyId": "spore_carrier",
+          "count": 6,
+          "startDelay": 2.0,
+          "spawnInterval": 0.25,
+          "formation": "spawn_chain",
+          "lane": "all"
+        },
+        {
+          "enemyId": "rail_warden",
+          "count": 4,
+          "startDelay": 5.8,
+          "spawnInterval": 0.7,
+          "formation": "stagger",
+          "lane": "center"
+        },
+        {
+          "enemyId": "plated_spore",
+          "count": 7,
+          "startDelay": 6.8,
+          "spawnInterval": 0.65,
+          "formation": "stagger",
+          "lane": "right"
+        },
+        {
+          "enemyId": "cinder_husk",
+          "count": 2,
+          "startDelay": 1.8,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "right"
+        },
+        {
+          "enemyId": "acid_blister",
+          "count": 1,
+          "startDelay": 0.84,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "right"
+        },
+        {
+          "enemyId": "forge_dragoon",
+          "count": 1,
+          "startDelay": 1.37,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "right"
+        }
+      ]
+    },
+    {
+      "waveIndex": 18,
+      "phase": "exam",
+      "goalTag": "chapter_c_hollow_kiln_basin_l15_w18_exam",
+      "threatTags": [
+        "exam",
+        "hollow_kiln_basin",
+        "split",
+        "armored",
+        "flank",
+        "high_pressure",
+        "endgame"
+      ],
+      "prepSeconds": 6.12,
+      "rewardGold": 70,
+      "budgetTarget": 112.0,
+      "budgetTolerance": 1.04,
+      "hint": "[L15] W18: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "husk_titan",
+          "count": 3,
+          "startDelay": 0,
+          "spawnInterval": 0.62,
+          "formation": "elite_drop",
+          "lane": "right"
+        },
+        {
+          "enemyId": "cinder_glider",
+          "count": 8,
+          "startDelay": 2.08,
+          "spawnInterval": 0.2,
+          "formation": "flank_strike",
+          "lane": "center"
+        },
+        {
+          "enemyId": "rail_warden",
+          "count": 5,
+          "startDelay": 3.24,
+          "spawnInterval": 0.62,
+          "formation": "stagger",
+          "lane": "right"
+        },
+        {
+          "enemyId": "husk_titan",
+          "count": 3,
+          "startDelay": 3.84,
+          "spawnInterval": 0.62,
+          "formation": "elite_drop",
+          "lane": "left"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 16,
+          "startDelay": 0.08,
+          "spawnInterval": 0.22,
+          "formation": "swarm",
+          "lane": "right"
+        }
+      ]
+    },
+    {
+      "waveIndex": 19,
+      "phase": "introduce",
+      "goalTag": "chapter_c_hollow_kiln_basin_l15_w19_introduce",
+      "threatTags": [
+        "introduce",
+        "hollow_kiln_basin",
+        "split",
+        "armored",
+        "flank",
+        "high_pressure",
+        "endgame"
+      ],
+      "prepSeconds": 5.58,
+      "rewardGold": 69,
+      "budgetTarget": 104.9,
+      "budgetTolerance": 1.04,
+      "hint": "[L15] W19: 识别新威胁并调整火力分工。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "carapace_brute",
+          "count": 5,
+          "startDelay": 0.16,
+          "spawnInterval": 0.71,
+          "formation": "stagger",
+          "lane": "left"
+        },
+        {
+          "enemyId": "spore_carrier",
+          "count": 8,
+          "startDelay": 0.88,
+          "spawnInterval": 0.17,
+          "formation": "spawn_chain",
+          "lane": "all"
+        },
+        {
+          "enemyId": "rail_warden",
+          "count": 6,
+          "startDelay": 3.44,
+          "spawnInterval": 0.71,
+          "formation": "stagger",
+          "lane": "left"
+        },
+        {
+          "enemyId": "cinder_husk",
+          "count": 3,
+          "startDelay": 0.63,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "left"
+        },
+        {
+          "enemyId": "rail_splitter",
+          "count": 3,
+          "startDelay": 1.59,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "right"
+        },
+        {
+          "enemyId": "forge_dragoon",
+          "count": 2,
+          "startDelay": 1.78,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "left"
+        },
+        {
+          "enemyId": "ember_strider",
+          "count": 2,
+          "startDelay": 0.77,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "left"
+        }
+      ]
+    },
+    {
+      "waveIndex": 20,
+      "phase": "reinforce",
+      "goalTag": "chapter_c_hollow_kiln_basin_l15_w20_reinforce",
+      "threatTags": [
+        "reinforce",
+        "hollow_kiln_basin",
+        "split",
+        "armored",
+        "flank",
+        "high_pressure",
+        "endgame"
+      ],
+      "prepSeconds": 5.94,
+      "rewardGold": 75,
+      "budgetTarget": 119.5,
+      "budgetTolerance": 1.04,
+      "hint": "[L15] W20: 持续压制并补齐覆盖空洞。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "rail_warden",
+          "count": 8,
+          "startDelay": 0,
+          "spawnInterval": 0.68,
+          "formation": "stagger",
+          "lane": "center"
+        },
+        {
+          "enemyId": "cinder_glider",
+          "count": 9,
+          "startDelay": 2,
+          "spawnInterval": 0.21,
+          "formation": "adaptive",
+          "lane": "all"
+        },
+        {
+          "enemyId": "rail_warden",
+          "count": 5,
+          "startDelay": 3.28,
+          "spawnInterval": 0.68,
+          "formation": "stagger",
+          "lane": "center"
+        },
+        {
+          "enemyId": "rail_warden",
+          "count": 5,
+          "startDelay": 4.56,
+          "spawnInterval": 0.68,
+          "formation": "stagger",
+          "lane": "right"
+        },
+        {
+          "enemyId": "acid_blister",
+          "count": 2,
+          "startDelay": 1.11,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "all"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 13,
+          "startDelay": 0.08,
+          "spawnInterval": 0.22,
+          "formation": "swarm",
+          "lane": "center"
+        }
+      ]
+    }
+  ]
 }

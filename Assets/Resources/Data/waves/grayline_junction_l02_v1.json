@@ -1,903 +1,903 @@
 ﻿{
-    "schemaVersion": "wave-schema-v1",
-    "waveSetId": "grayline_junction_l02_v1",
-    "mapId": "grayline_junction",
-    "displayName": "Grayline Junction L02 (chapter_a)",
-    "globalDefaults": {
-        "prepSeconds": 9.95,
-        "baseRewardGold": 18,
-        "spawnMinSpacing": 0.18,
-        "lineDamageDefault": 1,
-        "maxConcurrentEnemiesHint": 84
+  "schemaVersion": "wave-schema-v1",
+  "waveSetId": "grayline_junction_l02_v1",
+  "mapId": "grayline_junction",
+  "displayName": "Grayline Junction L02 (chapter_a)",
+  "globalDefaults": {
+    "prepSeconds": 9.95,
+    "baseRewardGold": 18,
+    "spawnMinSpacing": 0.18,
+    "lineDamageDefault": 1,
+    "maxConcurrentEnemiesHint": 84
+  },
+  "enemyCatalog": [
+    {
+      "enemyId": "skitter_runner",
+      "displayName": "Skitter Runner",
+      "hp": 26,
+      "speed": 2.2,
+      "armorFlat": 0,
+      "rewardGold": 6,
+      "lineDamage": 1,
+      "threatCost": 1.0,
+      "tags": [
+        "fast",
+        "light"
+      ]
     },
-    "enemyCatalog": [
+    {
+      "enemyId": "carapace_brute",
+      "displayName": "Carapace Brute",
+      "hp": 120,
+      "speed": 0.8,
+      "armorFlat": 4,
+      "rewardGold": 14,
+      "lineDamage": 2,
+      "threatCost": 4.5,
+      "tags": [
+        "heavy",
+        "armored"
+      ]
+    },
+    {
+      "enemyId": "ash_swarm",
+      "displayName": "Ash Swarm",
+      "hp": 16,
+      "speed": 1.5,
+      "armorFlat": 0,
+      "rewardGold": 4,
+      "lineDamage": 1,
+      "threatCost": 0.8,
+      "tags": [
+        "swarm",
+        "light"
+      ]
+    },
+    {
+      "enemyId": "plated_spore",
+      "displayName": "Plated Spore",
+      "hp": 70,
+      "speed": 1.1,
+      "armorFlat": 8,
+      "rewardGold": 10,
+      "lineDamage": 2,
+      "threatCost": 3.2,
+      "tags": [
+        "armored",
+        "mid"
+      ]
+    }
+  ],
+  "waves": [
+    {
+      "waveIndex": 1,
+      "phase": "introduce",
+      "goalTag": "chapter_a_grayline_junction_l02_w01_introduce",
+      "threatTags": [
+        "introduce",
+        "grayline_junction"
+      ],
+      "prepSeconds": 9.95,
+      "rewardGold": 20,
+      "budgetTarget": 10,
+      "budgetTolerance": 1.1,
+      "hint": "[L02] W01: 识别新威胁并调整火力分工。",
+      "groups": [
         {
-            "enemyId": "skitter_runner",
-            "displayName": "Skitter Runner",
-            "hp": 26,
-            "speed": 2.2,
-            "armorFlat": 0,
-            "rewardGold": 6,
-            "lineDamage": 1,
-            "threatCost": 1.0,
-            "tags": [
-                "fast",
-                "light"
-            ]
+          "enemyId": "skitter_runner",
+          "count": 6,
+          "startDelay": 0,
+          "spawnInterval": 0.25,
+          "formation": "stream"
         },
         {
-            "enemyId": "carapace_brute",
-            "displayName": "Carapace Brute",
-            "hp": 120,
-            "speed": 0.8,
-            "armorFlat": 4,
-            "rewardGold": 14,
-            "lineDamage": 2,
-            "threatCost": 4.5,
-            "tags": [
-                "heavy",
-                "armored"
-            ]
-        },
-        {
-            "enemyId": "ash_swarm",
-            "displayName": "Ash Swarm",
-            "hp": 16,
-            "speed": 1.5,
-            "armorFlat": 0,
-            "rewardGold": 4,
-            "lineDamage": 1,
-            "threatCost": 0.8,
-            "tags": [
-                "swarm",
-                "light"
-            ]
-        },
-        {
-            "enemyId": "plated_spore",
-            "displayName": "Plated Spore",
-            "hp": 70,
-            "speed": 1.1,
-            "armorFlat": 8,
-            "rewardGold": 10,
-            "lineDamage": 2,
-            "threatCost": 3.2,
-            "tags": [
-                "armored",
-                "mid"
-            ]
+          "enemyId": "ash_swarm",
+          "count": 5,
+          "startDelay": 1.12,
+          "spawnInterval": 0.2,
+          "formation": "pack"
         }
-    ],
-    "waves": [
+      ]
+    },
+    {
+      "waveIndex": 2,
+      "phase": "reinforce",
+      "goalTag": "chapter_a_grayline_junction_l02_w02_reinforce",
+      "threatTags": [
+        "reinforce",
+        "grayline_junction"
+      ],
+      "prepSeconds": 9.81,
+      "rewardGold": 22,
+      "budgetTarget": 12,
+      "budgetTolerance": 1.1,
+      "hint": "[L02] W02: 持续压制并补齐覆盖空洞。",
+      "groups": [
         {
-            "waveIndex": 1,
-            "phase": "introduce",
-            "goalTag": "chapter_a_grayline_junction_l02_w01_introduce",
-            "threatTags": [
-                "introduce",
-                "grayline_junction"
-            ],
-            "prepSeconds": 9.95,
-            "rewardGold": 20,
-            "budgetTarget": 10,
-            "budgetTolerance": 1.1,
-            "hint": "[L02] W01: 识别新威胁并调整火力分工。",
-            "groups": [
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 6,
-                    "startDelay": 0,
-                    "spawnInterval": 0.25,
-                    "formation": "stream"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 5,
-                    "startDelay": 1.12,
-                    "spawnInterval": 0.2,
-                    "formation": "pack"
-                }
-            ]
+          "enemyId": "ash_swarm",
+          "count": 9,
+          "startDelay": 0.16,
+          "spawnInterval": 0.19,
+          "formation": "pack"
         },
         {
-            "waveIndex": 2,
-            "phase": "reinforce",
-            "goalTag": "chapter_a_grayline_junction_l02_w02_reinforce",
-            "threatTags": [
-                "reinforce",
-                "grayline_junction"
-            ],
-            "prepSeconds": 9.81,
-            "rewardGold": 22,
-            "budgetTarget": 12,
-            "budgetTolerance": 1.1,
-            "hint": "[L02] W02: 持续压制并补齐覆盖空洞。",
-            "groups": [
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 9,
-                    "startDelay": 0.16,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 6,
-                    "startDelay": 0.96,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                }
-            ]
-        },
-        {
-            "waveIndex": 3,
-            "phase": "exam",
-            "goalTag": "chapter_a_grayline_junction_l02_w03_exam",
-            "threatTags": [
-                "exam",
-                "grayline_junction"
-            ],
-            "prepSeconds": 10.07,
-            "rewardGold": 27,
-            "budgetTarget": 16.2,
-            "budgetTolerance": 1.1,
-            "hint": "[L02] W03: 综合考核：输出、控制、反制链稳定性。",
-            "groups": [
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 8,
-                    "startDelay": 0,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 6,
-                    "startDelay": 1.24,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 5,
-                    "startDelay": 1.92,
-                    "spawnInterval": 0.22,
-                    "formation": "stream"
-                }
-            ]
-        },
-        {
-            "waveIndex": 4,
-            "phase": "introduce",
-            "goalTag": "chapter_a_grayline_junction_l02_w04_introduce",
-            "threatTags": [
-                "introduce",
-                "grayline_junction"
-            ],
-            "prepSeconds": 9.53,
-            "rewardGold": 26,
-            "budgetTarget": 16.8,
-            "budgetTolerance": 1.1,
-            "hint": "[L02] W04: 识别新威胁并调整火力分工。",
-            "groups": [
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 12,
-                    "startDelay": 0,
-                    "spawnInterval": 0.2,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 9,
-                    "startDelay": 1.2,
-                    "spawnInterval": 0.2,
-                    "formation": "pack"
-                }
-            ]
-        },
-        {
-            "waveIndex": 5,
-            "phase": "reinforce",
-            "goalTag": "chapter_a_grayline_junction_l02_w05_reinforce",
-            "threatTags": [
-                "reinforce",
-                "grayline_junction"
-            ],
-            "prepSeconds": 9.39,
-            "rewardGold": 28,
-            "budgetTarget": 19.6,
-            "budgetTolerance": 1.1,
-            "hint": "[L02] W05: 持续压制并补齐覆盖空洞。",
-            "groups": [
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 10,
-                    "startDelay": 0.24,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 7,
-                    "startDelay": 1.04,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 6,
-                    "startDelay": 2.4,
-                    "spawnInterval": 0.24,
-                    "formation": "stream"
-                }
-            ]
-        },
-        {
-            "waveIndex": 6,
-            "phase": "exam",
-            "goalTag": "chapter_a_grayline_junction_l02_w06_exam",
-            "threatTags": [
-                "exam",
-                "grayline_junction"
-            ],
-            "prepSeconds": 9.65,
-            "rewardGold": 33,
-            "budgetTarget": 23.2,
-            "budgetTolerance": 1.1,
-            "hint": "[L02] W06: 综合考核：输出、控制、反制链稳定性。",
-            "groups": [
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 8,
-                    "startDelay": 0.08,
-                    "spawnInterval": 0.22,
-                    "formation": "stream"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 7,
-                    "startDelay": 1.32,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 7,
-                    "startDelay": 2,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 4,
-                    "startDelay": 3.24,
-                    "spawnInterval": 0.22,
-                    "formation": "stream"
-                }
-            ]
-        },
-        {
-            "waveIndex": 7,
-            "phase": "introduce",
-            "goalTag": "chapter_a_grayline_junction_l02_w07_introduce",
-            "threatTags": [
-                "introduce",
-                "grayline_junction"
-            ],
-            "prepSeconds": 9.11,
-            "rewardGold": 32,
-            "budgetTarget": 23.4,
-            "budgetTolerance": 1.07,
-            "hint": "[L02] W07: 识别新威胁并调整火力分工。",
-            "groups": [
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 13,
-                    "startDelay": 0,
-                    "spawnInterval": 0.2,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 7,
-                    "startDelay": 1.28,
-                    "spawnInterval": 0.25,
-                    "formation": "stream"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 6,
-                    "startDelay": 2.64,
-                    "spawnInterval": 0.25,
-                    "formation": "stream"
-                }
-            ]
-        },
-        {
-            "waveIndex": 8,
-            "phase": "reinforce",
-            "goalTag": "chapter_a_grayline_junction_l02_w08_reinforce",
-            "threatTags": [
-                "reinforce",
-                "grayline_junction"
-            ],
-            "prepSeconds": 8.97,
-            "rewardGold": 34,
-            "budgetTarget": 26.6,
-            "budgetTolerance": 1.07,
-            "hint": "[L02] W08: 持续压制并补齐覆盖空洞。",
-            "groups": [
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 10,
-                    "startDelay": 0,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 6,
-                    "startDelay": 1.12,
-                    "spawnInterval": 0.24,
-                    "formation": "stream"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 7,
-                    "startDelay": 2.48,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 7,
-                    "startDelay": 3.84,
-                    "spawnInterval": 0.24,
-                    "formation": "stream"
-                }
-            ]
-        },
-        {
-            "waveIndex": 9,
-            "phase": "exam",
-            "goalTag": "chapter_a_grayline_junction_l02_w09_exam",
-            "threatTags": [
-                "exam",
-                "grayline_junction"
-            ],
-            "prepSeconds": 9.23,
-            "rewardGold": 39,
-            "budgetTarget": 31,
-            "budgetTolerance": 1.07,
-            "hint": "[L02] W09: 综合考核：输出、控制、反制链稳定性。",
-            "groups": [
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 13,
-                    "startDelay": 0.16,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 8,
-                    "startDelay": 0.84,
-                    "spawnInterval": 0.22,
-                    "formation": "stream"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 7,
-                    "startDelay": 2.08,
-                    "spawnInterval": 0.22,
-                    "formation": "stream"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 7,
-                    "startDelay": 3.32,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                }
-            ]
-        },
-        {
-            "waveIndex": 10,
-            "phase": "introduce",
-            "goalTag": "chapter_a_grayline_junction_l02_w10_introduce",
-            "threatTags": [
-                "introduce",
-                "grayline_junction"
-            ],
-            "prepSeconds": 9.19,
-            "rewardGold": 42,
-            "budgetTarget": 33.2,
-            "budgetTolerance": 1.07,
-            "hint": "[L02] W10: 识别新威胁并调整火力分工。",
-            "groups": [
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 17,
-                    "startDelay": 0,
-                    "spawnInterval": 0.2,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 10,
-                    "startDelay": 1.36,
-                    "spawnInterval": 0.25,
-                    "formation": "stream"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 12,
-                    "startDelay": 2.16,
-                    "spawnInterval": 0.2,
-                    "formation": "pack"
-                }
-            ]
-        },
-        {
-            "waveIndex": 11,
-            "phase": "reinforce",
-            "goalTag": "chapter_a_grayline_junction_l02_w11_reinforce",
-            "threatTags": [
-                "reinforce",
-                "grayline_junction"
-            ],
-            "prepSeconds": 8.55,
-            "rewardGold": 40,
-            "budgetTarget": 33.4,
-            "budgetTolerance": 1.07,
-            "hint": "[L02] W11: 持续压制并补齐覆盖空洞。",
-            "groups": [
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 11,
-                    "startDelay": 0,
-                    "spawnInterval": 0.24,
-                    "formation": "stream"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 8,
-                    "startDelay": 1.2,
-                    "spawnInterval": 0.24,
-                    "formation": "stream"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 9,
-                    "startDelay": 2.56,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 9,
-                    "startDelay": 3.36,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                }
-            ]
-        },
-        {
-            "waveIndex": 12,
-            "phase": "exam",
-            "goalTag": "chapter_a_grayline_junction_l02_w12_exam",
-            "threatTags": [
-                "exam",
-                "grayline_junction"
-            ],
-            "prepSeconds": 8.81,
-            "rewardGold": 45,
-            "budgetTarget": 38.6,
-            "budgetTolerance": 1.07,
-            "hint": "[L02] W12: 综合考核：输出、控制、反制链稳定性。",
-            "groups": [
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 16,
-                    "startDelay": 0.24,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 9,
-                    "startDelay": 0.92,
-                    "spawnInterval": 0.22,
-                    "formation": "stream"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 11,
-                    "startDelay": 2.16,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 8,
-                    "startDelay": 3.4,
-                    "spawnInterval": 0.22,
-                    "formation": "stream"
-                }
-            ]
-        },
-        {
-            "waveIndex": 13,
-            "phase": "introduce",
-            "goalTag": "chapter_a_grayline_junction_l02_w13_introduce",
-            "threatTags": [
-                "introduce",
-                "grayline_junction",
-                "high_pressure"
-            ],
-            "prepSeconds": 8.27,
-            "rewardGold": 44,
-            "budgetTarget": 38.2,
-            "budgetTolerance": 1.05,
-            "hint": "[L02] W13: 识别新威胁并调整火力分工。",
-            "groups": [
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 16,
-                    "startDelay": 0.08,
-                    "spawnInterval": 0.25,
-                    "formation": "stream"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 14,
-                    "startDelay": 1.44,
-                    "spawnInterval": 0.2,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 11,
-                    "startDelay": 2.24,
-                    "spawnInterval": 0.25,
-                    "formation": "stream"
-                }
-            ]
-        },
-        {
-            "waveIndex": 14,
-            "phase": "reinforce",
-            "goalTag": "chapter_a_grayline_junction_l02_w14_reinforce",
-            "threatTags": [
-                "reinforce",
-                "grayline_junction",
-                "high_pressure"
-            ],
-            "prepSeconds": 8.13,
-            "rewardGold": 46,
-            "budgetTarget": 40.4,
-            "budgetTolerance": 1.05,
-            "hint": "[L02] W14: 持续压制并补齐覆盖空洞。",
-            "groups": [
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 16,
-                    "startDelay": 0,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 12,
-                    "startDelay": 1.28,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 9,
-                    "startDelay": 2.64,
-                    "spawnInterval": 0.24,
-                    "formation": "stream"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 9,
-                    "startDelay": 3.44,
-                    "spawnInterval": 0.24,
-                    "formation": "stream"
-                }
-            ]
-        },
-        {
-            "waveIndex": 15,
-            "phase": "exam",
-            "goalTag": "chapter_a_grayline_junction_l02_w15_exam",
-            "threatTags": [
-                "exam",
-                "grayline_junction",
-                "high_pressure",
-                "exam_peak"
-            ],
-            "prepSeconds": 8.39,
-            "rewardGold": 51,
-            "budgetTarget": 50.2,
-            "budgetTolerance": 1.05,
-            "hint": "[L02] W15: 综合考核：输出、控制、反制链稳定性。",
-            "groups": [
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 16,
-                    "startDelay": 0,
-                    "spawnInterval": 0.22,
-                    "formation": "stream"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 15,
-                    "startDelay": 1,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 11,
-                    "startDelay": 2.24,
-                    "spawnInterval": 0.22,
-                    "formation": "stream"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 14,
-                    "startDelay": 3.48,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                }
-            ]
-        },
-        {
-            "waveIndex": 16,
-            "phase": "introduce",
-            "goalTag": "chapter_a_grayline_junction_l02_w16_introduce",
-            "threatTags": [
-                "introduce",
-                "grayline_junction",
-                "high_pressure"
-            ],
-            "prepSeconds": 7.85,
-            "rewardGold": 50,
-            "budgetTarget": 45,
-            "budgetTolerance": 1.05,
-            "hint": "[L02] W16: 识别新威胁并调整火力分工。",
-            "groups": [
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 23,
-                    "startDelay": 0.16,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 17,
-                    "startDelay": 0.96,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 13,
-                    "startDelay": 2.32,
-                    "spawnInterval": 0.23,
-                    "formation": "stream"
-                }
-            ]
-        },
-        {
-            "waveIndex": 17,
-            "phase": "reinforce",
-            "goalTag": "chapter_a_grayline_junction_l02_w17_reinforce",
-            "threatTags": [
-                "reinforce",
-                "grayline_junction",
-                "high_pressure",
-                "endgame"
-            ],
-            "prepSeconds": 7.71,
-            "rewardGold": 52,
-            "budgetTarget": 47.4,
-            "budgetTolerance": 1.04,
-            "hint": "[L02] W17: 持续压制并补齐覆盖空洞。",
-            "groups": [
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 12,
-                    "startDelay": 0,
-                    "spawnInterval": 0.22,
-                    "formation": "stream"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 12,
-                    "startDelay": 1.28,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 8,
-                    "startDelay": 2,
-                    "spawnInterval": 0.22,
-                    "formation": "stream"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 11,
-                    "startDelay": 3.28,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 9,
-                    "startDelay": 4.56,
-                    "spawnInterval": 0.22,
-                    "formation": "stream"
-                }
-            ]
-        },
-        {
-            "waveIndex": 18,
-            "phase": "exam",
-            "goalTag": "chapter_a_grayline_junction_l02_w18_exam",
-            "threatTags": [
-                "exam",
-                "grayline_junction",
-                "high_pressure",
-                "endgame"
-            ],
-            "prepSeconds": 7.97,
-            "rewardGold": 57,
-            "budgetTarget": 54.4,
-            "budgetTolerance": 1.04,
-            "hint": "[L02] W18: 综合考核：输出、控制、反制链稳定性。",
-            "groups": [
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 18,
-                    "startDelay": 0,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 14,
-                    "startDelay": 1,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 10,
-                    "startDelay": 2.16,
-                    "spawnInterval": 0.2,
-                    "formation": "stream"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 10,
-                    "startDelay": 2.76,
-                    "spawnInterval": 0.2,
-                    "formation": "stream"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 11,
-                    "startDelay": 3.92,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                }
-            ]
-        },
-        {
-            "waveIndex": 19,
-            "phase": "introduce",
-            "goalTag": "chapter_a_grayline_junction_l02_w19_introduce",
-            "threatTags": [
-                "introduce",
-                "grayline_junction",
-                "high_pressure",
-                "endgame"
-            ],
-            "prepSeconds": 7.43,
-            "rewardGold": 56,
-            "budgetTarget": 52,
-            "budgetTolerance": 1.04,
-            "hint": "[L02] W19: 识别新威胁并调整火力分工。",
-            "groups": [
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 17,
-                    "startDelay": 0.24,
-                    "spawnInterval": 0.23,
-                    "formation": "stream"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 15,
-                    "startDelay": 0.96,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 11,
-                    "startDelay": 2.24,
-                    "spawnInterval": 0.23,
-                    "formation": "stream"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 15,
-                    "startDelay": 3.52,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                }
-            ]
-        },
-        {
-            "waveIndex": 20,
-            "phase": "reinforce",
-            "goalTag": "chapter_a_grayline_junction_l02_w20_reinforce",
-            "threatTags": [
-                "reinforce",
-                "grayline_junction",
-                "high_pressure",
-                "endgame"
-            ],
-            "prepSeconds": 7.79,
-            "rewardGold": 62,
-            "budgetTarget": 58.4,
-            "budgetTolerance": 1.04,
-            "hint": "[L02] W20: 持续压制并补齐覆盖空洞。",
-            "groups": [
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 19,
-                    "startDelay": 0.08,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 15,
-                    "startDelay": 1.36,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 10,
-                    "startDelay": 2.08,
-                    "spawnInterval": 0.22,
-                    "formation": "stream"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 10,
-                    "startDelay": 3.36,
-                    "spawnInterval": 0.22,
-                    "formation": "stream"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 14,
-                    "startDelay": 4.64,
-                    "spawnInterval": 0.19,
-                    "formation": "pack"
-                }
-            ]
+          "enemyId": "ash_swarm",
+          "count": 6,
+          "startDelay": 0.96,
+          "spawnInterval": 0.19,
+          "formation": "pack"
         }
-    ]
+      ]
+    },
+    {
+      "waveIndex": 3,
+      "phase": "exam",
+      "goalTag": "chapter_a_grayline_junction_l02_w03_exam",
+      "threatTags": [
+        "exam",
+        "grayline_junction"
+      ],
+      "prepSeconds": 10.07,
+      "rewardGold": 27,
+      "budgetTarget": 16.2,
+      "budgetTolerance": 1.1,
+      "hint": "[L02] W03: 综合考核：输出、控制、反制链稳定性。",
+      "groups": [
+        {
+          "enemyId": "ash_swarm",
+          "count": 8,
+          "startDelay": 0,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 6,
+          "startDelay": 1.24,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 5,
+          "startDelay": 1.92,
+          "spawnInterval": 0.22,
+          "formation": "stream"
+        }
+      ]
+    },
+    {
+      "waveIndex": 4,
+      "phase": "introduce",
+      "goalTag": "chapter_a_grayline_junction_l02_w04_introduce",
+      "threatTags": [
+        "introduce",
+        "grayline_junction"
+      ],
+      "prepSeconds": 9.53,
+      "rewardGold": 26,
+      "budgetTarget": 16.8,
+      "budgetTolerance": 1.1,
+      "hint": "[L02] W04: 识别新威胁并调整火力分工。",
+      "groups": [
+        {
+          "enemyId": "ash_swarm",
+          "count": 12,
+          "startDelay": 0,
+          "spawnInterval": 0.2,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 9,
+          "startDelay": 1.2,
+          "spawnInterval": 0.2,
+          "formation": "pack"
+        }
+      ]
+    },
+    {
+      "waveIndex": 5,
+      "phase": "reinforce",
+      "goalTag": "chapter_a_grayline_junction_l02_w05_reinforce",
+      "threatTags": [
+        "reinforce",
+        "grayline_junction"
+      ],
+      "prepSeconds": 9.39,
+      "rewardGold": 28,
+      "budgetTarget": 19.6,
+      "budgetTolerance": 1.1,
+      "hint": "[L02] W05: 持续压制并补齐覆盖空洞。",
+      "groups": [
+        {
+          "enemyId": "ash_swarm",
+          "count": 10,
+          "startDelay": 0.24,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 7,
+          "startDelay": 1.04,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 6,
+          "startDelay": 2.4,
+          "spawnInterval": 0.24,
+          "formation": "stream"
+        }
+      ]
+    },
+    {
+      "waveIndex": 6,
+      "phase": "exam",
+      "goalTag": "chapter_a_grayline_junction_l02_w06_exam",
+      "threatTags": [
+        "exam",
+        "grayline_junction"
+      ],
+      "prepSeconds": 9.65,
+      "rewardGold": 33,
+      "budgetTarget": 23.2,
+      "budgetTolerance": 1.1,
+      "hint": "[L02] W06: 综合考核：输出、控制、反制链稳定性。",
+      "groups": [
+        {
+          "enemyId": "skitter_runner",
+          "count": 8,
+          "startDelay": 0.08,
+          "spawnInterval": 0.22,
+          "formation": "stream"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 7,
+          "startDelay": 1.32,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 7,
+          "startDelay": 2,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 4,
+          "startDelay": 3.24,
+          "spawnInterval": 0.22,
+          "formation": "stream"
+        }
+      ]
+    },
+    {
+      "waveIndex": 7,
+      "phase": "introduce",
+      "goalTag": "chapter_a_grayline_junction_l02_w07_introduce",
+      "threatTags": [
+        "introduce",
+        "grayline_junction"
+      ],
+      "prepSeconds": 9.11,
+      "rewardGold": 32,
+      "budgetTarget": 23.4,
+      "budgetTolerance": 1.07,
+      "hint": "[L02] W07: 识别新威胁并调整火力分工。",
+      "groups": [
+        {
+          "enemyId": "ash_swarm",
+          "count": 13,
+          "startDelay": 0,
+          "spawnInterval": 0.2,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 7,
+          "startDelay": 1.28,
+          "spawnInterval": 0.25,
+          "formation": "stream"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 6,
+          "startDelay": 2.64,
+          "spawnInterval": 0.25,
+          "formation": "stream"
+        }
+      ]
+    },
+    {
+      "waveIndex": 8,
+      "phase": "reinforce",
+      "goalTag": "chapter_a_grayline_junction_l02_w08_reinforce",
+      "threatTags": [
+        "reinforce",
+        "grayline_junction"
+      ],
+      "prepSeconds": 8.97,
+      "rewardGold": 34,
+      "budgetTarget": 26.6,
+      "budgetTolerance": 1.07,
+      "hint": "[L02] W08: 持续压制并补齐覆盖空洞。",
+      "groups": [
+        {
+          "enemyId": "ash_swarm",
+          "count": 10,
+          "startDelay": 0,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 6,
+          "startDelay": 1.12,
+          "spawnInterval": 0.24,
+          "formation": "stream"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 7,
+          "startDelay": 2.48,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 7,
+          "startDelay": 3.84,
+          "spawnInterval": 0.24,
+          "formation": "stream"
+        }
+      ]
+    },
+    {
+      "waveIndex": 9,
+      "phase": "exam",
+      "goalTag": "chapter_a_grayline_junction_l02_w09_exam",
+      "threatTags": [
+        "exam",
+        "grayline_junction"
+      ],
+      "prepSeconds": 9.23,
+      "rewardGold": 39,
+      "budgetTarget": 31,
+      "budgetTolerance": 1.07,
+      "hint": "[L02] W09: 综合考核：输出、控制、反制链稳定性。",
+      "groups": [
+        {
+          "enemyId": "ash_swarm",
+          "count": 13,
+          "startDelay": 0.16,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 8,
+          "startDelay": 0.84,
+          "spawnInterval": 0.22,
+          "formation": "stream"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 7,
+          "startDelay": 2.08,
+          "spawnInterval": 0.22,
+          "formation": "stream"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 7,
+          "startDelay": 3.32,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        }
+      ]
+    },
+    {
+      "waveIndex": 10,
+      "phase": "introduce",
+      "goalTag": "chapter_a_grayline_junction_l02_w10_introduce",
+      "threatTags": [
+        "introduce",
+        "grayline_junction"
+      ],
+      "prepSeconds": 9.19,
+      "rewardGold": 42,
+      "budgetTarget": 33.2,
+      "budgetTolerance": 1.07,
+      "hint": "[L02] W10: 识别新威胁并调整火力分工。",
+      "groups": [
+        {
+          "enemyId": "ash_swarm",
+          "count": 17,
+          "startDelay": 0,
+          "spawnInterval": 0.2,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 10,
+          "startDelay": 1.36,
+          "spawnInterval": 0.25,
+          "formation": "stream"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 12,
+          "startDelay": 2.16,
+          "spawnInterval": 0.2,
+          "formation": "pack"
+        }
+      ]
+    },
+    {
+      "waveIndex": 11,
+      "phase": "reinforce",
+      "goalTag": "chapter_a_grayline_junction_l02_w11_reinforce",
+      "threatTags": [
+        "reinforce",
+        "grayline_junction"
+      ],
+      "prepSeconds": 8.55,
+      "rewardGold": 40,
+      "budgetTarget": 33.4,
+      "budgetTolerance": 1.07,
+      "hint": "[L02] W11: 持续压制并补齐覆盖空洞。",
+      "groups": [
+        {
+          "enemyId": "skitter_runner",
+          "count": 11,
+          "startDelay": 0,
+          "spawnInterval": 0.24,
+          "formation": "stream"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 8,
+          "startDelay": 1.2,
+          "spawnInterval": 0.24,
+          "formation": "stream"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 9,
+          "startDelay": 2.56,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 9,
+          "startDelay": 3.36,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        }
+      ]
+    },
+    {
+      "waveIndex": 12,
+      "phase": "exam",
+      "goalTag": "chapter_a_grayline_junction_l02_w12_exam",
+      "threatTags": [
+        "exam",
+        "grayline_junction"
+      ],
+      "prepSeconds": 8.81,
+      "rewardGold": 45,
+      "budgetTarget": 38.6,
+      "budgetTolerance": 1.07,
+      "hint": "[L02] W12: 综合考核：输出、控制、反制链稳定性。",
+      "groups": [
+        {
+          "enemyId": "ash_swarm",
+          "count": 16,
+          "startDelay": 0.24,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 9,
+          "startDelay": 0.92,
+          "spawnInterval": 0.22,
+          "formation": "stream"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 11,
+          "startDelay": 2.16,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 8,
+          "startDelay": 3.4,
+          "spawnInterval": 0.22,
+          "formation": "stream"
+        }
+      ]
+    },
+    {
+      "waveIndex": 13,
+      "phase": "introduce",
+      "goalTag": "chapter_a_grayline_junction_l02_w13_introduce",
+      "threatTags": [
+        "introduce",
+        "grayline_junction",
+        "high_pressure"
+      ],
+      "prepSeconds": 8.27,
+      "rewardGold": 44,
+      "budgetTarget": 38.2,
+      "budgetTolerance": 1.05,
+      "hint": "[L02] W13: 识别新威胁并调整火力分工。",
+      "groups": [
+        {
+          "enemyId": "skitter_runner",
+          "count": 16,
+          "startDelay": 0.08,
+          "spawnInterval": 0.25,
+          "formation": "stream"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 14,
+          "startDelay": 1.44,
+          "spawnInterval": 0.2,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 11,
+          "startDelay": 2.24,
+          "spawnInterval": 0.25,
+          "formation": "stream"
+        }
+      ]
+    },
+    {
+      "waveIndex": 14,
+      "phase": "reinforce",
+      "goalTag": "chapter_a_grayline_junction_l02_w14_reinforce",
+      "threatTags": [
+        "reinforce",
+        "grayline_junction",
+        "high_pressure"
+      ],
+      "prepSeconds": 8.13,
+      "rewardGold": 46,
+      "budgetTarget": 40.4,
+      "budgetTolerance": 1.05,
+      "hint": "[L02] W14: 持续压制并补齐覆盖空洞。",
+      "groups": [
+        {
+          "enemyId": "ash_swarm",
+          "count": 16,
+          "startDelay": 0,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 12,
+          "startDelay": 1.28,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 9,
+          "startDelay": 2.64,
+          "spawnInterval": 0.24,
+          "formation": "stream"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 9,
+          "startDelay": 3.44,
+          "spawnInterval": 0.24,
+          "formation": "stream"
+        }
+      ]
+    },
+    {
+      "waveIndex": 15,
+      "phase": "exam",
+      "goalTag": "chapter_a_grayline_junction_l02_w15_exam",
+      "threatTags": [
+        "exam",
+        "grayline_junction",
+        "high_pressure",
+        "exam_peak"
+      ],
+      "prepSeconds": 8.39,
+      "rewardGold": 51,
+      "budgetTarget": 50.2,
+      "budgetTolerance": 1.05,
+      "hint": "[L02] W15: 综合考核：输出、控制、反制链稳定性。",
+      "groups": [
+        {
+          "enemyId": "skitter_runner",
+          "count": 16,
+          "startDelay": 0,
+          "spawnInterval": 0.22,
+          "formation": "stream"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 15,
+          "startDelay": 1,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 11,
+          "startDelay": 2.24,
+          "spawnInterval": 0.22,
+          "formation": "stream"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 14,
+          "startDelay": 3.48,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        }
+      ]
+    },
+    {
+      "waveIndex": 16,
+      "phase": "introduce",
+      "goalTag": "chapter_a_grayline_junction_l02_w16_introduce",
+      "threatTags": [
+        "introduce",
+        "grayline_junction",
+        "high_pressure"
+      ],
+      "prepSeconds": 7.85,
+      "rewardGold": 50,
+      "budgetTarget": 45,
+      "budgetTolerance": 1.05,
+      "hint": "[L02] W16: 识别新威胁并调整火力分工。",
+      "groups": [
+        {
+          "enemyId": "ash_swarm",
+          "count": 23,
+          "startDelay": 0.16,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 17,
+          "startDelay": 0.96,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 13,
+          "startDelay": 2.32,
+          "spawnInterval": 0.23,
+          "formation": "stream"
+        }
+      ]
+    },
+    {
+      "waveIndex": 17,
+      "phase": "reinforce",
+      "goalTag": "chapter_a_grayline_junction_l02_w17_reinforce",
+      "threatTags": [
+        "reinforce",
+        "grayline_junction",
+        "high_pressure",
+        "endgame"
+      ],
+      "prepSeconds": 7.71,
+      "rewardGold": 52,
+      "budgetTarget": 47.4,
+      "budgetTolerance": 1.04,
+      "hint": "[L02] W17: 持续压制并补齐覆盖空洞。",
+      "groups": [
+        {
+          "enemyId": "skitter_runner",
+          "count": 12,
+          "startDelay": 0,
+          "spawnInterval": 0.22,
+          "formation": "stream"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 12,
+          "startDelay": 1.28,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 8,
+          "startDelay": 2,
+          "spawnInterval": 0.22,
+          "formation": "stream"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 11,
+          "startDelay": 3.28,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 9,
+          "startDelay": 4.56,
+          "spawnInterval": 0.22,
+          "formation": "stream"
+        }
+      ]
+    },
+    {
+      "waveIndex": 18,
+      "phase": "exam",
+      "goalTag": "chapter_a_grayline_junction_l02_w18_exam",
+      "threatTags": [
+        "exam",
+        "grayline_junction",
+        "high_pressure",
+        "endgame"
+      ],
+      "prepSeconds": 7.97,
+      "rewardGold": 57,
+      "budgetTarget": 54.4,
+      "budgetTolerance": 1.04,
+      "hint": "[L02] W18: 综合考核：输出、控制、反制链稳定性。",
+      "groups": [
+        {
+          "enemyId": "ash_swarm",
+          "count": 18,
+          "startDelay": 0,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 14,
+          "startDelay": 1,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 10,
+          "startDelay": 2.16,
+          "spawnInterval": 0.2,
+          "formation": "stream"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 10,
+          "startDelay": 2.76,
+          "spawnInterval": 0.2,
+          "formation": "stream"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 11,
+          "startDelay": 3.92,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        }
+      ]
+    },
+    {
+      "waveIndex": 19,
+      "phase": "introduce",
+      "goalTag": "chapter_a_grayline_junction_l02_w19_introduce",
+      "threatTags": [
+        "introduce",
+        "grayline_junction",
+        "high_pressure",
+        "endgame"
+      ],
+      "prepSeconds": 7.43,
+      "rewardGold": 56,
+      "budgetTarget": 52,
+      "budgetTolerance": 1.04,
+      "hint": "[L02] W19: 识别新威胁并调整火力分工。",
+      "groups": [
+        {
+          "enemyId": "skitter_runner",
+          "count": 17,
+          "startDelay": 0.24,
+          "spawnInterval": 0.23,
+          "formation": "stream"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 15,
+          "startDelay": 0.96,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 11,
+          "startDelay": 2.24,
+          "spawnInterval": 0.23,
+          "formation": "stream"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 15,
+          "startDelay": 3.52,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        }
+      ]
+    },
+    {
+      "waveIndex": 20,
+      "phase": "reinforce",
+      "goalTag": "chapter_a_grayline_junction_l02_w20_reinforce",
+      "threatTags": [
+        "reinforce",
+        "grayline_junction",
+        "high_pressure",
+        "endgame"
+      ],
+      "prepSeconds": 7.79,
+      "rewardGold": 62,
+      "budgetTarget": 58.4,
+      "budgetTolerance": 1.04,
+      "hint": "[L02] W20: 持续压制并补齐覆盖空洞。",
+      "groups": [
+        {
+          "enemyId": "ash_swarm",
+          "count": 19,
+          "startDelay": 0.08,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 15,
+          "startDelay": 1.36,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 10,
+          "startDelay": 2.08,
+          "spawnInterval": 0.22,
+          "formation": "stream"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 10,
+          "startDelay": 3.36,
+          "spawnInterval": 0.22,
+          "formation": "stream"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 14,
+          "startDelay": 4.64,
+          "spawnInterval": 0.19,
+          "formation": "pack"
+        }
+      ]
+    }
+  ]
 }

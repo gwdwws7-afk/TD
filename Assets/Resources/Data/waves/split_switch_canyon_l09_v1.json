@@ -1,1031 +1,1128 @@
 ﻿{
-    "schemaVersion": "wave-schema-v1",
-    "waveSetId": "split_switch_canyon_l09_v1",
-    "mapId": "split_switch_canyon",
-    "displayName": "Split Switch Canyon L09 (chapter_b)",
-    "globalDefaults": {
-        "prepSeconds": 8.8,
-        "baseRewardGold": 22,
-        "spawnMinSpacing": 0.17,
-        "lineDamageDefault": 1,
-        "maxConcurrentEnemiesHint": 98
+  "schemaVersion": "wave-schema-v1",
+  "waveSetId": "split_switch_canyon_l09_v1",
+  "mapId": "split_switch_canyon",
+  "displayName": "Split Switch Canyon L09 (chapter_b)",
+  "globalDefaults": {
+    "prepSeconds": 8.8,
+    "baseRewardGold": 22,
+    "spawnMinSpacing": 0.17,
+    "lineDamageDefault": 1,
+    "maxConcurrentEnemiesHint": 98
+  },
+  "enemyCatalog": [
+    {
+      "enemyId": "skitter_runner",
+      "displayName": "Skitter Runner",
+      "hp": 26,
+      "speed": 2.2,
+      "armorFlat": 0,
+      "rewardGold": 6,
+      "lineDamage": 1,
+      "threatCost": 1.0,
+      "tags": [
+        "fast",
+        "light"
+      ]
     },
-    "enemyCatalog": [
+    {
+      "enemyId": "carapace_brute",
+      "displayName": "Carapace Brute",
+      "hp": 120,
+      "speed": 0.8,
+      "armorFlat": 4,
+      "rewardGold": 14,
+      "lineDamage": 2,
+      "threatCost": 4.5,
+      "tags": [
+        "heavy",
+        "armored"
+      ]
+    },
+    {
+      "enemyId": "ash_swarm",
+      "displayName": "Ash Swarm",
+      "hp": 16,
+      "speed": 1.5,
+      "armorFlat": 0,
+      "rewardGold": 4,
+      "lineDamage": 1,
+      "threatCost": 0.8,
+      "tags": [
+        "swarm",
+        "light"
+      ]
+    },
+    {
+      "enemyId": "plated_spore",
+      "displayName": "Plated Spore",
+      "hp": 70,
+      "speed": 1.1,
+      "armorFlat": 8,
+      "rewardGold": 10,
+      "lineDamage": 2,
+      "threatCost": 3.2,
+      "tags": [
+        "armored",
+        "mid"
+      ]
+    }
+  ],
+  "waves": [
+    {
+      "waveIndex": 1,
+      "phase": "introduce",
+      "goalTag": "chapter_b_split_switch_canyon_l09_w01_introduce",
+      "threatTags": [
+        "introduce",
+        "split_switch_canyon",
+        "fast",
+        "swarm"
+      ],
+      "prepSeconds": 8.8,
+      "rewardGold": 27,
+      "budgetTarget": 23.4,
+      "budgetTolerance": 1.1,
+      "hint": "[L09] W01: 左线高速、中心群体；先按路线分配单体和AOE。",
+      "groups": [
         {
-            "enemyId": "skitter_runner",
-            "displayName": "Skitter Runner",
-            "hp": 26,
-            "speed": 2.2,
-            "armorFlat": 0,
-            "rewardGold": 6,
-            "lineDamage": 1,
-            "threatCost": 1.0,
-            "tags": [
-                "fast",
-                "light"
-            ]
+          "enemyId": "cinder_husk",
+          "count": 1,
+          "startDelay": 1.2,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "center"
         },
         {
-            "enemyId": "carapace_brute",
-            "displayName": "Carapace Brute",
-            "hp": 120,
-            "speed": 0.8,
-            "armorFlat": 4,
-            "rewardGold": 14,
-            "lineDamage": 2,
-            "threatCost": 4.5,
-            "tags": [
-                "heavy",
-                "armored"
-            ]
+          "enemyId": "acid_blister",
+          "count": 1,
+          "startDelay": 1.75,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "center"
         },
         {
-            "enemyId": "ash_swarm",
-            "displayName": "Ash Swarm",
-            "hp": 16,
-            "speed": 1.5,
-            "armorFlat": 0,
-            "rewardGold": 4,
-            "lineDamage": 1,
-            "threatCost": 0.8,
-            "tags": [
-                "swarm",
-                "light"
-            ]
-        },
-        {
-            "enemyId": "plated_spore",
-            "displayName": "Plated Spore",
-            "hp": 70,
-            "speed": 1.1,
-            "armorFlat": 8,
-            "rewardGold": 10,
-            "lineDamage": 2,
-            "threatCost": 3.2,
-            "tags": [
-                "armored",
-                "mid"
-            ]
+          "enemyId": "skitter_runner",
+          "count": 15,
+          "startDelay": 0.08,
+          "spawnInterval": 0.25,
+          "formation": "stream",
+          "lane": "center"
         }
-    ],
-    "waves": [
+      ]
+    },
+    {
+      "waveIndex": 2,
+      "phase": "reinforce",
+      "goalTag": "chapter_b_split_switch_canyon_l09_w02_reinforce",
+      "threatTags": [
+        "reinforce",
+        "split_switch_canyon",
+        "attrition",
+        "swarm"
+      ],
+      "prepSeconds": 8.66,
+      "rewardGold": 29,
+      "budgetTarget": 27,
+      "budgetTolerance": 1.1,
+      "hint": "[L09] W02: 中线 Ember Leech 消耗预算，右线 Ash Swarm 测试AOE覆盖。",
+      "groups": [
         {
-            "waveIndex": 1,
-            "phase": "introduce",
-            "goalTag": "chapter_b_split_switch_canyon_l09_w01_introduce",
-            "threatTags": [
-                "introduce",
-                "split_switch_canyon",
-                "fast",
-                "swarm"
-            ],
-            "prepSeconds": 8.8,
-            "rewardGold": 27,
-            "budgetTarget": 23.4,
-            "budgetTolerance": 1.1,
-            "hint": "[L09] W01: 左线高速、中心群体；先按路线分配单体和AOE。",
-            "groups": [
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 13,
-                    "startDelay": 0,
-                    "spawnInterval": 0.25,
-                    "formation": "stream",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 13,
-                    "startDelay": 1.12,
-                    "spawnInterval": 0.2,
-                    "formation": "pack",
-                    "lane": "center"
-                }
-            ]
+          "enemyId": "ember_leech",
+          "count": 5,
+          "startDelay": 0.16,
+          "spawnInterval": 0.46,
+          "formation": "escort",
+          "lane": "center"
         },
         {
-            "waveIndex": 2,
-            "phase": "reinforce",
-            "goalTag": "chapter_b_split_switch_canyon_l09_w02_reinforce",
-            "threatTags": [
-                "reinforce",
-                "split_switch_canyon",
-                "attrition",
-                "swarm"
-            ],
-            "prepSeconds": 8.66,
-            "rewardGold": 29,
-            "budgetTarget": 27,
-            "budgetTolerance": 1.1,
-            "hint": "[L09] W02: 中线 Ember Leech 消耗预算，右线 Ash Swarm 测试AOE覆盖。",
-            "groups": [
-                {
-                    "enemyId": "ember_leech",
-                    "count": 5,
-                    "startDelay": 0.16,
-                    "spawnInterval": 0.46,
-                    "formation": "escort",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 15,
-                    "startDelay": 0.96,
-                    "spawnInterval": 0.19,
-                    "formation": "pack",
-                    "lane": "right"
-                }
-            ]
+          "enemyId": "ash_swarm",
+          "count": 15,
+          "startDelay": 0.08,
+          "spawnInterval": 0.22,
+          "formation": "swarm",
+          "lane": "right"
+        }
+      ]
+    },
+    {
+      "waveIndex": 3,
+      "phase": "introduce",
+      "goalTag": "chapter_b_split_switch_canyon_l09_w03_exam",
+      "threatTags": [
+        "exam",
+        "split_switch_canyon",
+        "attrition",
+        "armored",
+        "swarm"
+      ],
+      "prepSeconds": 8.92,
+      "rewardGold": 34,
+      "budgetTarget": 35,
+      "budgetTolerance": 1.1,
+      "hint": "[L09] W03: 右线消耗、左线群体、中线装甲；检查克制塔是否分工清楚。",
+      "groups": [
+        {
+          "enemyId": "ember_leech",
+          "count": 5,
+          "startDelay": 0,
+          "spawnInterval": 0.42,
+          "formation": "escort",
+          "lane": "right"
         },
         {
-            "waveIndex": 3,
-            "phase": "exam",
-            "goalTag": "chapter_b_split_switch_canyon_l09_w03_exam",
-            "threatTags": [
-                "exam",
-                "split_switch_canyon",
-                "attrition",
-                "armored",
-                "swarm"
-            ],
-            "prepSeconds": 8.92,
-            "rewardGold": 34,
-            "budgetTarget": 35,
-            "budgetTolerance": 1.1,
-            "hint": "[L09] W03: 右线消耗、左线群体、中线装甲；检查克制塔是否分工清楚。",
-            "groups": [
-                {
-                    "enemyId": "ember_leech",
-                    "count": 5,
-                    "startDelay": 0,
-                    "spawnInterval": 0.42,
-                    "formation": "escort",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 13,
-                    "startDelay": 1.24,
-                    "spawnInterval": 0.18,
-                    "formation": "pack",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "plated_spore",
-                    "count": 3,
-                    "startDelay": 1.92,
-                    "spawnInterval": 0.69,
-                    "formation": "burst",
-                    "lane": "center"
-                }
-            ]
+          "enemyId": "plated_spore",
+          "count": 3,
+          "startDelay": 1.92,
+          "spawnInterval": 0.69,
+          "formation": "burst",
+          "lane": "center"
         },
         {
-            "waveIndex": 4,
-            "phase": "introduce",
-            "goalTag": "chapter_b_split_switch_canyon_l09_w04_introduce",
-            "threatTags": [
-                "introduce",
-                "split_switch_canyon",
-                "attrition",
-                "swarm",
-                "center_pressure"
-            ],
-            "prepSeconds": 8.38,
-            "rewardGold": 33,
-            "budgetTarget": 34,
-            "budgetTolerance": 1.1,
-            "hint": "[L09] W04: 左线消耗牵制，中心群体推进；不要只堆单点火力。",
-            "groups": [
-                {
-                    "enemyId": "ember_leech",
-                    "count": 6,
-                    "startDelay": 0,
-                    "spawnInterval": 0.48,
-                    "formation": "escort",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 20,
-                    "startDelay": 1.2,
-                    "spawnInterval": 0.2,
-                    "formation": "pack",
-                    "lane": "center"
-                }
-            ]
+          "enemyId": "cinder_husk",
+          "count": 2,
+          "startDelay": 1.2,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "center"
         },
         {
-            "waveIndex": 5,
-            "phase": "reinforce",
-            "goalTag": "chapter_b_split_switch_canyon_l09_w05_reinforce",
-            "threatTags": [
-                "reinforce",
-                "split_switch_canyon",
-                "attrition",
-                "armored",
-                "route_swap"
-            ],
-            "prepSeconds": 8.24,
-            "rewardGold": 35,
-            "budgetTarget": 35.8,
-            "budgetTolerance": 1.1,
-            "hint": "[L09] W05: 中线消耗、右线群体、左线装甲；准备一次路线换防。",
-            "groups": [
-                {
-                    "enemyId": "ember_leech",
-                    "count": 5,
-                    "startDelay": 0.24,
-                    "spawnInterval": 0.46,
-                    "formation": "escort",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 14,
-                    "startDelay": 1.04,
-                    "spawnInterval": 0.19,
-                    "formation": "pack",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "plated_spore",
-                    "count": 3,
-                    "startDelay": 2.4,
-                    "spawnInterval": 0.75,
-                    "formation": "burst",
-                    "lane": "left"
-                }
-            ]
+          "enemyId": "rail_splitter",
+          "count": 1,
+          "startDelay": 1.6,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "center"
+        }
+      ]
+    },
+    {
+      "waveIndex": 4,
+      "phase": "introduce",
+      "goalTag": "chapter_b_split_switch_canyon_l09_w04_introduce",
+      "threatTags": [
+        "introduce",
+        "split_switch_canyon",
+        "attrition",
+        "swarm",
+        "center_pressure"
+      ],
+      "prepSeconds": 8.38,
+      "rewardGold": 33,
+      "budgetTarget": 34,
+      "budgetTolerance": 1.1,
+      "hint": "[L09] W04: 左线消耗牵制，中心群体推进；不要只堆单点火力。",
+      "groups": [
+        {
+          "enemyId": "ember_leech",
+          "count": 6,
+          "startDelay": 0,
+          "spawnInterval": 0.48,
+          "formation": "escort",
+          "lane": "left"
         },
         {
-            "waveIndex": 6,
-            "phase": "exam",
-            "goalTag": "chapter_b_split_switch_canyon_l09_w06_exam",
-            "threatTags": [
-                "exam",
-                "split_switch_canyon",
-                "split",
-                "flank",
-                "armored",
-                "swarm"
-            ],
-            "prepSeconds": 8.5,
-            "rewardGold": 40,
-            "budgetTarget": 46,
-            "budgetTolerance": 1.1,
-            "hint": "[L09] W06: 分路突袭加三线装甲/群体压力；用 readiness 判断是否能开波。",
-            "groups": [
-                {
-                    "enemyId": "burrow_sapper",
-                    "count": 6,
-                    "startDelay": 0.08,
-                    "spawnInterval": 0.22,
-                    "formation": "split_lane",
-                    "lane": "split_lane"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 13,
-                    "startDelay": 1.32,
-                    "spawnInterval": 0.18,
-                    "formation": "pack",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "carapace_brute",
-                    "count": 2,
-                    "startDelay": 2,
-                    "spawnInterval": 0.69,
-                    "formation": "burst",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "plated_spore",
-                    "count": 4,
-                    "startDelay": 3.24,
-                    "spawnInterval": 0.69,
-                    "formation": "burst",
-                    "lane": "right"
-                }
-            ]
+          "enemyId": "acid_blister",
+          "count": 1,
+          "startDelay": 1.31,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "center"
         },
         {
-            "waveIndex": 7,
-            "phase": "introduce",
-            "goalTag": "chapter_b_split_switch_canyon_l09_w07_introduce",
-            "threatTags": [
-                "introduce",
-                "split_switch_canyon",
-                "split",
-                "armored"
-            ],
-            "prepSeconds": 7.96,
-            "rewardGold": 39,
-            "budgetTarget": 45,
-            "budgetTolerance": 1.07,
-            "hint": "[L09] W07: 识别新威胁并调整火力分工。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 23,
-                    "startDelay": 0,
-                    "spawnInterval": 0.2,
-                    "formation": "pack",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "burrow_sapper",
-                    "count": 6,
-                    "startDelay": 1.28,
-                    "spawnInterval": 0.24,
-                    "formation": "cross_lane",
-                    "lane": "cross_lane"
-                },
-                {
-                    "enemyId": "plated_spore",
-                    "count": 4,
-                    "startDelay": 2.64,
-                    "spawnInterval": 0.79,
-                    "formation": "burst",
-                    "lane": "right"
-                }
-            ]
+          "enemyId": "ash_swarm",
+          "count": 13,
+          "startDelay": 0.08,
+          "spawnInterval": 0.22,
+          "formation": "swarm",
+          "lane": "left"
+        }
+      ]
+    },
+    {
+      "waveIndex": 5,
+      "phase": "reinforce",
+      "goalTag": "chapter_b_split_switch_canyon_l09_w05_reinforce",
+      "threatTags": [
+        "reinforce",
+        "split_switch_canyon",
+        "attrition",
+        "armored",
+        "route_swap"
+      ],
+      "prepSeconds": 8.24,
+      "rewardGold": 35,
+      "budgetTarget": 35.8,
+      "budgetTolerance": 1.1,
+      "hint": "[L09] W05: 中线消耗、右线群体、左线装甲；准备一次路线换防。",
+      "groups": [
+        {
+          "enemyId": "ember_leech",
+          "count": 5,
+          "startDelay": 0.24,
+          "spawnInterval": 0.46,
+          "formation": "escort",
+          "lane": "center"
         },
         {
-            "waveIndex": 8,
-            "phase": "reinforce",
-            "goalTag": "chapter_b_split_switch_canyon_l09_w08_reinforce",
-            "threatTags": [
-                "reinforce",
-                "split_switch_canyon",
-                "split",
-                "armored"
-            ],
-            "prepSeconds": 7.82,
-            "rewardGold": 41,
-            "budgetTarget": 46.7,
-            "budgetTolerance": 1.07,
-            "hint": "[L09] W08: 持续压制并补齐覆盖空洞。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 19,
-                    "startDelay": 0,
-                    "spawnInterval": 0.19,
-                    "formation": "pack",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 11,
-                    "startDelay": 1.12,
-                    "spawnInterval": 0.24,
-                    "formation": "split_lane",
-                    "lane": "split_lane"
-                },
-                {
-                    "enemyId": "carapace_brute",
-                    "count": 2,
-                    "startDelay": 2.48,
-                    "spawnInterval": 0.75,
-                    "formation": "burst",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "burrow_sapper",
-                    "count": 5,
-                    "startDelay": 3.84,
-                    "spawnInterval": 0.23,
-                    "formation": "cross_lane",
-                    "lane": "cross_lane"
-                }
-            ]
+          "enemyId": "plated_spore",
+          "count": 3,
+          "startDelay": 2.4,
+          "spawnInterval": 0.75,
+          "formation": "burst",
+          "lane": "left"
         },
         {
-            "waveIndex": 9,
-            "phase": "exam",
-            "goalTag": "chapter_b_split_switch_canyon_l09_w09_exam",
-            "threatTags": [
-                "exam",
-                "split_switch_canyon",
-                "split",
-                "armored",
-                "flank"
-            ],
-            "prepSeconds": 8.08,
-            "rewardGold": 46,
-            "budgetTarget": 56.2,
-            "budgetTolerance": 1.07,
-            "hint": "[L09] W09: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 22,
-                    "startDelay": 0.16,
-                    "spawnInterval": 0.18,
-                    "formation": "pack",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "burrow_sapper",
-                    "count": 6,
-                    "startDelay": 0.84,
-                    "spawnInterval": 0.22,
-                    "formation": "stream",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "plated_spore",
-                    "count": 4,
-                    "startDelay": 2.08,
-                    "spawnInterval": 0.69,
-                    "formation": "burst",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "ember_leech",
-                    "count": 4,
-                    "startDelay": 3.32,
-                    "spawnInterval": 0.42,
-                    "formation": "escort",
-                    "lane": "right"
-                }
-            ]
+          "enemyId": "rail_splitter",
+          "count": 2,
+          "startDelay": 1.15,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "left"
         },
         {
-            "waveIndex": 10,
-            "phase": "introduce",
-            "goalTag": "chapter_b_split_switch_canyon_l09_w10_introduce",
-            "threatTags": [
-                "introduce",
-                "split_switch_canyon",
-                "split",
-                "armored",
-                "flank"
-            ],
-            "prepSeconds": 8.04,
-            "rewardGold": 49,
-            "budgetTarget": 57.8,
-            "budgetTolerance": 1.07,
-            "hint": "[L09] W10: 识别新威胁并调整火力分工。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "ember_leech",
-                    "count": 8,
-                    "startDelay": 0,
-                    "spawnInterval": 0.48,
-                    "formation": "escort",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 17,
-                    "startDelay": 1.36,
-                    "spawnInterval": 0.24,
-                    "formation": "cross_lane",
-                    "lane": "cross_lane"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 21,
-                    "startDelay": 2.16,
-                    "spawnInterval": 0.2,
-                    "formation": "pack",
-                    "lane": "right"
-                }
-            ]
+          "enemyId": "ash_swarm",
+          "count": 5,
+          "startDelay": 0.08,
+          "spawnInterval": 0.22,
+          "formation": "swarm",
+          "lane": "right"
+        }
+      ]
+    },
+    {
+      "waveIndex": 6,
+      "phase": "exam",
+      "goalTag": "chapter_b_split_switch_canyon_l09_w06_exam",
+      "threatTags": [
+        "exam",
+        "split_switch_canyon",
+        "split",
+        "flank",
+        "armored",
+        "swarm"
+      ],
+      "prepSeconds": 8.5,
+      "rewardGold": 40,
+      "budgetTarget": 46,
+      "budgetTolerance": 1.1,
+      "hint": "[L09] W06: 分路突袭加三线装甲/群体压力；用 readiness 判断是否能开波。",
+      "groups": [
+        {
+          "enemyId": "burrow_sapper",
+          "count": 6,
+          "startDelay": 0.08,
+          "spawnInterval": 0.22,
+          "formation": "split_lane",
+          "lane": "split_lane"
         },
         {
-            "waveIndex": 11,
-            "phase": "reinforce",
-            "goalTag": "chapter_b_split_switch_canyon_l09_w11_reinforce",
-            "threatTags": [
-                "reinforce",
-                "split_switch_canyon",
-                "split",
-                "armored",
-                "flank"
-            ],
-            "prepSeconds": 7.4,
-            "rewardGold": 47,
-            "budgetTarget": 57.8,
-            "budgetTolerance": 1.07,
-            "hint": "[L09] W11: 持续压制并补齐覆盖空洞。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "plated_spore",
-                    "count": 6,
-                    "startDelay": 0,
-                    "spawnInterval": 0.75,
-                    "formation": "burst",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "burrow_sapper",
-                    "count": 6,
-                    "startDelay": 1.2,
-                    "spawnInterval": 0.24,
-                    "formation": "split_lane",
-                    "lane": "split_lane"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 16,
-                    "startDelay": 2.56,
-                    "spawnInterval": 0.19,
-                    "formation": "pack",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "ember_leech",
-                    "count": 4,
-                    "startDelay": 3.36,
-                    "spawnInterval": 0.46,
-                    "formation": "escort",
-                    "lane": "center"
-                }
-            ]
+          "enemyId": "carapace_brute",
+          "count": 2,
+          "startDelay": 2,
+          "spawnInterval": 0.69,
+          "formation": "burst",
+          "lane": "center"
         },
         {
-            "waveIndex": 12,
-            "phase": "exam",
-            "goalTag": "chapter_b_split_switch_canyon_l09_w12_exam",
-            "threatTags": [
-                "exam",
-                "split_switch_canyon",
-                "split",
-                "armored",
-                "flank"
-            ],
-            "prepSeconds": 7.66,
-            "rewardGold": 52,
-            "budgetTarget": 66.7,
-            "budgetTolerance": 1.07,
-            "hint": "[L09] W12: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "carapace_brute",
-                    "count": 5,
-                    "startDelay": 0.24,
-                    "spawnInterval": 0.69,
-                    "formation": "stagger",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 16,
-                    "startDelay": 0.92,
-                    "spawnInterval": 0.22,
-                    "formation": "stream",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 18,
-                    "startDelay": 2.16,
-                    "spawnInterval": 0.18,
-                    "formation": "pack",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "burrow_sapper",
-                    "count": 6,
-                    "startDelay": 3.4,
-                    "spawnInterval": 0.22,
-                    "formation": "split_lane",
-                    "lane": "split_lane"
-                }
-            ]
+          "enemyId": "plated_spore",
+          "count": 4,
+          "startDelay": 3.24,
+          "spawnInterval": 0.69,
+          "formation": "burst",
+          "lane": "right"
         },
         {
-            "waveIndex": 13,
-            "phase": "introduce",
-            "goalTag": "chapter_b_split_switch_canyon_l09_w13_introduce",
-            "threatTags": [
-                "introduce",
-                "split_switch_canyon",
-                "split",
-                "armored",
-                "flank",
-                "high_pressure"
-            ],
-            "prepSeconds": 7.12,
-            "rewardGold": 51,
-            "budgetTarget": 63.8,
-            "budgetTolerance": 1.05,
-            "hint": "[L09] W13: 识别新威胁并调整火力分工。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "plated_spore",
-                    "count": 8,
-                    "startDelay": 0.08,
-                    "spawnInterval": 0.79,
-                    "formation": "stagger",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 24,
-                    "startDelay": 1.44,
-                    "spawnInterval": 0.2,
-                    "formation": "pack",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 19,
-                    "startDelay": 2.24,
-                    "spawnInterval": 0.25,
-                    "formation": "split_lane",
-                    "lane": "split_lane"
-                }
-            ]
+          "enemyId": "cinder_husk",
+          "count": 2,
+          "startDelay": 0.89,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "right"
         },
         {
-            "waveIndex": 14,
-            "phase": "reinforce",
-            "goalTag": "chapter_b_split_switch_canyon_l09_w14_reinforce",
-            "threatTags": [
-                "reinforce",
-                "split_switch_canyon",
-                "split",
-                "armored",
-                "flank",
-                "high_pressure"
-            ],
-            "prepSeconds": 6.98,
-            "rewardGold": 53,
-            "budgetTarget": 66.1,
-            "budgetTolerance": 1.05,
-            "hint": "[L09] W14: 持续压制并补齐覆盖空洞。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "carapace_brute",
-                    "count": 5,
-                    "startDelay": 0,
-                    "spawnInterval": 0.75,
-                    "formation": "stagger",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 20,
-                    "startDelay": 1.28,
-                    "spawnInterval": 0.19,
-                    "formation": "pack",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "burrow_sapper",
-                    "count": 6,
-                    "startDelay": 2.64,
-                    "spawnInterval": 0.24,
-                    "formation": "stream",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "burrow_sapper",
-                    "count": 6,
-                    "startDelay": 3.44,
-                    "spawnInterval": 0.23,
-                    "formation": "cross_lane",
-                    "lane": "cross_lane"
-                }
-            ]
+          "enemyId": "acid_blister",
+          "count": 1,
+          "startDelay": 1.19,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "split_lane"
+        }
+      ]
+    },
+    {
+      "waveIndex": 7,
+      "phase": "introduce",
+      "goalTag": "chapter_b_split_switch_canyon_l09_w07_introduce",
+      "threatTags": [
+        "introduce",
+        "split_switch_canyon",
+        "split",
+        "armored"
+      ],
+      "prepSeconds": 7.96,
+      "rewardGold": 39,
+      "budgetTarget": 45,
+      "budgetTolerance": 1.07,
+      "hint": "[L09] W07: 识别新威胁并调整火力分工。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "burrow_sapper",
+          "count": 6,
+          "startDelay": 1.28,
+          "spawnInterval": 0.24,
+          "formation": "cross_lane",
+          "lane": "cross_lane"
         },
         {
-            "waveIndex": 15,
-            "phase": "exam",
-            "goalTag": "chapter_b_split_switch_canyon_l09_w15_exam",
-            "threatTags": [
-                "exam",
-                "split_switch_canyon",
-                "split",
-                "armored",
-                "flank",
-                "high_pressure",
-                "exam_peak"
-            ],
-            "prepSeconds": 7.24,
-            "rewardGold": 58,
-            "budgetTarget": 84.6,
-            "budgetTolerance": 1.05,
+          "enemyId": "plated_spore",
+          "count": 4,
+          "startDelay": 2.64,
+          "spawnInterval": 0.79,
+          "formation": "burst",
+          "lane": "right"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 22,
+          "startDelay": 0.08,
+          "spawnInterval": 0.22,
+          "formation": "swarm",
+          "lane": "left"
+        }
+      ]
+    },
+    {
+      "waveIndex": 8,
+      "phase": "reinforce",
+      "goalTag": "chapter_b_split_switch_canyon_l09_w08_reinforce",
+      "threatTags": [
+        "reinforce",
+        "split_switch_canyon",
+        "split",
+        "armored"
+      ],
+      "prepSeconds": 7.82,
+      "rewardGold": 41,
+      "budgetTarget": 46.7,
+      "budgetTolerance": 1.07,
+      "hint": "[L09] W08: 持续压制并补齐覆盖空洞。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "carapace_brute",
+          "count": 2,
+          "startDelay": 2.48,
+          "spawnInterval": 0.75,
+          "formation": "burst",
+          "lane": "left"
+        },
+        {
+          "enemyId": "burrow_sapper",
+          "count": 5,
+          "startDelay": 3.84,
+          "spawnInterval": 0.23,
+          "formation": "cross_lane",
+          "lane": "cross_lane"
+        },
+        {
+          "enemyId": "cinder_husk",
+          "count": 2,
+          "startDelay": 0.66,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "center"
+        },
+        {
+          "enemyId": "rail_splitter",
+          "count": 2,
+          "startDelay": 1.42,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "center"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 13,
+          "startDelay": 0.08,
+          "spawnInterval": 0.25,
+          "formation": "stream",
+          "lane": "center"
+        }
+      ]
+    },
+    {
+      "waveIndex": 9,
+      "phase": "exam",
+      "goalTag": "chapter_b_split_switch_canyon_l09_w09_exam",
+      "threatTags": [
+        "exam",
+        "split_switch_canyon",
+        "split",
+        "armored",
+        "flank"
+      ],
+      "prepSeconds": 8.08,
+      "rewardGold": 46,
+      "budgetTarget": 56.2,
+      "budgetTolerance": 1.07,
+      "hint": "[L09] W09: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "burrow_sapper",
+          "count": 6,
+          "startDelay": 0.84,
+          "spawnInterval": 0.22,
+          "formation": "stream",
+          "lane": "left"
+        },
+        {
+          "enemyId": "plated_spore",
+          "count": 4,
+          "startDelay": 2.08,
+          "spawnInterval": 0.69,
+          "formation": "burst",
+          "lane": "center"
+        },
+        {
+          "enemyId": "ember_leech",
+          "count": 4,
+          "startDelay": 3.32,
+          "spawnInterval": 0.42,
+          "formation": "escort",
+          "lane": "right"
+        },
+        {
+          "enemyId": "acid_blister",
+          "count": 2,
+          "startDelay": 0.8,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "center"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 9,
+          "startDelay": 0.08,
+          "spawnInterval": 0.22,
+          "formation": "swarm",
+          "lane": "right"
+        }
+      ]
+    },
+    {
+      "waveIndex": 10,
+      "phase": "introduce",
+      "goalTag": "chapter_b_split_switch_canyon_l09_w10_introduce",
+      "threatTags": [
+        "introduce",
+        "split_switch_canyon",
+        "split",
+        "armored",
+        "flank"
+      ],
+      "prepSeconds": 8.04,
+      "rewardGold": 49,
+      "budgetTarget": 57.8,
+      "budgetTolerance": 1.07,
+      "hint": "[L09] W10: 识别新威胁并调整火力分工。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "ember_leech",
+          "count": 8,
+          "startDelay": 0,
+          "spawnInterval": 0.48,
+          "formation": "escort",
+          "lane": "left"
+        },
+        {
+          "enemyId": "rail_splitter",
+          "count": 3,
+          "startDelay": 1.62,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "cross_lane"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 23,
+          "startDelay": 0.08,
+          "spawnInterval": 0.25,
+          "formation": "stream",
+          "lane": "center"
+        }
+      ]
+    },
+    {
+      "waveIndex": 11,
+      "phase": "reinforce",
+      "goalTag": "chapter_b_split_switch_canyon_l09_w11_reinforce",
+      "threatTags": [
+        "reinforce",
+        "split_switch_canyon",
+        "split",
+        "armored",
+        "flank"
+      ],
+      "prepSeconds": 7.4,
+      "rewardGold": 47,
+      "budgetTarget": 57.8,
+      "budgetTolerance": 1.07,
+      "hint": "[L09] W11: 持续压制并补齐覆盖空洞。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "plated_spore",
+          "count": 6,
+          "startDelay": 0,
+          "spawnInterval": 0.75,
+          "formation": "burst",
+          "lane": "center"
+        },
+        {
+          "enemyId": "burrow_sapper",
+          "count": 6,
+          "startDelay": 1.2,
+          "spawnInterval": 0.24,
+          "formation": "split_lane",
+          "lane": "split_lane"
+        },
+        {
+          "enemyId": "ember_leech",
+          "count": 4,
+          "startDelay": 3.36,
+          "spawnInterval": 0.46,
+          "formation": "escort",
+          "lane": "center"
+        },
+        {
+          "enemyId": "cinder_husk",
+          "count": 2,
+          "startDelay": 0.78,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "center"
+        },
+        {
+          "enemyId": "acid_blister",
+          "count": 1,
+          "startDelay": 0.61,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "left"
+        }
+      ]
+    },
+    {
+      "waveIndex": 12,
+      "phase": "exam",
+      "goalTag": "chapter_b_split_switch_canyon_l09_w12_exam",
+      "threatTags": [
+        "exam",
+        "split_switch_canyon",
+        "split",
+        "armored",
+        "flank"
+      ],
+      "prepSeconds": 7.66,
+      "rewardGold": 52,
+      "budgetTarget": 66.7,
+      "budgetTolerance": 1.07,
+      "hint": "[L09] W12: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "carapace_brute",
+          "count": 5,
+          "startDelay": 0.24,
+          "spawnInterval": 0.69,
+          "formation": "stagger",
+          "lane": "right"
+        },
+        {
+          "enemyId": "burrow_sapper",
+          "count": 6,
+          "startDelay": 3.4,
+          "spawnInterval": 0.22,
+          "formation": "split_lane",
+          "lane": "split_lane"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 30,
+          "startDelay": 0.08,
+          "spawnInterval": 0.25,
+          "formation": "stream",
+          "lane": "center"
+        }
+      ]
+    },
+    {
+      "waveIndex": 13,
+      "phase": "introduce",
+      "goalTag": "chapter_b_split_switch_canyon_l09_w13_introduce",
+      "threatTags": [
+        "introduce",
+        "split_switch_canyon",
+        "split",
+        "armored",
+        "flank",
+        "high_pressure"
+      ],
+      "prepSeconds": 7.12,
+      "rewardGold": 51,
+      "budgetTarget": 63.8,
+      "budgetTolerance": 1.05,
+      "hint": "[L09] W13: 识别新威胁并调整火力分工。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "plated_spore",
+          "count": 8,
+          "startDelay": 0.08,
+          "spawnInterval": 0.79,
+          "formation": "stagger",
+          "lane": "left"
+        },
+        {
+          "enemyId": "cinder_husk",
+          "count": 3,
+          "startDelay": 1.17,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "center"
+        },
+        {
+          "enemyId": "rail_splitter",
+          "count": 3,
+          "startDelay": 0.83,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "left"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 18,
+          "startDelay": 0.08,
+          "spawnInterval": 0.25,
+          "formation": "stream",
+          "lane": "center"
+        }
+      ]
+    },
+    {
+      "waveIndex": 14,
+      "phase": "reinforce",
+      "goalTag": "chapter_b_split_switch_canyon_l09_w14_reinforce",
+      "threatTags": [
+        "reinforce",
+        "split_switch_canyon",
+        "split",
+        "armored",
+        "flank",
+        "high_pressure"
+      ],
+      "prepSeconds": 6.98,
+      "rewardGold": 53,
+      "budgetTarget": 66.1,
+      "budgetTolerance": 1.05,
+      "hint": "[L09] W14: 持续压制并补齐覆盖空洞。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "carapace_brute",
+          "count": 5,
+          "startDelay": 0,
+          "spawnInterval": 0.75,
+          "formation": "stagger",
+          "lane": "center"
+        },
+        {
+          "enemyId": "burrow_sapper",
+          "count": 6,
+          "startDelay": 2.64,
+          "spawnInterval": 0.24,
+          "formation": "stream",
+          "lane": "left"
+        },
+        {
+          "enemyId": "burrow_sapper",
+          "count": 6,
+          "startDelay": 3.44,
+          "spawnInterval": 0.23,
+          "formation": "cross_lane",
+          "lane": "cross_lane"
+        },
+        {
+          "enemyId": "acid_blister",
+          "count": 2,
+          "startDelay": 1.54,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "center"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 7,
+          "startDelay": 0.08,
+          "spawnInterval": 0.22,
+          "formation": "swarm",
+          "lane": "right"
+        }
+      ]
+    },
+    {
+      "waveIndex": 15,
+      "phase": "exam",
+      "goalTag": "chapter_b_split_switch_canyon_l09_w15_exam",
+      "threatTags": [
+        "exam",
+        "split_switch_canyon",
+        "split",
+        "armored",
+        "flank",
+        "high_pressure",
+        "exam_peak"
+      ],
+      "prepSeconds": 7.24,
+      "rewardGold": 58,
+      "budgetTarget": 84.6,
+      "budgetTolerance": 1.05,
       "hint": "[L09] W15 EXAM PEAK: 开波前切换中心流量，让装甲与群体压力进入不同火力区。",
-            "groups": [
-                {
-                    "enemyId": "plated_spore",
-                    "count": 8,
-                    "startDelay": 0,
-                    "spawnInterval": 0.69,
-                    "formation": "stagger",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 25,
-                    "startDelay": 1,
-                    "spawnInterval": 0.18,
-                    "formation": "pack",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 18,
-                    "startDelay": 2.24,
-                    "spawnInterval": 0.21,
-                    "formation": "cross_lane",
-                    "lane": "cross_lane"
-                },
-                {
-                    "enemyId": "ember_leech",
-                    "count": 7,
-                    "startDelay": 3.48,
-                    "spawnInterval": 0.4,
-                    "formation": "pressure_mix",
-                    "lane": "all"
-                }
-            ]
+      "groups": [
+        {
+          "enemyId": "plated_spore",
+          "count": 8,
+          "startDelay": 0,
+          "spawnInterval": 0.69,
+          "formation": "stagger",
+          "lane": "right"
         },
         {
-            "waveIndex": 16,
-            "phase": "introduce",
-            "goalTag": "chapter_b_split_switch_canyon_l09_w16_introduce",
-            "threatTags": [
-                "introduce",
-                "split_switch_canyon",
-                "split",
-                "armored",
-                "flank",
-                "high_pressure"
-            ],
-            "prepSeconds": 6.7,
-            "rewardGold": 57,
-            "budgetTarget": 74.6,
-            "budgetTolerance": 1.05,
-            "hint": "[L09] W16: 识别新威胁并调整火力分工。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "carapace_brute",
-                    "count": 7,
-                    "startDelay": 0.16,
-                    "spawnInterval": 0.71,
-                    "formation": "stagger",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 28,
-                    "startDelay": 0.96,
-                    "spawnInterval": 0.18,
-                    "formation": "pack",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "burrow_sapper",
-                    "count": 9,
-                    "startDelay": 2.32,
-                    "spawnInterval": 0.23,
-                    "formation": "split_lane",
-                    "lane": "split_lane"
-                }
-            ]
+          "enemyId": "ember_leech",
+          "count": 7,
+          "startDelay": 3.48,
+          "spawnInterval": 0.4,
+          "formation": "pressure_mix",
+          "lane": "all"
         },
         {
-            "waveIndex": 17,
-            "phase": "reinforce",
-            "goalTag": "chapter_b_split_switch_canyon_l09_w17_reinforce",
-            "threatTags": [
-                "reinforce",
-                "split_switch_canyon",
-                "split",
-                "armored",
-                "flank",
-                "high_pressure",
-                "endgame"
-            ],
-            "prepSeconds": 6.56,
-            "rewardGold": 59,
-            "budgetTarget": 76.2,
-            "budgetTolerance": 1.04,
-            "hint": "[L09] W17: 持续压制并补齐覆盖空洞。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "plated_spore",
-                    "count": 6,
-                    "startDelay": 0,
-                    "spawnInterval": 0.68,
-                    "formation": "stagger",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 19,
-                    "startDelay": 1.28,
-                    "spawnInterval": 0.18,
-                    "formation": "pack",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 14,
-                    "startDelay": 2,
-                    "spawnInterval": 0.22,
-                    "formation": "stream",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "ember_leech",
-                    "count": 5,
-                    "startDelay": 3.28,
-                    "spawnInterval": 0.39,
-                    "formation": "pressure_mix",
-                    "lane": "all"
-                },
-                {
-                    "enemyId": "plated_spore",
-                    "count": 4,
-                    "startDelay": 4.56,
-                    "spawnInterval": 0.68,
-                    "formation": "stagger",
-                    "lane": "right"
-                }
-            ]
+          "enemyId": "rail_splitter",
+          "count": 4,
+          "startDelay": 1.75,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "cross_lane"
         },
         {
-            "waveIndex": 18,
-            "phase": "exam",
-            "goalTag": "chapter_b_split_switch_canyon_l09_w18_exam",
-            "threatTags": [
-                "exam",
-                "split_switch_canyon",
-                "split",
-                "armored",
-                "flank",
-                "high_pressure",
-                "endgame"
-            ],
-            "prepSeconds": 6.82,
-            "rewardGold": 64,
-            "budgetTarget": 90.3,
-            "budgetTolerance": 1.04,
-      "hint": "[L09] W18 EXAM: 根据道路热区切换中心、分路与交叉流量，不要沿用上一波路线。",
-            "groups": [
-                {
-                    "enemyId": "carapace_brute",
-                    "count": 5,
-                    "startDelay": 0,
-                    "spawnInterval": 0.62,
-                    "formation": "stagger",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 22,
-                    "startDelay": 1,
-                    "spawnInterval": 0.18,
-                    "formation": "pack",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "burrow_sapper",
-                    "count": 7,
-                    "startDelay": 2.16,
-                    "spawnInterval": 0.19,
-                    "formation": "cross_lane",
-                    "lane": "cross_lane"
-                },
-                {
-                    "enemyId": "burrow_sapper",
-                    "count": 7,
-                    "startDelay": 2.76,
-                    "spawnInterval": 0.2,
-                    "formation": "split_lane",
-                    "lane": "split_lane"
-                },
-                {
-                    "enemyId": "carapace_brute",
-                    "count": 4,
-                    "startDelay": 3.92,
-                    "spawnInterval": 0.62,
-                    "formation": "stagger",
-                    "lane": "left"
-                }
-            ]
-        },
-        {
-            "waveIndex": 19,
-            "phase": "introduce",
-            "goalTag": "chapter_b_split_switch_canyon_l09_w19_introduce",
-            "threatTags": [
-                "introduce",
-                "split_switch_canyon",
-                "split",
-                "armored",
-                "flank",
-                "high_pressure",
-                "endgame"
-            ],
-            "prepSeconds": 6.28,
-            "rewardGold": 63,
-            "budgetTarget": 84.6,
-            "budgetTolerance": 1.04,
-            "hint": "[L09] W19: 识别新威胁并调整火力分工。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "plated_spore",
-                    "count": 8,
-                    "startDelay": 0.24,
-                    "spawnInterval": 0.71,
-                    "formation": "stagger",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 25,
-                    "startDelay": 0.96,
-                    "spawnInterval": 0.18,
-                    "formation": "pack",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 18,
-                    "startDelay": 2.24,
-                    "spawnInterval": 0.23,
-                    "formation": "split_lane",
-                    "lane": "split_lane"
-                },
-                {
-                    "enemyId": "ember_leech",
-                    "count": 7,
-                    "startDelay": 3.52,
-                    "spawnInterval": 0.41,
-                    "formation": "pressure_mix",
-                    "lane": "all"
-                }
-            ]
-        },
-        {
-            "waveIndex": 20,
-            "phase": "reinforce",
-            "goalTag": "chapter_b_split_switch_canyon_l09_w20_reinforce",
-            "threatTags": [
-                "reinforce",
-                "split_switch_canyon",
-                "split",
-                "armored",
-                "flank",
-                "high_pressure",
-                "endgame"
-            ],
-            "prepSeconds": 6.64,
-            "rewardGold": 69,
-            "budgetTarget": 96.4,
-            "budgetTolerance": 1.04,
-      "hint": "[L09] W20 MILESTONE: 最终换轨会放大一条线路；先看预告，再提交路线与阵容。",
-            "groups": [
-                {
-                    "enemyId": "carapace_brute",
-                    "count": 5,
-                    "startDelay": 0.08,
-                    "spawnInterval": 0.68,
-                    "formation": "stagger",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 24,
-                    "startDelay": 1.36,
-                    "spawnInterval": 0.18,
-                    "formation": "pack",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "burrow_sapper",
-                    "count": 7,
-                    "startDelay": 2.08,
-                    "spawnInterval": 0.22,
-                    "formation": "stream",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "burrow_sapper",
-                    "count": 7,
-                    "startDelay": 3.36,
-                    "spawnInterval": 0.21,
-                    "formation": "cross_lane",
-                    "lane": "cross_lane"
-                },
-                {
-                    "enemyId": "carapace_brute",
-                    "count": 5,
-                    "startDelay": 4.64,
-                    "spawnInterval": 0.68,
-                    "formation": "stagger",
-                    "lane": "right"
-                }
-            ]
+          "enemyId": "skitter_runner",
+          "count": 23,
+          "startDelay": 0.08,
+          "spawnInterval": 0.25,
+          "formation": "stream",
+          "lane": "center"
         }
-    ]
+      ]
+    },
+    {
+      "waveIndex": 16,
+      "phase": "introduce",
+      "goalTag": "chapter_b_split_switch_canyon_l09_w16_introduce",
+      "threatTags": [
+        "introduce",
+        "split_switch_canyon",
+        "split",
+        "armored",
+        "flank",
+        "high_pressure"
+      ],
+      "prepSeconds": 6.7,
+      "rewardGold": 57,
+      "budgetTarget": 74.6,
+      "budgetTolerance": 1.05,
+      "hint": "[L09] W16: 识别新威胁并调整火力分工。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "carapace_brute",
+          "count": 7,
+          "startDelay": 0.16,
+          "spawnInterval": 0.71,
+          "formation": "stagger",
+          "lane": "left"
+        },
+        {
+          "enemyId": "burrow_sapper",
+          "count": 9,
+          "startDelay": 2.32,
+          "spawnInterval": 0.23,
+          "formation": "split_lane",
+          "lane": "split_lane"
+        },
+        {
+          "enemyId": "cinder_husk",
+          "count": 4,
+          "startDelay": 1.19,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "split_lane"
+        },
+        {
+          "enemyId": "acid_blister",
+          "count": 2,
+          "startDelay": 1.58,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "left"
+        }
+      ]
+    },
+    {
+      "waveIndex": 17,
+      "phase": "reinforce",
+      "goalTag": "chapter_b_split_switch_canyon_l09_w17_reinforce",
+      "threatTags": [
+        "reinforce",
+        "split_switch_canyon",
+        "split",
+        "armored",
+        "flank",
+        "high_pressure",
+        "endgame"
+      ],
+      "prepSeconds": 6.56,
+      "rewardGold": 59,
+      "budgetTarget": 76.2,
+      "budgetTolerance": 1.04,
+      "hint": "[L09] W17: 持续压制并补齐覆盖空洞。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "plated_spore",
+          "count": 6,
+          "startDelay": 0,
+          "spawnInterval": 0.68,
+          "formation": "stagger",
+          "lane": "center"
+        },
+        {
+          "enemyId": "ember_leech",
+          "count": 5,
+          "startDelay": 3.28,
+          "spawnInterval": 0.39,
+          "formation": "pressure_mix",
+          "lane": "all"
+        },
+        {
+          "enemyId": "plated_spore",
+          "count": 4,
+          "startDelay": 4.56,
+          "spawnInterval": 0.68,
+          "formation": "stagger",
+          "lane": "right"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 29,
+          "startDelay": 0.08,
+          "spawnInterval": 0.25,
+          "formation": "stream",
+          "lane": "center"
+        }
+      ]
+    },
+    {
+      "waveIndex": 18,
+      "phase": "exam",
+      "goalTag": "chapter_b_split_switch_canyon_l09_w18_exam",
+      "threatTags": [
+        "exam",
+        "split_switch_canyon",
+        "split",
+        "armored",
+        "flank",
+        "high_pressure",
+        "endgame"
+      ],
+      "prepSeconds": 6.82,
+      "rewardGold": 64,
+      "budgetTarget": 84.9,
+      "budgetTolerance": 1.04,
+      "hint": "[L09] W18 EXAM: 根据道路热区切换中心、分路与交叉流量，不要沿用上一波路线。",
+      "groups": [
+        {
+          "enemyId": "carapace_brute",
+          "count": 5,
+          "startDelay": 0,
+          "spawnInterval": 0.62,
+          "formation": "stagger",
+          "lane": "right"
+        },
+        {
+          "enemyId": "burrow_sapper",
+          "count": 7,
+          "startDelay": 2.16,
+          "spawnInterval": 0.19,
+          "formation": "cross_lane",
+          "lane": "cross_lane"
+        },
+        {
+          "enemyId": "burrow_sapper",
+          "count": 7,
+          "startDelay": 2.76,
+          "spawnInterval": 0.2,
+          "formation": "split_lane",
+          "lane": "split_lane"
+        },
+        {
+          "enemyId": "carapace_brute",
+          "count": 4,
+          "startDelay": 3.92,
+          "spawnInterval": 0.62,
+          "formation": "stagger",
+          "lane": "left"
+        },
+        {
+          "enemyId": "cinder_husk",
+          "count": 2,
+          "startDelay": 0.88,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "left"
+        },
+        {
+          "enemyId": "rail_splitter",
+          "count": 2,
+          "startDelay": 0.74,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "cross_lane"
+        }
+      ]
+    },
+    {
+      "waveIndex": 19,
+      "phase": "introduce",
+      "goalTag": "chapter_b_split_switch_canyon_l09_w19_introduce",
+      "threatTags": [
+        "introduce",
+        "split_switch_canyon",
+        "split",
+        "armored",
+        "flank",
+        "high_pressure",
+        "endgame"
+      ],
+      "prepSeconds": 6.28,
+      "rewardGold": 63,
+      "budgetTarget": 79.5,
+      "budgetTolerance": 1.04,
+      "hint": "[L09] W19: 识别新威胁并调整火力分工。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "plated_spore",
+          "count": 8,
+          "startDelay": 0.24,
+          "spawnInterval": 0.71,
+          "formation": "stagger",
+          "lane": "left"
+        },
+        {
+          "enemyId": "ember_leech",
+          "count": 7,
+          "startDelay": 3.52,
+          "spawnInterval": 0.41,
+          "formation": "pressure_mix",
+          "lane": "all"
+        },
+        {
+          "enemyId": "acid_blister",
+          "count": 3,
+          "startDelay": 0.87,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "left"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 17,
+          "startDelay": 0.08,
+          "spawnInterval": 0.25,
+          "formation": "stream",
+          "lane": "center"
+        }
+      ]
+    },
+    {
+      "waveIndex": 20,
+      "phase": "boss",
+      "goalTag": "chapter_b_split_switch_canyon_l09_w20_reinforce",
+      "threatTags": [
+        "reinforce",
+        "split_switch_canyon",
+        "split",
+        "armored",
+        "flank",
+        "high_pressure",
+        "endgame",
+        "boss"
+      ],
+      "prepSeconds": 10.0,
+      "rewardGold": 69,
+      "budgetTarget": 111.4,
+      "budgetTolerance": 1.04,
+      "hint": "[L09] W20 考试 Boss：岔道暴君——用这一关教过的答案应对。",
+      "groups": [
+        {
+          "enemyId": "carapace_brute",
+          "count": 5,
+          "startDelay": 0.08,
+          "spawnInterval": 0.68,
+          "formation": "stagger",
+          "lane": "center"
+        },
+        {
+          "enemyId": "burrow_sapper",
+          "count": 7,
+          "startDelay": 2.08,
+          "spawnInterval": 0.22,
+          "formation": "stream",
+          "lane": "left"
+        },
+        {
+          "enemyId": "burrow_sapper",
+          "count": 7,
+          "startDelay": 3.36,
+          "spawnInterval": 0.21,
+          "formation": "cross_lane",
+          "lane": "cross_lane"
+        },
+        {
+          "enemyId": "carapace_brute",
+          "count": 5,
+          "startDelay": 4.64,
+          "spawnInterval": 0.68,
+          "formation": "stagger",
+          "lane": "right"
+        },
+        {
+          "enemyId": "rail_splitter",
+          "count": 5,
+          "startDelay": 1.04,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "left"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 20,
+          "startDelay": 0.08,
+          "spawnInterval": 0.22,
+          "formation": "swarm",
+          "lane": "right"
+        },
+        {
+          "enemyId": "junction_tyrant",
+          "count": 1,
+          "startDelay": 3.0,
+          "spawnInterval": 3.0,
+          "formation": "boss_entry",
+          "lane": "all"
+        }
+      ]
+    }
+  ]
 }

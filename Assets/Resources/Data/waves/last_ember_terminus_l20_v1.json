@@ -1,1017 +1,1305 @@
 ﻿{
-    "schemaVersion": "wave-schema-v1",
-    "waveSetId": "last_ember_terminus_l20_v1",
-    "mapId": "last_ember_terminus",
-    "displayName": "Last Ember Terminus L20 (chapter_d)",
-    "globalDefaults": {
-        "prepSeconds": 7.45,
-        "baseRewardGold": 27,
-        "spawnMinSpacing": 0.16,
-        "lineDamageDefault": 1,
-        "maxConcurrentEnemiesHint": 126
+  "schemaVersion": "wave-schema-v1",
+  "waveSetId": "last_ember_terminus_l20_v1",
+  "mapId": "last_ember_terminus",
+  "displayName": "Last Ember Terminus L20 (chapter_d)",
+  "globalDefaults": {
+    "prepSeconds": 7.45,
+    "baseRewardGold": 27,
+    "spawnMinSpacing": 0.16,
+    "lineDamageDefault": 1,
+    "maxConcurrentEnemiesHint": 126
+  },
+  "enemyCatalog": [
+    {
+      "enemyId": "skitter_runner",
+      "displayName": "Skitter Runner",
+      "hp": 26,
+      "speed": 2.2,
+      "armorFlat": 0,
+      "rewardGold": 6,
+      "lineDamage": 1,
+      "threatCost": 1.0,
+      "tags": [
+        "fast",
+        "light"
+      ]
     },
-    "enemyCatalog": [
+    {
+      "enemyId": "carapace_brute",
+      "displayName": "Carapace Brute",
+      "hp": 120,
+      "speed": 0.8,
+      "armorFlat": 4,
+      "rewardGold": 14,
+      "lineDamage": 2,
+      "threatCost": 4.5,
+      "tags": [
+        "heavy",
+        "armored"
+      ]
+    },
+    {
+      "enemyId": "ash_swarm",
+      "displayName": "Ash Swarm",
+      "hp": 16,
+      "speed": 1.5,
+      "armorFlat": 0,
+      "rewardGold": 4,
+      "lineDamage": 1,
+      "threatCost": 0.8,
+      "tags": [
+        "swarm",
+        "light"
+      ]
+    },
+    {
+      "enemyId": "plated_spore",
+      "displayName": "Plated Spore",
+      "hp": 70,
+      "speed": 1.1,
+      "armorFlat": 8,
+      "rewardGold": 10,
+      "lineDamage": 2,
+      "threatCost": 3.2,
+      "tags": [
+        "armored",
+        "mid"
+      ]
+    }
+  ],
+  "waves": [
+    {
+      "waveIndex": 1,
+      "phase": "introduce",
+      "goalTag": "chapter_d_last_ember_terminus_l20_w01_introduce",
+      "threatTags": [
+        "introduce",
+        "last_ember_terminus"
+      ],
+      "prepSeconds": 7.45,
+      "rewardGold": 65,
+      "budgetTarget": 25.6,
+      "budgetTolerance": 1.1,
+      "hint": "[L20] W01: 识别新威胁并调整火力分工。",
+      "groups": [
         {
-            "enemyId": "skitter_runner",
-            "displayName": "Skitter Runner",
-            "hp": 26,
-            "speed": 2.2,
-            "armorFlat": 0,
-            "rewardGold": 6,
-            "lineDamage": 1,
-            "threatCost": 1.0,
-            "tags": [
-                "fast",
-                "light"
-            ]
+          "enemyId": "rail_splitter",
+          "count": 1,
+          "startDelay": 1.38,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "right"
         },
         {
-            "enemyId": "carapace_brute",
-            "displayName": "Carapace Brute",
-            "hp": 120,
-            "speed": 0.8,
-            "armorFlat": 4,
-            "rewardGold": 14,
-            "lineDamage": 2,
-            "threatCost": 4.5,
-            "tags": [
-                "heavy",
-                "armored"
-            ]
-        },
-        {
-            "enemyId": "ash_swarm",
-            "displayName": "Ash Swarm",
-            "hp": 16,
-            "speed": 1.5,
-            "armorFlat": 0,
-            "rewardGold": 4,
-            "lineDamage": 1,
-            "threatCost": 0.8,
-            "tags": [
-                "swarm",
-                "light"
-            ]
-        },
-        {
-            "enemyId": "plated_spore",
-            "displayName": "Plated Spore",
-            "hp": 70,
-            "speed": 1.1,
-            "armorFlat": 8,
-            "rewardGold": 10,
-            "lineDamage": 2,
-            "threatCost": 3.2,
-            "tags": [
-                "armored",
-                "mid"
-            ]
+          "enemyId": "skitter_runner",
+          "count": 22,
+          "startDelay": 0.08,
+          "spawnInterval": 0.25,
+          "formation": "stream",
+          "lane": "center"
         }
-    ],
-    "waves": [
+      ]
+    },
+    {
+      "waveIndex": 2,
+      "phase": "reinforce",
+      "goalTag": "chapter_d_last_ember_terminus_l20_w02_reinforce",
+      "threatTags": [
+        "reinforce",
+        "last_ember_terminus"
+      ],
+      "prepSeconds": 7.31,
+      "rewardGold": 65,
+      "budgetTarget": 27.8,
+      "budgetTolerance": 1.1,
+      "hint": "[L20] W02: 持续压制并补齐覆盖空洞。",
+      "groups": [
         {
-            "waveIndex": 1,
-            "phase": "introduce",
-            "goalTag": "chapter_d_last_ember_terminus_l20_w01_introduce",
-            "threatTags": [
-                "introduce",
-                "last_ember_terminus"
-            ],
-            "prepSeconds": 7.45,
-            "rewardGold": 65,
-            "budgetTarget": 25.6,
-            "budgetTolerance": 1.1,
-            "hint": "[L20] W01: 识别新威胁并调整火力分工。",
-            "groups": [
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 16,
-                    "startDelay": 0.08,
-                    "spawnInterval": 0.25,
-                    "formation": "stream",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 12,
-                    "startDelay": 1.44,
-                    "spawnInterval": 0.2,
-                    "formation": "pack",
-                    "lane": "left"
-                }
-            ]
+          "enemyId": "cinder_glider",
+          "count": 1,
+          "startDelay": 0,
+          "spawnInterval": 0.24,
+          "formation": "stream",
+          "lane": "left"
         },
         {
-            "waveIndex": 2,
-            "phase": "reinforce",
-            "goalTag": "chapter_d_last_ember_terminus_l20_w02_reinforce",
-            "threatTags": [
-                "reinforce",
-                "last_ember_terminus"
-            ],
-            "prepSeconds": 7.31,
-            "rewardGold": 65,
-            "budgetTarget": 27.8,
-            "budgetTolerance": 1.1,
-            "hint": "[L20] W02: 持续压制并补齐覆盖空洞。",
-            "groups": [
-                {
-                    "enemyId": "cinder_glider",
-                    "count": 7,
-                    "startDelay": 0,
-                    "spawnInterval": 0.24,
-                    "formation": "stream",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "spore_carrier",
-                    "count": 3,
-                    "startDelay": 1.28,
-                    "spawnInterval": 0.19,
-                    "formation": "pack",
-                    "lane": "center"
-                }
-            ]
+          "enemyId": "spore_carrier",
+          "count": 2,
+          "startDelay": 1.28,
+          "spawnInterval": 0.19,
+          "formation": "pack",
+          "lane": "center"
         },
         {
-            "waveIndex": 3,
-            "phase": "exam",
-            "goalTag": "chapter_d_last_ember_terminus_l20_w03_exam",
-            "threatTags": [
-                "exam",
-                "last_ember_terminus"
-            ],
-            "prepSeconds": 7.57,
-            "rewardGold": 75,
-            "budgetTarget": 41.5,
-            "budgetTolerance": 1.1,
-            "hint": "[L20] W03: 综合考核：输出、控制、反制链稳定性。",
-            "groups": [
-                {
-                    "enemyId": "burrow_sapper",
-                    "count": 8,
-                    "startDelay": 0,
-                    "spawnInterval": 0.22,
-                    "formation": "stream",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 17,
-                    "startDelay": 1,
-                    "spawnInterval": 0.17,
-                    "formation": "pack",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "husk_titan",
-                    "count": 1,
-                    "startDelay": 2.24,
-                    "spawnInterval": 0.69,
-                    "formation": "burst",
-                    "lane": "left"
-                }
-            ]
+          "enemyId": "cinder_husk",
+          "count": 1,
+          "startDelay": 1.19,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "left"
         },
         {
-            "waveIndex": 4,
-            "phase": "introduce",
-            "goalTag": "chapter_d_last_ember_terminus_l20_w04_introduce",
-            "threatTags": [
-                "introduce",
-                "last_ember_terminus"
-            ],
-            "prepSeconds": 7.03,
-            "rewardGold": 43,
-            "budgetTarget": 60.6,
-            "budgetTolerance": 1.1,
-            "hint": "[L20] W04: 识别新威胁并调整火力分工。",
-            "groups": [
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 35,
-                    "startDelay": 0.16,
-                    "spawnInterval": 0.25,
-                    "formation": "stream",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "spore_carrier",
-                    "count": 8,
-                    "startDelay": 0.96,
-                    "spawnInterval": 0.2,
-                    "formation": "pack",
-                    "lane": "left"
-                }
-            ]
+          "enemyId": "acid_blister",
+          "count": 1,
+          "startDelay": 0.64,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "center"
         },
         {
-            "waveIndex": 5,
-            "phase": "reinforce",
-            "goalTag": "chapter_d_last_ember_terminus_l20_w05_reinforce",
-            "threatTags": [
-                "reinforce",
-                "last_ember_terminus"
-            ],
-            "prepSeconds": 6.89,
-            "rewardGold": 45,
-            "budgetTarget": 65.4,
-            "budgetTolerance": 1.1,
-            "hint": "[L20] W05: 持续压制并补齐覆盖空洞。",
-            "groups": [
-                {
-                    "enemyId": "cinder_glider",
-                    "count": 11,
-                    "startDelay": 0,
-                    "spawnInterval": 0.24,
-                    "formation": "stream",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 25,
-                    "startDelay": 1.36,
-                    "spawnInterval": 0.19,
-                    "formation": "pack",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "rail_warden",
-                    "count": 4,
-                    "startDelay": 2.16,
-                    "spawnInterval": 0.75,
-                    "formation": "burst",
-                    "lane": "right"
-                }
-            ]
+          "enemyId": "forge_dragoon",
+          "count": 1,
+          "startDelay": 0.96,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "left"
         },
         {
-            "waveIndex": 6,
-            "phase": "exam",
-            "goalTag": "chapter_d_last_ember_terminus_l20_w06_exam",
-            "threatTags": [
-                "exam",
-                "last_ember_terminus",
-                "split"
-            ],
-            "prepSeconds": 7.15,
-            "rewardGold": 50,
-            "budgetTarget": 77.3,
-            "budgetTolerance": 1.1,
-            "hint": "[L20] W06: 综合考核：输出、控制、反制链稳定性。",
-            "groups": [
-                {
-                    "enemyId": "burrow_sapper",
-                    "count": 11,
-                    "startDelay": 0,
-                    "spawnInterval": 0.21,
-                    "formation": "cross_lane",
-                    "lane": "cross_lane"
-                },
-                {
-                    "enemyId": "spore_carrier",
-                    "count": 6,
-                    "startDelay": 1.08,
-                    "spawnInterval": 0.17,
-                    "formation": "pack",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "plated_spore",
-                    "count": 5,
-                    "startDelay": 2.32,
-                    "spawnInterval": 0.69,
-                    "formation": "burst",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "rail_warden",
-                    "count": 4,
-                    "startDelay": 3,
-                    "spawnInterval": 0.69,
-                    "formation": "burst",
-                    "lane": "center"
-                }
-            ]
+          "enemyId": "ember_strider",
+          "count": 1,
+          "startDelay": 1.79,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "left"
+        }
+      ]
+    },
+    {
+      "waveIndex": 3,
+      "phase": "introduce",
+      "goalTag": "chapter_d_last_ember_terminus_l20_w03_exam",
+      "threatTags": [
+        "exam",
+        "last_ember_terminus"
+      ],
+      "prepSeconds": 7.57,
+      "rewardGold": 75,
+      "budgetTarget": 41.5,
+      "budgetTolerance": 1.1,
+      "hint": "[L20] W03: 综合考核：输出、控制、反制链稳定性。",
+      "groups": [
+        {
+          "enemyId": "burrow_sapper",
+          "count": 8,
+          "startDelay": 0,
+          "spawnInterval": 0.22,
+          "formation": "stream",
+          "lane": "center"
         },
         {
-            "waveIndex": 7,
-            "phase": "introduce",
-            "goalTag": "chapter_d_last_ember_terminus_l20_w07_introduce",
-            "threatTags": [
-                "introduce",
-                "last_ember_terminus",
-                "split",
-                "armored"
-            ],
-            "prepSeconds": 6.61,
-            "rewardGold": 49,
-            "budgetTarget": 74.4,
-            "budgetTolerance": 1.07,
-            "hint": "[L20] W07: 识别新威胁并调整火力分工。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "spore_carrier",
-                    "count": 10,
-                    "startDelay": 0.24,
-                    "spawnInterval": 0.2,
-                    "formation": "pack",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "cinder_glider",
-                    "count": 9,
-                    "startDelay": 1.04,
-                    "spawnInterval": 0.25,
-                    "formation": "stream",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "husk_titan",
-                    "count": 2,
-                    "startDelay": 2.4,
-                    "spawnInterval": 0.79,
-                    "formation": "burst",
-                    "lane": "center"
-                }
-            ]
+          "enemyId": "husk_titan",
+          "count": 1,
+          "startDelay": 2.24,
+          "spawnInterval": 0.69,
+          "formation": "burst",
+          "lane": "left"
         },
         {
-            "waveIndex": 8,
-            "phase": "reinforce",
-            "goalTag": "chapter_d_last_ember_terminus_l20_w08_reinforce",
-            "threatTags": [
-                "reinforce",
-                "last_ember_terminus",
-                "split",
-                "armored"
-            ],
-            "prepSeconds": 6.47,
-            "rewardGold": 51,
-            "budgetTarget": 78.7,
-            "budgetTolerance": 1.07,
-            "hint": "[L20] W08: 持续压制并补齐覆盖空洞。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 33,
-                    "startDelay": 0.08,
-                    "spawnInterval": 0.19,
-                    "formation": "pack",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "burrow_sapper",
-                    "count": 9,
-                    "startDelay": 1.44,
-                    "spawnInterval": 0.23,
-                    "formation": "cross_lane",
-                    "lane": "cross_lane"
-                },
-                {
-                    "enemyId": "carapace_brute",
-                    "count": 4,
-                    "startDelay": 2.24,
-                    "spawnInterval": 0.75,
-                    "formation": "burst",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "echo_mimic",
-                    "count": 2,
-                    "startDelay": 3.6,
-                    "spawnInterval": 0.46,
-                    "formation": "escort",
-                    "lane": "left"
-                }
-            ]
+          "enemyId": "echo_brood",
+          "count": 2,
+          "startDelay": 1.55,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "right"
         },
         {
-            "waveIndex": 9,
-            "phase": "exam",
-            "goalTag": "chapter_d_last_ember_terminus_l20_w09_exam",
-            "threatTags": [
-                "exam",
-                "last_ember_terminus",
-                "split",
-                "armored",
-                "flank"
-            ],
-            "prepSeconds": 6.73,
-            "rewardGold": 56,
-            "budgetTarget": 97,
-            "budgetTolerance": 1.07,
-            "hint": "[L20] W09: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "spore_carrier",
-                    "count": 10,
-                    "startDelay": 0,
-                    "spawnInterval": 0.17,
-                    "formation": "pack",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 23,
-                    "startDelay": 1.16,
-                    "spawnInterval": 0.22,
-                    "formation": "split_lane",
-                    "lane": "split_lane"
-                },
-                {
-                    "enemyId": "rail_warden",
-                    "count": 5,
-                    "startDelay": 2.4,
-                    "spawnInterval": 0.69,
-                    "formation": "burst",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "rail_warden",
-                    "count": 5,
-                    "startDelay": 3.08,
-                    "spawnInterval": 0.69,
-                    "formation": "burst",
-                    "lane": "center"
-                }
-            ]
+          "enemyId": "ash_swarm",
+          "count": 7,
+          "startDelay": 0.08,
+          "spawnInterval": 0.22,
+          "formation": "swarm",
+          "lane": "center"
+        }
+      ]
+    },
+    {
+      "waveIndex": 4,
+      "phase": "introduce",
+      "goalTag": "chapter_d_last_ember_terminus_l20_w04_introduce",
+      "threatTags": [
+        "introduce",
+        "last_ember_terminus"
+      ],
+      "prepSeconds": 7.03,
+      "rewardGold": 43,
+      "budgetTarget": 60.6,
+      "budgetTolerance": 1.1,
+      "hint": "[L20] W04: 识别新威胁并调整火力分工。",
+      "groups": [
+        {
+          "enemyId": "spore_carrier",
+          "count": 8,
+          "startDelay": 0.96,
+          "spawnInterval": 0.2,
+          "formation": "pack",
+          "lane": "left"
         },
         {
-            "waveIndex": 10,
-            "phase": "introduce",
-            "goalTag": "chapter_d_last_ember_terminus_l20_w10_introduce",
-            "threatTags": [
-                "introduce",
-                "last_ember_terminus",
-                "split",
-                "armored",
-                "flank"
-            ],
-            "prepSeconds": 6.69,
-            "rewardGold": 59,
-            "budgetTarget": 99.5,
-            "budgetTolerance": 1.07,
-            "hint": "[L20] W10: 识别新威胁并调整火力分工。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "carapace_brute",
-                    "count": 9,
-                    "startDelay": 0,
-                    "spawnInterval": 0.79,
-                    "formation": "burst",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "cinder_glider",
-                    "count": 11,
-                    "startDelay": 1.12,
-                    "spawnInterval": 0.25,
-                    "formation": "stream",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 38,
-                    "startDelay": 2.48,
-                    "spawnInterval": 0.2,
-                    "formation": "pack",
-                    "lane": "center"
-                }
-            ]
+          "enemyId": "cinder_husk",
+          "count": 3,
+          "startDelay": 1.39,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "left"
         },
         {
-            "waveIndex": 11,
-            "phase": "reinforce",
-            "goalTag": "chapter_d_last_ember_terminus_l20_w11_reinforce",
-            "threatTags": [
-                "reinforce",
-                "last_ember_terminus",
-                "split",
-                "armored",
-                "flank"
-            ],
-            "prepSeconds": 6.05,
-            "rewardGold": 57,
-            "budgetTarget": 95.2,
-            "budgetTolerance": 1.07,
-            "hint": "[L20] W11: 持续压制并补齐覆盖空洞。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "rail_warden",
-                    "count": 7,
-                    "startDelay": 0.16,
-                    "spawnInterval": 0.75,
-                    "formation": "burst",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "burrow_sapper",
-                    "count": 10,
-                    "startDelay": 0.96,
-                    "spawnInterval": 0.23,
-                    "formation": "cross_lane",
-                    "lane": "cross_lane"
-                },
-                {
-                    "enemyId": "spore_carrier",
-                    "count": 7,
-                    "startDelay": 2.32,
-                    "spawnInterval": 0.19,
-                    "formation": "spawn_chain",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "echo_mimic",
-                    "count": 3,
-                    "startDelay": 3.68,
-                    "spawnInterval": 0.46,
-                    "formation": "escort",
-                    "lane": "left"
-                }
-            ]
+          "enemyId": "rail_splitter",
+          "count": 3,
+          "startDelay": 1.61,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "left"
         },
         {
-            "waveIndex": 12,
-            "phase": "exam",
-            "goalTag": "chapter_d_last_ember_terminus_l20_w12_exam",
-            "threatTags": [
-                "exam",
-                "last_ember_terminus",
-                "split",
-                "armored",
-                "flank"
-            ],
-            "prepSeconds": 6.31,
-            "rewardGold": 62,
-            "budgetTarget": 112.2,
-            "budgetTolerance": 1.07,
-            "hint": "[L20] W12: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "plated_spore",
-                    "count": 11,
-                    "startDelay": 0,
-                    "spawnInterval": 0.69,
-                    "formation": "stagger",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 27,
-                    "startDelay": 1.24,
-                    "spawnInterval": 0.22,
-                    "formation": "flank_stream",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 31,
-                    "startDelay": 1.92,
-                    "spawnInterval": 0.17,
-                    "formation": "pack",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "rail_warden",
-                    "count": 6,
-                    "startDelay": 3.16,
-                    "spawnInterval": 0.69,
-                    "formation": "stagger",
-                    "lane": "center"
-                }
-            ]
+          "enemyId": "forge_dragoon",
+          "count": 2,
+          "startDelay": 0.62,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "left"
         },
         {
-            "waveIndex": 13,
-            "phase": "introduce",
-            "goalTag": "chapter_d_last_ember_terminus_l20_w13_introduce",
-            "threatTags": [
-                "introduce",
-                "last_ember_terminus",
-                "split",
-                "armored",
-                "flank",
-                "high_pressure"
-            ],
-            "prepSeconds": 5.77,
-            "rewardGold": 61,
-            "budgetTarget": 107.1,
-            "budgetTolerance": 1.05,
-            "hint": "[L20] W13: 识别新威胁并调整火力分工。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "husk_titan",
-                    "count": 5,
-                    "startDelay": 0,
-                    "spawnInterval": 0.79,
-                    "formation": "stagger",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 40,
-                    "startDelay": 1.2,
-                    "spawnInterval": 0.2,
-                    "formation": "pack",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "burrow_sapper",
-                    "count": 12,
-                    "startDelay": 2.56,
-                    "spawnInterval": 0.25,
-                    "formation": "flank_strike",
-                    "lane": "center"
-                }
-            ]
+          "enemyId": "skitter_runner",
+          "count": 3,
+          "startDelay": 0.08,
+          "spawnInterval": 0.25,
+          "formation": "stream",
+          "lane": "center"
+        }
+      ]
+    },
+    {
+      "waveIndex": 5,
+      "phase": "reinforce",
+      "goalTag": "chapter_d_last_ember_terminus_l20_w05_reinforce",
+      "threatTags": [
+        "reinforce",
+        "last_ember_terminus"
+      ],
+      "prepSeconds": 6.89,
+      "rewardGold": 45,
+      "budgetTarget": 65.4,
+      "budgetTolerance": 1.1,
+      "hint": "[L20] W05: 持续压制并补齐覆盖空洞。",
+      "groups": [
+        {
+          "enemyId": "cinder_glider",
+          "count": 10,
+          "startDelay": 0,
+          "spawnInterval": 0.24,
+          "formation": "stream",
+          "lane": "left"
         },
         {
-            "waveIndex": 14,
-            "phase": "reinforce",
-            "goalTag": "chapter_d_last_ember_terminus_l20_w14_reinforce",
-            "threatTags": [
-                "reinforce",
-                "last_ember_terminus",
-                "split",
-                "armored",
-                "flank",
-                "high_pressure"
-            ],
-            "prepSeconds": 5.63,
-            "rewardGold": 63,
-            "budgetTarget": 113.8,
-            "budgetTolerance": 1.05,
-            "hint": "[L20] W14: 持续压制并补齐覆盖空洞。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "carapace_brute",
-                    "count": 8,
-                    "startDelay": 0.24,
-                    "spawnInterval": 0.75,
-                    "formation": "stagger",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "spore_carrier",
-                    "count": 8,
-                    "startDelay": 1.04,
-                    "spawnInterval": 0.18,
-                    "formation": "spawn_chain",
-                    "lane": "all"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 25,
-                    "startDelay": 2.4,
-                    "spawnInterval": 0.24,
-                    "formation": "flank_stream",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "echo_mimic",
-                    "count": 4,
-                    "startDelay": 3.76,
-                    "spawnInterval": 0.44,
-                    "formation": "pressure_mix",
-                    "lane": "all"
-                }
-            ]
+          "enemyId": "rail_warden",
+          "count": 4,
+          "startDelay": 2.16,
+          "spawnInterval": 0.75,
+          "formation": "burst",
+          "lane": "right"
         },
         {
-            "waveIndex": 15,
-            "phase": "exam",
-            "goalTag": "chapter_d_last_ember_terminus_l20_w15_exam",
-            "threatTags": [
-                "exam",
-                "last_ember_terminus",
-                "split",
-                "armored",
-                "flank",
-                "high_pressure",
-                "exam_peak"
-            ],
-            "prepSeconds": 5.89,
-            "rewardGold": 68,
-            "budgetTarget": 138.8,
-            "budgetTolerance": 1.05,
+          "enemyId": "acid_blister",
+          "count": 2,
+          "startDelay": 1.35,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "left"
+        },
+        {
+          "enemyId": "ember_strider",
+          "count": 2,
+          "startDelay": 1.35,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "left"
+        },
+        {
+          "enemyId": "echo_brood",
+          "count": 2,
+          "startDelay": 0.61,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "left"
+        }
+      ]
+    },
+    {
+      "waveIndex": 6,
+      "phase": "exam",
+      "goalTag": "chapter_d_last_ember_terminus_l20_w06_exam",
+      "threatTags": [
+        "exam",
+        "last_ember_terminus",
+        "split"
+      ],
+      "prepSeconds": 7.15,
+      "rewardGold": 50,
+      "budgetTarget": 77.3,
+      "budgetTolerance": 1.1,
+      "hint": "[L20] W06: 综合考核：输出、控制、反制链稳定性。",
+      "groups": [
+        {
+          "enemyId": "burrow_sapper",
+          "count": 11,
+          "startDelay": 0,
+          "spawnInterval": 0.21,
+          "formation": "cross_lane",
+          "lane": "cross_lane"
+        },
+        {
+          "enemyId": "spore_carrier",
+          "count": 6,
+          "startDelay": 1.08,
+          "spawnInterval": 0.17,
+          "formation": "pack",
+          "lane": "right"
+        },
+        {
+          "enemyId": "plated_spore",
+          "count": 5,
+          "startDelay": 2.32,
+          "spawnInterval": 0.69,
+          "formation": "burst",
+          "lane": "left"
+        },
+        {
+          "enemyId": "rail_warden",
+          "count": 4,
+          "startDelay": 3,
+          "spawnInterval": 0.69,
+          "formation": "burst",
+          "lane": "center"
+        },
+        {
+          "enemyId": "rail_splitter",
+          "count": 1,
+          "startDelay": 1.69,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "cross_lane"
+        }
+      ]
+    },
+    {
+      "waveIndex": 7,
+      "phase": "introduce",
+      "goalTag": "chapter_d_last_ember_terminus_l20_w07_introduce",
+      "threatTags": [
+        "introduce",
+        "last_ember_terminus",
+        "split",
+        "armored"
+      ],
+      "prepSeconds": 6.61,
+      "rewardGold": 49,
+      "budgetTarget": 74.4,
+      "budgetTolerance": 1.07,
+      "hint": "[L20] W07: 识别新威胁并调整火力分工。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "spore_carrier",
+          "count": 6,
+          "startDelay": 0.24,
+          "spawnInterval": 0.2,
+          "formation": "pack",
+          "lane": "right"
+        },
+        {
+          "enemyId": "cinder_glider",
+          "count": 9,
+          "startDelay": 1.04,
+          "spawnInterval": 0.25,
+          "formation": "stream",
+          "lane": "left"
+        },
+        {
+          "enemyId": "husk_titan",
+          "count": 2,
+          "startDelay": 2.4,
+          "spawnInterval": 0.79,
+          "formation": "burst",
+          "lane": "center"
+        },
+        {
+          "enemyId": "cinder_husk",
+          "count": 1,
+          "startDelay": 0.68,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "right"
+        },
+        {
+          "enemyId": "acid_blister",
+          "count": 1,
+          "startDelay": 0.83,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "left"
+        },
+        {
+          "enemyId": "forge_dragoon",
+          "count": 1,
+          "startDelay": 1.64,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "left"
+        },
+        {
+          "enemyId": "ember_strider",
+          "count": 1,
+          "startDelay": 0.84,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "left"
+        }
+      ]
+    },
+    {
+      "waveIndex": 8,
+      "phase": "reinforce",
+      "goalTag": "chapter_d_last_ember_terminus_l20_w08_reinforce",
+      "threatTags": [
+        "reinforce",
+        "last_ember_terminus",
+        "split",
+        "armored"
+      ],
+      "prepSeconds": 6.47,
+      "rewardGold": 51,
+      "budgetTarget": 78.7,
+      "budgetTolerance": 1.07,
+      "hint": "[L20] W08: 持续压制并补齐覆盖空洞。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "burrow_sapper",
+          "count": 9,
+          "startDelay": 1.44,
+          "spawnInterval": 0.23,
+          "formation": "cross_lane",
+          "lane": "cross_lane"
+        },
+        {
+          "enemyId": "carapace_brute",
+          "count": 4,
+          "startDelay": 2.24,
+          "spawnInterval": 0.75,
+          "formation": "burst",
+          "lane": "right"
+        },
+        {
+          "enemyId": "echo_mimic",
+          "count": 2,
+          "startDelay": 3.6,
+          "spawnInterval": 0.46,
+          "formation": "escort",
+          "lane": "left"
+        },
+        {
+          "enemyId": "echo_brood",
+          "count": 3,
+          "startDelay": 1.11,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "right"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 17,
+          "startDelay": 0.08,
+          "spawnInterval": 0.22,
+          "formation": "swarm",
+          "lane": "right"
+        }
+      ]
+    },
+    {
+      "waveIndex": 9,
+      "phase": "exam",
+      "goalTag": "chapter_d_last_ember_terminus_l20_w09_exam",
+      "threatTags": [
+        "exam",
+        "last_ember_terminus",
+        "split",
+        "armored",
+        "flank"
+      ],
+      "prepSeconds": 6.73,
+      "rewardGold": 56,
+      "budgetTarget": 97,
+      "budgetTolerance": 1.07,
+      "hint": "[L20] W09: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "spore_carrier",
+          "count": 9,
+          "startDelay": 0,
+          "spawnInterval": 0.17,
+          "formation": "pack",
+          "lane": "center"
+        },
+        {
+          "enemyId": "rail_warden",
+          "count": 5,
+          "startDelay": 2.4,
+          "spawnInterval": 0.69,
+          "formation": "burst",
+          "lane": "left"
+        },
+        {
+          "enemyId": "rail_warden",
+          "count": 5,
+          "startDelay": 3.08,
+          "spawnInterval": 0.69,
+          "formation": "burst",
+          "lane": "center"
+        },
+        {
+          "enemyId": "cinder_husk",
+          "count": 4,
+          "startDelay": 1.78,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "left"
+        },
+        {
+          "enemyId": "rail_splitter",
+          "count": 3,
+          "startDelay": 1.23,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "center"
+        },
+        {
+          "enemyId": "forge_dragoon",
+          "count": 2,
+          "startDelay": 1.58,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "left"
+        }
+      ]
+    },
+    {
+      "waveIndex": 10,
+      "phase": "introduce",
+      "goalTag": "chapter_d_last_ember_terminus_l20_w10_introduce",
+      "threatTags": [
+        "introduce",
+        "last_ember_terminus",
+        "split",
+        "armored",
+        "flank"
+      ],
+      "prepSeconds": 6.69,
+      "rewardGold": 59,
+      "budgetTarget": 99.5,
+      "budgetTolerance": 1.07,
+      "hint": "[L20] W10: 识别新威胁并调整火力分工。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "carapace_brute",
+          "count": 9,
+          "startDelay": 0,
+          "spawnInterval": 0.79,
+          "formation": "burst",
+          "lane": "right"
+        },
+        {
+          "enemyId": "cinder_glider",
+          "count": 8,
+          "startDelay": 1.12,
+          "spawnInterval": 0.25,
+          "formation": "stream",
+          "lane": "left"
+        },
+        {
+          "enemyId": "acid_blister",
+          "count": 3,
+          "startDelay": 1.68,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "left"
+        },
+        {
+          "enemyId": "ember_strider",
+          "count": 3,
+          "startDelay": 1.77,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "right"
+        },
+        {
+          "enemyId": "echo_brood",
+          "count": 4,
+          "startDelay": 0.99,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "right"
+        }
+      ]
+    },
+    {
+      "waveIndex": 11,
+      "phase": "reinforce",
+      "goalTag": "chapter_d_last_ember_terminus_l20_w11_reinforce",
+      "threatTags": [
+        "reinforce",
+        "last_ember_terminus",
+        "split",
+        "armored",
+        "flank"
+      ],
+      "prepSeconds": 6.05,
+      "rewardGold": 57,
+      "budgetTarget": 95.2,
+      "budgetTolerance": 1.07,
+      "hint": "[L20] W11: 持续压制并补齐覆盖空洞。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "rail_warden",
+          "count": 7,
+          "startDelay": 0.16,
+          "spawnInterval": 0.75,
+          "formation": "burst",
+          "lane": "left"
+        },
+        {
+          "enemyId": "burrow_sapper",
+          "count": 10,
+          "startDelay": 0.96,
+          "spawnInterval": 0.23,
+          "formation": "cross_lane",
+          "lane": "cross_lane"
+        },
+        {
+          "enemyId": "spore_carrier",
+          "count": 7,
+          "startDelay": 2.32,
+          "spawnInterval": 0.19,
+          "formation": "spawn_chain",
+          "lane": "right"
+        },
+        {
+          "enemyId": "echo_mimic",
+          "count": 3,
+          "startDelay": 3.68,
+          "spawnInterval": 0.46,
+          "formation": "escort",
+          "lane": "left"
+        },
+        {
+          "enemyId": "rail_splitter",
+          "count": 1,
+          "startDelay": 1.24,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "left"
+        }
+      ]
+    },
+    {
+      "waveIndex": 12,
+      "phase": "exam",
+      "goalTag": "chapter_d_last_ember_terminus_l20_w12_exam",
+      "threatTags": [
+        "exam",
+        "last_ember_terminus",
+        "split",
+        "armored",
+        "flank"
+      ],
+      "prepSeconds": 6.31,
+      "rewardGold": 62,
+      "budgetTarget": 112.2,
+      "budgetTolerance": 1.07,
+      "hint": "[L20] W12: 综合考核：输出、控制、反制链稳定性。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "plated_spore",
+          "count": 6,
+          "startDelay": 0,
+          "spawnInterval": 0.69,
+          "formation": "stagger",
+          "lane": "center"
+        },
+        {
+          "enemyId": "rail_warden",
+          "count": 6,
+          "startDelay": 3.16,
+          "spawnInterval": 0.69,
+          "formation": "stagger",
+          "lane": "center"
+        },
+        {
+          "enemyId": "cinder_husk",
+          "count": 6,
+          "startDelay": 1.16,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "center"
+        },
+        {
+          "enemyId": "acid_blister",
+          "count": 4,
+          "startDelay": 1.32,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "left"
+        },
+        {
+          "enemyId": "forge_dragoon",
+          "count": 3,
+          "startDelay": 0.74,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "center"
+        },
+        {
+          "enemyId": "ember_strider",
+          "count": 4,
+          "startDelay": 1.69,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "center"
+        }
+      ]
+    },
+    {
+      "waveIndex": 13,
+      "phase": "introduce",
+      "goalTag": "chapter_d_last_ember_terminus_l20_w13_introduce",
+      "threatTags": [
+        "introduce",
+        "last_ember_terminus",
+        "split",
+        "armored",
+        "flank",
+        "high_pressure"
+      ],
+      "prepSeconds": 5.77,
+      "rewardGold": 61,
+      "budgetTarget": 107.1,
+      "budgetTolerance": 1.05,
+      "hint": "[L20] W13: 识别新威胁并调整火力分工。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "husk_titan",
+          "count": 5,
+          "startDelay": 0,
+          "spawnInterval": 0.79,
+          "formation": "stagger",
+          "lane": "right"
+        },
+        {
+          "enemyId": "burrow_sapper",
+          "count": 12,
+          "startDelay": 2.56,
+          "spawnInterval": 0.25,
+          "formation": "flank_strike",
+          "lane": "center"
+        },
+        {
+          "enemyId": "echo_brood",
+          "count": 4,
+          "startDelay": 1.29,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "right"
+        },
+        {
+          "enemyId": "ash_swarm",
+          "count": 20,
+          "startDelay": 0.08,
+          "spawnInterval": 0.22,
+          "formation": "swarm",
+          "lane": "left"
+        }
+      ]
+    },
+    {
+      "waveIndex": 14,
+      "phase": "reinforce",
+      "goalTag": "chapter_d_last_ember_terminus_l20_w14_reinforce",
+      "threatTags": [
+        "reinforce",
+        "last_ember_terminus",
+        "split",
+        "armored",
+        "flank",
+        "high_pressure"
+      ],
+      "prepSeconds": 5.63,
+      "rewardGold": 63,
+      "budgetTarget": 113.8,
+      "budgetTolerance": 1.05,
+      "hint": "[L20] W14: 持续压制并补齐覆盖空洞。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "carapace_brute",
+          "count": 7,
+          "startDelay": 0.24,
+          "spawnInterval": 0.75,
+          "formation": "stagger",
+          "lane": "left"
+        },
+        {
+          "enemyId": "spore_carrier",
+          "count": 8,
+          "startDelay": 1.04,
+          "spawnInterval": 0.18,
+          "formation": "spawn_chain",
+          "lane": "all"
+        },
+        {
+          "enemyId": "echo_mimic",
+          "count": 4,
+          "startDelay": 3.76,
+          "spawnInterval": 0.44,
+          "formation": "pressure_mix",
+          "lane": "all"
+        },
+        {
+          "enemyId": "cinder_husk",
+          "count": 4,
+          "startDelay": 1.62,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "all"
+        },
+        {
+          "enemyId": "rail_splitter",
+          "count": 4,
+          "startDelay": 1.57,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "right"
+        },
+        {
+          "enemyId": "forge_dragoon",
+          "count": 2,
+          "startDelay": 1.02,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "all"
+        }
+      ]
+    },
+    {
+      "waveIndex": 15,
+      "phase": "exam",
+      "goalTag": "chapter_d_last_ember_terminus_l20_w15_exam",
+      "threatTags": [
+        "exam",
+        "last_ember_terminus",
+        "split",
+        "armored",
+        "flank",
+        "high_pressure",
+        "exam_peak"
+      ],
+      "prepSeconds": 5.89,
+      "rewardGold": 68,
+      "budgetTarget": 138.8,
+      "budgetTolerance": 1.05,
       "hint": "[L20] W15 EXAM PEAK: 保留阶段破坏器与共鸣充能，为终局 Boss 的两次血线变化做准备。",
-            "groups": [
-                {
-                    "enemyId": "rail_warden",
-                    "count": 11,
-                    "startDelay": 0.08,
-                    "spawnInterval": 0.69,
-                    "formation": "stagger",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 40,
-                    "startDelay": 1.32,
-                    "spawnInterval": 0.17,
-                    "formation": "pack",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "cinder_glider",
-                    "count": 12,
-                    "startDelay": 2,
-                    "spawnInterval": 0.21,
-                    "formation": "adaptive",
-                    "lane": "all"
-                },
-                {
-                    "enemyId": "rail_warden",
-                    "count": 7,
-                    "startDelay": 3.24,
-                    "spawnInterval": 0.69,
-                    "formation": "stagger",
-                    "lane": "center"
-                }
-            ]
+      "groups": [
+        {
+          "enemyId": "rail_warden",
+          "count": 11,
+          "startDelay": 0.08,
+          "spawnInterval": 0.69,
+          "formation": "stagger",
+          "lane": "center"
         },
         {
-            "waveIndex": 16,
-            "phase": "introduce",
-            "goalTag": "chapter_d_last_ember_terminus_l20_w16_introduce",
-            "threatTags": [
-                "introduce",
-                "last_ember_terminus",
-                "split",
-                "armored",
-                "flank",
-                "high_pressure"
-            ],
-            "prepSeconds": 5.35,
-            "rewardGold": 67,
-            "budgetTarget": 123.2,
-            "budgetTolerance": 1.05,
-            "hint": "[L20] W16: 识别新威胁并调整火力分工。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "plated_spore",
-                    "count": 16,
-                    "startDelay": 0,
-                    "spawnInterval": 0.71,
-                    "formation": "stagger",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "spore_carrier",
-                    "count": 11,
-                    "startDelay": 1.28,
-                    "spawnInterval": 0.17,
-                    "formation": "spawn_chain",
-                    "lane": "all"
-                },
-                {
-                    "enemyId": "burrow_sapper",
-                    "count": 16,
-                    "startDelay": 2.64,
-                    "spawnInterval": 0.23,
-                    "formation": "flank_strike",
-                    "lane": "center"
-                }
-            ]
+          "enemyId": "cinder_glider",
+          "count": 11,
+          "startDelay": 2,
+          "spawnInterval": 0.21,
+          "formation": "adaptive",
+          "lane": "all"
         },
         {
-            "waveIndex": 17,
-            "phase": "reinforce",
-            "goalTag": "chapter_d_last_ember_terminus_l20_w17_reinforce",
-            "threatTags": [
-                "reinforce",
-                "last_ember_terminus",
-                "split",
-                "armored",
-                "flank",
-                "high_pressure",
-                "endgame"
-            ],
-            "prepSeconds": 5.21,
-            "rewardGold": 69,
-            "budgetTarget": 136.4,
-            "budgetTolerance": 1.04,
-            "hint": "[L20] W17: 持续压制并补齐覆盖空洞。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "husk_titan",
-                    "count": 4,
-                    "startDelay": 0,
-                    "spawnInterval": 0.68,
-                    "formation": "elite_drop",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 34,
-                    "startDelay": 1.04,
-                    "spawnInterval": 0.17,
-                    "formation": "pack",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 25,
-                    "startDelay": 2.32,
-                    "spawnInterval": 0.22,
-                    "formation": "flank_stream",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "echo_mimic",
-                    "count": 4,
-                    "startDelay": 3.6,
-                    "spawnInterval": 0.39,
-                    "formation": "pressure_mix",
-                    "lane": "all"
-                },
-                {
-                    "enemyId": "husk_titan",
-                    "count": 2,
-                    "startDelay": 4.32,
-                    "spawnInterval": 0.68,
-                    "formation": "elite_drop",
-                    "lane": "center"
-                }
-            ]
+          "enemyId": "rail_warden",
+          "count": 7,
+          "startDelay": 3.24,
+          "spawnInterval": 0.69,
+          "formation": "stagger",
+          "lane": "center"
         },
         {
-            "waveIndex": 18,
-            "phase": "exam",
-            "goalTag": "chapter_d_last_ember_terminus_l20_w18_exam",
-            "threatTags": [
-                "exam",
-                "last_ember_terminus",
-                "split",
-                "armored",
-                "flank",
-                "high_pressure",
-                "endgame"
-            ],
-            "prepSeconds": 5.47,
-            "rewardGold": 74,
-            "budgetTarget": 157.5,
-            "budgetTolerance": 1.04,
-      "hint": "[L20] W18 EXAM: 修补最热道路分段，同时保留足够预算应对 Boss 增援。",
-            "groups": [
-                {
-                    "enemyId": "carapace_brute",
-                    "count": 9,
-                    "startDelay": 0.16,
-                    "spawnInterval": 0.62,
-                    "formation": "stagger",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "spore_carrier",
-                    "count": 10,
-                    "startDelay": 0.76,
-                    "spawnInterval": 0.17,
-                    "formation": "spawn_chain",
-                    "lane": "all"
-                },
-                {
-                    "enemyId": "cinder_glider",
-                    "count": 11,
-                    "startDelay": 1.92,
-                    "spawnInterval": 0.19,
-                    "formation": "adaptive",
-                    "lane": "all"
-                },
-                {
-                    "enemyId": "rail_warden",
-                    "count": 7,
-                    "startDelay": 3.08,
-                    "spawnInterval": 0.62,
-                    "formation": "stagger",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "carapace_brute",
-                    "count": 6,
-                    "startDelay": 4.24,
-                    "spawnInterval": 0.62,
-                    "formation": "stagger",
-                    "lane": "right"
-                }
-            ]
+          "enemyId": "acid_blister",
+          "count": 3,
+          "startDelay": 1.24,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "center"
         },
         {
-            "waveIndex": 19,
-            "phase": "introduce",
-            "goalTag": "chapter_d_last_ember_terminus_l20_w19_introduce",
-            "threatTags": [
-                "introduce",
-                "last_ember_terminus",
-                "split",
-                "armored",
-                "flank",
-                "high_pressure",
-                "endgame"
-            ],
-            "prepSeconds": 4.93,
-            "rewardGold": 73,
-            "budgetTarget": 149.5,
-            "budgetTolerance": 1.04,
-            "hint": "[L20] W19: 识别新威胁并调整火力分工。 多线同时压测。",
-            "groups": [
-                {
-                    "enemyId": "rail_warden",
-                    "count": 11,
-                    "startDelay": 0,
-                    "spawnInterval": 0.71,
-                    "formation": "stagger",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "ash_swarm",
-                    "count": 40,
-                    "startDelay": 1.28,
-                    "spawnInterval": 0.18,
-                    "formation": "pack",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "burrow_sapper",
-                    "count": 14,
-                    "startDelay": 2,
-                    "spawnInterval": 0.23,
-                    "formation": "flank_strike",
-                    "lane": "center"
-                },
-                {
-                    "enemyId": "burrow_sapper",
-                    "count": 17,
-                    "startDelay": 3.28,
-                    "spawnInterval": 0.23,
-                    "formation": "flank_stream",
-                    "lane": "right"
-                }
-            ]
+          "enemyId": "ember_strider",
+          "count": 3,
+          "startDelay": 0.66,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "center"
         },
         {
-            "waveIndex": 20,
-            "phase": "boss",
-            "goalTag": "chapter_d_last_ember_terminus_l20_w20_boss",
-            "threatTags": [
-                "boss",
-                "last_ember_terminus",
-                "split",
-                "armored",
-                "flank",
-                "high_pressure",
-                "endgame",
-                "exam_peak",
-                "finale"
-            ],
-            "prepSeconds": 6.69,
-            "rewardGold": 91,
-            "budgetTarget": 201.2,
-            "budgetTolerance": 1.05,
-      "hint": "[L20] W20 FINAL EXAM: Boss 在 70%/35% 血量触发过载与增援；用阶段破坏器取消最危险的一次。",
-            "groups": [
-                {
-                    "enemyId": "plated_spore",
-                    "count": 18,
-                    "startDelay": 0,
-                    "spawnInterval": 0.73,
-                    "formation": "stagger",
-                    "lane": "left"
-                },
-                {
-                    "enemyId": "spore_carrier",
-                    "count": 14,
-                    "startDelay": 1,
-                    "spawnInterval": 0.18,
-                    "formation": "spawn_chain",
-                    "lane": "all"
-                },
-                {
-                    "enemyId": "skitter_runner",
-                    "count": 40,
-                    "startDelay": 2.16,
-                    "spawnInterval": 0.23,
-                    "formation": "flank_stream",
-                    "lane": "right"
-                },
-                {
-                    "enemyId": "echo_mimic",
-                    "count": 6,
-                    "startDelay": 2.76,
-                    "spawnInterval": 0.42,
-                    "formation": "pressure_mix",
-                    "lane": "all"
-                },
-                {
-                    "enemyId": "furnace_matriarch",
-                    "count": 1,
-                    "startDelay": 3.92,
-                    "spawnInterval": 2.95,
-                    "formation": "boss_entry",
-                    "lane": "all"
-                }
-            ]
+          "enemyId": "echo_brood",
+          "count": 4,
+          "startDelay": 1.02,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "center"
         }
-    ]
+      ]
+    },
+    {
+      "waveIndex": 16,
+      "phase": "introduce",
+      "goalTag": "chapter_d_last_ember_terminus_l20_w16_introduce",
+      "threatTags": [
+        "introduce",
+        "last_ember_terminus",
+        "split",
+        "armored",
+        "flank",
+        "high_pressure"
+      ],
+      "prepSeconds": 5.35,
+      "rewardGold": 67,
+      "budgetTarget": 123.2,
+      "budgetTolerance": 1.05,
+      "hint": "[L20] W16: 识别新威胁并调整火力分工。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "plated_spore",
+          "count": 16,
+          "startDelay": 0,
+          "spawnInterval": 0.71,
+          "formation": "stagger",
+          "lane": "right"
+        },
+        {
+          "enemyId": "spore_carrier",
+          "count": 11,
+          "startDelay": 1.28,
+          "spawnInterval": 0.17,
+          "formation": "spawn_chain",
+          "lane": "all"
+        },
+        {
+          "enemyId": "burrow_sapper",
+          "count": 16,
+          "startDelay": 2.64,
+          "spawnInterval": 0.23,
+          "formation": "flank_strike",
+          "lane": "center"
+        },
+        {
+          "enemyId": "rail_splitter",
+          "count": 1,
+          "startDelay": 1.1,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "center"
+        }
+      ]
+    },
+    {
+      "waveIndex": 17,
+      "phase": "reinforce",
+      "goalTag": "chapter_d_last_ember_terminus_l20_w17_reinforce",
+      "threatTags": [
+        "reinforce",
+        "last_ember_terminus",
+        "split",
+        "armored",
+        "flank",
+        "high_pressure",
+        "endgame"
+      ],
+      "prepSeconds": 5.21,
+      "rewardGold": 69,
+      "budgetTarget": 136.4,
+      "budgetTolerance": 1.04,
+      "hint": "[L20] W17: 持续压制并补齐覆盖空洞。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "husk_titan",
+          "count": 3,
+          "startDelay": 0,
+          "spawnInterval": 0.68,
+          "formation": "elite_drop",
+          "lane": "left"
+        },
+        {
+          "enemyId": "echo_mimic",
+          "count": 4,
+          "startDelay": 3.6,
+          "spawnInterval": 0.39,
+          "formation": "pressure_mix",
+          "lane": "all"
+        },
+        {
+          "enemyId": "husk_titan",
+          "count": 2,
+          "startDelay": 4.32,
+          "spawnInterval": 0.68,
+          "formation": "elite_drop",
+          "lane": "center"
+        },
+        {
+          "enemyId": "cinder_husk",
+          "count": 1,
+          "startDelay": 1.76,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "all"
+        },
+        {
+          "enemyId": "acid_blister",
+          "count": 4,
+          "startDelay": 1.78,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "center"
+        },
+        {
+          "enemyId": "forge_dragoon",
+          "count": 4,
+          "startDelay": 1.18,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "center"
+        },
+        {
+          "enemyId": "ember_strider",
+          "count": 4,
+          "startDelay": 0.64,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "left"
+        }
+      ]
+    },
+    {
+      "waveIndex": 18,
+      "phase": "exam",
+      "goalTag": "chapter_d_last_ember_terminus_l20_w18_exam",
+      "threatTags": [
+        "exam",
+        "last_ember_terminus",
+        "split",
+        "armored",
+        "flank",
+        "high_pressure",
+        "endgame"
+      ],
+      "prepSeconds": 5.47,
+      "rewardGold": 74,
+      "budgetTarget": 157.5,
+      "budgetTolerance": 1.04,
+      "hint": "[L20] W18 EXAM: 修补最热道路分段，同时保留足够预算应对 Boss 增援。",
+      "groups": [
+        {
+          "enemyId": "carapace_brute",
+          "count": 9,
+          "startDelay": 0.16,
+          "spawnInterval": 0.62,
+          "formation": "stagger",
+          "lane": "center"
+        },
+        {
+          "enemyId": "spore_carrier",
+          "count": 10,
+          "startDelay": 0.76,
+          "spawnInterval": 0.17,
+          "formation": "spawn_chain",
+          "lane": "all"
+        },
+        {
+          "enemyId": "cinder_glider",
+          "count": 11,
+          "startDelay": 1.92,
+          "spawnInterval": 0.19,
+          "formation": "adaptive",
+          "lane": "all"
+        },
+        {
+          "enemyId": "rail_warden",
+          "count": 7,
+          "startDelay": 3.08,
+          "spawnInterval": 0.62,
+          "formation": "stagger",
+          "lane": "center"
+        },
+        {
+          "enemyId": "carapace_brute",
+          "count": 6,
+          "startDelay": 4.24,
+          "spawnInterval": 0.62,
+          "formation": "stagger",
+          "lane": "right"
+        },
+        {
+          "enemyId": "echo_brood",
+          "count": 1,
+          "startDelay": 1.77,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "all"
+        }
+      ]
+    },
+    {
+      "waveIndex": 19,
+      "phase": "introduce",
+      "goalTag": "chapter_d_last_ember_terminus_l20_w19_introduce",
+      "threatTags": [
+        "introduce",
+        "last_ember_terminus",
+        "split",
+        "armored",
+        "flank",
+        "high_pressure",
+        "endgame"
+      ],
+      "prepSeconds": 4.93,
+      "rewardGold": 73,
+      "budgetTarget": 149.5,
+      "budgetTolerance": 1.04,
+      "hint": "[L20] W19: 识别新威胁并调整火力分工。 多线同时压测。",
+      "groups": [
+        {
+          "enemyId": "rail_warden",
+          "count": 11,
+          "startDelay": 0,
+          "spawnInterval": 0.71,
+          "formation": "stagger",
+          "lane": "right"
+        },
+        {
+          "enemyId": "burrow_sapper",
+          "count": 14,
+          "startDelay": 2,
+          "spawnInterval": 0.23,
+          "formation": "flank_strike",
+          "lane": "center"
+        },
+        {
+          "enemyId": "burrow_sapper",
+          "count": 15,
+          "startDelay": 3.28,
+          "spawnInterval": 0.23,
+          "formation": "flank_stream",
+          "lane": "right"
+        },
+        {
+          "enemyId": "cinder_husk",
+          "count": 5,
+          "startDelay": 0.89,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "right"
+        },
+        {
+          "enemyId": "rail_splitter",
+          "count": 5,
+          "startDelay": 0.7,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "left"
+        },
+        {
+          "enemyId": "forge_dragoon",
+          "count": 3,
+          "startDelay": 1.59,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "left"
+        }
+      ]
+    },
+    {
+      "waveIndex": 20,
+      "phase": "boss",
+      "goalTag": "chapter_d_last_ember_terminus_l20_w20_boss",
+      "threatTags": [
+        "boss",
+        "last_ember_terminus",
+        "split",
+        "armored",
+        "flank",
+        "high_pressure",
+        "endgame",
+        "exam_peak",
+        "finale"
+      ],
+      "prepSeconds": 6.69,
+      "rewardGold": 91,
+      "budgetTarget": 201.2,
+      "budgetTolerance": 1.05,
+      "hint": "[L20] W20 FINAL EXAM: Boss 在 70%/35% 血量触发过载与增援；用阶段破坏器取消最危险的一次。",
+      "groups": [
+        {
+          "enemyId": "plated_spore",
+          "count": 18,
+          "startDelay": 0,
+          "spawnInterval": 0.73,
+          "formation": "stagger",
+          "lane": "left"
+        },
+        {
+          "enemyId": "spore_carrier",
+          "count": 14,
+          "startDelay": 1,
+          "spawnInterval": 0.18,
+          "formation": "spawn_chain",
+          "lane": "all"
+        },
+        {
+          "enemyId": "echo_mimic",
+          "count": 6,
+          "startDelay": 2.76,
+          "spawnInterval": 0.42,
+          "formation": "pressure_mix",
+          "lane": "all"
+        },
+        {
+          "enemyId": "furnace_matriarch",
+          "count": 1,
+          "startDelay": 3.92,
+          "spawnInterval": 2.95,
+          "formation": "boss_entry",
+          "lane": "all"
+        },
+        {
+          "enemyId": "acid_blister",
+          "count": 4,
+          "startDelay": 1.77,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "all"
+        },
+        {
+          "enemyId": "ember_strider",
+          "count": 4,
+          "startDelay": 1.63,
+          "spawnInterval": 0.3,
+          "formation": "stream",
+          "lane": "all"
+        },
+        {
+          "enemyId": "echo_brood",
+          "count": 5,
+          "startDelay": 1.71,
+          "spawnInterval": 0.45,
+          "formation": "pack",
+          "lane": "left"
+        }
+      ]
+    }
+  ]
 }
