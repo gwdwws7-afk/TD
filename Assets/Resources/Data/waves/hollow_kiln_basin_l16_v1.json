@@ -94,7 +94,7 @@
         {
           "enemyId": "acid_blister",
           "count": 1,
-          "startDelay": 1.55,
+          "startDelay": 1.15,
           "spawnInterval": 0.45,
           "formation": "pack",
           "lane": "right"
@@ -102,7 +102,7 @@
         {
           "enemyId": "ember_strider",
           "count": 1,
-          "startDelay": 1.15,
+          "startDelay": 1.6,
           "spawnInterval": 0.3,
           "formation": "stream",
           "lane": "right"
@@ -113,7 +113,7 @@
           "startDelay": 0.08,
           "spawnInterval": 0.22,
           "formation": "swarm",
-          "lane": "right"
+          "lane": "center"
         }
       ]
     },
@@ -134,7 +134,7 @@
         {
           "enemyId": "rail_splitter",
           "count": 2,
-          "startDelay": 1.29,
+          "startDelay": 1.48,
           "spawnInterval": 0.3,
           "formation": "stream",
           "lane": "right"
@@ -153,7 +153,7 @@
           "startDelay": 0.78,
           "spawnInterval": 0.25,
           "formation": "stream",
-          "lane": "right"
+          "lane": "left"
         }
       ]
     },
@@ -190,34 +190,34 @@
         {
           "enemyId": "cinder_husk",
           "count": 3,
-          "startDelay": 1.02,
+          "startDelay": 0.76,
           "spawnInterval": 0.45,
           "formation": "pack",
-          "lane": "center"
+          "lane": "left"
         },
         {
           "enemyId": "acid_blister",
           "count": 2,
-          "startDelay": 1.66,
+          "startDelay": 1.64,
           "spawnInterval": 0.45,
           "formation": "pack",
-          "lane": "center"
+          "lane": "left"
         },
         {
           "enemyId": "forge_dragoon",
           "count": 1,
-          "startDelay": 0.78,
+          "startDelay": 1.72,
           "spawnInterval": 0.45,
           "formation": "pack",
-          "lane": "right"
+          "lane": "left"
         },
         {
           "enemyId": "ember_strider",
           "count": 2,
-          "startDelay": 0.67,
+          "startDelay": 1.41,
           "spawnInterval": 0.3,
           "formation": "stream",
-          "lane": "center"
+          "lane": "right"
         }
       ]
     },
