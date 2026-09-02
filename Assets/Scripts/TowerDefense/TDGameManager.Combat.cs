@@ -551,9 +551,11 @@ namespace TD
                 "forge_dragoon" => "Art/anim/enemy_forge_dragoon_00",
                 "ember_strider" => "Art/anim/enemy_ember_strider_00",
                 "echo_brood" => "Art/anim/enemy_echo_brood_00",
-                // Bosses ship with the shared fallback body until the C-3
-                // batch lands; their logic is live regardless (data-locked
-                // until the batch-3 wave reweave references them).
+                // C-3 boss reels landed (468b040): 10-frame idle each.
+                "containermaw" => "Art/anim/boss_containermaw_00",
+                "junction_tyrant" => "Art/anim/boss_junction_tyrant_00",
+                "kiln_custodian" => "Art/anim/boss_kiln_custodian_00",
+                "echo_harbinger" => "Art/anim/boss_echo_harbinger_00",
                 _ => "Art/enemy_slime"
             };
         }
@@ -614,6 +616,10 @@ namespace TD
                 "forge_dragoon" => "Art/anim/enemy_forge_dragoon",
                 "ember_strider" => "Art/anim/enemy_ember_strider",
                 "echo_brood" => "Art/anim/enemy_echo_brood",
+                "containermaw" => "Art/anim/boss_containermaw",
+                "junction_tyrant" => "Art/anim/boss_junction_tyrant",
+                "kiln_custodian" => "Art/anim/boss_kiln_custodian",
+                "echo_harbinger" => "Art/anim/boss_echo_harbinger",
                 _ => string.Empty
             };
         }
@@ -640,6 +646,10 @@ namespace TD
                 "forge_dragoon" => 8,
                 "ember_strider" => 8,
                 "echo_brood" => 8,
+                "containermaw" => 10,
+                "junction_tyrant" => 10,
+                "kiln_custodian" => 10,
+                "echo_harbinger" => 10,
                 _ => 1
             };
         }
@@ -666,6 +676,10 @@ namespace TD
                 "forge_dragoon" => 6f,
                 "ember_strider" => 11f,
                 "echo_brood" => 8f,
+                "containermaw" => 5f,
+                "junction_tyrant" => 5.5f,
+                "kiln_custodian" => 4.5f,
+                "echo_harbinger" => 6f,
                 _ => 6f
             };
         }
