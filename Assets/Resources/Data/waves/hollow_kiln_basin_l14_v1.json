@@ -426,7 +426,7 @@
         },
         {
           "enemyId": "rail_warden",
-          "count": 3,
+          "count": 2,
           "startDelay": 3.68,
           "spawnInterval": 0.75,
           "formation": "burst",
@@ -879,7 +879,7 @@
       "groups": [
         {
           "enemyId": "plated_spore",
-          "count": 9,
+          "count": 8,
           "startDelay": 0,
           "spawnInterval": 0.71,
           "formation": "stagger",
@@ -1001,7 +1001,7 @@
       "groups": [
         {
           "enemyId": "rail_warden",
-          "count": 7,
+          "count": 5,
           "startDelay": 0.24,
           "spawnInterval": 0.62,
           "formation": "stagger",

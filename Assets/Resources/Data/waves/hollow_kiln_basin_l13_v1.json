@@ -1124,7 +1124,7 @@
       "groups": [
         {
           "enemyId": "plated_spore",
-          "count": 10,
+          "count": 7,
           "startDelay": 0,
           "spawnInterval": 0.68,
           "formation": "stagger",

@@ -138,6 +138,14 @@
           "spawnInterval": 0.3,
           "formation": "stream",
           "lane": "left"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 1,
+          "startDelay": 0.08,
+          "spawnInterval": 0.25,
+          "formation": "stream",
+          "lane": "center"
         }
       ]
     },

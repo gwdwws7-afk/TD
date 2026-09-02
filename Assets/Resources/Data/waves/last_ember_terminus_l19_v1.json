@@ -490,7 +490,7 @@
         },
         {
           "enemyId": "carapace_brute",
-          "count": 4,
+          "count": 3,
           "startDelay": 2.16,
           "spawnInterval": 0.75,
           "formation": "burst",
@@ -675,7 +675,7 @@
         },
         {
           "enemyId": "echo_mimic",
-          "count": 3,
+          "count": 2,
           "startDelay": 3.6,
           "spawnInterval": 0.46,
           "formation": "escort",
@@ -794,7 +794,7 @@
       "groups": [
         {
           "enemyId": "carapace_brute",
-          "count": 9,
+          "count": 8,
           "startDelay": 0,
           "spawnInterval": 0.79,
           "formation": "stagger",
@@ -1015,7 +1015,7 @@
         },
         {
           "enemyId": "forge_dragoon",
-          "count": 3,
+          "count": 2,
           "startDelay": 1.74,
           "spawnInterval": 0.45,
           "formation": "pack",
@@ -1113,7 +1113,7 @@
       "groups": [
         {
           "enemyId": "husk_titan",
-          "count": 4,
+          "count": 3,
           "startDelay": 0.08,
           "spawnInterval": 0.62,
           "formation": "elite_drop",
@@ -1206,7 +1206,7 @@
         },
         {
           "enemyId": "echo_mimic",
-          "count": 5,
+          "count": 3,
           "startDelay": 3.2,
           "spawnInterval": 0.41,
           "formation": "pressure_mix",

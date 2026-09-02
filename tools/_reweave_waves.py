@@ -173,6 +173,28 @@ for lv in range(1, 21):
                                              int(g['count'] * F / orig_f_threat))
                             if g['count'] > 0:
                                 rebuilt.append(g)
+                    # Same validator window fit as the main path.
+                    tol = w.get('budgetTolerance', 1.1) or 1.1
+                    lo = T * (2 - tol) + 0.02
+                    hi = T * tol - 0.02
+                    guard = 0
+                    act = sum(g['count'] * threat(g['enemyId']) for g in rebuilt)
+                    while act > hi and guard < 200:
+                        donors = [g for g in rebuilt if g['count'] > 1]
+                        if not donors:
+                            break
+                        g = max(donors, key=lambda x: threat(x['enemyId']))
+                        g['count'] -= 1
+                        act -= threat(g['enemyId'])
+                        guard += 1
+                    while act < lo and guard < 400:
+                        tg = next((g for g in rebuilt if g['enemyId'] == 'skitter_runner'), None)
+                        if tg is None:
+                            rebuilt.append({'enemyId':'skitter_runner','count':1,'startDelay':0.08,'spawnInterval':0.25,'formation':'stream','lane':'center'})
+                        else:
+                            tg['count'] += 1
+                        act += 1.0
+                        guard += 1
                     if any(g['enemyId'] == 'skitter_runner' for g in rebuilt): skitter_waves += 1
                     if any(g['enemyId'] == 'ash_swarm' for g in rebuilt): ash_waves += 1
                     w['groups'] = [g for g in rebuilt if g['count'] > 0]
@@ -216,6 +238,33 @@ for lv in range(1, 21):
                         g['count'] -= drop
                         over -= drop * t1
             rebuilt = [g for g in rebuilt if g['count'] > 0]
+
+            # Fit the runtime validator's exact window [T*(2-tol), T*tol] —
+            # the loader rejects the whole file otherwise (this session's
+            # hardest-won lesson). Crawler granularity covers every touched
+            # wave (T >= 17 -> window >= 1.36).
+            tol = w.get('budgetTolerance', 1.1) or 1.1
+            lo = T * (2 - tol) + 0.02
+            hi = T * tol - 0.02
+            guard = 0
+            act = sum(g['count'] * threat(g['enemyId']) for g in rebuilt)
+            while act > hi and guard < 200:
+                donors = [g for g in rebuilt if g['count'] > 1 and g['enemyId'] in FILLER] or [g for g in rebuilt if g['count'] > 1]
+                if not donors:
+                    break
+                g = max(donors, key=lambda x: threat(x['enemyId']))
+                g['count'] -= 1
+                act -= threat(g['enemyId'])
+                guard += 1
+            while act < lo and guard < 400:
+                tg = next((g for g in rebuilt if g['enemyId'] == 'skitter_runner'), None)
+                if tg is None:
+                    rebuilt.append({'enemyId':'skitter_runner','count':1,'startDelay':0.08,'spawnInterval':0.25,'formation':'stream','lane':'center'})
+                else:
+                    tg['count'] += 1
+                act += 1.0
+                guard += 1
+            rebuilt = [g for g in rebuilt if g['count'] > 0]
             rebuilt_sk = any(g['enemyId'] == 'skitter_runner' for g in rebuilt)
             rebuilt_as = any(g['enemyId'] == 'ash_swarm' for g in rebuilt)
             if rebuilt_sk and not any(g['enemyId'] == 'skitter_runner' for g in keep):
@@ -242,6 +291,21 @@ for lv in range(1, 21):
             w['groups'] = [g for g in w['groups'] if g['enemyId'] != boss_id]
             w['groups'].append({'enemyId': boss_id, 'count': 1, 'startDelay': 3.0,
                                 'spawnInterval': 3.0, 'formation': 'boss_entry', 'lane': 'all'})
+            # Boss threat is fixed; trim support into the validator window.
+            bT = w['budgetTarget']
+            btol = w.get('budgetTolerance', 1.1) or 1.1
+            bhi = bT * btol - 0.02
+            bact = sum(g['count'] * threat(g['enemyId']) for g in w['groups'])
+            guard = 0
+            while bact > bhi and guard < 200:
+                donors = [g for g in w['groups'] if g['count'] > 0 and g['enemyId'] != boss_id]
+                if not donors:
+                    break
+                g = max(donors, key=lambda x: x['count'])
+                g['count'] -= 1
+                bact -= threat(g['enemyId'])
+                guard += 1
+            w['groups'] = [g for g in w['groups'] if g['count'] > 0]
             w['hint'] = f"[L{lv:02d}] W20 考试 Boss：{CN_NAMES[boss_id]}——用这一关教过的答案应对。"
             w.setdefault('prepSeconds', 8.0)
             w['prepSeconds'] = max(w['prepSeconds'], 10.0)  # spec: boss prep +5s-ish
@@ -275,6 +339,19 @@ lines.append(f"| **合计** | | 最差 {worst_overall*100:.0f}% | **{100*tot_sk/
 lines.append('')
 lines.append(f"- 全局 skitter 占用 {100*tot_sk/tot_w:.0f}% / ash {100*tot_as/tot_w:.0f}%（目标 ≤55%；L01-03 结构性例外：可用原型 ≤2）")
 lines.append(f"- 平均每关原型数 {tot_arch/20:.1f}（目标 ≥7.5）")
+violations = []
+for lv in range(1, 21):
+    for w in load(lv)['waves']:
+        tol = w.get('budgetTolerance', 1.1) or 1.1
+        st = wave_threat(w)
+        lo_, hi_ = w['budgetTarget'] * (2 - tol), w['budgetTarget'] * tol
+        if st < lo_ - 0.01 or st > hi_ + 0.01:
+            violations.append(f"L{lv} W{w['waveIndex']} actual={st:.1f} window=[{lo_:.1f},{hi_:.1f}]")
+if violations:
+    print("VALIDATOR VIOLATIONS (%d):" % len(violations))
+    for v in violations[:20]:
+        print(" -", v)
+    raise SystemExit("budget windows violated")
 b_floor_ok = all(w['rewardGold'] >= 45 for lv in range(10,16) for w in load(lv)['waves'])
 lines.append(f"- B 段奖励地板 ≥45：{'通过' if b_floor_ok else '未过'}")
 report += lines

@@ -474,7 +474,7 @@
         },
         {
           "enemyId": "forge_dragoon",
-          "count": 2,
+          "count": 1,
           "startDelay": 1.68,
           "spawnInterval": 0.45,
           "formation": "pack",
@@ -738,7 +738,7 @@
       "groups": [
         {
           "enemyId": "husk_titan",
-          "count": 4,
+          "count": 3,
           "startDelay": 0.08,
           "spawnInterval": 0.79,
           "formation": "stagger",
@@ -1081,7 +1081,7 @@
         },
         {
           "enemyId": "forge_dragoon",
-          "count": 3,
+          "count": 1,
           "startDelay": 1.07,
           "spawnInterval": 0.45,
           "formation": "pack",
@@ -1211,7 +1211,7 @@
         },
         {
           "enemyId": "rail_splitter",
-          "count": 4,
+          "count": 3,
           "startDelay": 0.92,
           "spawnInterval": 0.3,
           "formation": "stream",
@@ -1219,7 +1219,7 @@
         },
         {
           "enemyId": "forge_dragoon",
-          "count": 2,
+          "count": 1,
           "startDelay": 1.41,
           "spawnInterval": 0.45,
           "formation": "pack",

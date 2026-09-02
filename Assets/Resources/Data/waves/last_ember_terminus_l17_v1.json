@@ -114,6 +114,14 @@
           "spawnInterval": 0.45,
           "formation": "pack",
           "lane": "left"
+        },
+        {
+          "enemyId": "skitter_runner",
+          "count": 1,
+          "startDelay": 0.08,
+          "spawnInterval": 0.25,
+          "formation": "stream",
+          "lane": "center"
         }
       ]
     },
@@ -525,7 +533,7 @@
         },
         {
           "enemyId": "echo_mimic",
-          "count": 3,
+          "count": 2,
           "startDelay": 3.4,
           "spawnInterval": 0.42,
           "formation": "escort",
@@ -854,7 +862,7 @@
         },
         {
           "enemyId": "forge_dragoon",
-          "count": 2,
+          "count": 1,
           "startDelay": 0.77,
           "spawnInterval": 0.45,
           "formation": "pack",
@@ -943,7 +951,7 @@
       "groups": [
         {
           "enemyId": "husk_titan",
-          "count": 5,
+          "count": 4,
           "startDelay": 0.24,
           "spawnInterval": 0.71,
           "formation": "elite_drop",
@@ -1166,7 +1174,7 @@
         },
         {
           "enemyId": "echo_mimic",
-          "count": 4,
+          "count": 2,
           "startDelay": 3.6,
           "spawnInterval": 0.41,
           "formation": "pressure_mix",
@@ -1260,7 +1268,7 @@
         },
         {
           "enemyId": "ash_swarm",
-          "count": 40,
+          "count": 28,
           "startDelay": 0.08,
           "spawnInterval": 0.22,
           "formation": "swarm",

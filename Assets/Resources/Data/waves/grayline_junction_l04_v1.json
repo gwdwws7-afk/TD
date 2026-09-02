@@ -660,7 +660,7 @@
       "groups": [
         {
           "enemyId": "skitter_runner",
-          "count": 18,
+          "count": 19,
           "startDelay": 0,
           "spawnInterval": 0.22,
           "formation": "stream"
@@ -719,7 +719,7 @@
         },
         {
           "enemyId": "skitter_runner",
-          "count": 14,
+          "count": 15,
           "startDelay": 2.48,
           "spawnInterval": 0.23,
           "formation": "stream"
@@ -819,7 +819,7 @@
         },
         {
           "enemyId": "skitter_runner",
-          "count": 9,
+          "count": 10,
           "startDelay": 1.76,
           "spawnInterval": 0.2,
           "formation": "stream"

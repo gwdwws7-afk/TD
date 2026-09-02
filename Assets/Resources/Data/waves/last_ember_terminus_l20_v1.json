@@ -416,7 +416,7 @@
         },
         {
           "enemyId": "husk_titan",
-          "count": 2,
+          "count": 1,
           "startDelay": 2.4,
           "spawnInterval": 0.79,
           "formation": "burst",
@@ -573,7 +573,7 @@
         },
         {
           "enemyId": "forge_dragoon",
-          "count": 2,
+          "count": 1,
           "startDelay": 1.58,
           "spawnInterval": 0.45,
           "formation": "pack",
@@ -616,7 +616,7 @@
         },
         {
           "enemyId": "acid_blister",
-          "count": 3,
+          "count": 2,
           "startDelay": 1.68,
           "spawnInterval": 0.45,
           "formation": "pack",
@@ -750,7 +750,7 @@
         },
         {
           "enemyId": "forge_dragoon",
-          "count": 3,
+          "count": 2,
           "startDelay": 0.74,
           "spawnInterval": 0.45,
           "formation": "pack",
@@ -854,7 +854,7 @@
         },
         {
           "enemyId": "echo_mimic",
-          "count": 4,
+          "count": 3,
           "startDelay": 3.76,
           "spawnInterval": 0.44,
           "formation": "pressure_mix",
@@ -931,7 +931,7 @@
         },
         {
           "enemyId": "acid_blister",
-          "count": 3,
+          "count": 2,
           "startDelay": 1.24,
           "spawnInterval": 0.45,
           "formation": "pack",
@@ -1214,7 +1214,7 @@
         },
         {
           "enemyId": "forge_dragoon",
-          "count": 3,
+          "count": 1,
           "startDelay": 1.59,
           "spawnInterval": 0.45,
           "formation": "pack",
@@ -1261,7 +1261,7 @@
         },
         {
           "enemyId": "echo_mimic",
-          "count": 6,
+          "count": 4,
           "startDelay": 2.76,
           "spawnInterval": 0.42,
           "formation": "pressure_mix",

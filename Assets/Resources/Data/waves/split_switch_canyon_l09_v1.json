@@ -1108,7 +1108,7 @@
         },
         {
           "enemyId": "ash_swarm",
-          "count": 20,
+          "count": 7,
           "startDelay": 0.08,
           "spawnInterval": 0.22,
           "formation": "swarm",

@@ -544,7 +544,7 @@
       "groups": [
         {
           "enemyId": "husk_titan",
-          "count": 4,
+          "count": 3,
           "startDelay": 0.16,
           "spawnInterval": 0.79,
           "formation": "burst",
@@ -702,7 +702,7 @@
         },
         {
           "enemyId": "forge_dragoon",
-          "count": 2,
+          "count": 1,
           "startDelay": 1.0,
           "spawnInterval": 0.45,
           "formation": "pack",
@@ -883,7 +883,7 @@
         },
         {
           "enemyId": "forge_dragoon",
-          "count": 3,
+          "count": 2,
           "startDelay": 0.67,
           "spawnInterval": 0.45,
           "formation": "pack",
@@ -964,7 +964,7 @@
       "groups": [
         {
           "enemyId": "carapace_brute",
-          "count": 8,
+          "count": 7,
           "startDelay": 0.16,
           "spawnInterval": 0.68,
           "formation": "stagger",
@@ -1012,7 +1012,7 @@
         },
         {
           "enemyId": "forge_dragoon",
-          "count": 2,
+          "count": 1,
           "startDelay": 1.59,
           "spawnInterval": 0.45,
           "formation": "pack",
@@ -1219,7 +1219,7 @@
         },
         {
           "enemyId": "forge_dragoon",
-          "count": 3,
+          "count": 1,
           "startDelay": 1.51,
           "spawnInterval": 0.45,
           "formation": "pack",

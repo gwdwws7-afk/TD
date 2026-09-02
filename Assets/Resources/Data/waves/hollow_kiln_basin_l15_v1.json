@@ -509,7 +509,7 @@
         },
         {
           "enemyId": "carapace_brute",
-          "count": 4,
+          "count": 3,
           "startDelay": 5.0,
           "spawnInterval": 0.9,
           "formation": "burst",
@@ -790,7 +790,7 @@
       "groups": [
         {
           "enemyId": "husk_titan",
-          "count": 3,
+          "count": 2,
           "startDelay": 0,
           "spawnInterval": 0.75,
           "formation": "elite_drop",
@@ -996,7 +996,7 @@
         },
         {
           "enemyId": "rail_warden",
-          "count": 4,
+          "count": 3,
           "startDelay": 5.8,
           "spawnInterval": 0.7,
           "formation": "stagger",
@@ -1158,7 +1158,7 @@
         },
         {
           "enemyId": "forge_dragoon",
-          "count": 2,
+          "count": 1,
           "startDelay": 1.78,
           "spawnInterval": 0.45,
           "formation": "pack",
