@@ -102,6 +102,17 @@ namespace TD
             return chain;
         }
 
+        /// <summary>
+        /// Full Bore (damage spec) fights the falloff table with 1.0 — zero
+        /// decay on the line. Design errata b08df07: the pure chain already
+        /// supported it; this pins the CALLER's choice so the wiring cannot
+        /// silently regress behind a passing pure-function test again.
+        /// </summary>
+        public static float ResolvePierceShotFalloff(bool fullBore, float tableFalloff)
+        {
+            return fullBore ? 1f : tableFalloff;
+        }
+
         public static float FastEnemyMissChance(float shotsPerSecond, float aoeRadius)
         {
             if (aoeRadius > 0f || shotsPerSecond > 1.1f)

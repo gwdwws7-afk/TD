@@ -787,7 +787,7 @@ namespace TD
 
             var chain = TDCombatMath.ResolvePierceDamageChain(
                 baseDamage,
-                _activeState.pierceFalloff,
+                TDCombatMath.ResolvePierceShotFalloff(IsDamageSpecialist, _activeState.pierceFalloff),
                 lineTargets.Count,
                 IsDamageSpecialist ? 1.3f : 1f);
             for (var i = 0; i < lineTargets.Count; i++)

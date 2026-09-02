@@ -46,6 +46,18 @@ namespace TD.Tests
         }
 
         [Test]
+        public void FullBore_ShotFalloff_WiringPinned()
+        {
+            // Design errata b08df07: the spec bypasses the falloff table
+            // entirely (not "falloff improved to 1.0 by upgrades") — the shot
+            // resolver must hand the chain 1.0 whenever Full Bore is live.
+            Assert.AreEqual(1.0f, TDCombatMath.ResolvePierceShotFalloff(true, 0.7f));
+            Assert.AreEqual(1.0f, TDCombatMath.ResolvePierceShotFalloff(true, 0.4f));
+            Assert.AreEqual(0.7f, TDCombatMath.ResolvePierceShotFalloff(false, 0.7f));
+            Assert.AreEqual(0.4f, TDCombatMath.ResolvePierceShotFalloff(false, 0.4f));
+        }
+
+        [Test]
         public void Cannon_EvadeIdentity_ThirtyPercentPinned()
         {
             // The cannon's identity weakness is NOT a new mechanic — it is the
