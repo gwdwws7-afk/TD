@@ -888,15 +888,22 @@ namespace TD
                                                 (_gameOver || _isInPrepPhase || !_campaignDeploymentConfirmed);
             }
 
+            // LoadCampaignContext runs at boot and sets _missionBoardOpen=true
+            // before the title screen exists; without this guard the board
+            // bleeds through the title's translucent background around the
+            // menu buttons (player report 09-03).
+            var titleVisible = _titleScreen != null && _titleScreen.IsVisible;
+            var boardVisible = _missionBoardOpen && !titleVisible;
+
             if (_uiMissionBoardScrim != null)
             {
-                _uiMissionBoardScrim.gameObject.SetActive(_missionBoardOpen);
+                _uiMissionBoardScrim.gameObject.SetActive(boardVisible);
             }
 
-            _uiMissionBoardRoot.gameObject.SetActive(_missionBoardOpen);
+            _uiMissionBoardRoot.gameObject.SetActive(boardVisible);
             if (_uiFormationRoot != null)
             {
-                _uiFormationRoot.gameObject.SetActive(_missionBoardOpen && _formationPanelOpen);
+                _uiFormationRoot.gameObject.SetActive(boardVisible && _formationPanelOpen);
             }
 
             if (_uiCampaignProfileRoot != null)
