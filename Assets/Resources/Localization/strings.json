@@ -1,4 +1,4 @@
-{
+﻿{
   "schemaVersion": 1,
   "languages": {
     "en": {},
@@ -554,7 +554,11 @@
       "READ": "确认",
       "COVER": "覆盖",
       "ON": "开启",
-      "OFF": "关闭"
+      "OFF": "关闭",
+      "Slag Burner": "炉渣喷灯",
+      "Salvage Derrick": "捞轨吊机",
+      "Rail Barricade": "轨障车",
+      "Long Rail Cannon": "远程轨道炮"
     }
   }
 }

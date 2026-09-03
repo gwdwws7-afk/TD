@@ -107,7 +107,10 @@ namespace TD.Editor
             var version = ReadArgument("-tdVersion", TDReleaseIdentity.SemanticVersion);
             var buildNumber = ReadIntArgument("-tdBuildNumber", TDReleaseIdentity.BuildNumber);
             var development = ReadBoolArgument("-tdDevelopment", false);
-            var backend = ReadArgument("-tdBackend", "Mono");
+            // Release-engineering decision (roadmap stage five): IL2CPP is
+            // the shipping default — harder to tamper with, stricter loading.
+            // Explicit -tdBackend Mono still builds the parity package.
+            var backend = ReadArgument("-tdBackend", "IL2CPP");
             var revision = ReadArgument("-tdSourceRevision", "unknown");
             var automation = ReadBoolArgument("-tdAutomation", true);
             var resultPath = ReadArgument("-tdResult", Path.ChangeExtension(outputPath, ".build.json"));
