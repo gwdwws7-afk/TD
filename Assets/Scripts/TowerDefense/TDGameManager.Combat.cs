@@ -648,7 +648,7 @@ namespace TD
                 "echo_brood" => 8,
                 "containermaw" => 10,
                 "junction_tyrant" => 10,
-                "kiln_custodian" => 10,
+                "kiln_custodian" => 7,
                 "echo_harbinger" => 10,
                 _ => 1
             };
