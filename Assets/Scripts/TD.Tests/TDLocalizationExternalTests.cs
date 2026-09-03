@@ -74,7 +74,7 @@ namespace TD.Tests
             var json = LoadJsonText();
             StringAssert.Contains("\"Rail Lancer\"", json);
             StringAssert.Contains("轨枪塔", json);
-            StringAssert.Contains("余烬铁道", json);
+            StringAssert.Contains("余烬试炼", json);
         }
     }
 }
